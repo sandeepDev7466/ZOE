@@ -1,0 +1,242 @@
+<?xml version="1.0" encoding="utf-8"?>
+<LinearLayout xmlns:android="http://schemas.android.com/apk/res/android"
+    xmlns:app="http://schemas.android.com/apk/res-auto"
+    android:layout_width="match_parent"
+    android:layout_height="match_parent"
+    android:orientation="vertical"
+    android:layout_marginLeft="@dimen/_20sdp"
+    android:layout_marginRight="@dimen/_20sdp">
+
+    <LinearLayout
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:orientation="horizontal"
+        android:weightSum="2"
+        android:layout_marginTop="@dimen/_25sdp">
+
+        <com.ztp.app.Helper.MyTextView
+            android:layout_width="0dp"
+            android:layout_height="match_parent"
+            android:layout_weight="1"
+            android:text="Shift Date"
+            android:textColor="@color/tab_booking"
+            android:textSize="@dimen/_13ssp"/>
+
+        <com.ztp.app.Helper.MyTextView
+            android:layout_width="0dp"
+            android:layout_height="match_parent"
+            android:layout_weight="1"
+            android:textSize="@dimen/_13ssp"
+            android:id="@+id/shift_date"
+            />
+    </LinearLayout>
+    <LinearLayout
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:orientation="horizontal"
+        android:weightSum="2"
+        android:layout_marginTop="@dimen/_5sdp">
+
+        <com.ztp.app.Helper.MyTextView
+            android:layout_width="0dp"
+            android:layout_height="match_parent"
+            android:layout_weight="1"
+            android:text="Shift Vol Request"
+            android:textColor="@color/tab_booking"
+            android:textSize="@dimen/_13ssp"/>
+
+        <com.ztp.app.Helper.MyTextView
+            android:layout_width="0dp"
+            android:layout_height="match_parent"
+            android:layout_weight="1"
+            android:textSize="@dimen/_13ssp"
+            android:id="@+id/shift_vol_req"/>
+    </LinearLayout>
+    <LinearLayout
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:orientation="horizontal"
+        android:weightSum="2"
+        android:layout_marginTop="@dimen/_5sdp">
+
+        <com.ztp.app.Helper.MyTextView
+            android:layout_width="0dp"
+            android:layout_height="match_parent"
+            android:layout_weight="1"
+            android:text="Shift Start Time"
+            android:textColor="@color/tab_booking"
+            android:textSize="@dimen/_13ssp"/>
+
+        <com.ztp.app.Helper.MyTextView
+            android:layout_width="0dp"
+            android:layout_height="match_parent"
+            android:layout_weight="1"
+            android:textSize="@dimen/_13ssp"
+            android:id="@+id/shift_start_time"/>
+    </LinearLayout>
+
+    <LinearLayout
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:orientation="horizontal"
+        android:weightSum="2"
+        android:layout_marginTop="@dimen/_5sdp">
+
+        <com.ztp.app.Helper.MyTextView
+            android:layout_width="0dp"
+            android:layout_height="match_parent"
+            android:layout_weight="1"
+            android:text="Shift End Time"
+            android:textColor="@color/tab_booking"
+            android:textSize="@dimen/_13ssp"/>
+
+        <com.ztp.app.Helper.MyTextView
+            android:layout_width="0dp"
+            android:layout_height="match_parent"
+            android:layout_weight="1"
+            android:textSize="@dimen/_13ssp"
+            android:id="@+id/shift_end_time"/>
+
+    </LinearLayout>
+
+    <LinearLayout
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:orientation="horizontal"
+        android:weightSum="2"
+        android:layout_marginTop="@dimen/_5sdp">
+
+        <com.ztp.app.Helper.MyTextView
+            android:layout_width="0dp"
+            android:layout_height="match_parent"
+            android:layout_weight="1"
+            android:text="Shift Rank"
+            android:textColor="@color/tab_booking"
+            android:textSize="@dimen/_13ssp"/>
+
+        <com.ztp.app.Helper.MyTextView
+            android:layout_width="0dp"
+            android:layout_height="match_parent"
+            android:layout_weight="1"
+            android:textSize="@dimen/_13ssp"
+            android:id="@+id/shift_rank"/>
+
+    </LinearLayout>
+
+    <LinearLayout
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:orientation="horizontal"
+        android:weightSum="2"
+        android:layout_marginTop="@dimen/_5sdp">
+
+        <com.ztp.app.Helper.MyTextView
+            android:layout_width="0dp"
+            android:layout_height="match_parent"
+            android:layout_weight="1"
+            android:text="Shift Task"
+            android:textColor="@color/tab_booking"
+            android:textSize="@dimen/_13ssp"/>
+
+        <com.ztp.app.Helper.MyTextView
+            android:layout_width="0dp"
+            android:layout_height="match_parent"
+            android:layout_weight="1"
+            android:textSize="@dimen/_13ssp"
+            android:id="@+id/shift_task"/>
+
+    </LinearLayout>
+
+    <LinearLayout
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:orientation="horizontal"
+        android:weightSum="2"
+        android:layout_marginTop="@dimen/_5sdp">
+
+        <com.ztp.app.Helper.MyTextView
+            android:layout_width="0dp"
+            android:layout_height="match_parent"
+            android:layout_weight="1"
+            android:text="Shift Status"
+            android:textColor="@color/tab_booking"
+            android:textSize="@dimen/_13ssp"/>
+
+        <com.ztp.app.Helper.MyTextView
+            android:layout_width="0dp"
+            android:layout_height="match_parent"
+            android:layout_weight="1"
+            android:textSize="@dimen/_13ssp"
+            android:id="@+id/shift_status"/>
+
+    </LinearLayout>
+
+    <LinearLayout
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:orientation="horizontal"
+        android:weightSum="2"
+        android:layout_marginTop="@dimen/_5sdp">
+
+        <com.ztp.app.Helper.MyTextView
+            android:layout_width="0dp"
+            android:layout_height="match_parent"
+            android:layout_weight="1"
+            android:text="Shift Add Date"
+            android:textColor="@color/tab_booking"
+            android:textSize="@dimen/_13ssp"/>
+
+        <com.ztp.app.Helper.MyTextView
+            android:layout_width="0dp"
+            android:layout_height="match_parent"
+            android:layout_weight="1"
+            android:textSize="@dimen/_13ssp"
+            android:id="@+id/shift_add_date"/>
+
+    </LinearLayout>
+
+    <LinearLayout
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:orientation="horizontal"
+        android:weightSum="2"
+        android:layout_marginTop="@dimen/_5sdp">
+
+        <com.ztp.app.Helper.MyTextView
+            android:layout_width="0dp"
+            android:layout_height="match_parent"
+            android:layout_weight="1"
+            android:text="Shift Update Date"
+            android:textColor="@color/tab_booking"
+            android:textSize="@dimen/_13ssp"/>
+
+        <com.ztp.app.Helper.MyTextView
+            android:layout_width="0dp"
+            android:layout_height="match_parent"
+            android:layout_weight="1"
+            android:textSize="@dimen/_13ssp"
+            android:id="@+id/shift_update_date"/>
+
+    </LinearLayout>
+
+
+    <LinearLayout
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:orientation="horizontal"
+        android:gravity="right"
+        >
+        <ImageView
+            android:id="@+id/imv_chat"
+            android:layout_width="@dimen/_15sdp"
+            android:layout_height="@dimen/_15sdp"
+            android:tint="@color/tab_booking"
+            app:srcCompat="@drawable/ic_edit"
+            android:layout_gravity="right"/>
+    </LinearLayout>
+    <View
+        android:layout_width="match_parent"
+        android:layout_height="1dp"
+        android:background="@color/background_3"></View>
+
+</LinearLayout>

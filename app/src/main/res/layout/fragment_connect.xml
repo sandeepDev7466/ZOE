@@ -1,0 +1,45 @@
+<?xml version="1.0" encoding="utf-8"?>
+<LinearLayout xmlns:android="http://schemas.android.com/apk/res/android"
+    android:layout_width="match_parent"
+    android:layout_height="match_parent"
+    xmlns:app="http://schemas.android.com/apk/res-auto"
+    android:orientation="vertical">
+
+    <LinearLayout
+        android:layout_width="match_parent"
+        android:layout_height="@dimen/_40sdp"
+        android:gravity="center|bottom"
+        android:padding="@dimen/_5sdp">
+
+        <com.ztp.app.Helper.MyHeadingTextView
+            android:id="@+id/typeFriend"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:textSize="@dimen/_15ssp"/>
+
+    </LinearLayout>
+
+    <FrameLayout
+        android:layout_width="match_parent"
+        android:layout_height="match_parent">
+
+        <android.support.design.widget.TabLayout
+            android:id="@+id/tabLayout"
+            android:layout_width="match_parent"
+            android:layout_height="@dimen/_10sdp"
+            app:tabBackground="@drawable/tab_selector"
+            app:tabMaxWidth="@dimen/_10sdp"
+            app:tabGravity="center"
+            app:tabIndicatorHeight="0dp"
+            app:tabMinWidth="0dp" />
+
+        <android.support.v4.view.ViewPager
+            android:id="@+id/viewPager"
+            android:layout_width="match_parent"
+            android:layout_height="match_parent"
+            android:layout_marginTop="@dimen/_20sdp"/>
+
+
+    </FrameLayout>
+
+</LinearLayout>

@@ -1,0 +1,42 @@
+<?xml version="1.0" encoding="utf-8"?>
+<LinearLayout
+    xmlns:android="http://schemas.android.com/apk/res/android"
+    android:layout_width="match_parent"
+    android:layout_height="match_parent"
+    android:orientation="vertical">
+
+    <LinearLayout
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:gravity="center_vertical|end"
+        android:padding="@dimen/_20sdp"
+        android:orientation="vertical">
+
+        <com.ztp.app.Helper.MyBoldTextView
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:textSize="@dimen/_12ssp"
+            android:text="CURRENT RANK : 1"/>
+
+        <com.ztp.app.Helper.MyTextView
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:layout_marginTop="@dimen/_5sdp"
+            android:textSize="@dimen/_12ssp"
+            android:text="105 hours completed."
+            />
+
+    </LinearLayout>
+
+    <ListView
+        android:id="@+id/listView"
+        android:layout_width="match_parent"
+        android:layout_height="match_parent"
+        android:scrollbars="none"
+        android:dividerHeight="0.4dp"
+        android:divider="@color/background_3"
+        android:layout_marginStart="@dimen/_20sdp"
+        android:layout_marginEnd="@dimen/_20sdp"/>
+
+
+</LinearLayout>

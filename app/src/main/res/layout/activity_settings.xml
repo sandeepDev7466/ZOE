@@ -1,0 +1,356 @@
+<?xml version="1.0" encoding="utf-8"?>
+<LinearLayout xmlns:android="http://schemas.android.com/apk/res/android"
+    xmlns:app="http://schemas.android.com/apk/res-auto"
+    xmlns:tools="http://schemas.android.com/tools"
+    android:layout_width="match_parent"
+    android:layout_height="match_parent"
+    android:orientation="vertical"
+    tools:context=".View.Activity.Common.SettingsActivity">
+
+    <RelativeLayout
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content">
+
+        <FrameLayout
+            android:layout_width="match_parent"
+            android:layout_height="@dimen/_160sdp">
+
+            <ImageView
+                android:layout_width="match_parent"
+                android:layout_height="match_parent"
+                android:scaleType="fitXY"
+                android:src="@drawable/scene" />
+
+            <com.ztp.app.Helper.MyBoldTextView
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:layout_gravity="end"
+                android:layout_marginTop="@dimen/_20sdp"
+                android:padding="@dimen/_10sdp"
+                android:text="@string/choose_cover_photo"
+                android:textColor="@color/white"
+                android:textSize="@dimen/_12ssp" />
+
+            <LinearLayout
+                android:layout_width="match_parent"
+                android:layout_height="@dimen/_100sdp"
+                android:layout_gravity="bottom"
+                android:orientation="vertical"
+                android:paddingStart="@dimen/_10sdp"
+                android:paddingTop="@dimen/_10sdp"
+                android:paddingEnd="@dimen/_10sdp">
+
+                <de.hdodenhof.circleimageview.CircleImageView
+                    android:layout_width="@dimen/_60sdp"
+                    android:layout_height="@dimen/_60sdp"
+                    android:src="@drawable/user"
+                    app:civ_border_color="#ffffff"
+                    app:civ_border_width="2dp" />
+
+                <com.ztp.app.Helper.MyBoldTextView
+                    android:layout_width="wrap_content"
+                    android:layout_height="wrap_content"
+                    android:layout_marginTop="@dimen/_5sdp"
+                    android:text="@string/choose_profile_photo"
+                    android:textColor="@color/white"
+                    android:textSize="@dimen/_12ssp" />
+
+
+            </LinearLayout>
+
+        </FrameLayout>
+
+        <LinearLayout
+            android:layout_width="match_parent"
+            android:layout_height="?android:attr/actionBarSize"
+            android:layout_marginTop="@dimen/_15sdp"
+            android:gravity="center_vertical"
+            android:orientation="horizontal"
+            android:padding="@dimen/_10sdp">
+
+            <ImageView
+                android:id="@+id/back"
+                android:layout_width="@dimen/_20sdp"
+                android:layout_height="@dimen/_20sdp"
+                android:layout_marginLeft="@dimen/_5sdp"
+                android:tint="@color/white"
+                app:srcCompat="@drawable/ic_back_arrow" />
+
+        </LinearLayout>
+
+    </RelativeLayout>
+
+    <ScrollView
+        android:layout_width="match_parent"
+        android:layout_height="match_parent"
+        android:fillViewport="true"
+        android:scrollbars="none">
+
+        <LinearLayout
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:layout_marginTop="@dimen/_20sdp"
+            android:orientation="vertical"
+            android:paddingLeft="@dimen/_15sdp"
+            android:paddingRight="@dimen/_15sdp">
+
+            <LinearLayout
+                android:layout_width="match_parent"
+                android:layout_height="@dimen/_30sdp"
+                android:orientation="horizontal">
+
+                <LinearLayout
+                    android:layout_width="0dp"
+                    android:layout_height="match_parent"
+                    android:layout_weight=".1"
+                    android:gravity="center">
+
+                    <ImageView
+                        android:layout_width="@dimen/_18sdp"
+                        android:layout_height="@dimen/_18sdp"
+                        app:srcCompat="@drawable/ic_worlwide" />
+
+
+                </LinearLayout>
+
+                <LinearLayout
+                    android:layout_width="0dp"
+                    android:layout_height="match_parent"
+                    android:layout_weight=".7"
+                    android:gravity="center_vertical">
+
+                    <com.ztp.app.Helper.MyTextView
+                        android:layout_width="match_parent"
+                        android:layout_height="wrap_content"
+                        android:text="@string/language"
+                        android:textSize="@dimen/_12ssp" />
+
+                </LinearLayout>
+
+                <View
+                    android:layout_width="0.5dp"
+                    android:layout_height="match_parent"
+                    android:background="@color/background_3" />
+
+                <LinearLayout
+                    android:layout_width="0dp"
+                    android:layout_height="match_parent"
+                    android:layout_weight=".2"
+                    android:gravity="center_vertical|end">
+
+                    <com.github.angads25.toggle.widget.LabeledSwitch
+                        android:id="@+id/language"
+                        android:layout_width="wrap_content"
+                        android:layout_height="wrap_content"
+                        android:scaleX="0.8"
+                        android:scaleY="0.8"
+                        android:textSize="@dimen/_5ssp"
+                        app:colorBorder="@color/colorAccent"
+                        app:colorOff="@color/white"
+                        app:colorOn="@color/black"
+                        app:on="true"
+                        app:textOff="@string/english"
+                        app:textOn="@string/spanish" />
+
+                </LinearLayout>
+
+
+            </LinearLayout>
+
+            <LinearLayout
+                android:layout_width="match_parent"
+                android:layout_height="@dimen/_30sdp"
+                android:layout_marginTop="@dimen/_10sdp"
+                android:orientation="horizontal">
+
+                <LinearLayout
+                    android:layout_width="0dp"
+                    android:layout_height="match_parent"
+                    android:layout_weight=".1"
+                    android:gravity="center">
+
+                    <ImageView
+                        android:layout_width="@dimen/_18sdp"
+                        android:layout_height="@dimen/_18sdp"
+                        app:srcCompat="@drawable/ic_theme" />
+
+
+                </LinearLayout>
+
+                <LinearLayout
+                    android:layout_width="0dp"
+                    android:layout_height="match_parent"
+                    android:layout_weight=".7"
+                    android:gravity="center_vertical">
+
+                    <com.ztp.app.Helper.MyTextView
+                        android:layout_width="match_parent"
+                        android:layout_height="wrap_content"
+                        android:text="@string/theme"
+                        android:textSize="@dimen/_12ssp" />
+
+                </LinearLayout>
+
+                <View
+                    android:layout_width="0.5dp"
+                    android:layout_height="match_parent"
+                    android:background="@color/background_3" />
+
+                <LinearLayout
+                    android:layout_width="0dp"
+                    android:layout_height="match_parent"
+                    android:layout_weight=".2"
+                    android:gravity="center_vertical|end">
+
+                    <com.github.angads25.toggle.widget.LabeledSwitch
+                        android:id="@+id/theme"
+                        android:layout_width="wrap_content"
+                        android:layout_height="wrap_content"
+                        android:scaleX="0.8"
+                        android:scaleY="0.8"
+                        android:textSize="@dimen/_5ssp"
+                        app:colorBorder="@color/colorAccent"
+                        app:colorOff="@color/white"
+                        app:colorOn="@color/black"
+                        app:on="true"
+                        app:textOff="@string/day"
+                        app:textOn="@string/night" />
+
+                </LinearLayout>
+
+
+            </LinearLayout>
+
+            <LinearLayout
+                android:layout_width="match_parent"
+                android:layout_height="@dimen/_30sdp"
+                android:layout_marginTop="@dimen/_10sdp"
+                android:orientation="horizontal">
+
+                <LinearLayout
+                    android:layout_width="0dp"
+                    android:layout_height="match_parent"
+                    android:layout_weight=".1"
+                    android:gravity="center">
+
+                    <ImageView
+                        android:layout_width="@dimen/_18sdp"
+                        android:layout_height="@dimen/_18sdp"
+                        app:srcCompat="@drawable/ic_push_notification" />
+
+
+                </LinearLayout>
+
+                <LinearLayout
+                    android:layout_width="0dp"
+                    android:layout_height="match_parent"
+                    android:layout_weight=".7"
+                    android:gravity="center_vertical">
+
+                    <com.ztp.app.Helper.MyTextView
+                        android:layout_width="match_parent"
+                        android:layout_height="wrap_content"
+                        android:text="@string/push_notification"
+                        android:textSize="@dimen/_12ssp" />
+
+                </LinearLayout>
+
+                <View
+                    android:layout_width="0.5dp"
+                    android:layout_height="match_parent"
+                    android:background="@color/background_3" />
+
+                <LinearLayout
+                    android:layout_width="0dp"
+                    android:layout_height="match_parent"
+                    android:layout_weight=".2"
+                    android:gravity="center_vertical|end">
+
+                    <com.github.angads25.toggle.widget.LabeledSwitch
+                        android:id="@+id/push"
+                        android:layout_width="wrap_content"
+                        android:layout_height="wrap_content"
+                        android:scaleX="0.8"
+                        android:scaleY="0.8"
+                        android:textSize="@dimen/_5ssp"
+                        app:colorBorder="@color/colorAccent"
+                        app:colorOff="@color/white"
+                        app:colorOn="@color/black"
+                        app:on="false"
+                        app:textOff="@string/off"
+                        app:textOn="@string/on" />
+
+                </LinearLayout>
+
+
+            </LinearLayout>
+
+            <LinearLayout
+                android:layout_width="match_parent"
+                android:layout_height="@dimen/_30sdp"
+                android:layout_marginTop="@dimen/_10sdp"
+                android:orientation="horizontal">
+
+                <LinearLayout
+                    android:layout_width="0dp"
+                    android:layout_height="match_parent"
+                    android:layout_weight=".1"
+                    android:gravity="center">
+
+                    <ImageView
+                        android:layout_width="@dimen/_18sdp"
+                        android:layout_height="@dimen/_18sdp"
+                        app:srcCompat="@drawable/ic_location_services" />
+
+
+                </LinearLayout>
+
+                <LinearLayout
+                    android:layout_width="0dp"
+                    android:layout_height="match_parent"
+                    android:layout_weight=".7"
+                    android:gravity="center_vertical">
+
+                    <com.ztp.app.Helper.MyTextView
+                        android:layout_width="match_parent"
+                        android:layout_height="wrap_content"
+                        android:text="@string/location_services"
+                        android:textSize="@dimen/_12ssp" />
+
+                </LinearLayout>
+
+                <View
+                    android:layout_width="0.5dp"
+                    android:layout_height="match_parent"
+                    android:background="@color/background_3" />
+
+                <LinearLayout
+                    android:layout_width="0dp"
+                    android:layout_height="match_parent"
+                    android:layout_weight=".2"
+                    android:gravity="center_vertical|end">
+
+                    <com.github.angads25.toggle.widget.LabeledSwitch
+                        android:id="@+id/location"
+                        android:layout_width="wrap_content"
+                        android:layout_height="wrap_content"
+                        android:scaleX="0.8"
+                        android:scaleY="0.8"
+                        android:textSize="@dimen/_5ssp"
+                        app:colorBorder="@color/colorAccent"
+                        app:colorOff="@color/white"
+                        app:colorOn="@color/black"
+                        app:on="false"
+                        app:textOff="@string/off"
+                        app:textOn="@string/on" />
+
+                </LinearLayout>
+
+
+            </LinearLayout>
+
+        </LinearLayout>
+
+    </ScrollView>
+
+</LinearLayout>

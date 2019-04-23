@@ -1,0 +1,151 @@
+<?xml version="1.0" encoding="utf-8"?>
+<RelativeLayout
+    xmlns:android="http://schemas.android.com/apk/res/android"
+    xmlns:app="http://schemas.android.com/apk/res-auto"
+    xmlns:tools="http://schemas.android.com/tools"
+    android:layout_width="match_parent"
+    android:layout_height="match_parent"
+    app:layout_behavior="@string/appbar_scrolling_view_behavior"
+    tools:showIn="@layout/app_bar_dashboard_student">
+
+
+    <LinearLayout
+        android:id="@+id/body"
+        android:layout_width="match_parent"
+        android:layout_height="match_parent"
+        android:layout_marginBottom="@dimen/_40sdp"
+        android:orientation="horizontal">
+
+    </LinearLayout>
+
+    <View
+        android:layout_width="match_parent"
+        android:layout_height="@dimen/_1sdp"
+        android:background="@color/background_3"
+        android:layout_gravity="bottom"
+        android:layout_alignParentBottom="true"
+        android:layout_marginBottom="@dimen/_45sdp"
+        />
+
+    <LinearLayout
+        android:id="@+id/bottom_nav"
+        android:layout_width="match_parent"
+        android:layout_height="@dimen/_40sdp"
+        android:layout_alignParentBottom="true"
+        android:padding="@dimen/_2sdp">
+
+        <LinearLayout
+            android:id="@+id/hangout"
+            android:layout_width="0dp"
+            android:layout_height="match_parent"
+            android:layout_weight=".2"
+            android:gravity="center"
+            android:orientation="vertical"
+            android:alpha="0.3">
+
+            <ImageView
+                android:layout_width="@dimen/_18sdp"
+                android:layout_height="@dimen/_18sdp"
+                app:srcCompat="@drawable/ic_hangout"/><!--hangout_black-->
+            <com.ztp.app.Helper.MyTextView
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:text="@string/hangout"
+                android:textSize="@dimen/_8ssp"
+                android:layout_marginTop="@dimen/_5sdp"/>
+
+        </LinearLayout>
+        <LinearLayout
+            android:id="@+id/locker"
+            android:layout_width="0dp"
+            android:layout_height="match_parent"
+            android:layout_weight=".2"
+            android:gravity="center"
+            android:orientation="vertical"
+            android:alpha="0.3">
+
+            <ImageView
+                android:layout_width="@dimen/_18sdp"
+                android:layout_height="@dimen/_18sdp"
+                app:srcCompat="@drawable/ic_folder"
+                /><!--locker-->
+
+            <com.ztp.app.Helper.MyTextView
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:text="@string/locker"
+                android:textSize="@dimen/_8ssp"
+                android:layout_marginTop="@dimen/_5sdp"/>
+
+        </LinearLayout>
+        <LinearLayout
+            android:id="@+id/target"
+            android:layout_width="0dp"
+            android:layout_height="match_parent"
+            android:layout_weight=".2"
+            android:gravity="center"
+            android:orientation="vertical"
+            android:alpha="0.3">
+
+            <ImageView
+                android:layout_width="@dimen/_18sdp"
+                android:layout_height="@dimen/_18sdp"
+                app:srcCompat="@drawable/ic_target" /><!--target-->
+
+            <com.ztp.app.Helper.MyTextView
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:text="@string/target"
+                android:textSize="@dimen/_8ssp"
+                android:layout_marginTop="@dimen/_5sdp"/>
+
+        </LinearLayout>
+        <LinearLayout
+            android:id="@+id/booking"
+            android:layout_width="0dp"
+            android:layout_height="match_parent"
+            android:layout_weight=".2"
+            android:gravity="center"
+            android:orientation="vertical"
+            android:alpha="0.3">
+
+            <ImageView
+                android:layout_width="@dimen/_18sdp"
+                android:layout_height="@dimen/_18sdp"
+                app:srcCompat="@drawable/ic_booking"
+               /><!--booking-->
+
+            <com.ztp.app.Helper.MyTextView
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:text="@string/booking"
+                android:textSize="@dimen/_8ssp"
+                android:layout_marginTop="@dimen/_5sdp"/>
+
+        </LinearLayout>
+        <LinearLayout
+            android:id="@+id/dashboard"
+            android:layout_width="0dp"
+            android:layout_height="match_parent"
+            android:layout_weight=".2"
+            android:gravity="center"
+            android:orientation="vertical"
+            android:alpha="0.3">
+
+            <ImageView
+                android:layout_width="@dimen/_18sdp"
+                android:layout_height="@dimen/_18sdp"
+                app:srcCompat="@drawable/ic_menu"
+                /><!--setting-->
+
+            <com.ztp.app.Helper.MyTextView
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:text="@string/dashboard"
+                android:textSize="@dimen/_8ssp"
+                android:layout_marginTop="@dimen/_5sdp"/>
+
+        </LinearLayout>
+    </LinearLayout>
+
+</RelativeLayout>

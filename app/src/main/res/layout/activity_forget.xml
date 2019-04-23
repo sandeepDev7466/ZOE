@@ -1,0 +1,119 @@
+<?xml version="1.0" encoding="utf-8"?>
+<LinearLayout
+    xmlns:android="http://schemas.android.com/apk/res/android"
+    xmlns:app="http://schemas.android.com/apk/res-auto"
+    android:layout_width="match_parent"
+    android:layout_height="match_parent"
+    android:orientation="vertical">
+
+    <android.support.v7.widget.Toolbar
+        android:layout_width="match_parent"
+        android:layout_height="?android:attr/actionBarSize">
+
+        <FrameLayout
+            android:layout_width="match_parent"
+            android:layout_height="match_parent"
+            android:orientation="horizontal">
+
+            <ImageView
+                android:id="@+id/back"
+                android:layout_width="@dimen/_15sdp"
+                android:layout_height="@dimen/_15sdp"
+                app:srcCompat="@drawable/ic_back_arrow"
+                android:layout_gravity="center_vertical"/>
+
+        </FrameLayout>
+
+    </android.support.v7.widget.Toolbar>
+
+    <LinearLayout
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:orientation="vertical"
+        android:gravity="center">
+
+        <ImageView
+            android:layout_width="@dimen/_40sdp"
+            android:layout_height="@dimen/_40sdp"
+            app:srcCompat="@drawable/thumbprints"/>
+
+        <com.ztp.app.Helper.MyTextView
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:text="@string/zoe_thumbprint"
+            android:textSize="@dimen/_15ssp"
+            android:layout_marginTop="@dimen/_5sdp"/>
+
+        <com.ztp.app.Helper.MyTextView
+            android:layout_width="match_parent"
+            android:layout_height="@dimen/_40sdp"
+            android:text="@string/forgot_password"
+            android:background="@color/blue_light"
+            android:textColor="@color/white"
+            android:textSize="@dimen/_15ssp"
+            android:gravity="center"
+            android:layout_marginTop="@dimen/_10sdp"
+            />
+
+    </LinearLayout>
+
+    <LinearLayout
+            android:layout_width="match_parent"
+            android:layout_height="match_parent"
+            android:orientation="vertical"
+            android:layout_marginStart="@dimen/_20sdp"
+            android:layout_marginEnd="@dimen/_20sdp">
+
+        <Space
+            android:layout_width="match_parent"
+            android:layout_height="@dimen/_100sdp" />
+
+
+            <com.ztp.app.Helper.MyTextView
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:textSize="@dimen/_12ssp"
+                android:text="@string/please_enter_you_registered_email_id_to_receive_reset_password_link"
+                android:textAlignment="center"
+                />
+
+            <Space
+                android:layout_width="match_parent"
+                android:layout_height="@dimen/_30sdp" />
+
+            <com.ztp.app.Helper.MyTextInputLayout
+                android:id="@+id/etEmailLayout"
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:layout_marginTop="@dimen/_10sdp">
+
+                <com.ztp.app.Helper.MyTextInputEditText
+                    android:id="@+id/etEmail"
+                    android:layout_width="match_parent"
+                    android:layout_height="wrap_content"
+                    android:hint="@string/email"
+                    android:inputType="textEmailAddress"
+                    android:textSize="@dimen/_12ssp" />
+            </com.ztp.app.Helper.MyTextInputLayout>
+
+            <Space
+                android:layout_width="match_parent"
+                android:layout_height="@dimen/_20sdp" />
+
+            <com.ztp.app.Helper.MyButton
+                android:id="@+id/register"
+                style="@style/MyButton"
+                android:layout_width="match_parent"
+                android:layout_height="@dimen/_40sdp"
+                android:paddingLeft="@dimen/_15sdp"
+                android:paddingRight="@dimen/_15sdp"
+                android:gravity="center"
+                android:textAllCaps="false"
+                android:text="@string/submit"
+                android:textSize="@dimen/_12ssp"/>
+
+
+        </LinearLayout>
+
+</LinearLayout>
+

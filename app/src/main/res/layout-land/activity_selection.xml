@@ -1,0 +1,62 @@
+<?xml version="1.0" encoding="utf-8"?>
+<LinearLayout
+    xmlns:android="http://schemas.android.com/apk/res/android"
+    xmlns:tools="http://schemas.android.com/tools"
+    android:layout_width="match_parent"
+    android:layout_height="match_parent"
+    tools:context=".View.Activity.Common.SelectionActivity"
+    android:orientation="vertical">
+
+    <LinearLayout
+        android:id="@+id/studentLayout"
+        android:layout_width="match_parent"
+        android:layout_height="0dp"
+        android:layout_weight=".5"
+        android:gravity="center"
+        android:orientation="vertical">
+
+        <ImageView
+            android:layout_width="@dimen/_80sdp"
+            android:layout_height="@dimen/_80sdp"
+            android:src="@drawable/im_student_selection"/>
+
+        <com.ztp.app.Helper.MyBoldTextView
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:text="@string/i_m_a_student"
+            android:textSize="@dimen/_12ssp"
+            android:gravity="center"
+            android:layout_marginTop="@dimen/_10sdp"/>
+
+    </LinearLayout>
+
+    <View
+        android:layout_width="match_parent"
+        android:layout_height="0.4dp"
+        android:background="@color/background_3"
+        android:layout_marginStart="@dimen/_50sdp"
+        android:layout_marginEnd="@dimen/_50sdp"/>
+
+    <LinearLayout
+        android:id="@+id/csoLayout"
+        android:layout_width="match_parent"
+        android:layout_height="0dp"
+        android:layout_weight=".5"
+        android:gravity="center"
+        android:orientation="vertical">
+
+        <ImageView
+            android:layout_width="@dimen/_80sdp"
+            android:layout_height="@dimen/_80sdp"
+            android:src="@drawable/im_cso"/>
+
+        <com.ztp.app.Helper.MyBoldTextView
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:text="@string/i_m_a_cso"
+            android:textSize="@dimen/_12ssp"
+            android:gravity="center"
+            android:layout_marginTop="@dimen/_10sdp"/>
+
+    </LinearLayout>
+</LinearLayout>

@@ -1,0 +1,131 @@
+<?xml version="1.0" encoding="utf-8"?>
+<LinearLayout xmlns:android="http://schemas.android.com/apk/res/android"
+    xmlns:app="http://schemas.android.com/apk/res-auto"
+    android:layout_width="match_parent"
+    android:layout_height="match_parent"
+    android:orientation="vertical"
+    android:layout_marginLeft="@dimen/_20sdp"
+    android:layout_marginRight="@dimen/_20sdp">
+
+    <LinearLayout
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:orientation="horizontal"
+        android:weightSum="2"
+        android:layout_marginTop="@dimen/_25sdp">
+
+        <com.ztp.app.Helper.MyTextView
+            android:layout_width="0dp"
+            android:layout_height="match_parent"
+            android:layout_weight="1"
+            android:text="@string/student_name"
+            android:textColor="@color/tab_booking"
+            android:textSize="@dimen/_13ssp"/>
+
+        <com.ztp.app.Helper.MyTextView
+            android:layout_width="0dp"
+            android:layout_height="match_parent"
+            android:layout_weight="1"
+            android:textSize="@dimen/_13ssp"
+           android:id="@+id/tv_name"
+            />
+    </LinearLayout>
+    <LinearLayout
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:orientation="horizontal"
+        android:weightSum="2"
+        android:layout_marginTop="@dimen/_5sdp">
+
+        <com.ztp.app.Helper.MyTextView
+            android:layout_width="0dp"
+            android:layout_height="match_parent"
+            android:layout_weight="1"
+            android:text="@string/grad_date"
+            android:textColor="@color/tab_booking"
+            android:textSize="@dimen/_13ssp"/>
+
+        <com.ztp.app.Helper.MyTextView
+            android:layout_width="0dp"
+            android:layout_height="match_parent"
+            android:layout_weight="1"
+            android:textSize="@dimen/_13ssp"
+            android:id="@+id/tv_date"/>
+    </LinearLayout>
+    <LinearLayout
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:orientation="horizontal"
+        android:weightSum="2"
+        android:layout_marginTop="@dimen/_5sdp">
+
+        <com.ztp.app.Helper.MyTextView
+            android:layout_width="0dp"
+            android:layout_height="match_parent"
+            android:layout_weight="1"
+            android:text="@string/hrs_required"
+            android:textColor="@color/tab_booking"
+            android:textSize="@dimen/_13ssp"/>
+
+        <com.ztp.app.Helper.MyTextView
+            android:layout_width="0dp"
+            android:layout_height="match_parent"
+            android:layout_weight="1"
+            android:textSize="@dimen/_13ssp"
+            android:id="@+id/tv_hrs"/>
+    </LinearLayout>
+    <LinearLayout
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:orientation="horizontal"
+        android:weightSum="2"
+        android:layout_marginTop="@dimen/_5sdp">
+
+        <com.ztp.app.Helper.MyTextView
+            android:layout_width="0dp"
+            android:layout_height="match_parent"
+            android:layout_weight="1"
+            android:text="@string/rank"
+            android:textColor="@color/tab_booking"
+            android:textSize="@dimen/_13ssp"/>
+
+        <com.willy.ratingbar.ScaleRatingBar
+            xmlns:app="http://schemas.android.com/apk/res-auto"
+            android:layout_width="0dp"
+            android:layout_weight="1"
+            android:layout_height="wrap_content"
+            app:srb_clearRatingEnabled="true"
+            app:srb_clickable="true"
+            app:srb_drawableEmpty="@drawable/ic_star_empty"
+            app:srb_drawableFilled="@drawable/ic_star_filled"
+            app:srb_isIndicator="false"
+            app:srb_minimumStars="0"
+            app:srb_numStars="3"
+            app:srb_rating="2"
+            app:srb_scrollable="true"
+            app:srb_starHeight="@dimen/_15sdp"
+            app:srb_starPadding="@dimen/_2sdp"
+            app:srb_starWidth="@dimen/_15sdp"
+            app:srb_stepSize="0.5"
+            android:id="@+id/rb_rank"/>
+    </LinearLayout>
+    <LinearLayout
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:orientation="horizontal"
+        android:gravity="right"
+      >
+        <ImageView
+            android:id="@+id/imv_chat"
+            android:layout_width="@dimen/_15sdp"
+            android:layout_height="@dimen/_15sdp"
+            android:tint="@color/tab_booking"
+            app:srcCompat="@drawable/ic_message"
+            android:layout_gravity="right"/>
+    </LinearLayout>
+    <View
+        android:layout_width="match_parent"
+        android:layout_height="1dp"
+        android:background="@color/background_3"></View>
+
+</LinearLayout>

@@ -1,0 +1,170 @@
+<?xml version="1.0" encoding="utf-8"?>
+
+<LinearLayout xmlns:android="http://schemas.android.com/apk/res/android"
+    xmlns:app="http://schemas.android.com/apk/res-auto"
+    android:layout_width="match_parent"
+    android:layout_height="match_parent"
+    android:orientation="vertical">
+
+    <RelativeLayout
+        android:layout_width="match_parent"
+        android:layout_height="@dimen/_150sdp">
+
+        <ImageView
+            android:layout_width="match_parent"
+            android:layout_height="match_parent"
+            android:scaleType="fitXY"
+            android:src="@drawable/scene" />
+
+        <ImageView
+            android:id="@+id/tint_nav"
+            android:layout_width="match_parent"
+            android:layout_height="match_parent"
+            android:alpha="0.3" />
+
+        <LinearLayout
+            android:layout_width="match_parent"
+            android:layout_height="@dimen/_60sdp"
+            android:layout_alignParentBottom="true"
+            android:gravity="center_vertical"
+            android:paddingStart="@dimen/_10sdp">
+
+            <de.hdodenhof.circleimageview.CircleImageView
+                android:layout_width="@dimen/_50sdp"
+                android:layout_height="@dimen/_50sdp"
+                android:src="@drawable/user" />
+
+            <com.ztp.app.Helper.MyHeadingTextView
+                android:id="@+id/nav_title"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:layout_marginStart="@dimen/_10sdp"
+                android:layout_marginTop="@dimen/_10sdp"
+                android:textSize="@dimen/_20ssp" />
+
+        </LinearLayout>
+
+    </RelativeLayout>
+
+    <LinearLayout
+        android:layout_width="match_parent"
+        android:layout_height="match_parent"
+        android:layout_marginTop="@dimen/_10sdp"
+        android:orientation="vertical">
+
+        <LinearLayout
+            android:id="@+id/edit_profile"
+            android:layout_width="match_parent"
+            android:layout_height="@dimen/_25sdp"
+            android:orientation="horizontal"
+            android:layout_marginTop="@dimen/_15sdp">
+
+            <LinearLayout
+                android:layout_width="0dp"
+                android:layout_height="match_parent"
+                android:layout_weight=".2"
+                android:gravity="center">
+
+                <ImageView
+                    android:layout_width="@dimen/_18sdp"
+                    android:layout_height="@dimen/_18sdp"
+                    app:srcCompat="@drawable/ic_edit_user" />
+
+            </LinearLayout>
+
+            <LinearLayout
+                android:layout_width="0dp"
+                android:layout_height="match_parent"
+                android:layout_weight=".8"
+                android:gravity="center_vertical">
+
+                <com.ztp.app.Helper.MyTextView
+                    android:layout_width="match_parent"
+                    android:layout_height="wrap_content"
+                    android:text="@string/edit_profile"
+                    android:textSize="@dimen/_12ssp" />
+
+            </LinearLayout>
+
+
+        </LinearLayout>
+
+        <LinearLayout
+            android:id="@+id/settings"
+            android:layout_width="match_parent"
+            android:layout_height="@dimen/_25sdp"
+            android:orientation="horizontal"
+            android:layout_marginTop="@dimen/_10sdp">
+
+            <LinearLayout
+                android:layout_width="0dp"
+                android:layout_height="match_parent"
+                android:layout_weight=".2"
+                android:gravity="center">
+
+                <ImageView
+                    android:layout_width="@dimen/_18sdp"
+                    android:layout_height="@dimen/_18sdp"
+                    app:srcCompat="@drawable/ic_setting" />
+
+            </LinearLayout>
+
+            <LinearLayout
+                android:layout_width="0dp"
+                android:layout_height="match_parent"
+                android:layout_weight=".8"
+                android:gravity="center_vertical">
+
+                <com.ztp.app.Helper.MyTextView
+                    android:layout_width="match_parent"
+                    android:layout_height="wrap_content"
+                    android:text="@string/settings"
+                    android:textSize="@dimen/_12ssp" />
+
+            </LinearLayout>
+
+
+        </LinearLayout>
+
+        <LinearLayout
+            android:id="@+id/logout"
+            android:layout_width="match_parent"
+            android:layout_height="@dimen/_25sdp"
+            android:orientation="horizontal"
+            android:layout_marginTop="@dimen/_10sdp">
+
+            <LinearLayout
+                android:layout_width="0dp"
+                android:layout_height="match_parent"
+                android:layout_weight=".2"
+                android:gravity="center">
+
+                <ImageView
+                    android:layout_width="@dimen/_18sdp"
+                    android:layout_height="@dimen/_18sdp"
+                    app:srcCompat="@drawable/ic_logout" />
+
+            </LinearLayout>
+
+            <LinearLayout
+                android:layout_width="0dp"
+                android:layout_height="match_parent"
+                android:layout_weight=".8"
+                android:gravity="center_vertical">
+
+                <com.ztp.app.Helper.MyTextView
+                    android:layout_width="match_parent"
+                    android:layout_height="wrap_content"
+                    android:text="@string/logout"
+                    android:textSize="@dimen/_12ssp" />
+
+            </LinearLayout>
+
+
+        </LinearLayout>
+
+
+
+    </LinearLayout>
+
+</LinearLayout>

@@ -1,0 +1,209 @@
+<resources>
+    <string name="app_name">ZOE</string>
+    <string name="zoe_thumbprint">ZOE Cianotipo</string>
+    <string name="days_to_graduation">Días para <b> Graduación </b></string>
+    <string name="days_left_in_semester">Días restantes en <b> Semestre </b></string>
+    <string name="choose_profile_photo">Elegir foto de perfil</string>
+    <string name="choose_cover_photo">Elegir portada</string>
+    <string name="oh_hey_zoe_student">OH HEY, ZOE ESTUDIANTE</string>
+    <string name="choose_a_theme">ELIGE UN TEMA</string>
+    <string name="day_light">Luz del dia</string>
+    <string name="dark_night">Noche oscura</string>
+    <string name="general">GENERAL</string>
+    <string name="email">Email</string>
+    <string name="username">Nombre de usuario</string>
+    <string name="password">Contraseña</string>
+    <string name="personal">PERSONAL</string>
+    <string name="name">Nombre</string>
+    <string name="address">Dirección</string>
+    <string name="school">COLEGIO</string>
+    <string name="target_gpa">GPA objetivo</string>
+    <string name="current_gpa">GPA actual</string>
+    <string name="student_number">Número de estudiante</string>
+    <string name="school_name">Nombre de la escuela</string>
+    <string name="functions">LAS FUNCIONES</string>
+    <string name="push_notifications">Notificaciones push</string>
+    <string name="off">APAGADO</string>
+    <string name="on">EN</string>
+    <string name="location_services">Servicios de localización</string>
+    <string name="cancel">Cancelar</string>
+    <string name="save">Salvar</string>
+    <string name="image">IMAGEN</string>
+    <string name="friends">AMIGOS</string>
+    <string name="cso_s">CSO\'S</string>
+    <string name="confirm_logout">¿Confirmar cierre de sesión?</string>
+    <string name="are_you_sure_you_want_to_logout">" ¿Estás seguro de que quieres cerrar sesión?"</string>
+    <string name="yes">SÍ</string>
+    <string name="no">NO</string>
+    <string name="theme">Tema</string>
+    <string name="logout">Cerrar sesión</string>
+    <string name="day">Día</string>
+    <string name="night">Noche</string>
+    <string name="skip">OMITIR</string>
+    <string name="points">¡Puntos!</string>
+    <string name="volunteer_for_an_event">Voluntario para un evento</string>
+    <string name="upload_files_to_your_locker">Sube archivos a tu casillero</string>
+    <string name="my_targets">Mis objetivos</string>
+    <string name="you_have_a_message">Tienes un mensaje</string>
+    <string name="find_cso_in_your_area">Encuentra CSO en tu área</string>
+    <string name="confirm_exit">Confirmar la salida?</string>
+    <string name="are_you_sure_you_want_to_exit">Seguro que quieres salir..</string>
+    <string name="delete_booking_for">Eliminar reserva para</string>
+    <string name="language">Idioma</string>
+    <string name="english">Inglés</string>
+    <string name="spanish">Español</string>
+    <string name="hangout">Colgar</string>
+    <string name="locker">Armario</string>
+    <string name="target">Objetivo</string>
+    <string name="booking">Reserva</string>
+    <string name="dashboard">Tablero</string>
+    <string name="i_m_a_student">Soy un estudiante</string>
+    <string name="i_m_a_cso">Soy un CSO</string>
+    <string name="login">INICIAR SESIÓN</string>
+    <string name="new_to_zoe_thumbprint">¿Nuevo en ZOE Thumbprint?</string>
+    <string name="register_here">REGISTRAR AQUÍ</string>
+    <string name="zoe_thumbprint_caps">ZOE HUELLA</string>
+    <string name="login_toast">Iniciando sesión en …</string>
+    <string name="push_notification">Notificación de inserción</string>
+    <string name="settings">Ajustes</string>
+    <string name="registration">REGISTRO</string>
+    <string name="register">Registro</string>
+    <string name="confirm_password">Confirmar contraseña</string>
+    <string name="date_of_birth">Fecha de nacimiento</string>
+    <string name="postal_code">Código postal</string>
+    <string name="city">Ciudad</string>
+    <string name="phone">Teléfono</string>
+    <string name="last_name">Apellido</string>
+    <string name="first_name">Nombre de pila</string>
+    <string name="click_here">HAGA CLIC AQUÍ</string>
+    <string name="submit">Enviar</string>
+    <string name="we_just_need_your_registered_email_to_send_your_password_reset_function">Solo necesitamos su correo electrónico registrado para enviar su función de restablecimiento de contraseña.</string>
+    <string name="verify_your_number">Verifica tu numero</string>
+    <string name="otp">Otp</string>
+    <string name="change_phone">Cambiar telefono</string>
+    <string name="please_take_a_moment_to_verify_your_phone_number_this_help_us_confirm_your_identity_and_secure_your_account">Tómese un momento para verificar su número de teléfono. Esto nos ayuda a confirmar su identidad y proteger su cuenta.</string>
+    <string name="otp_expires_in">OTP expira en</string>
+    <string name="minutes">minutos</string>
+    <string name="resend_otp">ENVIAR OTP</string>
+    <string name="enter_otp">Entrar en OTP</string>
+    <string name="no_internet_connection">Sin conexión a Internet</string>
+    <string name="otp_validation_failed">La validación de OTP falló</string>
+    <string name="something_went_wrong">Algo salió mal</string>
+    <string name="OTP_verified_successfully_please_login_to_continue">OTP verificado con éxito por favor inicie sesión para continuar</string>
+
+
+    <string name="student_name">Student Name</string>
+    <string name="grad_date">Grad Date</string>
+    <string name="hrs_required">Hrs required</string>
+    <string name="rank">Rank</string>
+    <string name="date">Date</string>
+    <string name="time">Time</string>
+    <string name="change_status">Change Status</string>
+    <string name="tab_students_followers">SEE FOLLOWERS</string>
+    <string name="tab_volunteers">VOLUNTEERS</string>
+
+
+    <string name="tab_myevent">MY EVENTS</string>
+    <string name="tab_newevent">NEW EVENTS</string>
+    <string name="upcoming_event">UPCOMING EVENTS</string>
+    <string name="vol_request">Solicitud de voluntariado</string>
+    <string name="next_event_countdown">Cuenta atrás del siguiente evento</string>
+    <string name="add_event_detail">ADD EVENT DETAILS</string>
+    <string name="event_name">Event Name</string>
+    <string name="event_descrip">Event Description</string>
+    <string name="contact_name">Contact Name</string>
+    <string name="phone_no">Phone No</string>
+    <string name="location">Location</string>
+    <string name="manage_schedule">Manage Schedule</string>
+    <string name="volunteers">Valunteers</string>
+    <string name="start_time">Start Time</string>
+    <string name="end_time">End Time</string>
+    <string name="task">Tarea</string>
+    <string name="events">Eventos</string>
+    <string name="students">Estudiantes</string>
+    <string name="message">Mensaje</string>
+    <string name="groups">Los grupos</string>
+    <string name="MY_BOOKING">MI RESERVA</string>
+    <string name="FIND_CSO">ENCONTRAR CSO</string>
+    <string name="CONNECT">CONECTAR</string>
+    <string name="DOCUMENTS">DOCUMENTOS</string>
+    <string name="MY_RATING">MI CLASIFICACIÓN</string>
+    <string name="MY_TARGETS">MIS METAS</string>
+    <string name="COUNTDOWN">CUENTA REGRESIVA</string>
+    <string name="TIMELINE">LINEA DE TIEMPO</string>
+
+    <string-array name="gender">
+        <item>Género</item>
+        <item>Masculino</item>
+        <item>Hembra</item>
+        <item>Otros</item>
+    </string-array>
+
+    <string-array name="type">
+        <item>Usted está ?</item>
+        <item>Estudiante</item>
+        <item>Voluntario</item>
+    </string-array>
+
+    <string-array name="type_cso">
+        <item>You are ?</item>
+        <item>CSO</item>
+    </string-array>
+
+    <string-array name="school">
+        <item>School</item>
+        <item>School1</item>
+        <item>School2</item>
+        <item>School3</item>
+    </string-array>
+
+
+    <string-array name="type_all">
+        <item>Usted está ?</item>
+        <item>Estudiante</item>
+        <item>Voluntario</item>
+        <item>CSO</item>
+    </string-array>
+
+    <string name="org_name">Nombre de la organización</string>
+    <string name="org_email">Email de organización</string>
+    <string name="org_phone">Telefono de organizacion</string>
+    <string name="org_website">Sitio web de organización</string>
+    <string name="org_mission">Misión de organización</string>
+    <string name="org_cause">Causa de la organizacion</string>
+    <string name="org_profile">Perfil de organizacion</string>
+    <string name="tax_id">EIN / Identificación de impuestos</string>
+    <string name="org_info">Información de la organización</string>
+    <string name="upload_doc">Subir documento</string>
+    <string name="more_info">Más información</string>
+    <string name="non_profit">¿Es su organización una organización sin fines de lucro?</string>
+    <string name="services">¿Qué tipo de servicios y actividades ofrece su organización?</string>
+    <string name="target_client">¿Cuál es su grupo de clientes objetivo?</string>
+    <string name="person">Describa a la persona que necesita para el rol de voluntario (edad, sexo, características, etc.).</string>
+    <string name="time_period">¿Cuál es el período de tiempo mínimo en el que le gustaría ser voluntario (por ejemplo, 3 meses, 6 meses, 12 meses)?</string>
+    <string name="no_of_volunteer">¿Cuántos voulnteer en el total tiene su organización y cuántos necesita?</string>
+    <string name="policy_check">¿Su voluntario requiere una verificación de política?</string>
+    <string name="public_transport">¿Se puede acceder fácilmente a su organización (o al lugar donde trabajarán los voluntarios) en transporte público?</string>
+    <string name="clear">Claro</string>
+    <string name="next">Siguiente</string>
+    <string name="basic_information">Información básica</string>
+    <string name="days">Dias</string>
+    <string name="hours">Horas</string>
+    <string name="seconds">Segundos</string>
+    <string name="edit_profile">Editar perfil</string>
+    <string name="update">Actualizar</string>
+    <string name="are_you_501c3_certified">¿Tiene la certificación 501C3?</string>
+    <string name="upload_document_type">Cargar tipo de documento</string>
+    <string name="start_date">Fecha de inicio</string>
+    <string name="end_date">Fecha final</string>
+    <string name="edit">Editar</string>
+    <string name="add_shift">Añadir Shift</string>
+    <string name="view_shift">Ver Shift</string>
+    <string name="delete">Borrar</string>
+    <string name="forgot_password">Se te olvidó tu contraseña?</string>
+    <string name="please_enter_you_registered_email_id_to_receive_reset_password_link">Por favor ingrese su ID de correo electrónico registrado para recibir el enlace de restablecer contraseña.</string>
+    <string name="upload_document_title">Subir título del documento</string>
+    <string name="update_event_detail">ACTUALIZAR DETALLES DEL EVENTO</string>
+
+
+</resources>

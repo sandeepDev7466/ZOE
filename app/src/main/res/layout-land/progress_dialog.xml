@@ -1,0 +1,81 @@
+<?xml version="1.0" encoding="utf-8"?>
+<FrameLayout
+    xmlns:android="http://schemas.android.com/apk/res/android"
+    xmlns:app="http://schemas.android.com/apk/res-auto"
+    xmlns:tools="http://schemas.android.com/tools"
+    android:orientation="vertical"
+    android:layout_width="match_parent"
+    android:layout_height="match_parent">
+
+
+    <RelativeLayout
+        android:layout_width="match_parent"
+        android:layout_height="match_parent">
+
+        <fr.castorflex.android.circularprogressbar.CircularProgressBar
+            xmlns:android="http://schemas.android.com/apk/res/android"
+            xmlns:app="http://schemas.android.com/apk/res-auto"
+            android:layout_width="@dimen/_120sdp"
+            android:layout_height="@dimen/_120sdp"
+            android:indeterminate="true"
+            app:cpb_color="@color/white"
+            android:layout_centerInParent="true"
+            app:cpb_rotation_speed="0.5"
+            app:cpb_sweep_speed="1.0"
+            app:cpb_stroke_width="1dp"
+            app:cpb_min_sweep_angle="10"
+            app:cpb_max_sweep_angle="300"
+            />
+
+        <ImageView
+            android:id="@+id/thumb"
+            android:layout_width="@dimen/_30sdp"
+            android:layout_height="@dimen/_40sdp"
+            android:scaleType="fitXY"
+            app:srcCompat="@drawable/fingerprint"
+            android:layout_centerInParent="true"
+            tools:ignore="ContentDescription" />
+
+        <com.ztp.app.Helper.MyBoldTextView
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:text="ZOE"
+            android:textColor="@color/white"
+            android:textSize="@dimen/_10ssp"
+            android:gravity="center"
+            android:layout_below="@+id/thumb"
+            android:layout_centerInParent="true"
+            android:layout_marginTop="@dimen/_5sdp"/>
+
+    </RelativeLayout>
+
+    <com.ztp.app.Helper.MyTextView
+        android:id="@+id/message"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:textColor="@color/background_3"
+        android:textSize="@dimen/_12sdp"
+        android:layout_gravity="bottom|center"
+        android:layout_marginBottom="@dimen/_50sdp"/>
+
+    <com.daimajia.numberprogressbar.NumberProgressBar
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:layout_gravity="bottom|center"
+        app:progress_unreached_color="@color/background_3"
+        app:progress_reached_color="#0AB1F0"
+        app:progress_unreached_bar_height="@dimen/_1sdp"
+        app:progress_reached_bar_height="@dimen/_2sdp"
+        app:progress_text_size="@dimen/_10ssp"
+        app:progress_text_color="#0AB1F0"
+        app:progress_text_offset="1dp"
+        app:progress_text_visibility="visible"
+        app:progress_max="100"
+        app:progress_current="50"
+        android:layout_marginStart="@dimen/_30sdp"
+        android:layout_marginEnd="@dimen/_30sdp"
+        android:layout_marginBottom="@dimen/_20sdp"
+        android:visibility="gone"
+        />
+
+</FrameLayout>

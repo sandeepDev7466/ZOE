@@ -1,0 +1,90 @@
+<?xml version="1.0" encoding="utf-8"?>
+<LinearLayout
+    xmlns:android="http://schemas.android.com/apk/res/android"
+    xmlns:app="http://schemas.android.com/apk/res-auto"
+    xmlns:tools="http://schemas.android.com/tools"
+    android:layout_width="match_parent"
+    android:layout_height="match_parent"
+    android:orientation="vertical">
+
+    <android.support.design.widget.AppBarLayout
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content">
+
+        <LinearLayout
+            android:layout_width="match_parent"
+            android:layout_height="@dimen/_70sdp">
+
+            <RelativeLayout
+                android:layout_width="match_parent"
+                android:layout_height="match_parent">
+
+                <ImageView
+                    android:layout_width="match_parent"
+                    android:layout_height="match_parent"
+                    android:src="@drawable/scene"
+                    android:scaleType="fitXY" />
+
+                <ImageView
+                    android:id="@+id/tint"
+                    android:layout_width="match_parent"
+                    android:layout_height="match_parent"
+                    android:alpha="0.5"/>
+
+                <LinearLayout
+                    android:layout_width="match_parent"
+                    android:layout_height="@dimen/_40sdp"
+                    android:layout_alignParentBottom="true"
+                    android:orientation="horizontal"
+                    android:padding="@dimen/_2sdp">
+
+                    <LinearLayout
+                        android:layout_width="0dp"
+                        android:layout_height="match_parent"
+                        android:layout_weight=".85"
+                        android:gravity="center_vertical"
+                        android:orientation="horizontal">
+
+                        <de.hdodenhof.circleimageview.CircleImageView
+                            android:layout_width="@dimen/_30sdp"
+                            android:layout_height="@dimen/_30sdp"
+                            android:src="@drawable/user"/>
+
+                        <com.ztp.app.Helper.MyHeadingTextView
+                            android:id="@+id/title"
+                            android:layout_width="wrap_content"
+                            android:layout_height="wrap_content"
+                            android:textSize="@dimen/_20ssp"
+                            android:layout_marginStart="@dimen/_10sdp"
+                            android:layout_marginBottom="@dimen/_3sdp"
+                            android:layout_gravity="bottom"/>
+
+                    </LinearLayout>
+                    <LinearLayout
+                        android:layout_width="0dp"
+                        android:layout_height="match_parent"
+                        android:layout_weight=".15"
+                        android:gravity="center">
+
+                        <ImageView
+                            android:id="@+id/menu"
+                            android:layout_width="@dimen/_15sdp"
+                            android:layout_height="@dimen/_20sdp"
+                            app:srcCompat="@drawable/ic_list"
+                            android:tint="@color/white"
+                            android:layout_marginTop="@dimen/_2sdp"/>
+
+                    </LinearLayout>
+
+
+                </LinearLayout>
+
+            </RelativeLayout>
+
+        </LinearLayout>
+
+    </android.support.design.widget.AppBarLayout>
+
+    <include layout="@layout/content_dashboard_cso" />
+
+</LinearLayout>
