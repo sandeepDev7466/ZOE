@@ -43,5 +43,6 @@ public class CsoRegisterStep_1ViewModel extends ViewModel {
                 csoRegisterResponseMutableLiveData.postValue(null);
             }
         });
+        
     }
 }

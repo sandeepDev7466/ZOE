@@ -394,7 +394,7 @@ public class StudentRegisterActivity extends AppCompatActivity implements View.O
                                                                                     }
 
                                                                                     myProgressDialog.dismiss();
-                                                                                    
+
 
                                                                                 });
 
