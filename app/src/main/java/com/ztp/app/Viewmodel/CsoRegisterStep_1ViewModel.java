@@ -26,6 +26,7 @@ public class CsoRegisterStep_1ViewModel extends ViewModel {
         this.csoRegisterRequestStep_1 = csoRegisterRequestStep_1;
         registerResponse();
         return csoRegisterResponseMutableLiveData;
+        
     }
 
     private void registerResponse() {
@@ -43,6 +44,6 @@ public class CsoRegisterStep_1ViewModel extends ViewModel {
                 csoRegisterResponseMutableLiveData.postValue(null);
             }
         });
-        
+
     }
 }
