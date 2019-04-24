@@ -1,5 +1,5 @@
 <resources>
-    <string name="app_name">ZOE</string>
+    <string name="app_name">ZOE Blueprint</string>
     <string name="zoe_thumbprint">ZOE Blueprint</string>
     <string name="days_to_graduation">Days to <b>Graduation</b></string>
     <string name="days_left_in_semester">Days left in <b>Semester</b></string>

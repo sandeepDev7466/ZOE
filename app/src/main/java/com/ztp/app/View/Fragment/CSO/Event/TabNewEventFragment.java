@@ -518,7 +518,7 @@ public class TabNewEventFragment extends Fragment implements OnMapReadyCallback,
     private void getStateList(String country_id) {
         stateList = new ArrayList<>();
         if (Utility.isNetworkAvailable(context)) {
-            myProgressDialog.show("Fetching states...");
+            myProgressDialog.show("Please wait...");
             stateModel.getStateResponse(context, new StateRequest(country_id)).observe((LifecycleOwner) context, stateResponse -> {
                 if (stateResponse != null) {
                     stateListData = stateResponse.getStateList();
@@ -630,7 +630,7 @@ public class TabNewEventFragment extends Fragment implements OnMapReadyCallback,
     }
 
     private void submit() {
-        myProgressDialog.show("Please wait......");
+        myProgressDialog.show("Please wait...");
         str_event = et_event.getText().toString().trim();
         str_event_description = et_event_description.getText().toString().trim();
         str_city = et_city.getText().toString().trim();
@@ -666,14 +666,22 @@ public class TabNewEventFragment extends Fragment implements OnMapReadyCallback,
 
             if (registerResponse != null && registerResponse.getResStatus().equalsIgnoreCase("200")) {
 
-                Toast.makeText(getActivity(), "Event Added Successfully...", Toast.LENGTH_LONG).show();
+                Toast.makeText(getActivity(), "Event Added Successfully", Toast.LENGTH_LONG).show();
 
-                myToast.show("Event Added Successfully...", true);
+                //myToast.show("Event Added Successfully...", true);
+
+                EventListFragment parentFrag = ((EventListFragment)TabNewEventFragment.this.getParentFragment());
+                parentFrag.viewPager.setCurrentItem(0,true);
+
+                int index = parentFrag.viewPager.getCurrentItem();
+                EventPager adapter = ((EventPager)parentFrag.viewPager.getAdapter());
+                TabMyEventFragment fragment = (TabMyEventFragment) adapter.getItem(index);
+                fragment.getData();
 
             } else {
 
-                Toast.makeText(getActivity(), "Failed...", Toast.LENGTH_LONG).show();
-                myToast.show("Failed...", false);
+                Toast.makeText(getActivity(), "Failed", Toast.LENGTH_LONG).show();
+                //myToast.show("Failed...", false);
             }
             myProgressDialog.dismiss();
 
@@ -682,7 +690,7 @@ public class TabNewEventFragment extends Fragment implements OnMapReadyCallback,
     }
 
 
-    public void updateData() {
+  /*  public void updateData() {
         myProgressDialog.show("Saving...");
         str_event = et_event.getText().toString().trim();
         str_event_description = et_event_description.getText().toString().trim();
@@ -721,6 +729,9 @@ public class TabNewEventFragment extends Fragment implements OnMapReadyCallback,
                         Toast.LENGTH_LONG).show();
 
 //                myToast.show(registerResponse.toString().trim(), true);
+
+
+
                 myProgressDialog.dismiss();
             } else {
 
@@ -734,7 +745,7 @@ public class TabNewEventFragment extends Fragment implements OnMapReadyCallback,
 
         });
 
-    }
+    }*/
 
     private void updateLabel() {
         String myFormat = "yyyy-MM-dd"; //In which you need put here

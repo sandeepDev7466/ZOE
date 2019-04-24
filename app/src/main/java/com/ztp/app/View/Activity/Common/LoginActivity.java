@@ -199,7 +199,7 @@ public class LoginActivity extends AppCompatActivity implements View.OnClickList
 
                                 } else {
                                     etPassword.setText("");
-                                    myToast.show("Wrong username or password entered", Toast.LENGTH_SHORT, false);
+                                    myToast.show("Wrong email or password entered", Toast.LENGTH_SHORT, false);
                                 }
 
                                 myProgressDialog.dismiss();
@@ -220,7 +220,7 @@ public class LoginActivity extends AppCompatActivity implements View.OnClickList
                     }
                 } else {
 
-                    SpannableString s = new SpannableString("Please enter email”");
+                    SpannableString s = new SpannableString("Please enter email");
                     Typeface face = Typeface.createFromAsset(getAssets(), "fonts/Amaranth-Regular.otf");
                     s.setSpan(new TypefaceSpan(face), 0, s.length(), Spannable.SPAN_EXCLUSIVE_EXCLUSIVE);
                     etEmailLayout.setError(s);

@@ -255,7 +255,7 @@ public class EditProfileActivity extends AppCompatActivity implements View.OnCli
                     for (int i = 0; i < schoolListData.size(); i++) {
                         schoolList.add(schoolListData.get(i).getSchoolName());
                     }
-                    schoolList.add(0, "Select School");
+                    //schoolList.add(0, "Select School");
                     setSchoolSpinner(schoolList);
                 }
                 myProgressDialog.dismiss();

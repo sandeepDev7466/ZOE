@@ -29,6 +29,7 @@ public class TabMyEventFragment extends Fragment {
     GetEventsViewModel getEventsViewModel;
     SharedPref sharedPref;
     MyTextView noData;
+    EventListAdapter adapter;
 
     public TabMyEventFragment() {
         // Required empty public constructor
@@ -43,10 +44,24 @@ public class TabMyEventFragment extends Fragment {
         sharedPref = SharedPref.getInstance(context);
         getEventsViewModel = ViewModelProviders.of(this).get(GetEventsViewModel.class);
 
+       getData();
+
+        return v;
+    }
+
+    @Override
+    public void onResume() {
+        super.onResume();
+
+
+    }
+
+    public void getData()
+    {
         getEventsViewModel.getEventsResponseLiveData(new GetEventsRequest(sharedPref.getUserId())).observe(this, getEventsResponse -> {
             if(getEventsResponse!=null) {
                 lv_event_list.setVisibility(View.VISIBLE);
-                EventListAdapter adapter = new EventListAdapter(context, getEventsResponse.getEventData());
+                adapter = new EventListAdapter(context, getEventsResponse.getEventData());
                 lv_event_list.setAdapter(adapter);
             }
             else
@@ -55,7 +70,6 @@ public class TabMyEventFragment extends Fragment {
                 noData.setVisibility(View.VISIBLE);
             }
         });
-        return v;
     }
 
     @Override

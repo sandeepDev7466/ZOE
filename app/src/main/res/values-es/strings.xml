@@ -1,5 +1,5 @@
 <resources>
-    <string name="app_name">ZOE</string>
+    <string name="app_name">ZOE Cianotipo</string>
     <string name="zoe_thumbprint">ZOE Cianotipo</string>
     <string name="days_to_graduation">Días para <b> Graduación </b></string>
     <string name="days_left_in_semester">Días restantes en <b> Semestre </b></string>
