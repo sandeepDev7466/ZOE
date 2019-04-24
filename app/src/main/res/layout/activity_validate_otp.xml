@@ -115,7 +115,6 @@
                 android:textAllCaps="false"
                 android:layout_weight=".5"
                 android:layout_margin="@dimen/_5sdp"
-                
                 />
 
             <com.ztp.app.Helper.MyButton
