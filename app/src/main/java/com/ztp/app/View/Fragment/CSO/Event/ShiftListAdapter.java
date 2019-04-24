@@ -1,5 +1,6 @@
 package com.ztp.app.View.Fragment.CSO.Event;
 import android.content.Context;
+import android.os.Bundle;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
@@ -58,10 +59,25 @@ public class ShiftListAdapter extends BaseAdapter {
                 holder.shift_add_date = view.findViewById(R.id.shift_add_date);
                 holder.shift_update_date = view.findViewById(R.id.shift_update_date);
                 holder.shift_task = view.findViewById(R.id.shift_task);
+                holder.imv_edit = view.findViewById(R.id.imv_edit);
                 view.setTag(holder);
             } else {
                 holder = (Holder) view.getTag();
             }
+
+
+            holder.imv_edit.setOnClickListener(new View.OnClickListener() {
+                @Override
+                public void onClick(View view) {
+
+                    AddNewShiftFragment updateShiftFragment = new AddNewShiftFragment();
+                    Bundle bundle = new Bundle();
+                    bundle.putSerializable("shiftData", shiftData);
+                    bundle.putString("status", "update");
+                    updateShiftFragment.setArguments(bundle);
+                    Utility.replaceFragment(context,updateShiftFragment,"AddNewShiftFragment");
+                }
+            });
 
            // holder.shift_date.setText(shiftData.getShift_date());
 
@@ -82,12 +98,17 @@ public class ShiftListAdapter extends BaseAdapter {
             Date eds = Utility.convertStringToDate(shiftData.getShift_update_date());
             holder.shift_update_date.setText(Utility.formatDateFullTime(eds));
 
-//            holder.shift_update_date.setText(shiftData.getShift_update_date());
 
+
+
+
+//            holder.shift_update_date.setText(shiftData.getShift_update_date());
 //            SimpleDateFormat sdf = new SimpleDateFormat("yyyy-MM-dd HH:mm:ss", Locale.ENGLISH);
 //            Date addDate = sdf.parse(eventData.getEventAddDate());
 //            Calendar cal = Calendar.getInstance();
 //            cal.setTimeInMillis(addDate.getTime());
+
+
 
         }catch (Exception e)
         {
@@ -101,6 +122,6 @@ public class ShiftListAdapter extends BaseAdapter {
     public class Holder
     {
         MyTextView shift_id,shift_date,shift_vol_req,shift_start_time,shift_end_time,shift_rank,shift_task,shift_status,shift_add_date,shift_update_date;
-
+        ImageView imv_edit;
     }
 }

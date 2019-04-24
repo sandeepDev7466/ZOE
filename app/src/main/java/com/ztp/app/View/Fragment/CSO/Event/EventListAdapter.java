@@ -166,6 +166,7 @@ public class EventListAdapter extends BaseAdapter {
                     AddNewShiftFragment addNewShiftFragment = new AddNewShiftFragment();
                     Bundle bundle = new Bundle();
                     bundle.putString("event_id", eventData.getEventId());
+                    bundle.putString("status", "add");
                     addNewShiftFragment.setArguments(bundle);
                     Utility.replaceFragment(context, addNewShiftFragment, "AddNewShiftFragment");
                 });

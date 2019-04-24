@@ -15,6 +15,7 @@ import com.ztp.app.Data.Remote.Model.Request.GetProfileRequest;
 import com.ztp.app.Data.Remote.Model.Request.GetShiftDetailRequest;
 import com.ztp.app.Data.Remote.Model.Request.GetShiftListRequest;
 import com.ztp.app.Data.Remote.Model.Request.LoginRequest;
+import com.ztp.app.Data.Remote.Model.Request.ShiftUpdateRequest;
 import com.ztp.app.Data.Remote.Model.Request.SiftAddRequest;
 import com.ztp.app.Data.Remote.Model.Request.StudentRegisterRequest;
 import com.ztp.app.Data.Remote.Model.Request.StateRequest;
@@ -38,6 +39,7 @@ import com.ztp.app.Data.Remote.Model.Response.GetShiftListResponse;
 import com.ztp.app.Data.Remote.Model.Response.LoginResponse;
 import com.ztp.app.Data.Remote.Model.Response.SchoolResponse;
 import com.ztp.app.Data.Remote.Model.Response.ShiftAddResponse;
+import com.ztp.app.Data.Remote.Model.Response.ShiftUpdateResponse;
 import com.ztp.app.Data.Remote.Model.Response.StudentRegisterResponse;
 import com.ztp.app.Data.Remote.Model.Response.StateResponse;
 import com.ztp.app.Data.Remote.Model.Response.TimeZoneResponse;
@@ -138,6 +140,8 @@ public interface ApiInterface {
     @POST("cso-action.php?api_key=1234&action=d_shift")
     Call<DeleteShiftResponse> getDeleteShift(@Body DeleteShiftRequest deleteShiftRequest);
 
+    @POST("cso-action.php?api_key=1234&action=u_shift")
+    Call<ShiftUpdateResponse> doUpdateShift(@Body ShiftUpdateRequest shiftUpdateRequest);
 
 
 

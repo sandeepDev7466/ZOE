@@ -16,16 +16,23 @@ import android.view.ViewGroup;
 import android.widget.Button;
 import android.widget.Toast;
 
+import com.ztp.app.Data.Remote.Model.Request.ShiftUpdateRequest;
 import com.ztp.app.Data.Remote.Model.Request.SiftAddRequest;
+import com.ztp.app.Data.Remote.Model.Response.GetEventsResponse;
+import com.ztp.app.Data.Remote.Model.Response.GetShiftDetailResponse;
+import com.ztp.app.Data.Remote.Model.Response.GetShiftListResponse;
+import com.ztp.app.Data.Remote.Model.Response.ShiftAddResponse;
 import com.ztp.app.Helper.MyProgressDialog;
 import com.ztp.app.Helper.MyTextInputEditText;
 import com.ztp.app.Helper.MyToast;
 import com.ztp.app.R;
 import com.ztp.app.Utils.Utility;
 import com.ztp.app.Viewmodel.AddShiftViewModel;
+import com.ztp.app.Viewmodel.UpdateShiftViewModel;
 
 import java.text.SimpleDateFormat;
 import java.util.Calendar;
+import java.util.Date;
 import java.util.Locale;
 
 public class AddNewShiftFragment extends Fragment {
@@ -50,20 +57,34 @@ public class AddNewShiftFragment extends Fragment {
     String str_rank = "";
     Context context;
     AddShiftViewModel addShiftViewModel;
+    UpdateShiftViewModel updateShiftViewModel;
     MyProgressDialog myProgressDialog;
     Button update;
     Button clear;
     MyToast myToast;
-    String event_id;
+    String event_id="";
+    GetShiftListResponse.ShiftData shiftData;
+    String status="";
+
 
     @Override
     public View onCreateView(LayoutInflater inflater, ViewGroup container,
                              Bundle savedInstanceState) {
 
         View v = inflater.inflate(R.layout.fragment_add_new_shift, container, false);
-        if(getArguments()!=null)
-            event_id = getArguments().getString("event_id");
+
+        if(getArguments()!=null && getArguments().getString("status").equalsIgnoreCase("add"))
+        {
+            event_id=getArguments().getString("event_id");
+            status="add";
+        }
+        else
+        {
+            status="update";
+        }
+
         init(v);
+
         return v;
     }
 
@@ -76,6 +97,8 @@ public class AddNewShiftFragment extends Fragment {
     @SuppressLint("ClickableViewAccessibility")
     public void init(View v) {
         addShiftViewModel = ViewModelProviders.of(this).get(AddShiftViewModel.class);
+        updateShiftViewModel = ViewModelProviders.of(this).get(UpdateShiftViewModel.class);
+
         et_date = v.findViewById(R.id.et_date);
         et_start_time = v.findViewById(R.id.et_start_time);
         et_end_time_volunteers = v.findViewById(R.id.et_end_time_volunteers);
@@ -142,7 +165,18 @@ public class AddNewShiftFragment extends Fragment {
             return false;
         });
 
-        update.setOnClickListener(v14 -> addShift());
+        if(status.equalsIgnoreCase("add"))
+        {
+            update.setOnClickListener(v14 -> addShift());
+        }
+        else
+        {
+            Bundle b = getArguments();
+            shiftData = (GetShiftListResponse.ShiftData) b.getSerializable("shiftData");
+            populateData(shiftData);
+
+            update.setOnClickListener(v14 -> updateShift());
+        }
 
         clear.setOnClickListener(v15 -> {
 //                Utility.replaceFragment(context, new AddNewShiftFragment(), "AddNewShiftFragment");
@@ -190,7 +224,7 @@ public class AddNewShiftFragment extends Fragment {
                                         myToast.show("Shift Added Successfully", Toast.LENGTH_SHORT, true);
                                         myProgressDialog.dismiss();
                                     } else {
-                                        Toast.makeText(getActivity(), "Failed",
+                                        Toast.makeText(getActivity(), "Failedss",
                                                 Toast.LENGTH_LONG).show();
                                         myProgressDialog.dismiss();
                                     }
@@ -220,6 +254,82 @@ public class AddNewShiftFragment extends Fragment {
             myToast.show("Select Start Date", Toast.LENGTH_SHORT, false);
         }
 
+    }
+
+    public void updateShift()
+    {
+        str_date = et_date.getText().toString().trim();
+        str_start_time = et_start_time.getText().toString().trim();
+        str_end_time = et_end_time_volunteers.getText().toString().trim();
+        str_vol = et_volunteer.getText().toString().trim();
+        str_task = et_task.getText().toString().trim();
+        str_rank = et_rank.getText().toString().trim();
+
+        if (str_date != null && !str_date.isEmpty()) {
+            if (str_vol != null && !str_vol.isEmpty()) {
+                if (str_start_time != null && !str_start_time.isEmpty()) {
+                    if (str_end_time != null && !str_end_time.isEmpty()) {
+                        if (str_task != null && !str_task.isEmpty()) {
+                            if (str_rank != null && !str_rank.isEmpty()) {
+
+                                myProgressDialog.show("Please wait...");
+                                ShiftUpdateRequest shiftUpdateRequest = new ShiftUpdateRequest();
+                                shiftUpdateRequest.setShift_id(shiftData.getShift_id());
+
+                                Date d = Utility.convertStringToDateWithoutTime(str_date);
+                                shiftUpdateRequest.setShift_date(Utility.formatDateFull(d));
+
+//                              shiftUpdateRequest.setShift_date(str_date);
+                                shiftUpdateRequest.setShift_start_time(str_start_time);
+                                shiftUpdateRequest.setShift_end_time(str_end_time);
+                                shiftUpdateRequest.setShift_vol_req(str_vol);
+                                shiftUpdateRequest.setShift_task(str_task);
+                                shiftUpdateRequest.setShift_rank(str_rank);
+
+                                updateShiftViewModel.getUpdateShiftResponse(shiftUpdateRequest).observe((LifecycleOwner) context, shiftResponse -> {
+                                    if (shiftResponse != null && shiftResponse.getResStatus().equalsIgnoreCase("200")) {
+                                        myToast.show("Shift Updated Successfully", Toast.LENGTH_SHORT, true);
+                                        myProgressDialog.dismiss();
+                                    } else {
+                                        Toast.makeText(getActivity(), "Failed",
+                                                Toast.LENGTH_LONG).show();
+                                        myProgressDialog.dismiss();
+                                    }
+                                });
+                            } else {
+                                myToast.show("Enter Rank", Toast.LENGTH_SHORT, false);
+                            }
+                        } else {
+                            myToast.show("Enter Task", Toast.LENGTH_SHORT, false);
+                        }
+
+                    } else {
+                        myToast.show("Select End Time", Toast.LENGTH_SHORT, false);
+
+                    }
+                } else {
+                    myToast.show("Select Start Time", Toast.LENGTH_SHORT, false);
+                }
+            } else {
+                myToast.show("Enter No Of Volunteer", Toast.LENGTH_SHORT, false);
+
+                //myToast.show("Select Start Time", Toast.LENGTH_SHORT, false);
+            }
+        } else {
+            myToast.show("Select Start Date", Toast.LENGTH_SHORT, false);
+        }
+
+    }
+
+
+    public void populateData(GetShiftListResponse.ShiftData shiftData)
+    {
+        et_date.setText(shiftData.getShift_date());
+        et_start_time.setText(shiftData.getShift_start_time());
+        et_end_time_volunteers.setText(shiftData.getShift_end_time());
+        et_volunteer.setText(shiftData.getShift_vol_req());
+        et_task.setText(shiftData.getShift_task());
+        et_rank.setText(shiftData.getShift_rank());
     }
 
 

@@ -227,9 +227,9 @@
         android:gravity="right"
         >
         <ImageView
-            android:id="@+id/imv_chat"
-            android:layout_width="@dimen/_15sdp"
-            android:layout_height="@dimen/_15sdp"
+            android:id="@+id/imv_edit"
+            android:layout_width="@dimen/_35sdp"
+            android:layout_height="@dimen/_35sdp"
             android:tint="@color/tab_booking"
             app:srcCompat="@drawable/ic_edit"
             android:layout_gravity="right"/>
