@@ -92,6 +92,7 @@ public class AddNewShiftFragment extends Fragment {
     public void onAttach(Context context) {
         super.onAttach(context);
         this.context = context;
+        
     }
 
     @SuppressLint("ClickableViewAccessibility")
@@ -109,7 +110,7 @@ public class AddNewShiftFragment extends Fragment {
         clear = v.findViewById(R.id.clear);
         myToast = new MyToast(context);
 
-        
+
         myProgressDialog = new MyProgressDialog(context);
         DatePickerDialog.OnDateSetListener date = (view, year, monthOfYear, dayOfMonth) -> {
             // TODO Auto-generated method stub
