@@ -92,7 +92,6 @@ public class AddNewShiftFragment extends Fragment {
     public void onAttach(Context context) {
         super.onAttach(context);
         this.context = context;
-        
     }
 
     @SuppressLint("ClickableViewAccessibility")
