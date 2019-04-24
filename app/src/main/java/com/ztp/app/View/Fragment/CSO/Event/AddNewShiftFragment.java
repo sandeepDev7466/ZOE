@@ -109,6 +109,7 @@ public class AddNewShiftFragment extends Fragment {
         clear = v.findViewById(R.id.clear);
         myToast = new MyToast(context);
 
+        
         myProgressDialog = new MyProgressDialog(context);
         DatePickerDialog.OnDateSetListener date = (view, year, monthOfYear, dayOfMonth) -> {
             // TODO Auto-generated method stub
