@@ -37,7 +37,7 @@ public class TabStudentsVolunteersFragment extends Fragment {
             volunteerModel=new VolunteerModel();
             volunteerModel.setName("Gospel in the park: Helping the Homeless night");
             volunteerModel.setDescrip("Music,food and clothing,shoes,blanket to be distributed at Williams park St petersburg-focus and talking with homeless");
-            volunteerModel.setDate("10-04-19");
+            volunteerModel.setDate("2019-04-10");
             volunteerModel.setTime("24:15");
             volunteerModel.setStudent_name("Abhishek Mishra");
             volunteerModel.setRank("5");

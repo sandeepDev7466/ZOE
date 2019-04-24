@@ -376,7 +376,8 @@
                 android:layout_height="wrap_content"
                 android:text="@string/location"
                 android:textColor="@color/black"
-                android:textSize="@dimen/_10ssp" />
+                android:textSize="@dimen/_10ssp"
+                android:layout_marginTop="@dimen/_20sdp"/>
 
 
             <!--<fragment-->
@@ -391,8 +392,9 @@
             <RelativeLayout
                 android:id="@+id/relativeLayout1"
                 android:layout_width="match_parent"
-                android:layout_height="300dp"
-                android:background="@color/white">
+                android:layout_height="200dp"
+                android:background="@color/white"
+                android:layout_marginTop="@dimen/_10sdp">
 
                 <fragment
                     android:id="@+id/fragment_map"
@@ -430,7 +432,8 @@
                 android:layout_width="fill_parent"
                 android:layout_height="wrap_content"
                 android:orientation="horizontal"
-                android:layout_marginBottom="@dimen/_20sdp">
+                android:layout_marginTop="@dimen/_20sdp"
+                android:layout_marginBottom="@dimen/_30sdp">
 
                 <com.ztp.app.Helper.MyButton
                     android:id="@+id/clear"

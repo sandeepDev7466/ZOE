@@ -33,7 +33,7 @@ public class TabStudentsFollowersFragment extends Fragment {
         {
             dataModel=new FollowerModel();
             dataModel.setName("shivam");
-            dataModel.setDate("10-04-19");
+            dataModel.setDate("2019-04-10");
             dataModel.setHours("24");
             dataModel.setRank("5");
 

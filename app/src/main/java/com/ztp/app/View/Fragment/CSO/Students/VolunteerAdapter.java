@@ -15,7 +15,9 @@ import com.ztp.app.Helper.MyBoldTextView;
 import com.ztp.app.Helper.MyTextView;
 import com.ztp.app.Helper.MyToast;
 import com.ztp.app.R;
+import com.ztp.app.Utils.Utility;
 
+import java.util.Date;
 import java.util.List;
 import java.util.Map;
 
@@ -66,7 +68,14 @@ class VolunteerAdapter extends BaseAdapter implements View.OnClickListener {
         }
 
         holder.tv_heading.setText(dataModel.getName());
-        holder.date.setText(dataModel.getDate());
+
+
+//        holder.date.setText(dataModel.getDate());
+
+        Date d = Utility.convertStringToDateWithoutTime(dataModel.getDate());
+        holder.date.setText(Utility.formatDateFull(d));
+
+
         holder.time.setText(dataModel.getTime());
         holder.name.setText(dataModel.getStudent_name());
         holder.tv_desc.setText(dataModel.getDescrip());

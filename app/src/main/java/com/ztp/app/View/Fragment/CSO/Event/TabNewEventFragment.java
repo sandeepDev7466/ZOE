@@ -1,5 +1,6 @@
 package com.ztp.app.View.Fragment.CSO.Event;
 
+import android.annotation.SuppressLint;
 import android.app.DatePickerDialog;
 import android.arch.lifecycle.LifecycleOwner;
 import android.arch.lifecycle.Observer;
@@ -142,6 +143,7 @@ public class TabNewEventFragment extends Fragment implements OnMapReadyCallback,
 
     final Calendar myCalendar = Calendar.getInstance();
 
+    @SuppressLint("ClickableViewAccessibility")
     @Override
     public View onCreateView(LayoutInflater inflater, ViewGroup container,
                              Bundle savedInstanceState) {

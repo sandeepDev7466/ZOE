@@ -15,8 +15,10 @@ import com.ztp.app.Helper.MyBoldTextView;
 import com.ztp.app.Helper.MyTextView;
 import com.ztp.app.Helper.MyToast;
 import com.ztp.app.R;
+import com.ztp.app.Utils.Utility;
 import com.ztp.app.View.Fragment.CSO.Dashboard.UpcomingEventAdapter;
 
+import java.util.Date;
 import java.util.List;
 import java.util.Map;
 
@@ -51,7 +53,7 @@ class FollowerAdapter extends BaseAdapter implements View.OnClickListener {
         FollowerModel dataModel = getItem(position);
 
         Holder holder = new Holder();
-        if (view == null) {
+        if (view == null)  {
             view = LayoutInflater.from(context).inflate(R.layout.fragment_student_row, null);
             holder.tv_name = view.findViewById(R.id.tv_name);
             holder.tv_date = view.findViewById(R.id.tv_date);
@@ -66,7 +68,15 @@ class FollowerAdapter extends BaseAdapter implements View.OnClickListener {
 
 
         holder.tv_name.setText(dataModel.getName());
-        holder.tv_date.setText(dataModel.getDate());
+
+
+        Date d = Utility.convertStringToDateWithoutTime(dataModel.getDate());
+        holder.tv_date.setText(Utility.formatDateFull(d));
+
+
+       // holder.tv_date.setText(upToNCharacters);
+
+
         holder.tv_hrs.setText(dataModel.getHours());
        // holder.rb_rank.setText(dataModel.getRank());
 //        holder.date.setText(dataModel.getDate());

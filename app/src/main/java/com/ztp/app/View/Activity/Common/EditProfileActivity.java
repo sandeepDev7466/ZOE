@@ -51,6 +51,7 @@ import com.ztp.app.Viewmodel.UpdateProfileViewModel;
 import java.text.SimpleDateFormat;
 import java.util.ArrayList;
 import java.util.Calendar;
+import java.util.Date;
 import java.util.List;
 import java.util.Locale;
 
@@ -460,7 +461,8 @@ public class EditProfileActivity extends AppCompatActivity implements View.OnCli
                                                     updateProfileRequest.setUserCity(etCity.getText().toString());
                                                     updateProfileRequest.setUserZipcode(etPostalCode.getText().toString());
                                                     updateProfileRequest.setUserAddress(etAddress.getText().toString());
-                                                    updateProfileRequest.setUserDob(etDob.getText().toString());
+                                                    updateProfileRequest.setUserDob(etDob.getText().toString().trim());
+
                                                     updateProfileRequest.setUserGender(String.valueOf(gender_id.charAt(0)));
 
                                                     updateProfileViewModel.updateProfileResponse(updateProfileRequest).observe((LifecycleOwner) context, updateProfileResponse ->
@@ -595,7 +597,9 @@ public class EditProfileActivity extends AppCompatActivity implements View.OnCli
     private void updateLabel() {
 
         SimpleDateFormat sdf = new SimpleDateFormat("MM-dd-yyyy", Locale.US);
-        etDob.setText(sdf.format(myCalendar.getTime()));
+//        etDob.setText(sdf.format(myCalendar.getTime()));
+
+        etDob.setText(Utility.formatDateFull(myCalendar.getTime()));
     }
 
     @SuppressLint("ClickableViewAccessibility")
@@ -621,8 +625,6 @@ public class EditProfileActivity extends AppCompatActivity implements View.OnCli
     }
 
     private void getProfileData() {
-
-
         myProgressDialog.show("Fetching user data...");
         getProfileViewModel.getProfileResponse(new GetProfileRequest(sharedPref.getUserId()/*"S789123"*//*"C20190409Q9l4hzL3916"*//*sharedPref.getUserId()*/)).observe((LifecycleOwner) context, getProfileResponse ->
         {
