@@ -123,7 +123,14 @@ public class EventListFragment extends Fragment {
 
         EventPager eventPager = new EventPager(getChildFragmentManager());
         eventPager.addFragment(new TabMyEventFragment());
-        eventPager.addFragment(new TabNewEventFragment());
+
+
+        TabNewEventFragment tabNewEventFragment = new TabNewEventFragment();
+        Bundle bundle = new Bundle();
+        bundle.putString("action","add");
+        tabNewEventFragment.setArguments(bundle);
+        eventPager.addFragment(tabNewEventFragment);
+
         viewPager.setAdapter(eventPager);
     }
 

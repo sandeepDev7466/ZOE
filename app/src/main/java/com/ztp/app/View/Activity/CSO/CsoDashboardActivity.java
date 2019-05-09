@@ -20,6 +20,7 @@ import com.ztp.app.Data.Local.SharedPrefrence.SharedPref;
 import com.ztp.app.Helper.MyHeadingTextView;
 import com.ztp.app.Helper.MyToast;
 import com.ztp.app.R;
+import com.ztp.app.Utils.Constants;
 import com.ztp.app.Utils.Utility;
 import com.ztp.app.View.Activity.Common.EditProfileActivity;
 import com.ztp.app.View.Activity.Common.LoginActivity;
@@ -34,17 +35,18 @@ public class CsoDashboardActivity extends AppCompatActivity implements View.OnCl
     Context context;
     MyToast myToast;
     SharedPref sharedPref;
-    ImageView menu,tint,tint_nav;
+    ImageView menu, tint, tint_nav;
     LinearLayout hangout, message, student, event, dashboard, body;
     ViewPager viewPager;
     TabLayout tabLayout;
     DrawerLayout drawer;
-    MyHeadingTextView title,nav_title;
-    LinearLayout logout,settings,edit_profile;
+    MyHeadingTextView title, nav_title;
+    LinearLayout logout, settings, edit_profile;
     boolean theme;
     public static final String RESULT = "result";
     public static final int ADD_NOTE = 44;
     String name;
+
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
@@ -68,9 +70,10 @@ public class CsoDashboardActivity extends AppCompatActivity implements View.OnCl
 
     private void setDashTitle() {
         name = sharedPref.getFirstName().toUpperCase() + " " + sharedPref.getLastName().toUpperCase();
-        title.setText(name + " "+getString(R.string.dashboard).toUpperCase());
+        title.setText(getString(R.string.dashboard).toUpperCase());
         nav_title.setText(name);
     }
+
     public void init() {
         drawer = findViewById(R.id.drawer_layout);
         viewPager = findViewById(R.id.viewPager);
@@ -102,13 +105,10 @@ public class CsoDashboardActivity extends AppCompatActivity implements View.OnCl
         settings.setOnClickListener(this);
         edit_profile.setOnClickListener(this);
 
-        if(theme)
-        {
+        if (theme) {
             tint.setBackgroundColor(getResources().getColor(R.color.black));
             tint_nav.setBackgroundColor(getResources().getColor(R.color.black));
-        }
-        else
-        {
+        } else {
             tint.setBackgroundColor(getResources().getColor(R.color.white));
             tint_nav.setBackgroundColor(getResources().getColor(R.color.white));
         }
@@ -138,12 +138,11 @@ public class CsoDashboardActivity extends AppCompatActivity implements View.OnCl
         recreate();
     }
 
-    public void recreate()
-    {
+    public void recreate() {
         finish();
-        overridePendingTransition( 0, 0);
+        overridePendingTransition(0, 0);
         startActivity(getIntent());
-        overridePendingTransition( 0, 0);
+        overridePendingTransition(0, 0);
     }
 
     @Override
@@ -161,40 +160,20 @@ public class CsoDashboardActivity extends AppCompatActivity implements View.OnCl
             Fragment frag = getLastFragment();
 
             if (frag.getTag() != null && frag.getTag().equals("HangoutFragment")) {
-                hangout.setAlpha(1.0f);
-                message.setAlpha(0.3f);
-                student.setAlpha(0.3f);
-                event.setAlpha(0.3f);
-                dashboard.setAlpha(0.3f);
+                setHangoutAlpha();
                 title.setText(getString(R.string.hangout).toUpperCase());
             } else if (frag.getTag() != null && frag.getTag().equals("MessageFragment")) {
-                hangout.setAlpha(0.3f);
-                message.setAlpha(1.0f);
-                student.setAlpha(0.3f);
-                event.setAlpha(0.3f);
-                dashboard.setAlpha(0.3f);
+                setMessageAlpha();
                 title.setText(getString(R.string.message).toUpperCase());
             } else if (frag.getTag() != null && frag.getTag().equals("StudentFragment")) {
-                hangout.setAlpha(0.3f);
-                message.setAlpha(0.3f);
-                student.setAlpha(1.0f);
-                event.setAlpha(0.3f);
-                dashboard.setAlpha(0.3f);
+                setStudentAlpha();
                 title.setText(getString(R.string.events).toUpperCase());
             } else if (frag.getTag() != null && frag.getTag().equals("EventListFragment")) {
-                hangout.setAlpha(0.3f);
-                message.setAlpha(0.3f);
-                student.setAlpha(0.3f);
-                event.setAlpha(1.0f);
-                dashboard.setAlpha(0.3f);
+                setEventAlpha();
                 title.setText(getString(R.string.events).toUpperCase());
             } else if (frag.getTag() != null && frag.getTag().equals("DashboardFragment")) {
-                hangout.setAlpha(0.3f);
-                message.setAlpha(0.3f);
-                student.setAlpha(0.3f);
-                event.setAlpha(0.3f);
-                dashboard.setAlpha(1.0f);
-                title.setText(name+" "+getString(R.string.dashboard).toUpperCase());
+                setDashboardAlpha();
+                setDashTitle();
             }
 
         } else {
@@ -260,7 +239,7 @@ public class CsoDashboardActivity extends AppCompatActivity implements View.OnCl
 
             case R.id.dashboard:
                 if (!(getSupportFragmentManager().findFragmentById(R.id.body) instanceof DashboardFragment)) {
-                    title.setText(name+" "+getString(R.string.dashboard).toUpperCase());
+                    title.setText(getString(R.string.dashboard).toUpperCase());
                     setDashboardFragment();
                 }
                 break;
@@ -291,60 +270,92 @@ public class CsoDashboardActivity extends AppCompatActivity implements View.OnCl
                 }
                 Intent intent = new Intent(context, SettingsActivity.class);
                 startActivity(intent);
-                overridePendingTransition(R.anim.fade_in,R.anim.fade_out);
+                overridePendingTransition(R.anim.fade_in, R.anim.fade_out);
                 break;
             case R.id.edit_profile:
                 if (drawer.isDrawerOpen(GravityCompat.END)) {
                     drawer.closeDrawer(GravityCompat.END);
                 }
                 Intent intent1 = new Intent(context, EditProfileActivity.class);
-                intent1.putExtra("type","cso");
+                intent1.putExtra("type", "cso");
                 startActivity(intent1);
-                overridePendingTransition(R.anim.fade_in,R.anim.fade_out);
+                overridePendingTransition(R.anim.fade_in, R.anim.fade_out);
                 break;
+        }
+    }
+
+    @Override
+    protected void onActivityResult(int requestCode, int resultCode, Intent data) {
+        if (requestCode == 1) {
+            if (resultCode == RESULT_OK) {
+                recreate();
+            }
         }
     }
 
     public void setDashboardFragment() {
 
-        dashboard.setAlpha(1.0f);
-        hangout.setAlpha(0.3f);
-        event.setAlpha(0.3f);
-        student.setAlpha(0.3f);
-        message.setAlpha(0.3f);
+        setDashboardAlpha();
 
         Utility.replaceFragment(context, new DashboardFragment(), "DashboardFragment");
     }
 
     public void setEventFragment() {
-        event.setAlpha(1.0f);
-        hangout.setAlpha(0.3f);
-        dashboard.setAlpha(0.3f);
-        student.setAlpha(0.3f);
-        message.setAlpha(0.3f);
+        setEventAlpha();
 
         Utility.replaceFragment(CsoDashboardActivity.this, new EventListFragment(), "EventListFragment");
     }
 
     public void setStudentFragment() {
-        student.setAlpha(1.0f);
-        hangout.setAlpha(0.3f);
-        dashboard.setAlpha(0.3f);
-        event.setAlpha(0.3f);
-        message.setAlpha(0.3f);
-
-
+        setStudentAlpha();
         Utility.replaceFragment(context, new StudentsFragment(), "StudentFragment");
     }
 
 
     public void setMessageFragment() {
-        message.setAlpha(1.0f);
-        hangout.setAlpha(0.3f);
-        dashboard.setAlpha(0.3f);
-        event.setAlpha(0.3f);
-        student.setAlpha(0.3f);
+        setMessageAlpha();
         Utility.replaceFragment(context, new MessageFragment(), "MessageFragment");
+    }
+
+
+    private void setDashboardAlpha() {
+        hangout.setAlpha(Constants.alpha);
+        message.setAlpha(Constants.alpha);
+        student.setAlpha(Constants.alpha);
+        event.setAlpha(Constants.alpha);
+        dashboard.setAlpha(Constants.no_alpha);
+    }
+
+    private void setEventAlpha() {
+        hangout.setAlpha(Constants.alpha);
+        message.setAlpha(Constants.alpha);
+        student.setAlpha(Constants.alpha);
+        event.setAlpha(Constants.no_alpha);
+        dashboard.setAlpha(Constants.alpha);
+    }
+
+    private void setStudentAlpha() {
+        hangout.setAlpha(Constants.alpha);
+        message.setAlpha(Constants.alpha);
+        student.setAlpha(Constants.no_alpha);
+        event.setAlpha(Constants.alpha);
+        dashboard.setAlpha(Constants.alpha);
+    }
+
+    private void setHangoutAlpha() {
+        hangout.setAlpha(Constants.no_alpha);
+        message.setAlpha(Constants.alpha);
+        student.setAlpha(Constants.alpha);
+        event.setAlpha(Constants.alpha);
+        dashboard.setAlpha(Constants.alpha);
+    }
+
+    private void setMessageAlpha() {
+        hangout.setAlpha(Constants.alpha);
+        message.setAlpha(Constants.no_alpha);
+        student.setAlpha(Constants.alpha);
+        event.setAlpha(Constants.alpha);
+        dashboard.setAlpha(Constants.alpha);
     }
 
 

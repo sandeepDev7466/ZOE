@@ -63,7 +63,12 @@ class TimelineAdapter extends BaseAdapter {
         holder.text.setText(String.valueOf(map.get("text")));
         //Picasso.with(context).load(Integer.parseInt(String.valueOf(map.get("msg_image")))).into(holder.msgImage);
         Picasso.with(context).load(Integer.parseInt(String.valueOf(map.get("user_image")))).into(holder.userImage);
-        holder.reply.setOnClickListener(v -> myToast.show("Reply", Toast.LENGTH_SHORT,true));
+        holder.reply.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View v) {
+
+            }
+        });
 
         return view;
     }

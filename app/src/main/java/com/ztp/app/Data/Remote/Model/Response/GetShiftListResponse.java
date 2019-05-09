@@ -3,6 +3,7 @@ package com.ztp.app.Data.Remote.Model.Response;
 import com.google.gson.annotations.Expose;
 import com.google.gson.annotations.SerializedName;
 
+import java.io.Serializable;
 import java.util.List;
 
 
@@ -55,7 +56,7 @@ public class GetShiftListResponse {
     }
 
 
-    public class ShiftData
+    public class ShiftData implements Serializable
     {
         @SerializedName("shift_id")
         @Expose

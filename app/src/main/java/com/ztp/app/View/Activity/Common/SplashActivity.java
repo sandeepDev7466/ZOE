@@ -36,40 +36,19 @@ public class SplashActivity extends AppCompatActivity {
                     sleep(3000);
 
                     if (sharedPref.getFirstRun()) {
-                        /*if (sharedPref.getIsLogin() && (sharedPref.getUserType().equalsIgnoreCase("stu") || sharedPref.getUserType().equalsIgnoreCase("vol"))) {
-                            Intent i = new Intent(context, StudentDashboardActivity.class);
-                            i.addFlags(Intent.FLAG_ACTIVITY_NEW_TASK | Intent.FLAG_ACTIVITY_CLEAR_TASK);
-                            startActivity(i);
-                            overridePendingTransition(0, 0);
-                        } else if (sharedPref.getIsLogin() && sharedPref.getUserType().equalsIgnoreCase("cso")) {
-                            Intent i = new Intent(context, CsoDashboardActivity.class);
-                            i.addFlags(Intent.FLAG_ACTIVITY_NEW_TASK | Intent.FLAG_ACTIVITY_CLEAR_TASK);
-                            startActivity(i);
-                            overridePendingTransition(0, 0);
-                        } else {
-                            Intent i = new Intent(context, LoginActivity.class);
-                            i.addFlags(Intent.FLAG_ACTIVITY_NEW_TASK | Intent.FLAG_ACTIVITY_CLEAR_TASK);
-                            startActivity(i);
-                            overridePendingTransition(0, 0);
-                        }*/
 
-                        if(!sharedPref.getIsLogin()) {
+                        if (!sharedPref.getIsLogin()) {
                             Intent i = new Intent(context, LoginActivity.class);
                             i.addFlags(Intent.FLAG_ACTIVITY_NEW_TASK | Intent.FLAG_ACTIVITY_CLEAR_TASK);
                             startActivity(i);
                             overridePendingTransition(R.anim.fade_in, R.anim.fade_out);
-                        }
-                        else
-                        {
-                            if(sharedPref.getUserType().equalsIgnoreCase("stu") || sharedPref.getUserType().equalsIgnoreCase("vol"))
-                            {
+                        } else {
+                            if (sharedPref.getUserType().equalsIgnoreCase("stu") || sharedPref.getUserType().equalsIgnoreCase("vol")) {
                                 Intent i = new Intent(context, StudentDashboardActivity.class);
                                 i.addFlags(Intent.FLAG_ACTIVITY_NEW_TASK | Intent.FLAG_ACTIVITY_CLEAR_TASK);
                                 startActivity(i);
                                 overridePendingTransition(R.anim.fade_in, R.anim.fade_out);
-                            }
-                            else if(sharedPref.getIsLogin() && sharedPref.getUserType().equalsIgnoreCase("cso"))
-                            {
+                            } else if (sharedPref.getIsLogin() && sharedPref.getUserType().equalsIgnoreCase("cso")) {
                                 Intent i = new Intent(context, CsoDashboardActivity.class);
                                 i.addFlags(Intent.FLAG_ACTIVITY_NEW_TASK | Intent.FLAG_ACTIVITY_CLEAR_TASK);
                                 startActivity(i);

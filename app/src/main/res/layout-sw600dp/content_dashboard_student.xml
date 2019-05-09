@@ -120,7 +120,7 @@
                 android:layout_width="wrap_content"
                 android:layout_height="wrap_content"
                 android:text="@string/booking"
-                android:textSize="@dimen/_6ssp"
+                android:textSize="@dimen/_8ssp"
                 android:layout_marginTop="@dimen/_5sdp"/>
 
         </LinearLayout>

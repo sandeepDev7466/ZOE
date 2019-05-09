@@ -8,6 +8,7 @@ import android.graphics.Color;
 import android.os.Bundle;
 import android.support.v4.app.FragmentActivity;
 import android.support.v7.app.AppCompatActivity;
+import android.text.format.DateFormat;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
@@ -37,7 +38,7 @@ public class EventListAdapter extends BaseAdapter {
     private List<GetEventsResponse.EventData> eventDataList;
     String[] month = {"JAN", "FEB", "MAR", "APR", "MAY", "JUN", "JUL", "AUG", "SEP", "OCT", "NOV", "DEC"};
     private MyProgressDialog myProgressDialog;
-    EventDeleteViewModel eventDeleteViewModel;
+    private EventDeleteViewModel eventDeleteViewModel;
 
     public EventListAdapter(Context context, List<GetEventsResponse.EventData> eventDataList) {
         this.context = context;
@@ -68,26 +69,39 @@ public class EventListAdapter extends BaseAdapter {
         try {
             if (view == null) {
                 view = LayoutInflater.from(context).inflate(R.layout.event_list_item, null);
+
+                holder.title = view.findViewById(R.id.title);
+                holder.description = view.findViewById(R.id.description);
                 holder.date = view.findViewById(R.id.date);
                 holder.month = view.findViewById(R.id.month);
-                holder.title = view.findViewById(R.id.title);
                 holder.day = view.findViewById(R.id.day);
-                holder.time = view.findViewById(R.id.time);
-//                holder.edit = view.findViewById(R.id.edit);
                 holder.schedule = view.findViewById(R.id.schedule);
-//                holder.shift_li = view.findViewById(R.id.shift_li);
+
                 view.setTag(holder);
             } else {
                 holder = (Holder) view.getTag();
             }
 
             holder.title.setText(eventData.getEventHeading());
-            SimpleDateFormat sdf = new SimpleDateFormat("yyyy-MM-dd HH:mm:ss", Locale.ENGLISH);
+
+            holder.title.setText(eventData.getEventHeading());
+            holder.description.setText(eventData.getEventDetails());
+            Date date = Utility.convertStringToDate(eventData.getEventAddDate());
+
+            String dayOfTheWeek = (String) DateFormat.format("EE", date); // Thursday
+            String day          = (String) DateFormat.format("dd",   date); // 20
+            String monthString  = (String) DateFormat.format("MMM",  date); // Jun
+            String monthNumber  = (String) DateFormat.format("MM",   date); // 06
+            String year         = (String) DateFormat.format("yyyy", date); // 2013
+
+            holder.date.setText(day);
+            holder.month.setText(monthString);
+            holder.day.setText(dayOfTheWeek);
+
+           /* SimpleDateFormat sdf = new SimpleDateFormat("yyyy-MM-dd HH:mm:ss", Locale.ENGLISH);
             Date addDate = sdf.parse(eventData.getEventAddDate());
             Calendar cal = Calendar.getInstance();
             cal.setTimeInMillis(addDate.getTime());
-
-//            holder.date.setText(String.valueOf(cal.get(Calendar.DATE)));
 
 
             Date d = Utility.convertStringToDateWithoutTime(eventData.getEventAddDate());
@@ -97,7 +111,9 @@ public class EventListAdapter extends BaseAdapter {
 
             holder.month.setText(month[cal.get(Calendar.MONTH)]);
             //holder.day.setText(String.valueOf(cal.get(Calendar.DAY_OF_MONTH)));
-            holder.time.setText(String.valueOf(cal.get(Calendar.HOUR) + ":" + cal.get(Calendar.MINUTE)));
+            holder.time.setText(String.valueOf(cal.get(Calendar.HOUR) + ":" + cal.get(Calendar.MINUTE)));*/
+
+
 
 
             holder.schedule.setOnClickListener(v -> {
@@ -106,8 +122,6 @@ public class EventListAdapter extends BaseAdapter {
                 Dialog dialog = new Dialog(context);
                 View view1 = LayoutInflater.from(context).inflate(R.layout.event_action_layout, null);
                 dialog.setContentView(view1);
-                //dialog.setCancelable(false);
-
                 dialog.show();
 
                 LinearLayout edit_event = view1.findViewById(R.id.edit_event);
@@ -125,12 +139,19 @@ public class EventListAdapter extends BaseAdapter {
                 edit_event.setOnClickListener(vs -> {
                     dialog.dismiss();
 
-                    UpdateEventFragment updateEventFragment = new UpdateEventFragment();
+                     /*UpdateEventFragment updateEventFragment = new UpdateEventFragment();
                     Bundle bundle = new Bundle();
-                    bundle.putSerializable("eventData", eventData);
+                    bundle.putSerializable("model", eventData);
+                    bundle.putString("action","update");
                     updateEventFragment.setArguments(bundle);
-                    Utility.replaceFragment(context,updateEventFragment,"updateEventFragment");
+                    Utility.replaceFragment(context, updateEventFragment, "updateEventFragment");*/
 
+                    TabNewEventFragment tabNewEventFragment = new TabNewEventFragment();
+                    Bundle bundle = new Bundle();
+                    bundle.putSerializable("model", eventData);
+                    bundle.putString("action", "update");
+                    tabNewEventFragment.setArguments(bundle);
+                    Utility.replaceFragment(context, tabNewEventFragment, "TabNewEventFragment");
                 });
 
                 delete_event.setOnClickListener(vs -> {
@@ -139,26 +160,37 @@ public class EventListAdapter extends BaseAdapter {
                     DeleteEventRequest deleteEventRequest = new DeleteEventRequest();
                     deleteEventRequest.setEvent_id(eventData.getEventId());
 
-                    myProgressDialog.show("Deleting event...");
+                    if(Utility.isNetworkAvailable(context)) {
+                        myProgressDialog.show(context.getString(R.string.please_wait));
+                        eventDeleteViewModel.getDeleteEventResponse(deleteEventRequest).observe((LifecycleOwner) context, deleteEventResponse -> {
 
-                    eventDeleteViewModel.getDeleteEventResponse(deleteEventRequest).observe((LifecycleOwner) context, deleteEventResponse -> {
+                            if(deleteEventResponse != null) {
+                                if (deleteEventResponse.getResStatus().equalsIgnoreCase("200")) {
 
-                        if (deleteEventResponse != null && deleteEventResponse.getResStatus().equalsIgnoreCase("200")) {
+                                    new MyToast(context).show(context.getString(R.string.event_deleted_successfully), Toast.LENGTH_SHORT, true);
 
-                            new MyToast(context).show("Event Deleted Successfully", Toast.LENGTH_SHORT, true);
+                                    eventDataList.remove(eventData);
 
-                            eventDataList.remove(eventData);
+                                    notifyDataSetChanged();
 
-                            notifyDataSetChanged();
+                                } else {
 
-                        } else {
+                                    new MyToast(context).show(context.getString(R.string.failed), Toast.LENGTH_SHORT, false);
 
-                            new MyToast(context).show("Failed", Toast.LENGTH_SHORT, false);
+                                }
+                            }
+                            else
+                            {
+                                new MyToast(context).show(context.getString(R.string.err_server), Toast.LENGTH_SHORT, false);
+                            }
 
-                        }
-
-                        myProgressDialog.dismiss();
-                    });
+                            myProgressDialog.dismiss();
+                        });
+                    }
+                    else
+                    {
+                        new MyToast(context).show(context.getString(R.string.no_internet_connection), Toast.LENGTH_SHORT, false);
+                    }
                 });
 
                 add_shift.setOnClickListener(vs -> {
@@ -190,9 +222,8 @@ public class EventListAdapter extends BaseAdapter {
     }
 
     private class Holder {
-        MyBoldTextView date, month, title;
-        MyTextView day, time;
+        MyBoldTextView title,date,month,day;
         ImageView schedule;
-
+        MyTextView description;
     }
 }

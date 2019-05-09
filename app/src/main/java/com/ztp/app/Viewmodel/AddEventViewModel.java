@@ -15,10 +15,6 @@ import retrofit2.Call;
 import retrofit2.Callback;
 import retrofit2.Response;
 
-/**
- * Created by htl-dev on 15-04-2019.
- */
-
 public class AddEventViewModel extends ViewModel {
 
     private MutableLiveData<AddEventResponse> eventAddResponseMutableLiveData;
@@ -52,9 +48,5 @@ public class AddEventViewModel extends ViewModel {
                 eventAddResponseMutableLiveData.postValue(null);
             }
         });
-
     }
-
-
-
 }

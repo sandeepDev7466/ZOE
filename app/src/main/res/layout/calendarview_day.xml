@@ -4,10 +4,7 @@
     android:layout_height="match_parent"
     xmlns:app="http://schemas.android.com/apk/res-auto"
     android:id="@+id/cal"
-    android:background="@color/background_3"
-    >
-
-
+    android:background="@color/background_3">
 
     <com.applandeo.materialcalendarview.CalendarView
         android:id="@+id/calendarViews"
@@ -21,10 +18,6 @@
         app:headerColor="@color/white"
         app:forwardButtonSrc="@drawable/baseline_keyboard_arrow_right_24"
         app:previousButtonSrc="@drawable/baseline_keyboard_arrow_left_24"
-        app:daysLabelsColor="@color/black"
-
-        />
-
-
+        app:daysLabelsColor="@color/black" />
 
 </LinearLayout>

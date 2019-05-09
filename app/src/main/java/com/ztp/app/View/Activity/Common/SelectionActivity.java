@@ -39,20 +39,21 @@ public class SelectionActivity extends AppCompatActivity implements View.OnClick
     public void onClick(View v) {
         switch (v.getId()) {
             case R.id.studentLayout:
-                //sharedPref.setUserType("stu");
+                sharedPref.setUserType("stu");
                 startActivity(new Intent(context, StudentRegisterActivity.class));
-                overridePendingTransition(R.anim.fade_in,R.anim.fade_out);
+                overridePendingTransition(R.anim.fade_in, R.anim.fade_out);
                 break;
             case R.id.csoLayout:
-                //sharedPref.setUserType("cso");
+                sharedPref.setUserType("cso");
                 startActivity(new Intent(context, CsoRegisterStep_1Activity.class));
-                overridePendingTransition(R.anim.fade_in,R.anim.fade_out);
+                overridePendingTransition(R.anim.fade_in, R.anim.fade_out);
                 break;
         }
     }
+
     @Override
     public void onBackPressed() {
         super.onBackPressed();
-        overridePendingTransition(R.anim.fade_in,R.anim.fade_out);
+        overridePendingTransition(R.anim.fade_in, R.anim.fade_out);
     }
 }

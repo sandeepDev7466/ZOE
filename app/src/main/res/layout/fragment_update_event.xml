@@ -70,7 +70,10 @@
                     android:layout_width="match_parent"
                     android:layout_height="wrap_content"
                     android:hint="@string/event_name"
-                    android:textSize="@dimen/_12ssp" />
+                    android:textSize="@dimen/_12ssp"
+                    android:imeOptions="actionNext"
+                    android:inputType="text"
+                    />
             </com.ztp.app.Helper.MyTextInputLayout>
 
             <com.ztp.app.Helper.MyTextInputLayout
@@ -84,7 +87,10 @@
                     android:layout_width="match_parent"
                     android:layout_height="wrap_content"
                     android:hint="@string/event_descrip"
-                    android:textSize="@dimen/_12ssp" />
+                    android:textSize="@dimen/_12ssp"
+                    android:imeOptions="actionNext"
+                    android:inputType="text"
+                    />
             </com.ztp.app.Helper.MyTextInputLayout>
 
             <LinearLayout
@@ -198,8 +204,11 @@
                     android:id="@+id/et_city"
                     android:layout_width="match_parent"
                     android:layout_height="wrap_content"
-                    android:hint="City"
-                    android:textSize="@dimen/_12ssp" />
+                    android:hint="@string/city"
+                    android:textSize="@dimen/_12ssp"
+                    android:imeOptions="actionNext"
+                    android:inputType="text"
+                    />
             </com.ztp.app.Helper.MyTextInputLayout>
 
             <com.ztp.app.Helper.MyTextInputLayout
@@ -212,9 +221,11 @@
                     android:id="@+id/et_zip"
                     android:layout_width="match_parent"
                     android:layout_height="wrap_content"
-                    android:hint="Zip"
+                    android:hint="@string/zip"
                     android:textSize="@dimen/_12ssp"
                     android:inputType="number"
+                    android:imeOptions="actionNext"
+                    android:maxLength="6"
 
                     />
             </com.ztp.app.Helper.MyTextInputLayout>
@@ -270,8 +281,12 @@
                     android:id="@+id/et_address"
                     android:layout_width="match_parent"
                     android:layout_height="wrap_content"
-                    android:hint="Address"
-                    android:textSize="@dimen/_12ssp" />
+                    android:hint="@string/address"
+                    android:textSize="@dimen/_12ssp"
+                    android:imeOptions="actionNext"
+                    android:inputType="text"
+
+                    />
             </com.ztp.app.Helper.MyTextInputLayout>
 
             <com.ztp.app.Helper.MyTextInputLayout
@@ -287,7 +302,10 @@
                     android:layout_width="match_parent"
                     android:layout_height="wrap_content"
                     android:hint="@string/contact_name"
-                    android:textSize="@dimen/_12ssp" />
+                    android:textSize="@dimen/_12ssp"
+                    android:imeOptions="actionNext"
+                    android:inputType="text"
+                    />
             </com.ztp.app.Helper.MyTextInputLayout>
 
             <com.ztp.app.Helper.MyTextInputLayout
@@ -304,6 +322,8 @@
                     android:textSize="@dimen/_12ssp"
                     android:inputType="phone"
                     android:maxLength="13"
+                    android:imeOptions="actionNext"
+
 
                     />
             </com.ztp.app.Helper.MyTextInputLayout>
@@ -319,7 +339,10 @@
                     android:layout_width="match_parent"
                     android:layout_height="wrap_content"
                     android:hint="@string/email"
-                    android:textSize="@dimen/_12ssp" />
+                    android:textSize="@dimen/_12ssp"
+                    android:imeOptions="actionNext"
+                    android:inputType="textEmailAddress"
+                    />
             </com.ztp.app.Helper.MyTextInputLayout>
 
 
@@ -347,6 +370,8 @@
                         android:hint="@string/start_date"
                         android:textSize="@dimen/_12ssp"
                         android:editable="false"
+                        android:imeOptions="actionNext"
+                        android:inputType="text"
                         />
                 </com.ztp.app.Helper.MyTextInputLayout>
 
@@ -365,6 +390,8 @@
                         android:hint="@string/end_date"
                         android:textSize="@dimen/_12ssp"
                         android:editable="false"
+                        android:imeOptions="actionDone"
+                        android:inputType="text"
 
                         />
                 </com.ztp.app.Helper.MyTextInputLayout>
@@ -394,7 +421,9 @@
                 android:id="@+id/relativeLayout1"
                 android:layout_width="match_parent"
                 android:layout_height="300dp"
-                android:background="@color/white">
+                android:background="@color/white"
+                android:layout_marginTop="@dimen/_10sdp"
+                >
 
                 <fragment
                     android:id="@+id/fragment_map"
@@ -432,7 +461,8 @@
                 android:layout_width="fill_parent"
                 android:layout_height="wrap_content"
                 android:orientation="horizontal"
-                android:layout_marginBottom="@dimen/_20sdp">
+                android:layout_marginTop="@dimen/_20sdp"
+                android:layout_marginBottom="@dimen/_30sdp">
 
                 <com.ztp.app.Helper.MyButton
                     android:id="@+id/clear"

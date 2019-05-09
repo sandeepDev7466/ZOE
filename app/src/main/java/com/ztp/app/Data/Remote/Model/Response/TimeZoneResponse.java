@@ -93,8 +93,8 @@ public class TimeZoneResponse {
         private String timezone_hours;
 
 
-        public Timezone() {
-        }
+//        public Timezone() {
+//        }
 
         public Timezone(int id, String timezoneId, String timezoneCode, String timezoneName, String timezone_hours) {
             this.id = id;

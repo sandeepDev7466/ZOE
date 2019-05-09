@@ -1,6 +1,7 @@
 package com.ztp.app.Data.Remote.Service;
 
 import com.ztp.app.Data.Remote.Model.Request.BlogSearchRequest;
+import com.ztp.app.Data.Remote.Model.Request.CSOAllRequest;
 import com.ztp.app.Data.Remote.Model.Request.CsoRegisterRequestStep_1;
 import com.ztp.app.Data.Remote.Model.Request.CsoRegisterRequestStep_2;
 import com.ztp.app.Data.Remote.Model.Request.CsoRegisterRequestStep_3;
@@ -11,18 +12,23 @@ import com.ztp.app.Data.Remote.Model.Request.EventUpdateRequest;
 import com.ztp.app.Data.Remote.Model.Request.GetEventDetailRequest;
 import com.ztp.app.Data.Remote.Model.Request.GetEventShiftRequest;
 import com.ztp.app.Data.Remote.Model.Request.GetEventsRequest;
+import com.ztp.app.Data.Remote.Model.Request.GetMonthEventDateRequest;
 import com.ztp.app.Data.Remote.Model.Request.GetProfileRequest;
 import com.ztp.app.Data.Remote.Model.Request.GetShiftDetailRequest;
 import com.ztp.app.Data.Remote.Model.Request.GetShiftListRequest;
 import com.ztp.app.Data.Remote.Model.Request.LoginRequest;
+import com.ztp.app.Data.Remote.Model.Request.PostVolunteerRequest;
+import com.ztp.app.Data.Remote.Model.Request.SearchEventRequest;
 import com.ztp.app.Data.Remote.Model.Request.ShiftUpdateRequest;
 import com.ztp.app.Data.Remote.Model.Request.SiftAddRequest;
 import com.ztp.app.Data.Remote.Model.Request.StudentRegisterRequest;
 import com.ztp.app.Data.Remote.Model.Request.StateRequest;
 import com.ztp.app.Data.Remote.Model.Request.UpdateProfileRequest;
 import com.ztp.app.Data.Remote.Model.Request.ValidateOtpRequest;
+import com.ztp.app.Data.Remote.Model.Request.VolunteerAllRequest;
 import com.ztp.app.Data.Remote.Model.Response.AddEventResponse;
 import com.ztp.app.Data.Remote.Model.Response.BlogSearchResponse;
+import com.ztp.app.Data.Remote.Model.Response.CSOAllResponse;
 import com.ztp.app.Data.Remote.Model.Response.CountryResponse;
 import com.ztp.app.Data.Remote.Model.Response.CsoRegisterResponseStep_1;
 import com.ztp.app.Data.Remote.Model.Response.CsoRegisterResponseStep_2;
@@ -33,11 +39,14 @@ import com.ztp.app.Data.Remote.Model.Response.EventTypeResponse;
 import com.ztp.app.Data.Remote.Model.Response.GetEventDetailResponse;
 import com.ztp.app.Data.Remote.Model.Response.GetEventShiftResponse;
 import com.ztp.app.Data.Remote.Model.Response.GetEventsResponse;
+import com.ztp.app.Data.Remote.Model.Response.GetMonthEventDateResponse;
 import com.ztp.app.Data.Remote.Model.Response.GetProfileResponse;
 import com.ztp.app.Data.Remote.Model.Response.GetShiftDetailResponse;
 import com.ztp.app.Data.Remote.Model.Response.GetShiftListResponse;
 import com.ztp.app.Data.Remote.Model.Response.LoginResponse;
+import com.ztp.app.Data.Remote.Model.Response.PostVolunteerRequestResponse;
 import com.ztp.app.Data.Remote.Model.Response.SchoolResponse;
+import com.ztp.app.Data.Remote.Model.Response.SearchEventResponse;
 import com.ztp.app.Data.Remote.Model.Response.ShiftAddResponse;
 import com.ztp.app.Data.Remote.Model.Response.ShiftUpdateResponse;
 import com.ztp.app.Data.Remote.Model.Response.StudentRegisterResponse;
@@ -47,6 +56,7 @@ import com.ztp.app.Data.Remote.Model.Response.UpdateEventResponse;
 import com.ztp.app.Data.Remote.Model.Response.UpdateProfileResponse;
 import com.ztp.app.Data.Remote.Model.Response.UploadDocumentResponse;
 import com.ztp.app.Data.Remote.Model.Response.ValidateOtpResponse;
+import com.ztp.app.Data.Remote.Model.Response.VolunteerAllResponse;
 
 import okhttp3.MultipartBody;
 import okhttp3.ResponseBody;
@@ -143,7 +153,20 @@ public interface ApiInterface {
     @POST("cso-action.php?api_key=1234&action=u_shift")
     Call<ShiftUpdateResponse> doUpdateShift(@Body ShiftUpdateRequest shiftUpdateRequest);
 
+    @POST("search-event.php?api_key=1234&action=search_event")
+    Call<SearchEventResponse> getSearchedEvents(@Body SearchEventRequest searchEventRequest);
 
+    @POST("search-event.php?api_key=1234&action=event_send_request")
+    Call<PostVolunteerRequestResponse> postVolunteerRequest(@Body PostVolunteerRequest postVolunteerRequest);
+
+    @POST("cso-action.php?api_key=1234&action=cso_all_request")
+    Call<CSOAllResponse> getCSOAllRequest(@Body CSOAllRequest csoAllRequest);
+
+    @POST("vol-action.php?api_key=1234&action=vol_all_request")
+    Call<VolunteerAllResponse> getVolunteerAllRequest(@Body VolunteerAllRequest volunteerAllRequest);
+
+    @POST("cso-action.php?api_key=1234&action=get_month_event")
+    Call<GetMonthEventDateResponse> getGetMonthEventDate(@Body GetMonthEventDateRequest getMonthEventDateRequest);
 
 
 }

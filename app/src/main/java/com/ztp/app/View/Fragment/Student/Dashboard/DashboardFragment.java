@@ -9,11 +9,12 @@ import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
 import android.widget.LinearLayout;
-import android.widget.Toast;
 
 import com.ztp.app.Helper.MyToast;
 import com.ztp.app.R;
+import com.ztp.app.Utils.Utility;
 import com.ztp.app.View.Activity.Student.StudentDashboardActivity;
+import com.ztp.app.View.Fragment.Student.Extra.SearchEventFragment;
 
 import java.util.ArrayList;
 import java.util.HashMap;
@@ -95,7 +96,8 @@ public class DashboardFragment extends Fragment implements View.OnClickListener 
     public void onClick(View v) {
         switch (v.getId()) {
             case R.id.volunter:
-                myToast.show(getString(R.string.volunteer_for_an_event), Toast.LENGTH_SHORT, true);
+                //myToast.show(getString(R.string.volunteer_for_an_event), Toast.LENGTH_SHORT, true);
+                Utility.replaceFragment(context, new SearchEventFragment(), "SearchEventFragment");
                 break;
             case R.id.upload:
                 ((StudentDashboardActivity) context).setLockerFragment();

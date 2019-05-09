@@ -1,17 +1,29 @@
 <?xml version="1.0" encoding="utf-8"?>
-<LinearLayout xmlns:android="http://schemas.android.com/apk/res/android"
+<FrameLayout
+    xmlns:android="http://schemas.android.com/apk/res/android"
     android:layout_width="match_parent"
     android:layout_height="match_parent"
     xmlns:tools="http://schemas.android.com/tools">
+
     <ListView
         android:id="@+id/lv_volunteers"
         android:layout_width="match_parent"
         android:layout_height="match_parent"
         android:scrollbars="none"
-        android:dividerHeight="0.4dp"
-
-        android:layout_marginStart="@dimen/_20sdp"
-        android:layout_marginEnd="@dimen/_20sdp"
+        android:dividerHeight="0.5dp"
         tools:listitem="@layout/fragment_volunteers_row"
-   />
-</LinearLayout>
+        android:visibility="invisible"
+        android:padding="@dimen/_10sdp"/>
+
+    <com.ztp.app.Helper.MyTextView
+        android:id="@+id/noData"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:layout_gravity="center"
+        android:text="@string/err_no_data_found"
+        android:textSize="@dimen/_10ssp"
+        android:visibility="invisible"
+        />
+
+
+</FrameLayout>

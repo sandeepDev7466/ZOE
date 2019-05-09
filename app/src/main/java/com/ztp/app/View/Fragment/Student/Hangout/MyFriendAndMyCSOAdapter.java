@@ -62,7 +62,7 @@ class MyFriendAndMyCSOAdapter extends BaseAdapter {
         holder.reply.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {
-                myToast.show("Reply", Toast.LENGTH_SHORT,true);
+               // myToast.show("Reply", Toast.LENGTH_SHORT,true);
             }
         });
 

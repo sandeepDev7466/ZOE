@@ -163,63 +163,27 @@
                 android:paddingRight="@dimen/_15sdp"
                 android:layout_marginTop="@dimen/_20sdp">
 
+                <!--<LinearLayout
+                    android:layout_width="@dimen/_80sdp"
+                    android:layout_height="@dimen/_25sdp"
+                    android:layout_gravity="center"
+                    android:background="@drawable/blue_rectangle"
+                    android:gravity="center">
 
-                <LinearLayout
-                    android:layout_width="match_parent"
-                    android:layout_height="wrap_content"
-                    android:orientation="horizontal"
-                    android:background="@drawable/border"
-                    android:padding="@dimen/_5sdp">
-
-                    <Spinner
-                        android:id="@+id/type"
-                        android:layout_width="0dp"
+                    <TextView
+                        android:layout_width="wrap_content"
                         android:layout_height="wrap_content"
-                        android:background="@null"
-                        android:layout_weight=".9"/>
-
-                    <ImageView
-                        android:layout_width="0dp"
-                        android:layout_height="@dimen/_8sdp"
-                        app:srcCompat="@drawable/ic_down_arrow"
-                        android:layout_weight=".1"
-                        android:layout_gravity="center_vertical"/>
-
-
+                        android:text="CSO"
+                        android:textColor="@color/white"/>
                 </LinearLayout>
-
+-->
                 <LinearLayout
                     android:layout_width="match_parent"
                     android:layout_height="wrap_content"
-                    android:orientation="horizontal"
-                    android:background="@drawable/border"
-                    android:padding="@dimen/_5sdp"
-                    android:layout_marginTop="@dimen/_10sdp">
-
-                    <Spinner
-                        android:id="@+id/school"
-                        android:layout_width="0dp"
-                        android:layout_height="wrap_content"
-                        android:background="@null"
-                        android:layout_weight=".9"/>
-
-                    <ImageView
-                        android:layout_width="0dp"
-                        android:layout_height="@dimen/_8sdp"
-                        app:srcCompat="@drawable/ic_down_arrow"
-                        android:layout_weight=".1"
-                        android:layout_gravity="center_vertical"/>
-
-
-                </LinearLayout>
-
-                <LinearLayout
-                    android:layout_width="match_parent"
-                    android:layout_height="wrap_content"
-                    android:orientation="horizontal"
-                    android:layout_marginTop="@dimen/_10sdp">
+                    android:orientation="horizontal">
 
                     <com.ztp.app.Helper.MyTextInputLayout
+                        android:id="@+id/etFirstNameLayout"
                         android:layout_width="0dp"
                         android:layout_height="wrap_content"
                         android:layout_marginTop="@dimen/_5sdp"
@@ -231,12 +195,13 @@
                             android:id="@+id/etFirstName"
                             android:layout_width="match_parent"
                             android:layout_height="wrap_content"
-                            android:hint="First Name"
+                            android:hint="@string/first_name"
                             android:inputType="text"
                             android:textSize="@dimen/_12ssp" />
                     </com.ztp.app.Helper.MyTextInputLayout>
 
                     <com.ztp.app.Helper.MyTextInputLayout
+                        android:id="@+id/etLastNameLayout"
                         android:layout_width="0dp"
                         android:layout_height="wrap_content"
                         android:layout_marginTop="@dimen/_5sdp"
@@ -246,7 +211,7 @@
                             android:id="@+id/etLastName"
                             android:layout_width="match_parent"
                             android:layout_height="wrap_content"
-                            android:hint="Last Name"
+                            android:hint="@string/last_name"
                             android:inputType="text"
                             android:textSize="@dimen/_12ssp" />
                     </com.ztp.app.Helper.MyTextInputLayout>
@@ -254,6 +219,7 @@
                 </LinearLayout>
 
                 <com.ztp.app.Helper.MyTextInputLayout
+                    android:id="@+id/etEmailLayout"
                     android:layout_width="match_parent"
                     android:layout_height="wrap_content"
                     android:layout_marginTop="@dimen/_10sdp">
@@ -268,6 +234,7 @@
                 </com.ztp.app.Helper.MyTextInputLayout>
 
                 <com.ztp.app.Helper.MyTextInputLayout
+                    android:id="@+id/etPhoneLayout"
                     android:layout_width="match_parent"
                     android:layout_height="wrap_content"
                     android:layout_marginTop="@dimen/_10sdp">
@@ -276,88 +243,50 @@
                         android:id="@+id/etPhone"
                         android:layout_width="match_parent"
                         android:layout_height="wrap_content"
-                        android:hint="Phone No"
+                        android:hint="@string/phone"
                         android:inputType="phone"
-                        android:maxLength="13"
+                        android:maxLength="14"
                         android:textSize="@dimen/_12ssp"
                         android:imeOptions="actionNext"/>
                 </com.ztp.app.Helper.MyTextInputLayout>
 
-
-                <LinearLayout
-                    android:layout_width="match_parent"
-                    android:layout_height="wrap_content"
-                    android:orientation="horizontal"
-                    android:layout_marginTop="@dimen/_10sdp">
-
                     <LinearLayout
-                        android:layout_width="0dp"
+                        android:layout_width="match_parent"
                         android:layout_height="match_parent"
-                        android:layout_weight=".5"
+
                         android:orientation="vertical"
                         android:background="@drawable/border"
-                        android:layout_marginRight="@dimen/_2sdp"
+                        android:layout_marginTop="@dimen/_10sdp"
                         android:gravity="center"
                         android:padding="@dimen/_5sdp">
 
-                        <LinearLayout
-                            android:layout_width="match_parent"
-                            android:layout_height="match_parent"
-                            android:orientation="horizontal">
 
                             <Spinner
                                 android:id="@+id/country"
-                                android:layout_width="0dp"
+                                android:layout_width="match_parent"
                                 android:layout_height="wrap_content"
-                                android:background="@null"
-                                android:layout_weight=".9"/>
-
-                            <ImageView
-                                android:layout_width="0dp"
-                                android:layout_height="@dimen/_8sdp"
-                                app:srcCompat="@drawable/ic_down_arrow"
-                                android:layout_weight=".1"
-                                android:layout_gravity="center_vertical"/>
-
-
-                        </LinearLayout>
-
+                              />
 
                     </LinearLayout>
 
                     <LinearLayout
-                        android:layout_width="0dp"
+                        android:layout_width="match_parent"
                         android:layout_height="match_parent"
-                        android:layout_weight=".5"
+
                         android:orientation="vertical"
                         android:background="@drawable/border"
-                        android:layout_marginLeft="@dimen/_2sdp"
+                        android:layout_marginTop="@dimen/_10sdp"
                         android:gravity="center"
                         android:padding="@dimen/_5sdp">
 
-                        <LinearLayout
-                            android:layout_width="match_parent"
-                            android:layout_height="match_parent"
-                            android:orientation="horizontal">
 
                             <Spinner
                                 android:id="@+id/state"
-                                android:layout_width="0dp"
+                                android:layout_width="match_parent"
                                 android:layout_height="wrap_content"
-                                android:background="@null"
-                                android:layout_weight=".9"/>
-
-                            <ImageView
-                                android:layout_width="0dp"
-                                android:layout_height="@dimen/_8sdp"
-                                app:srcCompat="@drawable/ic_down_arrow"
-                                android:layout_weight=".1"
-                                android:layout_gravity="center_vertical"/>
-
-                        </LinearLayout>
+                               />
 
 
-                    </LinearLayout>
 
 
                 </LinearLayout>
@@ -384,6 +313,7 @@
                     </com.ztp.app.Helper.MyTextInputLayout>
 
                     <com.ztp.app.Helper.MyTextInputLayout
+                        android:id="@+id/etPostalCodeLayout"
                         android:layout_width="0dp"
                         android:layout_height="wrap_content"
                         android:layout_weight=".5">
@@ -394,8 +324,8 @@
                             android:layout_height="wrap_content"
                             android:hint="@string/postal_code"
                             android:inputType="number"
+                            android:maxLength="5"
                             android:digits="0123456789"
-                            android:maxLength="6"
                             android:textSize="@dimen/_12ssp"
                             android:imeOptions="actionNext"/>
                     </com.ztp.app.Helper.MyTextInputLayout>
@@ -445,17 +375,9 @@
 
                     <Spinner
                         android:id="@+id/gender"
-                        android:layout_width="0dp"
+                        android:layout_width="match_parent"
                         android:layout_height="wrap_content"
-                        android:background="@null"
-                        android:layout_weight=".9"/>
-
-                    <ImageView
-                        android:layout_width="0dp"
-                        android:layout_height="@dimen/_8sdp"
-                        app:srcCompat="@drawable/ic_down_arrow"
-                        android:layout_weight=".1"
-                        android:layout_gravity="center_vertical"/>
+                       />
 
 
                 </LinearLayout>

@@ -1,16 +1,35 @@
-<FrameLayout xmlns:android="http://schemas.android.com/apk/res/android"
+<FrameLayout
+    xmlns:android="http://schemas.android.com/apk/res/android"
     xmlns:tools="http://schemas.android.com/tools"
     android:layout_width="match_parent"
     android:layout_height="match_parent"
     tools:context="com.ztp.app.View.Fragment.CSO.Event.ShiftListFragment">
 
+    <com.ztp.app.Helper.MyTextView
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:layout_gravity="center_horizontal"
+        android:text="@string/shifts"
+        android:layout_marginTop="@dimen/_10sdp"
+        android:textSize="@dimen/_15ssp"/>
+
     <ListView
         android:id="@+id/lv_shift_list"
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
-        android:layout_margin="@dimen/_20sdp"
-        android:scrollbars="none">
+        android:layout_marginTop="@dimen/_30sdp"
+        android:layout_marginStart="@dimen/_20sdp"
+        android:layout_marginEnd="@dimen/_20sdp"
+        android:scrollbars="none"
+        android:visibility="invisible"/>
 
-    </ListView>
+    <com.ztp.app.Helper.MyTextView
+        android:id="@+id/noData"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:text="@string/err_no_data_found"
+        android:textSize="@dimen/_10ssp"
+        android:layout_gravity="center"
+        android:visibility="invisible"/>
 
 </FrameLayout>

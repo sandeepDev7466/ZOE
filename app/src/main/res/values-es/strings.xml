@@ -1,6 +1,6 @@
 <resources>
-    <string name="app_name">ZOE Cianotipo</string>
-    <string name="zoe_thumbprint">ZOE Cianotipo</string>
+    <string name="app_name">zoecianotipo</string>
+    <string name="zoe_thumbprint">zoecianotipo</string>
     <string name="days_to_graduation">Días para <b> Graduación </b></string>
     <string name="days_left_in_semester">Días restantes en <b> Semestre </b></string>
     <string name="choose_profile_photo">Elegir foto de perfil</string>
@@ -57,13 +57,12 @@
     <string name="target">Objetivo</string>
     <string name="booking">Reserva</string>
     <string name="dashboard">Tablero</string>
-    <string name="i_m_a_student">Soy un estudiante</string>
+    <string name="i_m_a_student">Soy un estudiante / voluntario</string>
     <string name="i_m_a_cso">Soy un CSO</string>
     <string name="login">INICIAR SESIÓN</string>
-    <string name="new_to_zoe_thumbprint">¿Nuevo en ZOE Thumbprint?</string>
+    <string name="new_to_zoe_thumbprint">¿Nuevo en zoecianotipo?</string>
     <string name="register_here">REGISTRAR AQUÍ</string>
     <string name="zoe_thumbprint_caps">ZOE HUELLA</string>
-    <string name="login_toast">Iniciando sesión en …</string>
     <string name="push_notification">Notificación de inserción</string>
     <string name="settings">Ajustes</string>
     <string name="registration">REGISTRO</string>
@@ -83,41 +82,36 @@
     <string name="change_phone">Cambiar número de teléfono</string>
     <string name="please_take_a_moment_to_verify_your_phone_number_this_help_us_confirm_your_identity_and_secure_your_account">Tómese un momento para verificar su número de teléfono. Esto nos ayuda a confirmar su identidad y proteger su cuenta.</string>
     <string name="otp_expires_in">OTP expira en</string>
-    <string name="minutes">minutos</string>
+    <string name="minutes">Minutos</string>
     <string name="resend_otp">ENVIAR OTP</string>
     <string name="enter_otp">Entrar en OTP</string>
-    <string name="no_internet_connection">Sin conexión a Internet</string>
     <string name="otp_validation_failed">La validación de OTP falló</string>
     <string name="something_went_wrong">Algo salió mal</string>
     <string name="OTP_verified_successfully_please_login_to_continue">OTP verificado con éxito por favor inicie sesión para continuar</string>
-
-
-    <string name="student_name">Student Name</string>
-    <string name="grad_date">Grad Date</string>
-    <string name="hrs_required">Hrs required</string>
-    <string name="rank">Rank</string>
-    <string name="date">Date</string>
-    <string name="time">Time</string>
-    <string name="change_status">Change Status</string>
-    <string name="tab_students_followers">SEE FOLLOWERS</string>
-    <string name="tab_volunteers">VOLUNTEERS</string>
-
-
-    <string name="tab_myevent">MY EVENTS</string>
-    <string name="tab_newevent">NEW EVENTS</string>
-    <string name="upcoming_event">UPCOMING EVENTS</string>
+    <string name="student_name">Nombre del estudiante</string>
+    <string name="grad_date">Fecha de graduación</string>
+    <string name="hrs_required">Horas requeridas</string>
+    <string name="rank">Rango</string>
+    <string name="date">Fecha</string>
+    <string name="time">Hora</string>
+    <string name="change_status">Cambiar Estado</string>
+    <string name="tab_students_followers">VER SEGUIDORES</string>
+    <string name="tab_volunteers">Los voluntarios</string>
+    <string name="tab_myevent">MIS EVENTOS</string>
+    <string name="tab_newevent">NUEVOUS EVENTOS</string>
+    <string name="upcoming_event">PRÓXIMOS EVENTOS</string>
     <string name="vol_request">Solicitud de voluntariado</string>
     <string name="next_event_countdown">Cuenta atrás del siguiente evento</string>
-    <string name="add_event_detail">ADD EVENT DETAILS</string>
-    <string name="event_name">Event Name</string>
-    <string name="event_descrip">Event Description</string>
-    <string name="contact_name">Contact Name</string>
-    <string name="phone_no">Phone No</string>
-    <string name="location">Location</string>
-    <string name="manage_schedule">Manage Schedule</string>
-    <string name="volunteers">Valunteers</string>
-    <string name="start_time">Start Time</string>
-    <string name="end_time">End Time</string>
+    <string name="add_event_detail">AÑADIR DETALLES DEL EVENTO</string>
+    <string name="event_name">Nombre del evento</string>
+    <string name="event_descrip">descripción del evento</string>
+    <string name="contact_name">Nombre de contacto</string>
+    <string name="phone_no">Número de teléfono</string>
+    <string name="location">Ubicación</string>
+    <string name="manage_schedule">Administrar horario</string>
+    <string name="volunteers">Voluntarios</string>
+    <string name="start_time">Hora de inicio</string>
+    <string name="end_time">Hora de finalización</string>
     <string name="task">Tarea</string>
     <string name="events">Eventos</string>
     <string name="students">Estudiantes</string>
@@ -131,42 +125,9 @@
     <string name="MY_TARGETS">MIS METAS</string>
     <string name="COUNTDOWN">CUENTA REGRESIVA</string>
     <string name="TIMELINE">LINEA DE TIEMPO</string>
-
-    <string-array name="gender">
-        <item>Género</item>
-        <item>Masculino</item>
-        <item>Hembra</item>
-        <item>Otros</item>
-    </string-array>
-
-    <string-array name="type">
-        <item>Usted está ?</item>
-        <item>Estudiante</item>
-        <item>Voluntario</item>
-    </string-array>
-
-    <string-array name="type_cso">
-        <item>You are ?</item>
-        <item>CSO</item>
-    </string-array>
-
-    <string-array name="school">
-        <item>School</item>
-        <item>School1</item>
-        <item>School2</item>
-        <item>School3</item>
-    </string-array>
-
-
-    <string-array name="type_all">
-        <item>Usted está ?</item>
-        <item>Estudiante</item>
-        <item>Voluntario</item>
-        <item>CSO</item>
-    </string-array>
-
     <string name="org_name">Nombre de la organización</string>
     <string name="org_email">Email de organización</string>
+    <string name="err_enter_org_name">Ingrese el nombre de la organización</string>
     <string name="org_phone">Telefono de organizacion</string>
     <string name="org_website">Sitio web de organización</string>
     <string name="org_mission">Misión de organización</string>
@@ -201,9 +162,180 @@
     <string name="view_shift">Ver Shift</string>
     <string name="delete">Borrar</string>
     <string name="forgot_password">Se te olvidó tu contraseña?</string>
-    <string name="please_enter_you_registered_email_id_to_receive_reset_password_link">Por favor ingrese su ID de correo electrónico registrado para recibir el enlace de restablecer contraseña.</string>
+    <string name="please_enter_you_registered_email_id_to_receive_reset_password_link">Introduzca su ID de correo electrónico registrado para recibir el enlace para restablecer la contraseña.</string>
     <string name="upload_document_title">Subir título del documento</string>
     <string name="update_event_detail">ACTUALIZAR DETALLES DEL EVENTO</string>
+    <string name="zip">Código postal</string>
+    <string name="add">Añadir</string>
+    <string name="toast_event_added_success">Evento agregado exitosamente!</string>
+    <string name="toast_event_added_failed">Evento no añadido! Inténtalo de nuevo.</string>
+    <string name="please_wait">Por favor espera...</string>
+    <string name="enter_start_date">Ingrese la fecha de inicio</string>
+    <string name="enter_end_date">Ingrese la fecha de finalización</string>
+    <string name="hint_end_date_past">La fecha de finalización no puede ser una fecha pasada!</string>
+    <string name="hint_end_date_before_start">La fecha de finalización no puede ser anterior a la fecha de inicio!</string>
+    <string name="hint_select_start_date">Por favor seleccione la fecha de inicio!</string>
+    <string name="err_no_data_found">Datos no encontrados!</string>
+    <string name="err_enter_valid_email">Ingrese un email valido</string>
+    <string name="err_enter_valid_phone">Ingrese un número de teléfono válido</string>
+    <string name="err_enter_valid_postal">Ingrese el código postal válido</string>
+    <string name="err_no_school">Escuela no encontrada</string>
+    <string name="err_no_country_found">País no encontrado</string>
+    <string name="err_no_profile_found">Perfil no encontrado</string>
+    <string name="err_no_state_found">Estado no encontrado</string>
+    <string name="err_no_timezone_found">Zona horaria no encontrada</string>
+    <string name="err_no_event_type_found">Tipo de evento no encontrado</string>
+    <string name="err_server">Error del Servidor</string>
+    <string name="wrong_email_or_password">Correo electrónico o contraseña incorrectos ingresados</string>
+    <string name="please_enter_password">Por favor, ingrese contraseña</string>
+    <string name="please_enter_email">Por favor ingrese su email</string>
+    <string name="no_internet_connection">Sin conexión a Internet</string>
+    <string name="logging_you_in">Iniciando sesión en …</string>
+    <string name="validating_otp">Validando OTP ...</string>
+    <string name="track_your_hours">SEGUIR SUS HORAS</string>
+    <string name="track_hours_message">Una ubicación centralizada para rastrear sus horas de servicio comunitario y administrar su progreso para establecer el GPA objetivo.</string>
+    <string name="place_for_documents">UN LUGAR PARA LOS DOCUMENTOS</string>
+    <string name="place_for_documents_message">Cargue y almacene archivos para mantenerlo organizado y en la pista. Gestionando tus horas de forma rápida y sencilla.</string>
+    <string name="book_your_cso_events">RESERVA TUS EVENTOS DE CSO</string>
+    <string name="book_your_cso_events_message">Es muy fácil administrar su calendario de voluntarios y conectarse con organizaciones de servicio comunitario.</string>
+    <string name="somewhere_to_hangout">EN ALGUN LUGAR DE HANGOUT</string>
+    <string name="somewhere_to_hangout_message">¡Sigue la conversación! Chatea con tus amigos y mantente informado con los anuncios de CSO.</string>
+    <string name="you_are_connected">ESTÁS CONECTADO</string>
+    <string name="you_are_connected_message">Tener acceso directo a la escuela y los administradores de las OSC. Haga preguntas, obtenga comentarios y manténgase al día.</string>
+    <string name="STUDENT">ESTUDIANTE</string>
+    <string name="VOLUNTEER">VOLUNTARIO</string>
+    <string name="err_first_name">El nombre solo debe contener alfabetos</string>
+    <string name="err_last_name">El apellido solo debe contener alfabetos</string>
+    <string name="err_password">La contraseña debe contener 8 caracteres, 1 dígito, 1 en mayúsculas y 1 carácter especial</string>
+    <string name="err_invalid_data">Datos no válidos encontrados</string>
+    <string name="err_password_confirmpassword_not_match">La contraseña y la contraseña no coinciden</string>
+    <string name="err_enter_confirm_password">Introduzca la contraseña de confirmación</string>
+    <string name="err_enter_password">Introducir la contraseña</string>
+    <string name="err_select_gender">Seleccione género</string>
+    <string name="err_enter_dob">Ingrese fecha de nacimiento</string>
+    <string name="err_enter_address">Ingresa la direccion</string>
+    <string name="err_enter_postal_code">Ingrese el código postal</string>
+    <string name="err_enter_city">Entrar en ciudad</string>
+    <string name="err_select_state">Seleccione estado</string>
+    <string name="err_select_country">Seleccionar país</string>
+    <string name="err_enter_phone_number">Ingresa número telefónico</string>
+    <string name="err_enter_email">Ingrese correo electrónico</string>
+    <string name="err_enter_last_name">Introduzca el apellido</string>
+    <string name="err_enter_first_name">Ingrese el primer nombre</string>
+    <string name="err_org_name">El nombre de la organización solo debe contener alfabetos</string>
+    <string name="err_enter_valid_website_address">Introduce una dirección de sitio web válida</string>
+    <string name="err_upload_document">Subir documento</string>
+    <string name="err_upload_document_title">Subir título del documento</string>
+    <string name="err_enter_taxId">Introduzca EIN / Identificación de impuestos</string>
+    <string name="err_org_profile">Introduzca el perfil de la organización</string>
+    <string name="err_org_cause">Entrar en la causa de la organización</string>
+    <string name="err_org_mission">Entrar en la misión de la organización</string>
+    <string name="err_org_website">Ingrese al sitio web de la organización</string>
+    <string name="err_org_phone">Ingresar teléfono de la organización</string>
+    <string name="err_org_email">Ingrese el correo electrónico de la organización</string>
+    <string name="err_document_title">Ingrese el título del documento</string>
+    <string name="err_org_inf_regisitration_failed">El registro de información de la organización falló</string>
+    <string name="file_uploaded_successfully">El archivo ha subido correctamente</string>
+    <string name="err_file_upload_failed">Falló la carga del archivo</string>
+    <string name="profile_updated">Perfil actualizado</string>
+    <string name="check_your_choice">Revisa tu elección</string>
+    <string name="err_enter_volunterr_inf">Ingrese la información del voluntario</string>
+    <string name="err_enter_time_period">Introduzca el período de tiempo</string>
+    <string name="err_describe_person">Describir persona</string>
+    <string name="err_enter_your_target">Introduce tu objetivo</string>
+    <string name="err_type_service">Ingrese el tipo de servicios ofrecidos</string>
+    <string name="select_school">Seleccionar escuela</string>
+    <string name="imdone">HE TERMINADO</string>
+    <string name="cont">CONTINUAR</string>
+    <string name="select_time">Seleccione tiempo</string>
+    <string name="shift_added_successfully">Shift agregado exitosamente</string>
+    <string name="failed">Ha fallado</string>
+    <string name="err_enter_rank">Entrar en rango</string>
+    <string name="err_enter_task">Entrar en tarea</string>
+    <string name="err_select_end_time">Seleccione la hora de finalización</string>
+    <string name="err_select_start_time">Seleccione la hora de inicio</string>
+    <string name="err_enter_number_volunteer">Ingrese el número de voluntarios</string>
+    <string name="err_select_start_date">Seleccionar fecha de inicio</string>
+    <string name="event_deleted_successfully">Evento eliminado exitosamente</string>
+    <string name="deleting_shift">Eliminando turno</string>
+    <string name="shift_deleted_successfully">Shift eliminado con éxito</string>
+    <string name="select_time_zone">Selecciona la zona horaria</string>
+    <string name="select_event_type">Seleccione el tipo de evento</string>
+    <string name="select_country">Seleccionar país</string>
+    <string name="select_state">Seleccione estado</string>
+    <string name="event_updated_successfully">Evento actualizado exitosamente</string>
+    <string name="my_friends">MIS AMIGOS</string>
+    <string name="potential_friends">AMIGOS POTENCIALES</string>
+    <string name="no_events_found">No se encontraron eventos</string>
+    <string name="event">EVENTO</string>
+    <string name="shift">CAMBIO</string>
+    <string name="gpa">GPA</string>
+    <string name="hrs">HORAS</string>
+    <string name="search_events_by_city_state_zip_email_amp_location">Buscar eventos por ciudad, estado, código postal, correo electrónico y ubicación.</string>
+    <string name="shift_date">Fecha</string>
+    <string name="shift_volunteer_request">Solicitud de voluntariado</string>
+    <string name="shift_start_time">Hora de inicio</string>
+    <string name="shift_end_time">Hora de finalización</string>
+    <string name="shift_rank">Rango</string>
+    <string name="shift_task">Tarea</string>
+    <string name="shift_status">Estado</string>
+    <string name="shift_add_date">Agregar fecha</string>
+    <string name="shift_update_date">Fecha de actualización</string>
+    <string name="CSO">CSO</string>
+    <string name="search_events">Buscar eventos</string>
 
+    <string name="err_enter_event_type">Ingrese el tipo de evento</string>
+    <string name="err_enter_event_name">Ingrese el nombre del evento</string>
+    <string name="err_enter_event_description">Introduzca la descripción del evento</string>
+    <string name="go_to_settings">Ir a la configuración</string>
+    <string name="ok">DE ACUERDO</string>
+    <string name="err_enter_time_zone">Entrar en zona horaria</string>
+    <string name="err_enter_contact_name">Ingrese el nombre del contacto</string>
+    <string name="err_event_not_updated">Evento no actualizado. ¡Inténtalo de nuevo!</string>
+    <string name="err_event_name_validation">El nombre del evento solo puede contener letras y números.</string>
+    <string name="err_event_description_validation">La descripción del evento solo puede contener letras y números.</string>
+    <string name="toast_volunteer_request_success">Solicitud de voluntariado enviada con éxito</string>
+    <string name="tv_event_start_date">Fecha de inicio de registro</string>
+    <string name="tv_event_end_date">Fecha de finalización del registro</string>
+    <string name="volunteer_request">Solicitud enviada</string>
+    <string-array name="gender">
+        <item>Género</item>
+        <item>Masculino</item>
+        <item>Hembra</item>
+        <item>Otros</item>
+    </string-array>
+
+    <string-array name="type">
+        <item>Usted está ?</item>
+        <item>Estudiante</item>
+        <item>Voluntario</item>
+    </string-array>
+
+    <string-array name="type_cso">
+        <item>You are ?</item>
+        <item>CSO</item>
+    </string-array>
+
+    <string-array name="school">
+        <item>School</item>
+        <item>School1</item>
+        <item>School2</item>
+        <item>School3</item>
+    </string-array>
+
+
+    <string-array name="type_all">
+        <item>Usted está ?</item>
+        <item>Estudiante</item>
+        <item>Voluntario</item>
+        <item>CSO</item>
+    </string-array>
+    <string name="err_enter_valid_password">Ingrese una contraseña válida</string>
+    <string name="err_enter_valid_last_name">Ingrese un apellido válido</string>
+    <string name="err_enter_valid_first_name">Ingrese un Nombre válido</string>
+    <string name="shifts">CAMBIOS</string>
+    <string name="shift_updated_success">Cambio actualizado correctamente</string>
+    <string name="err_enter_start_time_first">Ingrese la hora de inicio primero</string>
+    <string name="err_endtime_notbefore_startime">La hora de finalización no puede ser anterior a la hora de inicio.</string>
 
 </resources>

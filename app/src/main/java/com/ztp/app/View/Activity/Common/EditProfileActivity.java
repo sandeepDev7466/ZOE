@@ -3,16 +3,16 @@ package com.ztp.app.View.Activity.Common;
 import android.annotation.SuppressLint;
 import android.app.DatePickerDialog;
 import android.arch.lifecycle.LifecycleOwner;
-import android.arch.lifecycle.LiveData;
-import android.arch.lifecycle.Observer;
 import android.arch.lifecycle.ViewModelProviders;
 import android.content.Context;
 import android.content.Intent;
 import android.os.Build;
 import android.os.Bundle;
-import android.support.annotation.Nullable;
 import android.support.v7.app.AppCompatActivity;
 import android.telephony.PhoneNumberFormattingTextWatcher;
+import android.text.Editable;
+import android.text.TextWatcher;
+import android.util.Log;
 import android.view.MotionEvent;
 import android.view.View;
 import android.widget.AdapterView;
@@ -24,10 +24,13 @@ import android.widget.ScrollView;
 import android.widget.Spinner;
 import android.widget.Toast;
 
+import com.google.gson.Gson;
+import com.raywenderlich.android.validatetor.ValidateTor;
 import com.ztp.app.Data.Local.Room.Database.RoomDB;
 import com.ztp.app.Data.Local.SharedPrefrence.SharedPref;
 import com.ztp.app.Data.Remote.Model.Request.GetProfileRequest;
 import com.ztp.app.Data.Remote.Model.Request.StateRequest;
+import com.ztp.app.Data.Remote.Model.Request.StudentRegisterRequest;
 import com.ztp.app.Data.Remote.Model.Request.UpdateProfileRequest;
 import com.ztp.app.Data.Remote.Model.Response.CountryResponse;
 import com.ztp.app.Data.Remote.Model.Response.GetProfileResponse;
@@ -39,6 +42,7 @@ import com.ztp.app.Helper.MyTextInputEditText;
 import com.ztp.app.Helper.MyTextInputLayout;
 import com.ztp.app.Helper.MyToast;
 import com.ztp.app.R;
+import com.ztp.app.Utils.Constants;
 import com.ztp.app.Utils.Utility;
 import com.ztp.app.View.Activity.CSO.CsoRegisterStep_2Activity;
 import com.ztp.app.View.Activity.Student.StudentDashboardActivity;
@@ -48,20 +52,19 @@ import com.ztp.app.Viewmodel.SchoolViewModel;
 import com.ztp.app.Viewmodel.StateViewModel;
 import com.ztp.app.Viewmodel.UpdateProfileViewModel;
 
-import java.text.SimpleDateFormat;
+import java.text.ParseException;
 import java.util.ArrayList;
 import java.util.Calendar;
 import java.util.Date;
 import java.util.List;
-import java.util.Locale;
 
 public class EditProfileActivity extends AppCompatActivity implements View.OnClickListener, View.OnTouchListener {
 
     MyButton update, clear;
     String type;
     Context context;
-    Spinner sp_type, sp_school, sp_country, sp_state, sp_gender;
-    MyTextInputLayout etPasswordLayout, etConfirmPasswordLayout;
+    Spinner sp_school, sp_country, sp_state, sp_gender;
+    MyTextInputLayout etFirstNameLayout, etLastNameLayout, etPostalCodeLayout,etEmailLayout,etPhoneLayout;
     MyTextInputEditText etFirstName, etLastName, etEmail, etPhone, etCity, etPostalCode, etDob, etPassword, etConfirmPassword, etAddress;
     MyToast myToast;
     SharedPref sharedPref;
@@ -76,7 +79,7 @@ public class EditProfileActivity extends AppCompatActivity implements View.OnCli
     List<String> countryList = new ArrayList<>();
     List<String> stateList = new ArrayList<>();
     List<String> schoolList = new ArrayList<>();
-    String country_id, state_id, type_id, school_id, gender_id;
+    String country_id, state_id, school_id, gender_id;
     ImageView back;
     ScrollView scrollView;
     Calendar myCalendar;
@@ -84,9 +87,11 @@ public class EditProfileActivity extends AppCompatActivity implements View.OnCli
     UpdateProfileViewModel updateProfileViewModel;
     GetProfileResponse getProfileResponse;
     LinearLayout nav_layout, schoolLayout;
-    LiveData<List<CountryResponse.Country>> countryLiveDataList;
     RoomDB roomDB;
     boolean flag = false;
+    ValidateTor validate;
+    boolean error = false;
+
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -102,6 +107,8 @@ public class EditProfileActivity extends AppCompatActivity implements View.OnCli
             getSupportActionBar().hide();
         if (getIntent() != null)
             type = getIntent().getStringExtra("type");
+
+        validate = new ValidateTor();
         roomDB = RoomDB.getInstance(context);
         myCalendar = Calendar.getInstance();
         myProgressDialog = new MyProgressDialog(context);
@@ -118,7 +125,6 @@ public class EditProfileActivity extends AppCompatActivity implements View.OnCli
         clear = findViewById(R.id.clear);
         back = findViewById(R.id.back);
 
-        sp_type = findViewById(R.id.type);
         sp_school = findViewById(R.id.school);
         sp_country = findViewById(R.id.country);
         sp_state = findViewById(R.id.state);
@@ -129,11 +135,17 @@ public class EditProfileActivity extends AppCompatActivity implements View.OnCli
         etEmail = findViewById(R.id.etEmail);
         etPhone = findViewById(R.id.etPhone);
 
+        etFirstNameLayout = findViewById(R.id.etFirstNameLayout);
+        etLastNameLayout = findViewById(R.id.etLastNameLayout);
+        etPostalCodeLayout = findViewById(R.id.etPostalCodeLayout);
+        etEmailLayout = findViewById(R.id.etEmailLayout);
+        etPhoneLayout = findViewById(R.id.etPhoneLayout);
+
         if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.LOLLIPOP) {
 
             etPhone.addTextChangedListener(new PhoneNumberFormattingTextWatcher("US"));
 
-        }else {
+        } else {
             etPhone.addTextChangedListener(new PhoneNumberFormattingTextWatcher());
         }
 
@@ -151,15 +163,13 @@ public class EditProfileActivity extends AppCompatActivity implements View.OnCli
         back.setOnClickListener(this);
         etDob.setOnTouchListener(this);
 
-        setTypeSpinner();
         setGenderSpinner();
         getSchoolList();
-        getCountryList();
-        getProfileData();
+//        getCountryList();
+//        getProfileData();
 
         etPhone.setEnabled(false);
         etEmail.setEnabled(false);
-        sp_type.setEnabled(false);
         sp_school.setEnabled(false);
 
         if (type.equalsIgnoreCase("cso")) {
@@ -167,28 +177,11 @@ public class EditProfileActivity extends AppCompatActivity implements View.OnCli
             schoolLayout.setVisibility(View.GONE);
         }
 
-        sp_type.setOnItemSelectedListener(new AdapterView.OnItemSelectedListener() {
-            @Override
-            public void onItemSelected(AdapterView<?> parentView, View selectedItemView, int position, long id) {
-                if (position > 0) {
-                    type_id = getResources().getStringArray(R.array.type_all)[position];
-                }
-            }
-
-            @Override
-            public void onNothingSelected(AdapterView<?> parentView) {
-
-
-            }
-
-        });
-
         sp_school.setOnItemSelectedListener(new AdapterView.OnItemSelectedListener() {
             @Override
             public void onItemSelected(AdapterView<?> parentView, View selectedItemView, int position, long id) {
-                if (position > 0) {
-                    school_id = schoolListData.get(position - 1).getSchoolId();
-                }
+                school_id = schoolListData.get(position).getSchoolId();
+
             }
 
             @Override
@@ -201,9 +194,11 @@ public class EditProfileActivity extends AppCompatActivity implements View.OnCli
         sp_gender.setOnItemSelectedListener(new AdapterView.OnItemSelectedListener() {
             @Override
             public void onItemSelected(AdapterView<?> parentView, View selectedItemView, int position, long id) {
-                if (position > 0) {
+                if(position>0)
                     gender_id = getResources().getStringArray(R.array.gender)[position];
-                }
+                else
+                    gender_id = "";
+
             }
 
             @Override
@@ -241,25 +236,136 @@ public class EditProfileActivity extends AppCompatActivity implements View.OnCli
             }
 
         });
+
+        etFirstName.addTextChangedListener(new TextWatcher() {
+            @Override
+            public void beforeTextChanged(CharSequence s, int start, int count, int after) {
+
+            }
+
+            @Override
+            public void onTextChanged(CharSequence s, int start, int before, int count) {
+
+            }
+
+            @Override
+            public void afterTextChanged(Editable s) {
+
+                if (s != null && s.length() > 0) {
+                    if (!validate.isAlpha(s.toString())) {
+                        etFirstNameLayout.setError("First name should only contain alphabets");
+                    } else {
+                        etFirstNameLayout.setError(null);
+                    }
+                } else {
+                    etFirstNameLayout.setError(null);
+                }
+            }
+        });
+
+        etLastName.addTextChangedListener(new TextWatcher() {
+            @Override
+            public void beforeTextChanged(CharSequence s, int start, int count, int after) {
+
+            }
+
+            @Override
+            public void onTextChanged(CharSequence s, int start, int before, int count) {
+
+            }
+
+            @Override
+            public void afterTextChanged(Editable s) {
+
+                if (s != null && s.length() > 0) {
+                    if (!validate.isAlpha(s.toString())) {
+                        etLastNameLayout.setError("Last name should only contain alphabets");
+                    } else {
+                        etLastNameLayout.setError(null);
+                    }
+                } else {
+                    etLastNameLayout.setError(null);
+                }
+            }
+        });
+        etPostalCode.addTextChangedListener(new TextWatcher() {
+            @Override
+            public void beforeTextChanged(CharSequence s, int start, int count, int after) {
+
+            }
+
+            @Override
+            public void onTextChanged(CharSequence s, int start, int before, int count) {
+
+            }
+
+            @Override
+            public void afterTextChanged(Editable s) {
+
+                if (s != null && s.length() > 0) {
+                    if (!Utility.isValidPostalCode(s.toString())) {
+                        etPostalCodeLayout.setError("Enter valid postal code");
+                    } else {
+                        etPostalCodeLayout.setError(null);
+                    }
+                } else {
+                    etPostalCodeLayout.setError(null);
+                }
+            }
+        });
+
+       /* etEmail.addTextChangedListener(new TextWatcher() {
+            @Override
+            public void beforeTextChanged(CharSequence s, int start, int count, int after) {
+
+            }
+
+            @Override
+            public void onTextChanged(CharSequence s, int start, int before, int count) {
+
+            }
+
+            @Override
+            public void afterTextChanged(Editable s) {
+
+                if (s != null && s.length() > 0) {
+                    if (!Utility.isValidEmail(s.toString())) {
+                        etEmailLayout.setError(getString(R.string.err_enter_valid_email));
+                    } else {
+                        etEmailLayout.setError(null);
+                    }
+                } else {
+                    etEmailLayout.setError(null);
+                }
+            }
+        });
+*/
     }
 
     private void getSchoolList() {
 
         schoolList = new ArrayList<>();
         if (Utility.isNetworkAvailable(context)) {
-            myProgressDialog.show("Please wait...");
+            myProgressDialog.show(getString(R.string.please_wait));
             schoolModel.getSchoolResponse().observe((LifecycleOwner) context, schoolResponse -> {
 
-                if (schoolResponse != null) {
+                if (schoolResponse != null && schoolResponse.getResStatus().equalsIgnoreCase("200")) {
                     schoolListData = schoolResponse.getSchoolData();
-                    for (int i = 0; i < schoolListData.size(); i++) {
-                        schoolList.add(schoolListData.get(i).getSchoolName());
+                    if (schoolListData.size() > 0) {
+                        for (int i = 0; i < schoolListData.size(); i++) {
+                            schoolList.add(schoolListData.get(i).getSchoolName());
+                        }
+                        //schoolList.add(0, "Select School");
+                        setSchoolSpinner(schoolList);
+                        getProfileData();
+                    } else {
+                        myProgressDialog.dismiss();
+                        myToast.show(getString(R.string.err_no_school), Toast.LENGTH_SHORT, false);
                     }
-                    //schoolList.add(0, "Select School");
-                    setSchoolSpinner(schoolList);
+                } else {
+                    myProgressDialog.dismiss();
+                    myToast.show(getString(R.string.err_server), Toast.LENGTH_SHORT, false);
                 }
-                myProgressDialog.dismiss();
-
             });
         } else {
             myToast.show(getString(R.string.no_internet_connection), Toast.LENGTH_SHORT, false);
@@ -267,56 +373,35 @@ public class EditProfileActivity extends AppCompatActivity implements View.OnCli
         }
     }
 
- /*   private void getCountryList() {
+    private void getCountryList() {
 
         countryList = new ArrayList<>();
         if (Utility.isNetworkAvailable(context)) {
-            myProgressDialog.show("Please wait...");
-
+            //myProgressDialog.show(getString(R.string.please_wait));
             countryModel.getCountryResponse(context).observe((LifecycleOwner) context, countryResponse -> {
                 if (countryResponse != null) {
                     countryListData = countryResponse.getResData();
-                    for (int i = 0; i < countryListData.size(); i++) {
-                        countryList.add(countryListData.get(i).getCountryName());
-                    }
-                    countryList.add(0, "Select Country");
-                    setCountrySpinner(countryList);
-                }
-                myProgressDialog.dismiss();
+                    if (countryListData.size() > 0) {
+                        for (int i = 0; i < countryListData.size(); i++) {
+                            countryList.add(countryListData.get(i).getCountryName());
+                        }
+                        setCountrySpinner(countryListData);
+                        myProgressDialog.dismiss();
+                    } else {
 
+                        myToast.show(getString(R.string.something_went_wrong), Toast.LENGTH_SHORT, false);
+                        myProgressDialog.dismiss();
+                    }
+                } else {
+                    myToast.show(getString(R.string.err_server), Toast.LENGTH_SHORT, false);
+                    myProgressDialog.dismiss();
+                }
             });
         } else {
 
+            myProgressDialog.dismiss();
             myToast.show(getString(R.string.no_internet_connection), Toast.LENGTH_SHORT, false);
-            countryList.add("Select Country");
-            setCountrySpinner(countryList);
-
-*//*
-             countryLiveDataList =roomDB.getCountryDao().getAll();
-
-             countryLiveDataList.observe((LifecycleOwner) context, countryList -> {
-
-
-             });
-
-             if(countryLiveDataList!=null)
-             {
-                 for (int i = 0; i < countryListData.size(); i++) {
-                     countryList.add(countryListData.get(i).getCountryName());
-                 }
-                 countryList.add(0, "Select Country");
-                 setCountrySpinner(countryList);
-             }
-             else
-             {
-                 myToast.show(getString(R.string.no_internet_connection), Toast.LENGTH_SHORT, false);
-                 countryList.add("Select Country");
-                 setCountrySpinner(countryList);
-             }*//*
         }
-
-        stateList.add("Select State");
-        setStateSpinner(stateList);
 
     }
 
@@ -324,64 +409,25 @@ public class EditProfileActivity extends AppCompatActivity implements View.OnCli
 
         stateList = new ArrayList<>();
         if (Utility.isNetworkAvailable(context)) {
-            myProgressDialog.show("Please wait...");
+            if (!myProgressDialog.isShowing())
+                myProgressDialog.show(getString(R.string.please_wait));
             stateModel.getStateResponse(context, new StateRequest(country_id)).observe((LifecycleOwner) context, stateResponse -> {
-                if (stateResponse != null) {
+                if (stateResponse != null && stateResponse.getResStatus().equalsIgnoreCase("200")) {
                     stateListData = stateResponse.getStateList();
-                    for (int i = 0; i < stateListData.size(); i++) {
-                        stateList.add(stateListData.get(i).getStateName());
+                    if (stateListData.size() > 0) {
+                        for (int i = 0; i < stateListData.size(); i++) {
+                            stateList.add(stateListData.get(i).getStateName());
+                        }
+                        setStateSpinner(stateListData);
+                        myProgressDialog.dismiss();
+                    } else {
+                        myProgressDialog.dismiss();
+                        myToast.show(getString(R.string.err_no_state_found), Toast.LENGTH_SHORT, false);
                     }
-                    stateList.add(0, "Select State");
-                    setStateSpinner(stateList);
+                } else {
+                    myProgressDialog.dismiss();
+                    myToast.show(getString(R.string.err_server), Toast.LENGTH_SHORT, false);
                 }
-                myProgressDialog.dismiss();
-            });
-        } else {
-            myToast.show(getString(R.string.no_internet_connection), Toast.LENGTH_SHORT, false);
-        }
-    }
-*/
- private void getCountryList() {
-
-     countryList = new ArrayList<>();
-     if (Utility.isNetworkAvailable(context)) {
-         myProgressDialog.show("Please wait...");
-
-         countryModel.getCountryResponse(context).observe((LifecycleOwner) context, countryResponse -> {
-             if (countryResponse != null) {
-                 countryListData = countryResponse.getResData();
-                 for (int i = 0; i < countryListData.size(); i++) {
-                     countryList.add(countryListData.get(i).getCountryName());
-                 }
-                 countryList.add(0, "Select Country");
-                 setCountrySpinner(countryListData);
-             }
-             myProgressDialog.dismiss();
-
-         });
-     } else {
-
-         myToast.show(getString(R.string.no_internet_connection), Toast.LENGTH_SHORT, false);
-     }
-
-
- }
-
-    private void getStateList(String country_id) {
-
-        stateList = new ArrayList<>();
-        if (Utility.isNetworkAvailable(context)) {
-            myProgressDialog.show("Please wait...");
-            stateModel.getStateResponse(context, new StateRequest(country_id)).observe((LifecycleOwner) context, stateResponse -> {
-                if (stateResponse != null) {
-                    stateListData = stateResponse.getStateList();
-                    for (int i = 0; i < stateListData.size(); i++) {
-                        stateList.add(stateListData.get(i).getStateName());
-                    }
-                    stateList.add(0, "Select State");
-                    setStateSpinner(stateListData);
-                }
-                myProgressDialog.dismiss();
             });
         } else {
             myToast.show(getString(R.string.no_internet_connection), Toast.LENGTH_SHORT, false);
@@ -393,30 +439,10 @@ public class EditProfileActivity extends AppCompatActivity implements View.OnCli
         sp_gender.setAdapter(adapter);
     }
 
-    private void setTypeSpinner() {
-        ArrayAdapter<String> adapter = new ArrayAdapter<>(this, R.layout.spinner_dropdown_item, R.id.text, getResources().getStringArray(R.array.type_all));
-        sp_type.setAdapter(adapter);
-    }
-
     private void setSchoolSpinner(List<String> schoolList) {
         ArrayAdapter<String> adapter = new ArrayAdapter<>(this, R.layout.spinner_dropdown_item, R.id.text, schoolList);
         sp_school.setAdapter(adapter);
     }
-
-    /*private void setCountrySpinner(List<String> countryList) {
-        ArrayAdapter<String> adapter = new ArrayAdapter<>(this, R.layout.spinner_dropdown_item, R.id.text, countryList);
-        sp_country.setAdapter(adapter);
-    }
-
-    private void setStateSpinner(List<String> stateList) {
-        ArrayAdapter<String> adapter = new ArrayAdapter<>(this, R.layout.spinner_dropdown_item, R.id.text, stateList);
-        sp_state.setAdapter(adapter);
-        if (flag) {
-            flag = false;
-            sp_state.setSelection(Integer.parseInt(getProfileResponse.getResData().getUserState()), true);
-        }
-    }
-*/
 
     private void setCountrySpinner(List<CountryResponse.Country> countryList) {
         ArrayAdapter<CountryResponse.Country> adapter = new ArrayAdapter<>(this, R.layout.spinner_dropdown_item, R.id.text, countryList);
@@ -431,102 +457,151 @@ public class EditProfileActivity extends AppCompatActivity implements View.OnCli
             sp_state.setSelection(getStatePosition(), true);
         }
     }
+    public void checkValidation() {
+        if (etFirstName.getText() == null || etFirstName.getText().toString().isEmpty()) {
+            myToast.show(getString(R.string.err_enter_first_name), Toast.LENGTH_SHORT, false);
+            return;
+        } else if (!etFirstName.getText().toString().isEmpty()) {
+            if (!validate.isAlpha(etFirstName.getText().toString())) {
+                myToast.show(getString(R.string.err_enter_first_name), Toast.LENGTH_SHORT, false);
+                return;
+            }
+        }
+        if (etLastName.getText() == null || etLastName.getText().toString().isEmpty()) {
+            myToast.show(getString(R.string.err_enter_last_name), Toast.LENGTH_SHORT, false);
+            return;
+        } else if (!etLastName.getText().toString().isEmpty()) {
+            if (!validate.isAlpha(etLastName.getText().toString())) {
+                myToast.show(getString(R.string.err_enter_last_name), Toast.LENGTH_SHORT, false);
+                return;
+            }
+        }
+        if (etEmail.getText() == null || etEmail.getText().toString().isEmpty()) {
+            myToast.show(getString(R.string.err_enter_email), Toast.LENGTH_SHORT, false);
+            return;
+        } /*else if (!etEmail.getText().toString().isEmpty()) {
+            if (!Utility.isValidEmail(etEmail.getText().toString())) {
+                myToast.show(getString(R.string.err_enter_valid_email), Toast.LENGTH_SHORT, false);
+                return;
+            }
+        }
+*/
+        if (etPhone.getText() == null || etPhone.getText().toString().isEmpty()) {
+            myToast.show(getString(R.string.err_enter_phone_number), Toast.LENGTH_SHORT, false);
+            return;
+        } /*else if (!etPhone.getText().toString().isEmpty()) {
+            if (!Utility.isValidPhoneNumber(etPhone.getText().toString())) {
+                myToast.show(getString(R.string.err_enter_valid_phone), Toast.LENGTH_SHORT, false);
+                return;
+            }
+        }*/
+        if (country_id == null || country_id.isEmpty()) {
+            myToast.show(getString(R.string.err_select_country), Toast.LENGTH_SHORT, false);
+        }
+        if (state_id == null || state_id.isEmpty()) {
+            myToast.show(getString(R.string.err_select_state), Toast.LENGTH_SHORT, false);
+            return;
+        }
+        if (etCity.getText() == null || etCity.getText().toString().isEmpty()) {
+            myToast.show(getString(R.string.err_enter_city), Toast.LENGTH_SHORT, false);
+            return;
+        }
+        if (etPostalCode.getText() == null || etPostalCode.getText().toString().isEmpty()) {
+            myToast.show(getString(R.string.err_enter_postal_code), Toast.LENGTH_SHORT, false);
+            return;
+        } else if (!etPostalCode.getText().toString().isEmpty()) {
+            if (!Utility.isValidPostalCode(etPostalCode.getText().toString())) {
+                myToast.show(getString(R.string.err_enter_valid_postal), Toast.LENGTH_SHORT, false);
+                return;
+            }
+        }
+        if (etAddress.getText() == null || etAddress.getText().toString().isEmpty()) {
+            myToast.show(getString(R.string.err_enter_address), Toast.LENGTH_SHORT, false);
+            return;
+        }
+        if (etDob.getText() == null || etDob.getText().toString().isEmpty()) {
+            myToast.show(getString(R.string.err_enter_dob), Toast.LENGTH_SHORT, false);
+            return;
+        }
+        if (gender_id == null || gender_id.isEmpty()) {
+            myToast.show(getString(R.string.err_select_gender), Toast.LENGTH_SHORT, false);
+            return;
+        }
 
+        if (!error) {
+
+            myProgressDialog.show(getString(R.string.please_wait));
+
+            UpdateProfileRequest updateProfileRequest = new UpdateProfileRequest();
+            updateProfileRequest.setUserType(sharedPref.getUserType());
+            updateProfileRequest.setUserDevice(Utility.getDeviceId(context));
+            updateProfileRequest.setUserId(sharedPref.getUserId());
+            updateProfileRequest.setUserFName(etFirstName.getText().toString());
+            updateProfileRequest.setUserLName(etLastName.getText().toString());
+            updateProfileRequest.setUserCountry(country_id);
+            updateProfileRequest.setUserState(state_id);
+            updateProfileRequest.setUserCity(etCity.getText().toString());
+            updateProfileRequest.setUserZipcode(etPostalCode.getText().toString());
+            updateProfileRequest.setUserAddress(etAddress.getText().toString());
+            updateProfileRequest.setUserDob(etDob.getText().toString().trim());
+            updateProfileRequest.setUserGender(String.valueOf(gender_id.charAt(0)));
+
+            if(Utility.isNetworkAvailable(context)) {
+                updateProfileViewModel.updateProfileResponse(updateProfileRequest).observe((LifecycleOwner) context, updateProfileResponse ->
+                {
+                    if(updateProfileResponse != null) {
+                        if (updateProfileResponse.getResStatus().equalsIgnoreCase("200")) {
+
+                            sharedPref.setFirstName(etFirstName.getText().toString());
+                            sharedPref.setLastName(etLastName.getText().toString());
+                            if (type.equalsIgnoreCase("stu")) {
+                                myToast.show(getString(R.string.profile_updated), Toast.LENGTH_SHORT, true);
+
+                                Intent intent1 = new Intent(context, StudentDashboardActivity.class);
+                                intent1.addFlags(Intent.FLAG_ACTIVITY_NEW_TASK | Intent.FLAG_ACTIVITY_CLEAR_TASK);
+                                startActivity(intent1);
+                                overridePendingTransition(R.anim.fade_in, R.anim.fade_out);
+
+                            } else {
+                                try {
+
+                                    Intent intent1 = new Intent(context, CsoRegisterStep_2Activity.class);
+                                    //intent1.addFlags(Intent.FLAG_ACTIVITY_NEW_TASK | Intent.FLAG_ACTIVITY_CLEAR_TASK);
+                                    intent1.putExtra("model", getProfileResponse);
+                                    intent1.putExtra("action", "update");
+                                    startActivity(intent1);
+                                    overridePendingTransition(R.anim.fade_in, R.anim.fade_out);
+                                } catch (Exception e) {
+                                    e.printStackTrace();
+                                }
+                            }
+
+                        } else {
+                            myToast.show(getString(R.string.something_went_wrong), Toast.LENGTH_SHORT, false);
+                        }
+                    }
+                    else
+                    {
+                        myToast.show(getString(R.string.err_server), Toast.LENGTH_SHORT, false);
+                    }
+
+                    myProgressDialog.dismiss();
+                });
+            }
+            else
+            {
+                myToast.show(getString(R.string.no_internet_connection), Toast.LENGTH_SHORT, false);
+            }
+        } else {
+            myToast.show(getString(R.string.err_invalid_data), Toast.LENGTH_SHORT, false);
+        }
+    }
     @Override
     public void onClick(View v) {
         switch (v.getId()) {
             case R.id.update:
 
-                if (etFirstName.getText() != null && !etFirstName.getText().toString().isEmpty()) {
-                    if (etLastName.getText() != null && !etLastName.getText().toString().isEmpty()) {
-                        if (country_id != null && !country_id.isEmpty()) {
-                            if (state_id != null && !state_id.isEmpty()) {
-                                if (etCity.getText() != null && !etCity.getText().toString().isEmpty()) {
-                                    if (etPostalCode.getText() != null && !etPostalCode.getText().toString().isEmpty()) {
-                                        if (etAddress.getText() != null && !etAddress.getText().toString().isEmpty()) {
-                                            if (etDob.getText() != null && !etDob.getText().toString().isEmpty()) {
-                                                if (gender_id != null && !gender_id.isEmpty()) {
-
-                                                    myProgressDialog.show("Updating...");
-                                                    sharedPref.setUserType(String.valueOf(type_id.substring(0, 3).toUpperCase()));
-
-                                                    UpdateProfileRequest updateProfileRequest = new UpdateProfileRequest();
-                                                    updateProfileRequest.setUserType(sharedPref.getUserType());
-                                                    updateProfileRequest.setUserDevice(Utility.getDeviceId(context));
-                                                    updateProfileRequest.setUserId(sharedPref.getUserId());
-                                                    updateProfileRequest.setUserFName(etFirstName.getText().toString());
-                                                    updateProfileRequest.setUserLName(etLastName.getText().toString());
-                                                    updateProfileRequest.setUserCountry(country_id);
-                                                    updateProfileRequest.setUserState(state_id);
-                                                    updateProfileRequest.setUserCity(etCity.getText().toString());
-                                                    updateProfileRequest.setUserZipcode(etPostalCode.getText().toString());
-                                                    updateProfileRequest.setUserAddress(etAddress.getText().toString());
-                                                    updateProfileRequest.setUserDob(etDob.getText().toString().trim());
-
-                                                    updateProfileRequest.setUserGender(String.valueOf(gender_id.charAt(0)));
-
-                                                    updateProfileViewModel.updateProfileResponse(updateProfileRequest).observe((LifecycleOwner) context, updateProfileResponse ->
-                                                    {
-                                                        if (updateProfileResponse != null && updateProfileResponse.getResStatus().equalsIgnoreCase("200")) {
-
-                                                            sharedPref.setFirstName(etFirstName.getText().toString());
-                                                            sharedPref.setLastName(etLastName.getText().toString());
-                                                            if (type.equalsIgnoreCase("stu")) {
-                                                                myToast.show("Profile updated", Toast.LENGTH_SHORT, true);
-
-                                                                Intent intent1 = new Intent(context, StudentDashboardActivity.class);
-                                                                intent1.addFlags(Intent.FLAG_ACTIVITY_NEW_TASK | Intent.FLAG_ACTIVITY_CLEAR_TASK);
-                                                                startActivity(intent1);
-                                                                overridePendingTransition(R.anim.fade_in, R.anim.fade_out);
-
-                                                            } else {
-                                                                try {
-
-                                                                    Intent intent1 = new Intent(context, CsoRegisterStep_2Activity.class);
-                                                                    //intent1.addFlags(Intent.FLAG_ACTIVITY_NEW_TASK | Intent.FLAG_ACTIVITY_CLEAR_TASK);
-                                                                    intent1.putExtra("model", getProfileResponse);
-                                                                    intent1.putExtra("action", "update");
-                                                                    startActivity(intent1);
-                                                                    overridePendingTransition(R.anim.fade_in, R.anim.fade_out);
-                                                                } catch (Exception e) {
-                                                                    e.printStackTrace();
-                                                                }
-                                                            }
-
-                                                        } else {
-                                                            myToast.show("Registration failed", Toast.LENGTH_SHORT, false);
-                                                        }
-
-                                                        myProgressDialog.dismiss();
-                                                    });
-
-                                                } else {
-                                                    myToast.show("Select Gender", Toast.LENGTH_SHORT, false);
-                                                }
-                                            } else {
-                                                myToast.show("Enter Date of Birth", Toast.LENGTH_SHORT, false);
-                                            }
-                                        } else {
-                                            myToast.show("Enter Address", Toast.LENGTH_SHORT, false);
-                                        }
-                                    } else {
-                                        myToast.show("Enter Postal Code", Toast.LENGTH_SHORT, false);
-                                    }
-                                } else {
-                                    myToast.show("Enter City", Toast.LENGTH_SHORT, false);
-                                }
-                            } else {
-                                myToast.show("Select State", Toast.LENGTH_SHORT, false);
-                            }
-                        } else {
-                            myToast.show("Select Country", Toast.LENGTH_SHORT, false);
-                        }
-                    } else {
-                        myToast.show("Enter Last Name", Toast.LENGTH_SHORT, false);
-                    }
-                } else {
-                    myToast.show("Enter First Name", Toast.LENGTH_SHORT, false);
-                }
+                checkValidation();
                 break;
 
             case R.id.back:
@@ -547,13 +622,7 @@ public class EditProfileActivity extends AppCompatActivity implements View.OnCli
                 state_id = "";
                 gender_id = "";*/
 
-                if (getProfileResponse.getResData().getUserType().equalsIgnoreCase("stu"))
-                    sp_type.setSelection(1);
-                else if (getProfileResponse.getResData().getUserType().equalsIgnoreCase("vol"))
-                    sp_type.setSelection(2);
-                else
-                    sp_type.setSelection(3);
-                sharedPref.setUserType(getProfileResponse.getResData().getUserType().toLowerCase());
+                sharedPref.setUserType(getProfileResponse.getResData().getUserType().toUpperCase());
 
                 setSchoolSpinnerValue(getProfileResponse.getResData().getSchoolId());
 
@@ -574,8 +643,6 @@ public class EditProfileActivity extends AppCompatActivity implements View.OnCli
                 else
                     sp_gender.setSelection(3, true);
 
-
-
                 scrollView.fullScroll(ScrollView.FOCUS_UP);
                 break;
         }
@@ -595,10 +662,6 @@ public class EditProfileActivity extends AppCompatActivity implements View.OnCli
     };
 
     private void updateLabel() {
-
-        SimpleDateFormat sdf = new SimpleDateFormat("MM-dd-yyyy", Locale.US);
-//        etDob.setText(sdf.format(myCalendar.getTime()));
-
         etDob.setText(Utility.formatDateFull(myCalendar.getTime()));
     }
 
@@ -608,10 +671,21 @@ public class EditProfileActivity extends AppCompatActivity implements View.OnCli
         if (event.getAction() == MotionEvent.ACTION_UP)
             switch (v.getId()) {
                 case R.id.etDob:
+                    myCalendar = Calendar.getInstance();
                     DatePickerDialog datePickerDialog = new DatePickerDialog(context, date, myCalendar
                             .get(Calendar.YEAR), myCalendar.get(Calendar.MONTH),
                             myCalendar.get(Calendar.DAY_OF_MONTH));
-                    datePickerDialog.getDatePicker().setMaxDate(System.currentTimeMillis());
+                    int year = myCalendar.get(Calendar.YEAR) - 18;
+                    String string_date = myCalendar.get(Calendar.MONTH) + "-" + myCalendar.get(Calendar.DAY_OF_MONTH) + "-" + year;
+
+                    try {
+                        Date d = Constants.ff.parse(string_date);
+                        long milliseconds = d.getTime();
+                        datePickerDialog.getDatePicker().setMaxDate(milliseconds);
+                    } catch (ParseException e) {
+                        e.printStackTrace();
+                    }
+
                     datePickerDialog.show();
                     break;
             }
@@ -625,65 +699,74 @@ public class EditProfileActivity extends AppCompatActivity implements View.OnCli
     }
 
     private void getProfileData() {
-        myProgressDialog.show("Fetching user data...");
+       //myProgressDialog.show(getString(R.string.please_wait));
         getProfileViewModel.getProfileResponse(new GetProfileRequest(sharedPref.getUserId()/*"S789123"*//*"C20190409Q9l4hzL3916"*//*sharedPref.getUserId()*/)).observe((LifecycleOwner) context, getProfileResponse ->
         {
             flag = true;
             try {
+                if(getProfileResponse != null) {
+                    if (getProfileResponse.getResStatus().equalsIgnoreCase("200")) {
 
-                if (getProfileResponse != null && getProfileResponse.getResStatus().equalsIgnoreCase("200")) {
+                        this.getProfileResponse = getProfileResponse;
 
-                    this.getProfileResponse = getProfileResponse;
+                        sharedPref.setUserType(getProfileResponse.getResData().getUserType().toUpperCase());
 
-                    if (getProfileResponse.getResData().getUserType().equalsIgnoreCase("stu"))
-                        sp_type.setSelection(1);
-                    else if (getProfileResponse.getResData().getUserType().equalsIgnoreCase("vol"))
-                        sp_type.setSelection(2);
-                    else
-                        sp_type.setSelection(3);
-                    sharedPref.setUserType(getProfileResponse.getResData().getUserType().toLowerCase());
+                        setSchoolSpinnerValue(getProfileResponse.getResData().getSchoolId());
 
-                    setSchoolSpinnerValue(getProfileResponse.getResData().getSchoolId());
+                        etFirstName.setText(getProfileResponse.getResData().getUserFName());
+                        etLastName.setText(getProfileResponse.getResData().getUserLName());
+                        etEmail.setText(getProfileResponse.getResData().getUserEmail());
+                        etPhone.setText(getProfileResponse.getResData().getUserPhone());
+                        sp_country.setSelection(getCountryPosition(), true);
+                        etCity.setText(getProfileResponse.getResData().getUserCity());
+                        etPostalCode.setText(getProfileResponse.getResData().getUserZipcode());
+                        etAddress.setText(getProfileResponse.getResData().getUserAddress());
+                        etDob.setText(getProfileResponse.getResData().getUserDob());
+                        if (getProfileResponse.getResData().getUserGender().equalsIgnoreCase("m"))
+                            sp_gender.setSelection(1, true);
+                        else if (getProfileResponse.getResData().getUserGender().equalsIgnoreCase("f"))
+                            sp_gender.setSelection(2, true);
+                        else
+                            sp_gender.setSelection(3, true);
+                        getCountryList();
+                    } else {
+                        myToast.show(getString(R.string.err_no_profile_found), Toast.LENGTH_SHORT, false);
+                        myProgressDialog.dismiss();
 
-                    etFirstName.setText(getProfileResponse.getResData().getUserFName());
-                    etLastName.setText(getProfileResponse.getResData().getUserLName());
-                    etEmail.setText(getProfileResponse.getResData().getUserEmail());
-                    etPhone.setText(getProfileResponse.getResData().getUserPhone());
-                    sp_country.setSelection(getCountryPosition(), true);
-                    etCity.setText(getProfileResponse.getResData().getUserCity());
-                    etPostalCode.setText(getProfileResponse.getResData().getUserZipcode());
-                    etAddress.setText(getProfileResponse.getResData().getUserAddress());
-                    etDob.setText(getProfileResponse.getResData().getUserDob());
-                    if (getProfileResponse.getResData().getUserGender().equalsIgnoreCase("m"))
-                        sp_gender.setSelection(1, true);
-                    else if (getProfileResponse.getResData().getUserGender().equalsIgnoreCase("f"))
-                        sp_gender.setSelection(2, true);
-                    else
-                        sp_gender.setSelection(3, true);
-
-                } else {
-                    myToast.show("No profile data found", Toast.LENGTH_SHORT, false);
-                    finish();
-                    overridePendingTransition(R.anim.fade_in, R.anim.fade_out);
+                    }
+                }
+                else
+                {
+                    myToast.show(getString(R.string.err_server), Toast.LENGTH_SHORT, false);
+                    myProgressDialog.dismiss();
                 }
             } catch (Exception e) {
                 e.printStackTrace();
+                myProgressDialog.dismiss();
             }
-            myProgressDialog.dismiss();
+
         });
 
     }
 
     private void setSchoolSpinnerValue(String school_id) {
-        int i;
-        for (i = 0; i < schoolListData.size(); i++) {
-            if (school_id.equalsIgnoreCase(schoolListData.get(i).getSchoolId())) {
-                break;
+
+        if (getSchoolPosition() != -1)
+            sp_school.setSelection(getSchoolPosition());
+    }
+
+    public int getSchoolPosition() {
+
+        int position = -1;
+        for (int i = 0; i < schoolListData.size(); i++) {
+            if (schoolListData.get(i).getSchoolId().equalsIgnoreCase(getProfileResponse.getResData().getSchoolId()) || schoolListData.get(i).getSchoolName().equalsIgnoreCase(getProfileResponse.getResData().getSchoolId())) {
+                position = i;
+                // break;  // uncomment to get the first instance
             }
         }
-
-        sp_school.setSelection(i);
+        return position;
     }
+
     public int getCountryPosition() {
         int position = -1;
         for (int i = 0; i < countryListData.size(); i++) {

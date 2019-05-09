@@ -36,12 +36,12 @@
             android:layout_centerInParent="true"
             tools:ignore="ContentDescription" />
 
-        <com.ztp.app.Helper.MyBoldTextView
+        <com.ztp.app.Helper.MyTextView
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
-            android:text="ZOE"
-            android:textColor="@color/white"
-            android:textSize="@dimen/_10ssp"
+            android:text="@string/zoe_thumbprint"
+            android:textColor="@color/background_3"
+            android:textSize="@dimen/_9ssp"
             android:gravity="center"
             android:layout_below="@+id/thumb"
             android:layout_centerInParent="true"

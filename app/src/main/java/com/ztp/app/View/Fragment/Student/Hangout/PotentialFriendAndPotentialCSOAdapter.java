@@ -65,7 +65,7 @@ class PotentialFriendAndPotentialCSOAdapter extends BaseAdapter {
         holder.add.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {
-                myToast.show("Add", Toast.LENGTH_SHORT,true);
+               // myToast.show("Add", Toast.LENGTH_SHORT,true);
             }
         });
 

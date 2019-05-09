@@ -1,46 +1,38 @@
-<LinearLayout xmlns:android="http://schemas.android.com/apk/res/android"
+<ScrollView
+    xmlns:android="http://schemas.android.com/apk/res/android"
     xmlns:tools="http://schemas.android.com/tools"
     android:layout_width="match_parent"
     android:layout_height="match_parent"
     xmlns:app="http://schemas.android.com/apk/res-auto"
-    android:orientation="vertical"
-    android:layout_margin="@dimen/_20sdp"
-    tools:context="com.ztp.app.View.Fragment.CSO.Event.AddNewShiftFragment">
-
-
-
-    <com.ztp.app.Helper.MyBoldTextView
-        android:layout_width="match_parent"
-        android:layout_height="wrap_content"
-        android:text="@string/manage_schedule"
-        android:textColor="@color/black"
-        android:textSize="@dimen/_10ssp" />
-
+    android:scrollbars="none"
+    android:layout_margin="@dimen/_10sdp">
 
     <LinearLayout
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
-        android:orientation="horizontal"
-        android:weightSum="100"
+        android:orientation="vertical"
+        tools:context="com.ztp.app.View.Fragment.CSO.Event.AddNewShiftFragment">
 
-        >
-
+        <com.ztp.app.Helper.MyBoldTextView
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:text="@string/manage_schedule"
+            android:textColor="@color/black"
+            android:textSize="@dimen/_20ssp"
+            android:gravity="center"/>
 
         <com.ztp.app.Helper.MyTextInputLayout
             android:id="@+id/et_date_layout"
-            android:layout_width="0dp"
+            android:layout_width="match_parent"
             android:layout_height="wrap_content"
-            android:layout_marginTop="@dimen/_5sdp"
-            android:layout_weight="50"
-
-            >
+            android:layout_marginTop="@dimen/_10sdp">
 
             <com.ztp.app.Helper.MyTextInputEditText
                 android:id="@+id/et_date"
                 android:layout_width="match_parent"
                 android:layout_height="wrap_content"
                 android:drawableRight="@drawable/ic_calendar"
-                android:hint="Date"
+                android:hint="@string/date"
                 android:textSize="@dimen/_12ssp"
                 android:editable="false"
                 />
@@ -48,140 +40,172 @@
 
         <com.ztp.app.Helper.MyTextInputLayout
             android:id="@+id/et_volunteers_layout"
-            android:layout_width="0dp"
+            android:layout_width="match_parent"
             android:layout_height="wrap_content"
-            android:layout_marginTop="@dimen/_5sdp"
-            android:layout_weight="50">
+            android:layout_marginTop="@dimen/_5sdp">
 
             <com.ztp.app.Helper.MyTextInputEditText
                 android:id="@+id/et_volunteers"
                 android:layout_width="match_parent"
                 android:layout_height="wrap_content"
-                android:drawableRight="@drawable/baseline_keyboard_arrow_down_24"
                 android:hint="@string/volunteers"
                 android:textSize="@dimen/_12ssp"
 
                 />
         </com.ztp.app.Helper.MyTextInputLayout>
 
-
-    </LinearLayout>
-
-    <LinearLayout
-        android:layout_width="match_parent"
-        android:layout_height="wrap_content"
-        android:orientation="horizontal"
-        android:weightSum="100"
-
-        >
-
-
-        <com.ztp.app.Helper.MyTextInputLayout
-            android:id="@+id/et_start_time_layout"
-            android:layout_width="0dp"
-            android:layout_height="wrap_content"
-            android:layout_marginTop="@dimen/_5sdp"
-            android:layout_weight="50"
-
-            >
-
-            <com.ztp.app.Helper.MyTextInputEditText
-                android:id="@+id/et_start_time"
-                android:layout_width="match_parent"
-                android:layout_height="wrap_content"
-                android:drawableRight="@drawable/ic_countdown"
-                android:hint="@string/start_time"
-                android:textSize="@dimen/_12ssp" />
-        </com.ztp.app.Helper.MyTextInputLayout>
-
-        <com.ztp.app.Helper.MyTextInputLayout
-            android:id="@+id/et_end_time_layout"
-            android:layout_width="0dp"
-            android:layout_height="wrap_content"
-            android:layout_marginTop="@dimen/_5sdp"
-            android:layout_weight="50">
-
-            <com.ztp.app.Helper.MyTextInputEditText
-                android:id="@+id/et_end_time_volunteers"
-                android:layout_width="match_parent"
-                android:layout_height="wrap_content"
-                android:drawableRight="@drawable/ic_countdown"
-                android:hint="@string/end_time"
-                android:textSize="@dimen/_12ssp"
-
-                />
-        </com.ztp.app.Helper.MyTextInputLayout>
-
-
-    </LinearLayout>
-
-    <com.ztp.app.Helper.MyTextInputLayout
-        android:id="@+id/et_task_layout"
-        android:layout_width="match_parent"
-        android:layout_height="wrap_content"
-        android:layout_marginTop="@dimen/_5sdp">
-
-        <com.ztp.app.Helper.MyTextInputEditText
-            android:id="@+id/et_task"
-            android:layout_width="match_parent"
-            android:layout_height="wrap_content"
-            android:hint="@string/task"
-            android:textSize="@dimen/_12ssp" />
-    </com.ztp.app.Helper.MyTextInputLayout>
-
-    <com.ztp.app.Helper.MyTextInputLayout
-        android:id="@+id/et_rank_layout"
-        android:layout_width="match_parent"
-        android:layout_height="wrap_content"
-        android:layout_marginTop="@dimen/_5sdp">
-
-        <com.ztp.app.Helper.MyTextInputEditText
-            android:id="@+id/et_rank"
-            android:layout_width="match_parent"
-            android:layout_height="wrap_content"
-            android:hint="@string/rank"
-            android:textSize="@dimen/_12ssp" />
-    </com.ztp.app.Helper.MyTextInputLayout>
-
-
-    <RelativeLayout
-        android:layout_width="match_parent"
-        android:layout_height="match_parent">
-
         <LinearLayout
-            android:layout_width="fill_parent"
+            android:layout_width="match_parent"
             android:layout_height="wrap_content"
             android:orientation="horizontal"
-            android:layout_alignParentBottom="true"
-          >
+            android:weightSum="100">
 
-            <com.ztp.app.Helper.MyButton
-                android:id="@+id/clear"
-                style="@style/MyGrayButton"
+            <com.ztp.app.Helper.MyTextInputLayout
+                android:id="@+id/et_start_time_layout"
                 android:layout_width="0dp"
-                android:layout_height="@dimen/_40sdp"
-                android:gravity="center"
-                android:text="@string/clear"
-                android:textAllCaps="false"
-                android:textSize="@dimen/_10ssp"
-                android:layout_weight=".5"
-                android:layout_margin="@dimen/_5sdp"/>
+                android:layout_height="wrap_content"
+                android:layout_marginTop="@dimen/_5sdp"
+                android:layout_weight="50">
 
-            <com.ztp.app.Helper.MyButton
-                android:id="@+id/update"
-                style="@style/MyButton"
+                <com.ztp.app.Helper.MyTextInputEditText
+                    android:id="@+id/et_start_time"
+                    android:layout_width="match_parent"
+                    android:layout_height="wrap_content"
+                    android:drawableRight="@drawable/ic_countdown"
+                    android:hint="@string/start_time"
+                    android:textSize="@dimen/_12ssp" />
+            </com.ztp.app.Helper.MyTextInputLayout>
+
+            <com.ztp.app.Helper.MyTextInputLayout
+                android:id="@+id/et_end_time_layout"
                 android:layout_width="0dp"
-                android:layout_height="@dimen/_40sdp"
-                android:textAllCaps="false"
-                android:gravity="center"
-                android:text="@string/update"
-                android:textSize="@dimen/_10ssp"
-                android:layout_weight=".5"
-                android:layout_margin="@dimen/_5sdp"/>
+                android:layout_height="wrap_content"
+                android:layout_marginTop="@dimen/_5sdp"
+                android:layout_weight="50">
+
+                <com.ztp.app.Helper.MyTextInputEditText
+                    android:id="@+id/et_end_time_volunteers"
+                    android:layout_width="match_parent"
+                    android:layout_height="wrap_content"
+                    android:drawableRight="@drawable/ic_countdown"
+                    android:hint="@string/end_time"
+                    android:textSize="@dimen/_12ssp"
+
+                    />
+            </com.ztp.app.Helper.MyTextInputLayout>
+
 
         </LinearLayout>
 
-    </RelativeLayout>
+        <com.ztp.app.Helper.MyTextInputLayout
+            android:id="@+id/et_task_layout"
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:layout_marginTop="@dimen/_5sdp">
+
+            <com.ztp.app.Helper.MyTextInputEditText
+                android:id="@+id/et_task"
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:hint="@string/task"
+                android:textSize="@dimen/_12ssp" />
+        </com.ztp.app.Helper.MyTextInputLayout>
+
+        <LinearLayout
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:layout_marginTop="@dimen/_10sdp"
+            android:orientation="vertical">
+
+            <com.ztp.app.Helper.MyTextView
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:text="@string/rank"
+                android:textSize="@dimen/_12ssp"
+                android:layout_marginStart="@dimen/_5sdp"/>
+
+            <com.willy.ratingbar.ScaleRatingBar
+                xmlns:app="http://schemas.android.com/apk/res-auto"
+                android:id="@+id/rank"
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                app:srb_clearRatingEnabled="true"
+                app:srb_clickable="true"
+                app:srb_drawableEmpty="@drawable/ic_star_empty"
+                app:srb_drawableFilled="@drawable/ic_star_filled"
+                app:srb_isIndicator="false"
+                app:srb_minimumStars="0"
+                app:srb_numStars="5"
+                app:srb_rating="0"
+                app:srb_scrollable="true"
+                app:srb_starHeight="@dimen/_20sdp"
+                app:srb_starPadding="@dimen/_5sdp"
+                app:srb_starWidth="@dimen/_20sdp"
+                app:srb_stepSize="1"
+                android:layout_marginTop="@dimen/_5sdp"
+                />
 
 
-</LinearLayout>
+        </LinearLayout>
+
+        <!-- <com.ztp.app.Helper.MyTextInputLayout
+             android:id="@+id/et_rank_layout"
+             android:layout_width="match_parent"
+             android:layout_height="wrap_content"
+             android:layout_marginTop="@dimen/_5sdp">
+
+             <com.ztp.app.Helper.MyTextInputEditText
+                 android:id="@+id/et_rank"
+                 android:layout_width="match_parent"
+                 android:layout_height="wrap_content"
+                 android:hint="@string/rank"
+                 android:digits="012345"
+                 android:maxLength="1"
+                 android:textSize="@dimen/_12ssp" />
+         </com.ztp.app.Helper.MyTextInputLayout>-->
+
+
+        <RelativeLayout
+            android:layout_width="match_parent"
+            android:layout_height="match_parent"
+            android:layout_marginTop="@dimen/_30sdp">
+
+            <LinearLayout
+                android:layout_width="fill_parent"
+                android:layout_height="wrap_content"
+                android:orientation="horizontal"
+                android:layout_alignParentBottom="true">
+
+                <com.ztp.app.Helper.MyButton
+                    android:id="@+id/clear"
+                    style="@style/MyGrayButton"
+                    android:layout_width="0dp"
+                    android:layout_height="@dimen/_40sdp"
+                    android:gravity="center"
+                    android:text="@string/clear"
+                    android:textAllCaps="false"
+                    android:textSize="@dimen/_10ssp"
+                    android:layout_weight=".5"
+                    android:layout_margin="@dimen/_5sdp"/>
+
+                <com.ztp.app.Helper.MyButton
+                    android:id="@+id/update"
+                    style="@style/MyButton"
+                    android:layout_width="0dp"
+                    android:layout_height="@dimen/_40sdp"
+                    android:textAllCaps="false"
+                    android:gravity="center"
+                    android:textSize="@dimen/_10ssp"
+                    android:layout_weight=".5"
+                    android:layout_margin="@dimen/_5sdp"/>
+
+            </LinearLayout>
+
+        </RelativeLayout>
+
+
+    </LinearLayout>
+
+</ScrollView>
+
+

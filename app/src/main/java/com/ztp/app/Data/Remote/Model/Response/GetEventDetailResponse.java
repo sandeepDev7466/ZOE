@@ -69,10 +69,10 @@ public class GetEventDetailResponse {
         @SerializedName("event_address")
         @Expose
         private String eventAddress;
-        @SerializedName("event_country")
+        @SerializedName("event_country_name")
         @Expose
         private String eventCountry;
-        @SerializedName("event_state")
+        @SerializedName("event_state_name")
         @Expose
         private String eventState;
         @SerializedName("event_city")

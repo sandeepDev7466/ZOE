@@ -12,6 +12,8 @@ import android.os.Build;
 import android.os.Bundle;
 import android.support.v7.app.AppCompatActivity;
 import android.telephony.PhoneNumberFormattingTextWatcher;
+import android.text.Editable;
+import android.text.TextWatcher;
 import android.view.MotionEvent;
 import android.view.View;
 import android.widget.AdapterView;
@@ -22,11 +24,11 @@ import android.widget.ScrollView;
 import android.widget.Spinner;
 import android.widget.Toast;
 
+import com.raywenderlich.android.validatetor.ValidateTor;
 import com.ztp.app.Data.Local.SharedPrefrence.SharedPref;
 import com.ztp.app.Data.Remote.Model.Request.CsoRegisterRequestStep_1;
 import com.ztp.app.Data.Remote.Model.Request.StateRequest;
 import com.ztp.app.Data.Remote.Model.Response.CountryResponse;
-import com.ztp.app.Data.Remote.Model.Response.SchoolResponse;
 import com.ztp.app.Data.Remote.Model.Response.StateResponse;
 import com.ztp.app.Helper.MyButton;
 import com.ztp.app.Helper.MyProgressDialog;
@@ -34,26 +36,26 @@ import com.ztp.app.Helper.MyTextInputEditText;
 import com.ztp.app.Helper.MyTextInputLayout;
 import com.ztp.app.Helper.MyToast;
 import com.ztp.app.R;
+import com.ztp.app.Utils.Constants;
 import com.ztp.app.Utils.Utility;
 import com.ztp.app.Viewmodel.CountryViewModel;
 import com.ztp.app.Viewmodel.CsoRegisterStep_1ViewModel;
 import com.ztp.app.Viewmodel.SchoolViewModel;
 import com.ztp.app.Viewmodel.StateViewModel;
 
-import java.text.SimpleDateFormat;
+import java.text.ParseException;
 import java.util.ArrayList;
 import java.util.Calendar;
+import java.util.Date;
 import java.util.List;
-import java.util.Locale;
 
 public class CsoRegisterStep_1Activity extends AppCompatActivity implements View.OnClickListener, View.OnTouchListener {
 
     Context context;
     MyButton next, clear;
-    Spinner type, school, country, state, gender;
-    MyTextInputLayout etPasswordLayout, etConfirmPasswordLayout;
+    Spinner country, state, gender;
+    MyTextInputLayout etPasswordLayout, etConfirmPasswordLayout, etEmailLayout, etPhoneLayout, etPostalCodeLayout, etFirstNameLayout, etLastNameLayout;
     MyTextInputEditText etFirstName, etLastName, etEmail, etPhone, etCity, etPostalCode, etDob, etPassword, etConfirmPassword, etAddress;
-
     MyToast myToast;
     SharedPref sharedPref;
     boolean theme;
@@ -63,15 +65,14 @@ public class CsoRegisterStep_1Activity extends AppCompatActivity implements View
     CsoRegisterStep_1ViewModel csoRegisterStep_1ViewModel;
     List<CountryResponse.Country> countryListData = new ArrayList<>();
     List<StateResponse.State> stateListData = new ArrayList<>();
-    List<SchoolResponse.School> schoolListData = new ArrayList<>();
     MyProgressDialog myProgressDialog;
     List<String> countryList = new ArrayList<>();
     List<String> stateList = new ArrayList<>();
-    List<String> schoolList = new ArrayList<>();
-    String country_id, state_id, type_id, school_id, gender_id;
+    String country_id, state_id, gender_id;
     Calendar myCalendar;
     ImageView back;
     ScrollView scrollView;
+    ValidateTor validate;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -87,6 +88,7 @@ public class CsoRegisterStep_1Activity extends AppCompatActivity implements View
     @SuppressLint("ClickableViewAccessibility")
     private void init() {
         context = this;
+        validate = new ValidateTor();
         myCalendar = Calendar.getInstance();
         myProgressDialog = new MyProgressDialog(context);
         countryModel = ViewModelProviders.of(this).get(CountryViewModel.class);
@@ -101,26 +103,23 @@ public class CsoRegisterStep_1Activity extends AppCompatActivity implements View
         clear = findViewById(R.id.clear);
         back = findViewById(R.id.back);
 
-        type = findViewById(R.id.type);
-        school = findViewById(R.id.school);
         country = findViewById(R.id.country);
         state = findViewById(R.id.state);
         gender = findViewById(R.id.gender);
 
         etPasswordLayout = findViewById(R.id.etPasswordLayout);
         etConfirmPasswordLayout = findViewById(R.id.etConfirmPasswordLayout);
+        etEmailLayout = findViewById(R.id.etEmailLayout);
+        etPhoneLayout = findViewById(R.id.etPhoneLayout);
+        etPostalCodeLayout = findViewById(R.id.etPostalCodeLayout);
+        etFirstNameLayout = findViewById(R.id.etFirstNameLayout);
+        etLastNameLayout = findViewById(R.id.etLastNameLayout);
 
         etFirstName = findViewById(R.id.etFirstName);
         etLastName = findViewById(R.id.etLastName);
         etEmail = findViewById(R.id.etEmail);
         etPhone = findViewById(R.id.etPhone);
-        if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.LOLLIPOP) {
 
-            etPhone.addTextChangedListener(new PhoneNumberFormattingTextWatcher("US"));
-
-        }else {
-            etPhone.addTextChangedListener(new PhoneNumberFormattingTextWatcher());
-        }
         etCity = findViewById(R.id.etCity);
         etPostalCode = findViewById(R.id.etPostalCode);
         etDob = findViewById(R.id.etDob);
@@ -133,48 +132,16 @@ public class CsoRegisterStep_1Activity extends AppCompatActivity implements View
         back.setOnClickListener(this);
         etDob.setOnTouchListener(this);
 
-        setTypeSpinner();
         setGenderSpinner();
         getCountryList();
-        getSchoolList();
-
-        type.setOnItemSelectedListener(new AdapterView.OnItemSelectedListener() {
-            @Override
-            public void onItemSelected(AdapterView<?> parentView, View selectedItemView, int position, long id) {
-                if (position > 0) {
-                    type_id = getResources().getStringArray(R.array.type_cso)[position];
-                }
-            }
-
-            @Override
-            public void onNothingSelected(AdapterView<?> parentView) {
-
-
-            }
-
-        });
-
-        school.setOnItemSelectedListener(new AdapterView.OnItemSelectedListener() {
-            @Override
-            public void onItemSelected(AdapterView<?> parentView, View selectedItemView, int position, long id) {
-                if (position > 0) {
-                    school_id = schoolListData.get(position - 1).getSchoolId();
-                }
-            }
-
-            @Override
-            public void onNothingSelected(AdapterView<?> parentView) {
-
-
-            }
-
-        });
 
         gender.setOnItemSelectedListener(new AdapterView.OnItemSelectedListener() {
             @Override
             public void onItemSelected(AdapterView<?> parentView, View selectedItemView, int position, long id) {
                 if (position > 0) {
                     gender_id = getResources().getStringArray(R.array.gender)[position];
+                } else if (position == 0) {
+                    gender_id = "";
                 }
             }
 
@@ -189,11 +156,11 @@ public class CsoRegisterStep_1Activity extends AppCompatActivity implements View
         country.setOnItemSelectedListener(new AdapterView.OnItemSelectedListener() {
             @Override
             public void onItemSelected(AdapterView<?> parentView, View selectedItemView, int position, long id) {
-                if (position > 0) {
-                    country_id = countryListData.get(position - 1).getCountryId();
-                    if (stateListData.size() == 0)
-                        getStateList(country_id);
-                }
+
+                country_id = countryListData.get(position).getCountryId();
+                if (stateListData.size() == 0)
+                    getStateList(country_id);
+
             }
 
             @Override
@@ -206,9 +173,9 @@ public class CsoRegisterStep_1Activity extends AppCompatActivity implements View
         state.setOnItemSelectedListener(new AdapterView.OnItemSelectedListener() {
             @Override
             public void onItemSelected(AdapterView<?> parentView, View selectedItemView, int position, long id) {
-                if (position > 0) {
-                    state_id = stateListData.get(position - 1).getStateId();
-                }
+
+                state_id = stateListData.get(position).getStateId();
+
             }
 
             @Override
@@ -216,6 +183,207 @@ public class CsoRegisterStep_1Activity extends AppCompatActivity implements View
 
             }
 
+        });
+
+        etFirstName.addTextChangedListener(new TextWatcher() {
+            @Override
+            public void beforeTextChanged(CharSequence s, int start, int count, int after) {
+
+            }
+
+            @Override
+            public void onTextChanged(CharSequence s, int start, int before, int count) {
+
+            }
+
+            @Override
+            public void afterTextChanged(Editable s) {
+
+                if (s != null && s.length() > 0) {
+                    if (!validate.isAlpha(s.toString())) {
+                        etFirstNameLayout.setError(getString(R.string.err_first_name));
+                    } else {
+                        etFirstNameLayout.setError(null);
+                    }
+                } else {
+                    etFirstNameLayout.setError(null);
+                }
+            }
+        });
+
+        etLastName.addTextChangedListener(new TextWatcher() {
+            @Override
+            public void beforeTextChanged(CharSequence s, int start, int count, int after) {
+
+            }
+
+            @Override
+            public void onTextChanged(CharSequence s, int start, int before, int count) {
+
+            }
+
+            @Override
+            public void afterTextChanged(Editable s) {
+
+                if (s != null && s.length() > 0) {
+                    if (!validate.isAlpha(s.toString())) {
+                        etLastNameLayout.setError(getString(R.string.err_last_name));
+                    } else {
+                        etLastNameLayout.setError(null);
+                    }
+                } else {
+                    etLastNameLayout.setError(null);
+                }
+            }
+        });
+
+        etEmail.addTextChangedListener(new TextWatcher() {
+            @Override
+            public void beforeTextChanged(CharSequence s, int start, int count, int after) {
+
+            }
+
+            @Override
+            public void onTextChanged(CharSequence s, int start, int before, int count) {
+
+            }
+
+            @Override
+            public void afterTextChanged(Editable s) {
+
+                if (s != null && s.length() > 0) {
+                    if (!Utility.isValidEmail(s.toString())) {
+                        etEmailLayout.setError(getString(R.string.err_enter_valid_email));
+                    } else {
+                        etEmailLayout.setError(null);
+                    }
+                } else {
+                    etEmailLayout.setError(null);
+                }
+            }
+        });
+
+        if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.LOLLIPOP) {
+
+            etPhone.addTextChangedListener(new PhoneNumberFormattingTextWatcher("US"));
+
+        } else {
+            etPhone.addTextChangedListener(new PhoneNumberFormattingTextWatcher());
+        }
+
+        etPhone.addTextChangedListener(new TextWatcher() {
+            @Override
+            public void beforeTextChanged(CharSequence s, int start, int count, int after) {
+
+            }
+
+            @Override
+            public void onTextChanged(CharSequence s, int start, int before, int count) {
+
+            }
+
+            @Override
+            public void afterTextChanged(Editable s) {
+
+                if (s != null && s.length() > 0) {
+                    if (!Utility.isValidPhoneNumber(s.toString())) {
+                        etPhoneLayout.setError(getString(R.string.err_enter_valid_phone));
+                    } else {
+                        etPhoneLayout.setError(null);
+                    }
+                } else {
+                    etPhoneLayout.setError(null);
+                }
+            }
+        });
+        etPostalCode.addTextChangedListener(new TextWatcher() {
+            @Override
+            public void beforeTextChanged(CharSequence s, int start, int count, int after) {
+
+            }
+
+            @Override
+            public void onTextChanged(CharSequence s, int start, int before, int count) {
+
+            }
+
+            @Override
+            public void afterTextChanged(Editable s) {
+
+                if (s != null && s.length() > 0) {
+                    if (!Utility.isValidPostalCode(s.toString())) {
+                        etPostalCodeLayout.setError(getString(R.string.err_enter_valid_postal));
+                    } else {
+                        etPostalCodeLayout.setError(null);
+                    }
+                } else {
+                    etPostalCodeLayout.setError(null);
+                }
+            }
+        });
+
+        etPassword.addTextChangedListener(new TextWatcher() {
+            @Override
+            public void beforeTextChanged(CharSequence s, int start, int count, int after) {
+
+            }
+
+            @Override
+            public void onTextChanged(CharSequence s, int start, int before, int count) {
+
+            }
+
+            @Override
+            public void afterTextChanged(Editable s) {
+
+                if (s != null && s.length() > 0) {
+
+                    if (validate.isAtleastLength(s.toString(), 8)
+                            && validate.hasAtleastOneDigit(s.toString())
+                            && validate.hasAtleastOneUppercaseCharacter(s.toString())
+                            && validate.hasAtleastOneSpecialCharacter(s.toString())) {
+
+                        etPasswordLayout.setError(null);
+
+                    } else {
+                        etPasswordLayout.setError(getString(R.string.err_password));
+                }
+                } else {
+                    etPasswordLayout.setError(null);
+                }
+            }
+        });
+
+        etConfirmPassword.addTextChangedListener(new TextWatcher() {
+            @Override
+            public void beforeTextChanged(CharSequence s, int start, int count, int after) {
+
+            }
+
+            @Override
+            public void onTextChanged(CharSequence s, int start, int before, int count) {
+
+            }
+
+            @Override
+            public void afterTextChanged(Editable s) {
+
+                if (s != null && s.length() > 0) {
+
+                    if (validate.isAtleastLength(s.toString(), 8)
+                            && validate.hasAtleastOneDigit(s.toString())
+                            && validate.hasAtleastOneUppercaseCharacter(s.toString())
+                            && validate.hasAtleastOneSpecialCharacter(s.toString())) {
+
+                        etConfirmPasswordLayout.setError(null);
+
+                    } else {
+                        etConfirmPasswordLayout.setError(getString(R.string.err_password));
+                    }
+                } else {
+                    etConfirmPasswordLayout.setError(null);
+                }
+            }
         });
 
     }
@@ -233,72 +401,54 @@ public class CsoRegisterStep_1Activity extends AppCompatActivity implements View
         }
     }
 
-    private void getSchoolList() {
-
-        schoolList = new ArrayList<>();
-        if (Utility.isNetworkAvailable(context)) {
-            myProgressDialog.show("Please wait...");
-            schoolModel.getSchoolResponse().observe((LifecycleOwner) context, schoolResponse -> {
-
-                if (schoolResponse != null) {
-                    schoolListData = schoolResponse.getSchoolData();
-                    for (int i = 0; i < schoolListData.size(); i++) {
-                        schoolList.add(schoolListData.get(i).getSchoolName());
-                    }
-                    schoolList.add(0, "Select School");
-                    setSchoolSpinner(schoolList);
-                }
-                myProgressDialog.dismiss();
-
-            });
-        } else {
-            myToast.show(getString(R.string.no_internet_connection), Toast.LENGTH_SHORT, false);
-            schoolList.add("Select School");
-            setCountrySpinner(countryList);
-        }
-    }
-
     private void getCountryList() {
 
         countryList = new ArrayList<>();
         if (Utility.isNetworkAvailable(context)) {
-            myProgressDialog.show("Please wait...");
+            myProgressDialog.show(getString(R.string.please_wait));
             countryModel.getCountryResponse(context).observe((LifecycleOwner) context, countryResponse -> {
 
                 if (countryResponse != null) {
-                    countryListData = countryResponse.getResData();
-                    for (int i = 0; i < countryListData.size(); i++) {
-                        countryList.add(countryListData.get(i).getCountryName());
+                    if (countryResponse.getResStatus().equalsIgnoreCase("200")) {
+                        countryListData = countryResponse.getResData();
+                        for (int i = 0; i < countryListData.size(); i++) {
+                            countryList.add(countryListData.get(i).getCountryName());
+                        }
+
+                        setCountrySpinner(countryList);
+                    } else {
+                        myToast.show(getString(R.string.something_went_wrong), Toast.LENGTH_SHORT, false);
                     }
-                    countryList.add(0, "Select Country");
-                    setCountrySpinner(countryList);
+                } else {
+                    myToast.show(getString(R.string.err_server), Toast.LENGTH_SHORT, false);
                 }
                 myProgressDialog.dismiss();
 
             });
         } else {
             myToast.show(getString(R.string.no_internet_connection), Toast.LENGTH_SHORT, false);
-            countryList.add("Select Country");
-            setCountrySpinner(countryList);
+
         }
-
-        stateList.add("Select State");
-        setStateSpinner(stateList);
-
     }
 
     private void getStateList(String country_id) {
         stateList = new ArrayList<>();
         if (Utility.isNetworkAvailable(context)) {
-            myProgressDialog.show("Fetching states...");
-            stateModel.getStateResponse(context,new StateRequest(country_id)).observe((LifecycleOwner) context, stateResponse -> {
+            myProgressDialog.show(getString(R.string.please_wait));
+            stateModel.getStateResponse(context, new StateRequest(country_id)).observe((LifecycleOwner) context, stateResponse -> {
                 if (stateResponse != null) {
-                    stateListData = stateResponse.getStateList();
-                    for (int i = 0; i < stateListData.size(); i++) {
-                        stateList.add(stateListData.get(i).getStateName());
+                    if (stateResponse.getResStatus().equalsIgnoreCase("200")) {
+                        stateListData = stateResponse.getStateList();
+                        for (int i = 0; i < stateListData.size(); i++) {
+                            stateList.add(stateListData.get(i).getStateName());
+                        }
+
+                        setStateSpinner(stateList);
+                    } else {
+                        myToast.show(getString(R.string.something_went_wrong), Toast.LENGTH_SHORT, false);
                     }
-                    stateList.add(0, "Select State");
-                    setStateSpinner(stateList);
+                } else {
+                    myToast.show(getString(R.string.err_server), Toast.LENGTH_SHORT, false);
                 }
                 myProgressDialog.dismiss();
             });
@@ -312,16 +462,6 @@ public class CsoRegisterStep_1Activity extends AppCompatActivity implements View
         gender.setAdapter(adapter);
     }
 
-    private void setTypeSpinner() {
-        ArrayAdapter<String> adapter = new ArrayAdapter<>(this, R.layout.spinner_dropdown_item, R.id.text, getResources().getStringArray(R.array.type_cso));
-        type.setAdapter(adapter);
-    }
-
-    private void setSchoolSpinner(List<String> schoolList) {
-        ArrayAdapter<String> adapter = new ArrayAdapter<>(this, R.layout.spinner_dropdown_item, R.id.text, schoolList);
-        school.setAdapter(adapter);
-    }
-
     private void setCountrySpinner(List<String> countryList) {
         ArrayAdapter<String> adapter = new ArrayAdapter<>(this, R.layout.spinner_dropdown_item, R.id.text, countryList);
         country.setAdapter(adapter);
@@ -332,124 +472,161 @@ public class CsoRegisterStep_1Activity extends AppCompatActivity implements View
         state.setAdapter(adapter);
     }
 
+    public void checkValidation() {
+        if (etFirstName.getText() == null || etFirstName.getText().toString().isEmpty()) {
+            myToast.show(getString(R.string.err_enter_first_name), Toast.LENGTH_SHORT, false);
+            return;
+        } else if (!etFirstName.getText().toString().isEmpty()) {
+            if (!validate.isAlpha(etFirstName.getText().toString())) {
+                myToast.show(getString(R.string.err_enter_valid_first_name), Toast.LENGTH_SHORT, false);
+                return;
+            }
+        }
+        if (etLastName.getText() == null || etLastName.getText().toString().isEmpty()) {
+            myToast.show(getString(R.string.err_enter_last_name), Toast.LENGTH_SHORT, false);
+            return;
+        } else if (!etLastName.getText().toString().isEmpty()) {
+            if (!validate.isAlpha(etLastName.getText().toString())) {
+                myToast.show(getString(R.string.err_enter_valid_last_name), Toast.LENGTH_SHORT, false);
+                return;
+            }
+        }
+        if (etEmail.getText() == null || etEmail.getText().toString().isEmpty()) {
+            myToast.show(getString(R.string.err_enter_email), Toast.LENGTH_SHORT, false);
+            return;
+        } else if (!etEmail.getText().toString().isEmpty()) {
+            if (!Utility.isValidEmail(etEmail.getText().toString())) {
+                myToast.show(getString(R.string.err_enter_valid_email), Toast.LENGTH_SHORT, false);
+                return;
+            }
+        }
+
+        if (etPhone.getText() == null || etPhone.getText().toString().isEmpty()) {
+            myToast.show(getString(R.string.err_enter_phone_number), Toast.LENGTH_SHORT, false);
+            return;
+        } else if (!etPhone.getText().toString().isEmpty()) {
+            if (!Utility.isValidPhoneNumber(etPhone.getText().toString())) {
+                myToast.show(getString(R.string.err_enter_valid_phone), Toast.LENGTH_SHORT, false);
+                return;
+            }
+        }
+        if (country_id == null || country_id.isEmpty()) {
+            myToast.show(getString(R.string.err_select_country), Toast.LENGTH_SHORT, false);
+        }
+        if (state_id == null || state_id.isEmpty()) {
+            myToast.show(getString(R.string.err_select_state), Toast.LENGTH_SHORT, false);
+            return;
+        }
+        if (etCity.getText() == null || etCity.getText().toString().isEmpty()) {
+            myToast.show(getString(R.string.err_enter_city), Toast.LENGTH_SHORT, false);
+            return;
+        }
+        if (etPostalCode.getText() == null || etPostalCode.getText().toString().isEmpty()) {
+            myToast.show(getString(R.string.err_enter_postal_code), Toast.LENGTH_SHORT, false);
+            return;
+        } else if (!etPostalCode.getText().toString().isEmpty()) {
+            if (!Utility.isValidPostalCode(etPostalCode.getText().toString())) {
+                myToast.show(getString(R.string.err_enter_valid_postal), Toast.LENGTH_SHORT, false);
+                return;
+            }
+        }
+        if (etAddress.getText() == null || etAddress.getText().toString().isEmpty()) {
+            myToast.show(getString(R.string.err_enter_address), Toast.LENGTH_SHORT, false);
+            return;
+        }
+        if (etDob.getText() == null || etDob.getText().toString().isEmpty()) {
+            myToast.show(getString(R.string.err_enter_dob), Toast.LENGTH_SHORT, false);
+            return;
+        }
+        if (gender_id == null || gender_id.isEmpty()) {
+            myToast.show(getString(R.string.err_select_gender), Toast.LENGTH_SHORT, false);
+            return;
+        }
+        if (etPassword.getText() == null || etPassword.getText().toString().isEmpty()) {
+            myToast.show(getString(R.string.err_enter_password), Toast.LENGTH_SHORT, false);
+            return;
+        } else if (!etPassword.getText().toString().isEmpty()) {
+            if (!validate.isAtleastLength(etPassword.getText().toString().toString(), 8)
+                    && !validate.hasAtleastOneDigit(etPassword.getText().toString().toString())
+                    && !validate.hasAtleastOneUppercaseCharacter(etPassword.getText().toString().toString())
+                    && !validate.hasAtleastOneSpecialCharacter(etPassword.getText().toString().toString())) {
+                myToast.show(getString(R.string.err_password), Toast.LENGTH_SHORT, false);
+                return;
+            }
+        }
+        if (etConfirmPassword.getText() == null || etConfirmPassword.getText().toString().isEmpty()) {
+            myToast.show(getString(R.string.err_enter_confirm_password), Toast.LENGTH_SHORT, false);
+            return;
+        } else if (!etConfirmPassword.getText().toString().isEmpty()) {
+            if (!validate.isAtleastLength(etPassword.getText().toString().toString(), 8)
+                    && !validate.hasAtleastOneDigit(etPassword.getText().toString().toString())
+                    && !validate.hasAtleastOneUppercaseCharacter(etPassword.getText().toString().toString())
+                    && !validate.hasAtleastOneSpecialCharacter(etPassword.getText().toString().toString())) {
+                myToast.show(getString(R.string.err_password), Toast.LENGTH_SHORT, false);
+                return;
+            }
+        }
+        if (etPassword.getText().toString().equalsIgnoreCase(etConfirmPassword.getText().toString())) {
+
+            myProgressDialog.show(getString(R.string.please_wait));
+            sharedPref.setUserType(sharedPref.getUserType().toUpperCase());
+
+            CsoRegisterRequestStep_1 csoRegisterRequest_1 = new CsoRegisterRequestStep_1();
+            csoRegisterRequest_1.setUserType(sharedPref.getUserType());
+            csoRegisterRequest_1.setUserDevice(Utility.getDeviceId(context));
+            csoRegisterRequest_1.setSchoolId("");
+            csoRegisterRequest_1.setUserFName(etFirstName.getText().toString());
+            csoRegisterRequest_1.setUserLName(etLastName.getText().toString());
+            csoRegisterRequest_1.setUserEmail(etEmail.getText().toString());
+            csoRegisterRequest_1.setUserPhone(etPhone.getText().toString());
+            csoRegisterRequest_1.setUserCountry(country_id);
+            csoRegisterRequest_1.setUserState(state_id);
+            csoRegisterRequest_1.setUserCity(etCity.getText().toString());
+            csoRegisterRequest_1.setUserZipcode(etPostalCode.getText().toString());
+            csoRegisterRequest_1.setUserAddress(etAddress.getText().toString());
+            csoRegisterRequest_1.setUserDob(etDob.getText().toString());
+            csoRegisterRequest_1.setUserGender(String.valueOf(gender_id.charAt(0)));
+            csoRegisterRequest_1.setUserPass(etPassword.getText().toString());
+
+            if (Utility.isNetworkAvailable(context)) {
+                csoRegisterStep_1ViewModel.getCSORegisterResponse(csoRegisterRequest_1).observe((LifecycleOwner) context, registerResponse -> {
+
+                    if (registerResponse != null) {
+                        if (registerResponse.getResStatus().equalsIgnoreCase("200")) {
+                            sharedPref.setUserId(registerResponse.getResData().getUserId());
+
+                            Intent intent1 = new Intent(context, CsoRegisterStep_2Activity.class);
+                            intent1.addFlags(Intent.FLAG_ACTIVITY_NEW_TASK | Intent.FLAG_ACTIVITY_CLEAR_TASK);
+                            intent1.putExtra("action", "register");
+                            startActivity(intent1);
+                            overridePendingTransition(R.anim.fade_in, R.anim.fade_out);
+
+                        } else {
+                            myToast.show(registerResponse.getResMessage(), Toast.LENGTH_SHORT, false);
+                        }
+                    } else {
+                        myToast.show(getString(R.string.err_server), Toast.LENGTH_SHORT, false);
+                    }
+
+                    myProgressDialog.dismiss();
+
+                });
+            } else {
+                myToast.show(getString(R.string.no_internet_connection), Toast.LENGTH_SHORT, false);
+            }
+
+        } else {
+            myToast.show(getString(R.string.err_password_confirmpassword_not_match), Toast.LENGTH_SHORT, false);
+            etConfirmPassword.setText("");
+        }
+    }
 
     @Override
     public void onClick(View v) {
         switch (v.getId()) {
             case R.id.next:
 
-                /*Intent intent1 = new Intent(context, CsoRegisterStep_2Activity.class);
-                //intent1.addFlags(Intent.FLAG_ACTIVITY_NEW_TASK | Intent.FLAG_ACTIVITY_CLEAR_TASK);
-                startActivity(intent1);
-                overridePendingTransition(R.anim.fade_in, R.anim.fade_out);*/
-
-                if (type_id != null && !type_id.isEmpty()) {
-                    if (school_id != null && !school_id.isEmpty()) {
-                        if (etFirstName.getText() != null && !etFirstName.getText().toString().isEmpty()) {
-                            if (etLastName.getText() != null && !etLastName.getText().toString().isEmpty()) {
-                                if (etEmail.getText() != null && !etEmail.getText().toString().isEmpty()) {
-                                    if (etPhone.getText() != null && !etPhone.getText().toString().isEmpty()) {
-                                        if (country_id != null && !country_id.isEmpty()) {
-                                            if (state_id != null && !state_id.isEmpty()) {
-                                                if (etCity.getText() != null && !etCity.getText().toString().isEmpty()) {
-                                                    if (etPostalCode.getText() != null && !etPostalCode.getText().toString().isEmpty()) {
-                                                        if (etAddress.getText() != null && !etAddress.getText().toString().isEmpty()) {
-                                                            if (etDob.getText() != null && !etDob.getText().toString().isEmpty()) {
-                                                                if (gender_id != null && !gender_id.isEmpty()) {
-
-                                                                    if (etPassword.getText() != null && !etPassword.getText().toString().isEmpty()) {
-                                                                        if (etConfirmPassword.getText() != null && !etConfirmPassword.getText().toString().isEmpty()) {
-
-                                                                            if (etPassword.getText().toString().equalsIgnoreCase(etConfirmPassword.getText().toString())) {
-
-                                                                                myProgressDialog.show("Registering...");
-
-                                                                                CsoRegisterRequestStep_1 csoRegisterRequest_1 = new CsoRegisterRequestStep_1();
-                                                                                csoRegisterRequest_1.setUserType(String.valueOf(type_id.substring(0, 3).toUpperCase()));
-                                                                                csoRegisterRequest_1.setUserDevice(Utility.getDeviceId(context));
-                                                                                csoRegisterRequest_1.setSchoolId(school_id);
-                                                                                csoRegisterRequest_1.setUserFName(etFirstName.getText().toString());
-                                                                                csoRegisterRequest_1.setUserLName(etLastName.getText().toString());
-                                                                                csoRegisterRequest_1.setUserEmail(etEmail.getText().toString());
-                                                                                csoRegisterRequest_1.setUserPhone(etPhone.getText().toString());
-                                                                                csoRegisterRequest_1.setUserCountry(country_id);
-                                                                                csoRegisterRequest_1.setUserState(state_id);
-                                                                                csoRegisterRequest_1.setUserCity(etCity.getText().toString());
-                                                                                csoRegisterRequest_1.setUserZipcode(etPostalCode.getText().toString());
-                                                                                csoRegisterRequest_1.setUserAddress(etAddress.getText().toString());
-                                                                                csoRegisterRequest_1.setUserDob(etDob.getText().toString());
-                                                                                csoRegisterRequest_1.setUserGender(String.valueOf(gender_id.charAt(0)));
-                                                                                csoRegisterRequest_1.setUserPass(etPassword.getText().toString());
-
-                                                                                csoRegisterStep_1ViewModel.getRegisterResponse(csoRegisterRequest_1).observe((LifecycleOwner) context, registerResponse -> {
-
-                                                                                    if (registerResponse != null && registerResponse.getResStatus().equalsIgnoreCase("200")) {
-                                                                                        sharedPref.setUserId(registerResponse.getResData().getUserId());
-                                                                                        sharedPref.setUserType(String.valueOf(type_id.substring(0, 3).toUpperCase()));
-
-                                                                                        Intent intent1 = new Intent(context, CsoRegisterStep_2Activity.class);
-                                                                                        //intent1.addFlags(Intent.FLAG_ACTIVITY_NEW_TASK | Intent.FLAG_ACTIVITY_CLEAR_TASK);
-                                                                                        intent1.putExtra("action", "register");
-                                                                                        startActivity(intent1);
-                                                                                        overridePendingTransition(R.anim.fade_in, R.anim.fade_out);
-
-                                                                                    } else {
-                                                                                        myToast.show("Basic information registration failed", Toast.LENGTH_SHORT, false);
-                                                                                    }
-
-                                                                                    myProgressDialog.dismiss();
-
-                                                                                });
-
-                                                                            } else {
-                                                                                myToast.show("Password & Confirm Password not match", Toast.LENGTH_SHORT, false);
-                                                                                etConfirmPassword.setText("");
-                                                                            }
-                                                                        } else {
-                                                                            myToast.show("Enter Confirm Password", Toast.LENGTH_SHORT, false);
-                                                                        }
-                                                                    } else {
-                                                                        myToast.show("Enter Password", Toast.LENGTH_SHORT, false);
-                                                                    }
-                                                                } else {
-                                                                    myToast.show("Select Gender", Toast.LENGTH_SHORT, false);
-                                                                }
-                                                            } else {
-                                                                myToast.show("Enter Date of Birth", Toast.LENGTH_SHORT, false);
-                                                            }
-                                                        } else {
-                                                            myToast.show("Enter Address", Toast.LENGTH_SHORT, false);
-                                                        }
-                                                    } else {
-                                                        myToast.show("Enter Postal Code", Toast.LENGTH_SHORT, false);
-                                                    }
-                                                } else {
-                                                    myToast.show("Enter City", Toast.LENGTH_SHORT, false);
-                                                }
-                                            } else {
-                                                myToast.show("Select State", Toast.LENGTH_SHORT, false);
-                                            }
-                                        } else {
-                                            myToast.show("Select Country", Toast.LENGTH_SHORT, false);
-                                        }
-                                    } else {
-                                        myToast.show("Enter Phone", Toast.LENGTH_SHORT, false);
-                                    }
-                                } else {
-                                    myToast.show("Enter Email", Toast.LENGTH_SHORT, false);
-                                }
-                            } else {
-                                myToast.show("Enter Last Name", Toast.LENGTH_SHORT, false);
-                            }
-                        } else {
-                            myToast.show("Enter First Name", Toast.LENGTH_SHORT, false);
-                        }
-                    } else {
-                        myToast.show("Select School", Toast.LENGTH_SHORT, false);
-                    }
-                } else {
-                    myToast.show("Select Identity", Toast.LENGTH_SHORT, false);
-                }
+                checkValidation();
                 break;
 
             case R.id.back:
@@ -457,8 +634,6 @@ public class CsoRegisterStep_1Activity extends AppCompatActivity implements View
                 break;
 
             case R.id.clear:
-                type.setSelection(0, true);
-                school.setSelection(0, true);
                 etFirstName.setText("");
                 etLastName.setText("");
                 etEmail.setText("");
@@ -473,8 +648,6 @@ public class CsoRegisterStep_1Activity extends AppCompatActivity implements View
                 gender.setSelection(0, true);
                 etPassword.setText("");
                 etConfirmPassword.setText("");
-                type_id = "";
-                school_id = "";
                 country_id = "";
                 state_id = "";
                 gender_id = "";
@@ -498,8 +671,8 @@ public class CsoRegisterStep_1Activity extends AppCompatActivity implements View
 
     private void updateLabel() {
 
-        SimpleDateFormat sdf = new SimpleDateFormat("MM-dd-yyyy", Locale.US);
-        etDob.setText(sdf.format(myCalendar.getTime()));
+        etDob.setText(Utility.formatDateFull(myCalendar.getTime()));
+
     }
 
     @SuppressLint("ClickableViewAccessibility")
@@ -508,10 +681,20 @@ public class CsoRegisterStep_1Activity extends AppCompatActivity implements View
         if (event.getAction() == MotionEvent.ACTION_UP)
             switch (v.getId()) {
                 case R.id.etDob:
+                    myCalendar = Calendar.getInstance();
                     DatePickerDialog datePickerDialog = new DatePickerDialog(context, date, myCalendar
                             .get(Calendar.YEAR), myCalendar.get(Calendar.MONTH),
                             myCalendar.get(Calendar.DAY_OF_MONTH));
-                    datePickerDialog.getDatePicker().setMaxDate(System.currentTimeMillis());
+                    int year = myCalendar.get(Calendar.YEAR) - 18;
+                    String string_date = myCalendar.get(Calendar.MONTH) + "-" + myCalendar.get(Calendar.DAY_OF_MONTH) + "-" + year;
+                    try {
+                        Date d = Constants.ff.parse(string_date);
+                        long milliseconds = d.getTime();
+                        datePickerDialog.getDatePicker().setMaxDate(milliseconds);
+                    } catch (ParseException e) {
+                        e.printStackTrace();
+                    }
+
                     datePickerDialog.show();
                     break;
             }

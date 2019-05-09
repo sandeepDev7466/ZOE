@@ -78,8 +78,8 @@ public class CountryResponse {
         @ColumnInfo(name = "country_name")
         private String countryName;
 
-        public Country() {
-        }
+//        public Country() {
+//        }
 
         public Country(int id, String countryId, String countryCode, String countryName) {
             this.id = id;

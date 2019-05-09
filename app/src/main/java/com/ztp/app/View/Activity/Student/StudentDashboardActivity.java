@@ -1,5 +1,6 @@
 package com.ztp.app.View.Activity.Student;
 
+import android.app.Activity;
 import android.app.Dialog;
 import android.content.Context;
 import android.content.Intent;
@@ -26,6 +27,7 @@ import com.ztp.app.Data.Local.SharedPrefrence.SharedPref;
 import com.ztp.app.Helper.MyHeadingTextView;
 import com.ztp.app.Helper.MyToast;
 import com.ztp.app.R;
+import com.ztp.app.Utils.Constants;
 import com.ztp.app.Utils.Utility;
 import com.ztp.app.View.Activity.Common.EditProfileActivity;
 import com.ztp.app.View.Activity.Common.LoginActivity;
@@ -77,7 +79,7 @@ public class StudentDashboardActivity extends AppCompatActivity
 
     private void setDashTitle() {
         name = sharedPref.getFirstName().toUpperCase() + " " + sharedPref.getLastName().toUpperCase();
-        title.setText(name + " "+getString(R.string.dashboard).toUpperCase());
+        title.setText(getString(R.string.dashboard).toUpperCase());
         nav_title.setText(name);
     }
 
@@ -154,40 +156,40 @@ public class StudentDashboardActivity extends AppCompatActivity
             Fragment frag = getLastFragment();
 
             if (frag.getTag() != null && frag.getTag().equals("HangoutFragment")) {
-                hangout.setAlpha(1.0f);
-                locker.setAlpha(0.3f);
-                target.setAlpha(0.3f);
-                booking.setAlpha(0.3f);
-                dashboard.setAlpha(0.3f);
+                hangout.setAlpha(Constants.no_alpha);
+                locker.setAlpha(Constants.alpha);
+                target.setAlpha(Constants.alpha);
+                booking.setAlpha(Constants.alpha);
+                dashboard.setAlpha(Constants.alpha);
                 title.setText(getString(R.string.hangout).toUpperCase());
             } else if (frag.getTag() != null && frag.getTag().equals("LockerFragment")) {
-                hangout.setAlpha(0.3f);
-                locker.setAlpha(1.0f);
-                target.setAlpha(0.3f);
-                booking.setAlpha(0.3f);
-                dashboard.setAlpha(0.3f);
+                hangout.setAlpha(Constants.alpha);
+                locker.setAlpha(Constants.no_alpha);
+                target.setAlpha(Constants.alpha);
+                booking.setAlpha(Constants.alpha);
+                dashboard.setAlpha(Constants.alpha);
                 title.setText(getString(R.string.locker).toUpperCase());
             } else if (frag.getTag() != null && frag.getTag().equals("TargetFragment")) {
-                hangout.setAlpha(0.3f);
-                locker.setAlpha(0.3f);
-                target.setAlpha(1.0f);
-                booking.setAlpha(0.3f);
-                dashboard.setAlpha(0.3f);
+                hangout.setAlpha(Constants.alpha);
+                locker.setAlpha(Constants.alpha);
+                target.setAlpha(Constants.no_alpha);
+                booking.setAlpha(Constants.alpha);
+                dashboard.setAlpha(Constants.alpha);
                 title.setText(getString(R.string.target).toUpperCase());
             } else if (frag.getTag() != null && frag.getTag().equals("BookingFragment")) {
-                hangout.setAlpha(0.3f);
-                locker.setAlpha(0.3f);
-                target.setAlpha(0.3f);
-                booking.setAlpha(1.0f);
-                dashboard.setAlpha(0.3f);
+                hangout.setAlpha(Constants.alpha);
+                locker.setAlpha(Constants.alpha);
+                target.setAlpha(Constants.alpha);
+                booking.setAlpha(Constants.no_alpha);
+                dashboard.setAlpha(Constants.alpha);
                 title.setText(getString(R.string.booking).toUpperCase());
             } else if (frag.getTag() != null && frag.getTag().equals("DashboardFragment")) {
-                hangout.setAlpha(0.3f);
-                locker.setAlpha(0.3f);
-                target.setAlpha(0.3f);
-                booking.setAlpha(0.3f);
-                dashboard.setAlpha(1.0f);
-                title.setText(name + " "+getString(R.string.dashboard).toUpperCase());
+                hangout.setAlpha(Constants.alpha);
+                locker.setAlpha(Constants.alpha);
+                target.setAlpha(Constants.alpha);
+                booking.setAlpha(Constants.alpha);
+                dashboard.setAlpha(Constants.no_alpha);
+                setDashTitle();
             }
 
         } else {
@@ -262,7 +264,7 @@ public class StudentDashboardActivity extends AppCompatActivity
                 break;
             case R.id.dashboard:
                 if (!(getSupportFragmentManager().findFragmentById(R.id.body) instanceof DashboardFragment)) {
-                    title.setText(name + " "+getString(R.string.dashboard).toUpperCase());
+                    setDashTitle();
                     setDashboardFragment();
                 }
                 break;
@@ -283,7 +285,7 @@ public class StudentDashboardActivity extends AppCompatActivity
                     dialog.dismiss();
                     sharedPref.setIsLogin(false);
                     Intent intent = new Intent(context, LoginActivity.class);
-                    intent.addFlags(Intent.FLAG_ACTIVITY_CLEAR_TOP | Intent.FLAG_ACTIVITY_NEW_TASK);
+                    intent.addFlags(Intent.FLAG_ACTIVITY_NEW_TASK | Intent.FLAG_ACTIVITY_CLEAR_TASK);
                     startActivity(intent);
                     overridePendingTransition(0, 0);
 
@@ -318,48 +320,58 @@ public class StudentDashboardActivity extends AppCompatActivity
         }
     }
 
+    @Override
+    protected void onActivityResult(int requestCode, int resultCode, Intent data) {
+
+        if (requestCode == 1) {
+            if(resultCode == Activity.RESULT_OK){
+               recreate();
+            }
+        }
+    }
+
     public void setHangoutFragment() {
-        hangout.setAlpha(1.0f);
-        locker.setAlpha(0.3f);
-        target.setAlpha(0.3f);
-        booking.setAlpha(0.3f);
-        dashboard.setAlpha(0.3f);
+        hangout.setAlpha(Constants.no_alpha);
+        locker.setAlpha(Constants.alpha);
+        target.setAlpha(Constants.alpha);
+        booking.setAlpha(Constants.alpha);
+        dashboard.setAlpha(Constants.alpha);
         Utility.replaceFragment(context, new HangoutFragment(), "HangoutFragment");
     }
 
     public void setLockerFragment() {
-        hangout.setAlpha(0.3f);
-        locker.setAlpha(1.0f);
-        target.setAlpha(0.3f);
-        booking.setAlpha(0.3f);
-        dashboard.setAlpha(0.3f);
+        hangout.setAlpha(Constants.alpha);
+        locker.setAlpha(Constants.no_alpha);
+        target.setAlpha(Constants.alpha);
+        booking.setAlpha(Constants.alpha);
+        dashboard.setAlpha(Constants.alpha);
         Utility.replaceFragment(context, new LockerFragment(), "LockerFragment");
     }
 
     public void setTargetFragment() {
-        hangout.setAlpha(0.3f);
-        locker.setAlpha(0.3f);
-        target.setAlpha(1.0f);
-        booking.setAlpha(0.3f);
-        dashboard.setAlpha(0.3f);
+        hangout.setAlpha(Constants.alpha);
+        locker.setAlpha(Constants.alpha);
+        target.setAlpha(Constants.no_alpha);
+        booking.setAlpha(Constants.alpha);
+        dashboard.setAlpha(Constants.alpha);
         Utility.replaceFragment(context, new TargetFragment(), "TargetFragment");
     }
 
     public void setBookingFragment() {
-        hangout.setAlpha(0.3f);
-        locker.setAlpha(0.3f);
-        target.setAlpha(0.3f);
-        booking.setAlpha(1.0f);
-        dashboard.setAlpha(0.3f);
+        hangout.setAlpha(Constants.alpha);
+        locker.setAlpha(Constants.alpha);
+        target.setAlpha(Constants.alpha);
+        booking.setAlpha(Constants.no_alpha);
+        dashboard.setAlpha(Constants.alpha);
         Utility.replaceFragment(context, new BookingFragment(), "BookingFragment");
     }
 
     public void setDashboardFragment() {
-        hangout.setAlpha(0.3f);
-        locker.setAlpha(0.3f);
-        target.setAlpha(0.3f);
-        booking.setAlpha(0.3f);
-        dashboard.setAlpha(1.0f);
+        hangout.setAlpha(Constants.alpha);
+        locker.setAlpha(Constants.alpha);
+        target.setAlpha(Constants.alpha);
+        booking.setAlpha(Constants.alpha);
+        dashboard.setAlpha(Constants.no_alpha);
         Utility.replaceFragment(context, new DashboardFragment(), "DashboardFragment");
     }
 }

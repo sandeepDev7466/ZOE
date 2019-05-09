@@ -85,8 +85,8 @@ public class EventTypeResponse {
         @ColumnInfo(name = "event_type")
         private String eventType;
 
-        public EventType() {
-        }
+//        public EventType() {
+//        }
 
         public EventType(int id, String eventTypeId, String eventTypeName, String eventType) {
             this.id = id;

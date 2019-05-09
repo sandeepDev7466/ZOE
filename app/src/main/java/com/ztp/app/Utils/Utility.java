@@ -29,6 +29,7 @@ import android.view.View;
 import android.view.ViewGroup;
 import android.view.Window;
 import android.view.WindowManager;
+import android.webkit.URLUtil;
 import android.widget.ListAdapter;
 import android.widget.ListView;
 
@@ -44,8 +45,44 @@ import java.util.Calendar;
 import java.util.Date;
 import java.util.Locale;
 import java.util.TimeZone;
+import java.util.concurrent.TimeUnit;
+import java.util.regex.Matcher;
+import java.util.regex.Pattern;
 
 public class Utility {
+
+    public static String getFormattedPhoneNumber(String phoneNumber)
+    {
+       return String.valueOf(phoneNumber).replaceFirst("(\\d{3})(\\d{3})(\\d+)", "($1)-$2-$3");
+    }
+
+    public static boolean isValidName(String eventName)
+    {
+        String regex = "[a-zA-Z0-9!@#$%^&*(),.?;{}/|\\s]+$";
+        return Pattern.compile(regex).matcher(eventName).matches();
+    }
+
+    public static boolean isValidPostalCode(String postalCode)
+    {
+        String regex = "^[0-9]{5}(?:-[0-9]{4})?$";
+        return Pattern.compile(regex).matcher(postalCode).matches();
+    }
+
+    public static boolean isValidPhoneNumber(String target) {
+        if (target == null /*|| target.length() < 6*/ || target.length() != 14 || target.contains(".")) {
+            return false;
+        } else {
+            return android.util.Patterns.PHONE.matcher(target).matches();
+        }
+    }
+
+    public static boolean isValidUrl(String url) {
+        return URLUtil.isValidUrl(url);
+    }
+
+    public static boolean isValidWebsite(String url) {
+        return Patterns.WEB_URL.matcher(url).matches();
+    }
 
     public static String getCurrentTime() {
         return new SimpleDateFormat("yyyy-MM-dd HH:mm:ss", Locale.ENGLISH).format(Calendar.getInstance().getTime());
@@ -53,7 +90,7 @@ public class Utility {
 
 
     public static Date convertStringToDateWithoutTime(String dateStr) {
-        DateFormat format = new SimpleDateFormat("yyyy-MM-dd", Locale.ENGLISH);
+        DateFormat format = new SimpleDateFormat("MM-dd-yyyy", Locale.ENGLISH);
         format.setTimeZone(TimeZone.getTimeZone("Asia/Kolkata"));
         Date date = null;
         try {
@@ -63,7 +100,6 @@ public class Utility {
         }
         return date;
     }
-
 
 
     public static Date convertStringToDate(String dateStr) {
@@ -81,7 +117,7 @@ public class Utility {
 
     public static String formatDateFull(Date date) {
 
-        String format = "dd-MM-yyyy";
+        String format = "MM-dd-yyyy";
         SimpleDateFormat simpleDateFormat = new SimpleDateFormat(format, Locale.ENGLISH);
         simpleDateFormat.setTimeZone(TimeZone.getTimeZone("Asia/Kolkata"));
         String formattedNow = simpleDateFormat.format(date);
@@ -100,9 +136,12 @@ public class Utility {
         return formattedNow;
 
     }
-
-
-
+    public static int daysInBetween(Date startDateValue, Date endDateValue) {
+        int days = 0;
+        long diff = endDateValue.getTime() - startDateValue.getTime();
+        days = Math.round(TimeUnit.DAYS.convert(diff, TimeUnit.MILLISECONDS));
+        return days;
+    }
 
     public static void setLocale(Context context, String lang) {
         Locale locale = new Locale(lang);
@@ -231,7 +270,6 @@ public class Utility {
     }
 
 
-
     public static void setListViewHeightBasedOnChildren(ListView listView) {
         ListAdapter listAdapter = listView.getAdapter();
         if (listAdapter == null)
@@ -352,15 +390,16 @@ public class Utility {
         return "com.google.android.apps.photos.content".equals(uri.getAuthority());
     }
 
-    public static boolean isValidEmail(CharSequence target) {
-        return (!TextUtils.isEmpty(target) && Patterns.EMAIL_ADDRESS.matcher(target).matches());
+    public static boolean isValidEmail(String target) {
+
+        return Patterns.EMAIL_ADDRESS.matcher(target).matches();
     }
 
     public static boolean isValidMobile(String phone) {
         return Patterns.PHONE.matcher(phone).matches();
     }
 
-    public static String getRealPathFromURI_API19(Context context, Uri uri){
+    public static String getRealPathFromURI_API19(Context context, Uri uri) {
         String filePath = "";
         try {
             String wholeID = DocumentsContract.getDocumentId(uri);
@@ -382,8 +421,7 @@ public class Utility {
                 filePath = cursor.getString(columnIndex);
             }
             cursor.close();
-        }catch (Exception e)
-        {
+        } catch (Exception e) {
             e.printStackTrace();
         }
         return filePath;

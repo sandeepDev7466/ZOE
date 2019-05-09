@@ -1,26 +1,22 @@
 package com.ztp.app.View.Fragment.CSO.Event;
 
-import android.arch.lifecycle.Observer;
-import android.arch.lifecycle.ViewModelProvider;
 import android.arch.lifecycle.ViewModelProviders;
 import android.content.Context;
 import android.os.Bundle;
-import android.support.annotation.Nullable;
 import android.support.v4.app.Fragment;
-import android.support.v4.app.FragmentActivity;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
 import android.widget.ListView;
+import android.widget.Toast;
 
 import com.ztp.app.Data.Local.SharedPrefrence.SharedPref;
 import com.ztp.app.Data.Remote.Model.Request.GetEventsRequest;
-import com.ztp.app.Data.Remote.Model.Response.GetEventsResponse;
 import com.ztp.app.Helper.MyTextView;
+import com.ztp.app.Helper.MyToast;
 import com.ztp.app.R;
+import com.ztp.app.Utils.Utility;
 import com.ztp.app.Viewmodel.GetEventsViewModel;
-
-import java.util.ArrayList;
 
 public class TabMyEventFragment extends Fragment {
 
@@ -43,8 +39,7 @@ public class TabMyEventFragment extends Fragment {
         noData = v.findViewById(R.id.noData);
         sharedPref = SharedPref.getInstance(context);
         getEventsViewModel = ViewModelProviders.of(this).get(GetEventsViewModel.class);
-
-       getData();
+        getData();
 
         return v;
     }
@@ -56,20 +51,24 @@ public class TabMyEventFragment extends Fragment {
 
     }
 
-    public void getData()
-    {
-        getEventsViewModel.getEventsResponseLiveData(new GetEventsRequest(sharedPref.getUserId())).observe(this, getEventsResponse -> {
-            if(getEventsResponse!=null) {
-                lv_event_list.setVisibility(View.VISIBLE);
-                adapter = new EventListAdapter(context, getEventsResponse.getEventData());
-                lv_event_list.setAdapter(adapter);
-            }
-            else
-            {
-                lv_event_list.setVisibility(View.GONE);
-                noData.setVisibility(View.VISIBLE);
-            }
-        });
+    public void getData() {
+        if(Utility.isNetworkAvailable(context)) {
+            getEventsViewModel.getEventsResponseLiveData(new GetEventsRequest(sharedPref.getUserId())).observe(this, getEventsResponse -> {
+                if (getEventsResponse != null && getEventsResponse.getEventData() != null) {
+                    lv_event_list.setVisibility(View.VISIBLE);
+                    noData.setVisibility(View.INVISIBLE);
+                    adapter = new EventListAdapter(context, getEventsResponse.getEventData());
+                    lv_event_list.setAdapter(adapter);
+                } else {
+                    lv_event_list.setVisibility(View.INVISIBLE);
+                    noData.setVisibility(View.VISIBLE);
+                }
+            });
+        }
+        else
+        {
+            new MyToast(context).show(context.getString(R.string.no_internet_connection), Toast.LENGTH_SHORT, false);
+        }
     }
 
     @Override

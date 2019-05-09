@@ -129,12 +129,12 @@ class FindCsoAdapter extends BaseAdapter implements View.OnClickListener {
 
         yes.setOnClickListener(v -> {
             dialog.dismiss();
-            myToast.show("Booking deleted successfully", Toast.LENGTH_SHORT,true);
+            myToast.show("Booking added successfully", Toast.LENGTH_SHORT,true);
         });
 
         no.setOnClickListener(v -> {
             dialog.dismiss();
-            myToast.show("Cancelled", Toast.LENGTH_SHORT,false);
+           
         });
 
         dialog.show();

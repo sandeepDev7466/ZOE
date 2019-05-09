@@ -1,14 +1,11 @@
 package com.ztp.app.View.Activity.Common;
 
-import android.Manifest;
-import android.app.Activity;
 import android.arch.lifecycle.ViewModelProviders;
 import android.content.Context;
 import android.content.Intent;
 import android.content.res.ColorStateList;
 import android.content.res.Configuration;
 import android.graphics.Typeface;
-import android.os.Build;
 import android.os.Bundle;
 import android.support.v7.app.AppCompatActivity;
 import android.text.Editable;
@@ -19,6 +16,7 @@ import android.view.View;
 import android.widget.LinearLayout;
 import android.widget.Toast;
 
+import com.raywenderlich.android.validatetor.ValidateTor;
 import com.ztp.app.Data.Local.SharedPrefrence.SharedPref;
 import com.ztp.app.Data.Remote.Model.Request.LoginRequest;
 import com.ztp.app.Helper.MyButton;
@@ -48,6 +46,7 @@ public class LoginActivity extends AppCompatActivity implements View.OnClickList
     SharedPref sharedPref;
     RuntimePermission runtimePermission;
     LinearLayout cardLayout;
+    ValidateTor validate;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -56,6 +55,7 @@ public class LoginActivity extends AppCompatActivity implements View.OnClickList
         if (getSupportActionBar() != null)
             getSupportActionBar().hide();
         context = this;
+        validate = new ValidateTor();
         sharedPref = SharedPref.getInstance(context);
         myProgressDialog = new MyProgressDialog(context);
         myToast = new MyToast(context);
@@ -79,31 +79,6 @@ public class LoginActivity extends AppCompatActivity implements View.OnClickList
             //login.setBackgroundResource(R.drawable.white_border_rectangle);
             cardLayout.setBackgroundResource(R.drawable.black_plain_rectangle);
             etPasswordLayout.setPasswordVisibilityToggleTintList(ColorStateList.valueOf(getResources().getColor(R.color.white)));
-        }
-    }
-
-    @Override
-    protected void onResume() {
-        super.onResume();
-
-        if (Build.VERSION.SDK_INT >= 23) {
-            requestPhonePermission();
-        }
-
-       /* if (!sharedPref.getEmail().equalsIgnoreCase("")) {
-            etEmail.setText(sharedPref.getEmail());
-            etPassword.requestFocus();
-        }*/
-    }
-
-    private void requestPhonePermission() {
-        int x = runtimePermission.setSinglePermission((Activity) context, Manifest.permission.READ_PHONE_STATE);
-        if (x == 0) {
-            //myToast.show("Permission granted",Toast.LENGTH_SHORT,true);
-        } else if (x == 1) {
-            myToast.show("Permission denied", Toast.LENGTH_SHORT, false);
-        } else {
-            myToast.show("Permission error", Toast.LENGTH_SHORT, false);
         }
     }
 
@@ -135,6 +110,12 @@ public class LoginActivity extends AppCompatActivity implements View.OnClickList
             @Override
             public void afterTextChanged(Editable s) {
                 if (s != null && s.toString().length() > 0) {
+                    if (Utility.isValidEmail(s.toString())) {
+                        etEmailLayout.setError(null);
+                    } else {
+                        etEmailLayout.setError(getString(R.string.err_enter_valid_email));
+                    }
+                } else {
                     etEmailLayout.setError(null);
                 }
             }
@@ -170,36 +151,41 @@ public class LoginActivity extends AppCompatActivity implements View.OnClickList
 
                         if (Utility.isNetworkAvailable(context)) {
 
-                            myProgressDialog.show(getString(R.string.login_toast));
+                            myProgressDialog.show(getString(R.string.logging_you_in));
 
                             sharedPref.setEmail(etEmail.getText().toString());
 
                             model.getLoginResponse(new LoginRequest(etEmail.getText().toString(), etPassword.getText().toString(), Utility.getDeviceId(context), Utility.getCurrentTime())).observe(this, loginResponse -> {
 
-                                if (loginResponse != null && loginResponse.getResStatus().equalsIgnoreCase("200")) {
-                                    sharedPref.setFirstName(loginResponse.getResData().getUserFName());
-                                    sharedPref.setLastName(loginResponse.getResData().getUserLName());
-                                    sharedPref.setUserType(loginResponse.getResData().getUserType());
-                                    sharedPref.setUserId(loginResponse.getResData().getUserId());
-                                    //sharedPref.setUserId("C20190409Q9l4hzL3916");
+                                if(loginResponse != null) {
+                                    if (loginResponse.getResStatus().equalsIgnoreCase("200")) {
+                                        sharedPref.setFirstName(loginResponse.getResData().getUserFName());
+                                        sharedPref.setLastName(loginResponse.getResData().getUserLName());
+                                        sharedPref.setUserType(loginResponse.getResData().getUserType());
+                                        sharedPref.setUserId(loginResponse.getResData().getUserId());
+                                        //sharedPref.setUserId("C20190409Q9l4hzL3916");
 
 
-                                    if (loginResponse.getResData().getUserType().equalsIgnoreCase("stu") || loginResponse.getResData().getUserType().equalsIgnoreCase("vol")) {
-                                        Intent intent = new Intent(context, StudentDashboardActivity.class);
-                                        intent.addFlags(Intent.FLAG_ACTIVITY_CLEAR_TASK | Intent.FLAG_ACTIVITY_NEW_TASK);
-                                        startActivity(intent);
-                                        overridePendingTransition(R.anim.fade_in, R.anim.fade_out);
+                                        if (loginResponse.getResData().getUserType().equalsIgnoreCase("stu") || loginResponse.getResData().getUserType().equalsIgnoreCase("vol")) {
+                                            Intent intent = new Intent(context, StudentDashboardActivity.class);
+                                            intent.addFlags(Intent.FLAG_ACTIVITY_CLEAR_TASK | Intent.FLAG_ACTIVITY_NEW_TASK);
+                                            startActivity(intent);
+                                            overridePendingTransition(R.anim.fade_in, R.anim.fade_out);
+
+                                        } else {
+                                            Intent intent = new Intent(context, CsoDashboardActivity.class);
+                                            intent.addFlags(Intent.FLAG_ACTIVITY_CLEAR_TASK | Intent.FLAG_ACTIVITY_NEW_TASK);
+                                            startActivity(intent);
+                                            overridePendingTransition(R.anim.fade_in, R.anim.fade_out);
+                                        }
 
                                     } else {
-                                        Intent intent = new Intent(context, CsoDashboardActivity.class);
-                                        intent.addFlags(Intent.FLAG_ACTIVITY_CLEAR_TASK | Intent.FLAG_ACTIVITY_NEW_TASK);
-                                        startActivity(intent);
-                                        overridePendingTransition(R.anim.fade_in, R.anim.fade_out);
+                                        etPassword.setText("");
+                                        myToast.show(getString(R.string.wrong_email_or_password), Toast.LENGTH_SHORT, false);
                                     }
-
-                                } else {
-                                    etPassword.setText("");
-                                    myToast.show("Wrong email or password entered", Toast.LENGTH_SHORT, false);
+                                }else
+                                {
+                                    myToast.show(getString(R.string.err_server), Toast.LENGTH_SHORT, false);
                                 }
 
                                 myProgressDialog.dismiss();
@@ -208,11 +194,11 @@ public class LoginActivity extends AppCompatActivity implements View.OnClickList
 
                         } else {
                             etPassword.setText("");
-                            myToast.show("No internet connection", Toast.LENGTH_SHORT, false);
+                            myToast.show(getString(R.string.no_internet_connection), Toast.LENGTH_SHORT, false);
                         }
                     } else {
 
-                        SpannableString s = new SpannableString("Please enter password");
+                        SpannableString s = new SpannableString(getString(R.string.please_enter_password));
                         Typeface face = Typeface.createFromAsset(getAssets(), "fonts/Amaranth-Regular.otf");
                         s.setSpan(new TypefaceSpan(face), 0, s.length(), Spannable.SPAN_EXCLUSIVE_EXCLUSIVE);
                         etPasswordLayout.setError(s);
@@ -220,7 +206,7 @@ public class LoginActivity extends AppCompatActivity implements View.OnClickList
                     }
                 } else {
 
-                    SpannableString s = new SpannableString("Please enter email");
+                    SpannableString s = new SpannableString(getString(R.string.please_enter_email));
                     Typeface face = Typeface.createFromAsset(getAssets(), "fonts/Amaranth-Regular.otf");
                     s.setSpan(new TypefaceSpan(face), 0, s.length(), Spannable.SPAN_EXCLUSIVE_EXCLUSIVE);
                     etEmailLayout.setError(s);

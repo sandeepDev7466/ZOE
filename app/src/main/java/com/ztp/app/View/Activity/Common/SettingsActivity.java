@@ -1,8 +1,10 @@
 package com.ztp.app.View.Activity.Common;
 
+import android.app.Activity;
 import android.content.Context;
-import android.support.v7.app.AppCompatActivity;
+import android.content.Intent;
 import android.os.Bundle;
+import android.support.v7.app.AppCompatActivity;
 import android.support.v7.app.AppCompatDelegate;
 import android.view.View;
 import android.widget.ImageView;
@@ -11,21 +13,24 @@ import com.github.angads25.toggle.widget.LabeledSwitch;
 import com.ztp.app.Data.Local.SharedPrefrence.SharedPref;
 import com.ztp.app.R;
 import com.ztp.app.Utils.Utility;
+import com.ztp.app.View.Activity.CSO.CsoDashboardActivity;
+import com.ztp.app.View.Activity.Student.StudentDashboardActivity;
 
 public class SettingsActivity extends AppCompatActivity implements View.OnClickListener {
 
     Context context;
-    LabeledSwitch sw_theme,sw_language;
+    LabeledSwitch sw_theme, sw_language;
     SharedPref sharedPref;
-    boolean theme,language;
+    boolean theme, language;
     ImageView back;
+
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_settings);
         context = this;
         sharedPref = SharedPref.getInstance(context);
-        if(getSupportActionBar()!=null)
+        if (getSupportActionBar() != null)
             getSupportActionBar().hide();
         Utility.makeStatusBarTransparent(context);
         sw_theme = findViewById(R.id.theme);
@@ -46,6 +51,7 @@ public class SettingsActivity extends AppCompatActivity implements View.OnClickL
                 AppCompatDelegate.setDefaultNightMode(
                         AppCompatDelegate.MODE_NIGHT_YES);
                 recreate();
+
             } else {
                 sharedPref.setTheme(isOn);
                 AppCompatDelegate.setDefaultNightMode(
@@ -57,16 +63,27 @@ public class SettingsActivity extends AppCompatActivity implements View.OnClickL
         sw_language.setOnToggledListener((toggleableView, isOn) -> {
             if (isOn) {
                 sharedPref.setLanguage(true);
-                Utility.setLocale(context,"es");
+                Utility.setLocale(context, "es");
                 recreate();
+
             } else {
                 sharedPref.setLanguage(false);
-                Utility.setLocale(context,"en");
+                Utility.setLocale(context, "en");
                 recreate();
             }
         });
 
     }
+
+  /*  public void back()
+    {
+        Intent returnIntent = getIntent();
+        setResult(RESULT_OK, returnIntent);
+        finish();
+        overridePendingTransition(R.anim.fade_in, R.anim.fade_out);
+
+    }*/
+
 
     @Override
     public void onBackPressed() {
@@ -74,12 +91,16 @@ public class SettingsActivity extends AppCompatActivity implements View.OnClickL
         overridePendingTransition(R.anim.fade_in, R.anim.fade_out);
     }
 
-    public void recreate()
-    {
+   /* @Override
+    public void onBackPressed() {
+        back();
+    }*/
+
+    public void recreate() {
         finish();
-        overridePendingTransition( 0, 0);
+        overridePendingTransition(0, 0);
         startActivity(getIntent());
-        overridePendingTransition( 0, 0);
+        overridePendingTransition(0, 0);
     }
 
     @Override

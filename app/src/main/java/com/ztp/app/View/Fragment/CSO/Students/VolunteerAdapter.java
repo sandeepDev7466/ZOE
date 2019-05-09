@@ -1,35 +1,28 @@
 package com.ztp.app.View.Fragment.CSO.Students;
 
-import android.app.Dialog;
 import android.content.Context;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
 import android.widget.BaseAdapter;
 import android.widget.ImageView;
-import android.widget.LinearLayout;
-import android.widget.Toast;
 
 import com.willy.ratingbar.ScaleRatingBar;
-import com.ztp.app.Helper.MyBoldTextView;
+import com.ztp.app.Data.Remote.Model.Response.CSOAllResponse;
 import com.ztp.app.Helper.MyTextView;
-import com.ztp.app.Helper.MyToast;
 import com.ztp.app.R;
 import com.ztp.app.Utils.Utility;
 
 import java.util.Date;
 import java.util.List;
-import java.util.Map;
 
-class VolunteerAdapter extends BaseAdapter implements View.OnClickListener {
+class VolunteerAdapter extends BaseAdapter {
     private Context context;
-    private List<VolunteerModel> dataList;
-    MyToast myToast;
+    List<CSOAllResponse.ResData> dataList;
 
-    public VolunteerAdapter(Context context, List<VolunteerModel> dataList) {
+    public VolunteerAdapter(Context context, List<CSOAllResponse.ResData> dataList) {
         this.context = context;
         this.dataList = dataList;
-        myToast = new MyToast(context);
     }
 
     @Override
@@ -38,7 +31,7 @@ class VolunteerAdapter extends BaseAdapter implements View.OnClickListener {
     }
 
     @Override
-    public VolunteerModel getItem(int position) {
+    public CSOAllResponse.ResData getItem(int position) {
         return dataList.get(position);
     }
 
@@ -50,7 +43,7 @@ class VolunteerAdapter extends BaseAdapter implements View.OnClickListener {
     @Override
     public View getView(int position, View view, ViewGroup parent) {
         Holder holder = new Holder();
-        VolunteerModel dataModel = getItem(position);
+        CSOAllResponse.ResData dataModel = getItem(position);
 
         if (view == null) {
             view = LayoutInflater.from(context).inflate(R.layout.fragment_volunteers_row, null);
@@ -59,7 +52,6 @@ class VolunteerAdapter extends BaseAdapter implements View.OnClickListener {
             holder.name = view.findViewById(R.id.tv_name);
             holder.tv_heading = view.findViewById(R.id.tv_heading);
             holder.tv_desc = view.findViewById(R.id.tv_description);
-            holder.edit = view.findViewById(R.id.imv_edit);
             holder.rb_rank = view.findViewById(R.id.rb_rank);
             view.setTag(holder);
 
@@ -67,42 +59,24 @@ class VolunteerAdapter extends BaseAdapter implements View.OnClickListener {
             holder = (Holder) view.getTag();
         }
 
-        holder.tv_heading.setText(dataModel.getName());
+        holder.tv_heading.setText(dataModel.getEventHeading());
 
 
-//        holder.date.setText(dataModel.getDate());
-
-        Date d = Utility.convertStringToDateWithoutTime(dataModel.getDate());
-        holder.date.setText(Utility.formatDateFull(d));
+        //Date d = Utility.convertStringToDateWithoutTime(dataModel.getDate());
+        holder.date.setText(dataModel.getShiftDate());
 
 
-        holder.time.setText(dataModel.getTime());
-        holder.name.setText(dataModel.getStudent_name());
-        holder.tv_desc.setText(dataModel.getDescrip());
-      //  holder.name.setCh(dataModel.getHours());
+        holder.time.setText(dataModel.getShiftStartTime()+" - "+dataModel.getShiftEndTime());
+        holder.name.setText("Hardcoded");
+        holder.tv_desc.setText(dataModel.getShiftTask());
+        holder.rb_rank.setRating(Float.parseFloat(dataModel.getShiftRank()));
 
-        holder.edit.setOnClickListener(this);
 
         return view;
     }
 
-    @Override
-    public void onClick(View v) {
-        switch (v.getId())
-        {
-            case R.id.edit:
-             //   v.setBackgroundColor(context.getResources().getColor(R.color.blue_light));
-
-                break;
-        }
-    }
-
-
-
     private class Holder {
-        MyTextView date, time, name,tv_heading, tv_desc;
+        MyTextView date, time, name, tv_heading, tv_desc;
         ScaleRatingBar rb_rank;
-        ImageView edit;
-
     }
 }

@@ -16,8 +16,7 @@
             android:layout_width="match_parent"
             android:layout_height="wrap_content"
             android:layout_margin="@dimen/_20sdp"
-            android:orientation="vertical"
-            >
+            android:orientation="vertical">
 
             <ImageView
                 android:layout_width="match_parent"
@@ -26,11 +25,10 @@
                 android:src="@drawable/scene_2"/>
 
             <com.ztp.app.Helper.MyBoldTextView
+                android:id="@+id/heading"
                 android:layout_width="match_parent"
                 android:layout_height="wrap_content"
                 android:layout_marginTop="@dimen/_5sdp"
-                android:text="@string/add_event_detail"
-                android:textColor="@color/black"
                 android:textSize="@dimen/_15ssp" />
 
 
@@ -44,17 +42,16 @@
 
                 <Spinner
                     android:id="@+id/sp_event_type"
-                    android:layout_width="0dp"
+                    android:layout_width="match_parent"
                     android:layout_height="wrap_content"
-                    android:layout_weight=".9"
-                    android:background="@null" />
+                   />
 
-                <ImageView
-                    android:layout_width="0dp"
-                    android:layout_height="@dimen/_8sdp"
-                    android:layout_gravity="center_vertical"
-                    android:layout_weight=".1"
-                    app:srcCompat="@drawable/ic_down_arrow" />
+                <!--<ImageView-->
+                    <!--android:layout_width="0dp"-->
+                    <!--android:layout_height="@dimen/_8sdp"-->
+                    <!--android:layout_gravity="center_vertical"-->
+                    <!--android:layout_weight=".1"-->
+                    <!--app:srcCompat="@drawable/ic_down_arrow" />-->
 
 
             </LinearLayout>
@@ -62,7 +59,7 @@
 
 
             <com.ztp.app.Helper.MyTextInputLayout
-                android:id="@+id/et_eventname_layout"
+                android:id="@+id/et_event_layout"
                 android:layout_width="match_parent"
                 android:layout_height="wrap_content"
                 android:layout_marginTop="@dimen/_5sdp">
@@ -72,7 +69,10 @@
                     android:layout_width="match_parent"
                     android:layout_height="wrap_content"
                     android:hint="@string/event_name"
-                    android:textSize="@dimen/_12ssp" />
+                    android:textSize="@dimen/_12ssp"
+                    android:imeOptions="actionNext"
+                    android:inputType="text"
+                    />
             </com.ztp.app.Helper.MyTextInputLayout>
 
             <com.ztp.app.Helper.MyTextInputLayout
@@ -86,90 +86,92 @@
                     android:layout_width="match_parent"
                     android:layout_height="wrap_content"
                     android:hint="@string/event_descrip"
-                    android:textSize="@dimen/_12ssp" />
+                    android:textSize="@dimen/_12ssp"
+                    android:imeOptions="actionNext"
+                    android:inputType="text"
+
+                    />
             </com.ztp.app.Helper.MyTextInputLayout>
 
             <LinearLayout
                 android:layout_width="match_parent"
                 android:layout_height="wrap_content"
-                android:layout_marginTop="@dimen/_5sdp"
-                android:orientation="horizontal"
-                android:weightSum="100">
+
+                android:orientation="vertical"
+             >
 
 
                 <LinearLayout
-                    android:layout_width="0dp"
+                    android:layout_width="match_parent"
                     android:layout_height="wrap_content"
 
                     android:layout_marginTop="@dimen/_5sdp"
-                    android:layout_marginEnd="@dimen/_3sdp"
-                    android:layout_weight="50"
+                   android:padding="@dimen/_5sdp"
+                    android:background="@drawable/border"
                     android:orientation="vertical">
 
 
-                    <LinearLayout
-                        android:layout_width="match_parent"
-                        android:layout_height="wrap_content"
-                        android:background="@drawable/border"
-                        android:orientation="horizontal"
-                        android:padding="@dimen/_5sdp">
+                    <!--<LinearLayout-->
+                        <!--android:layout_width="match_parent"-->
+                        <!--android:layout_height="wrap_content"-->
+                        <!--android:background="@drawable/border"-->
+                        <!--android:orientation="horizontal"-->
+                        <!--android:padding="@dimen/_5sdp">-->
 
                         <Spinner
                             android:id="@+id/sp_country"
-                            android:layout_width="0dp"
+                            android:layout_width="match_parent"
                             android:layout_height="wrap_content"
-                            android:layout_weight=".9"
-                            android:background="@null"
+
 
                             />
 
-                        <ImageView
-                            android:layout_width="0dp"
-                            android:layout_height="@dimen/_8sdp"
-                            android:layout_gravity="center_vertical"
-                            android:layout_weight=".1"
-                            app:srcCompat="@drawable/ic_down_arrow" />
+                        <!--<ImageView-->
+                            <!--android:layout_width="0dp"-->
+                            <!--android:layout_height="@dimen/_8sdp"-->
+                            <!--android:layout_gravity="center_vertical"-->
+                            <!--android:layout_weight=".1"-->
+                            <!--app:srcCompat="@drawable/ic_down_arrow" />-->
 
 
-                    </LinearLayout>
+                    <!--</LinearLayout>-->
 
 
                 </LinearLayout>
 
 
                 <LinearLayout
-                    android:layout_width="0dp"
+                    android:layout_width="match_parent"
                     android:layout_height="wrap_content"
-                    android:layout_marginStart="@dimen/_3sdp"
-                    android:layout_marginTop="@dimen/_5sdp"
 
-                    android:layout_weight="50"
+                    android:layout_marginTop="@dimen/_5sdp"
+                    android:background="@drawable/border"
+                    android:padding="@dimen/_5sdp"
                     android:orientation="vertical">
 
 
-                    <LinearLayout
-                        android:layout_width="match_parent"
-                        android:layout_height="wrap_content"
-                        android:background="@drawable/border"
-                        android:orientation="horizontal"
-                        android:padding="@dimen/_5sdp">
+                    <!--<LinearLayout-->
+                        <!--android:layout_width="match_parent"-->
+                        <!--android:layout_height="wrap_content"-->
+                        <!--android:background="@drawable/border"-->
+                        <!--android:orientation="horizontal"-->
+                        <!--android:padding="@dimen/_5sdp">-->
 
                         <Spinner
                             android:id="@+id/sp_state"
-                            android:layout_width="0dp"
+                            android:layout_width="match_parent"
                             android:layout_height="wrap_content"
-                            android:layout_weight=".9"
-                            android:background="@null" />
+                            />
 
-                        <ImageView
-                            android:layout_width="0dp"
-                            android:layout_height="@dimen/_8sdp"
-                            android:layout_gravity="center_vertical"
-                            android:layout_weight=".1"
-                            app:srcCompat="@drawable/ic_down_arrow" />
+                        <!--<ImageView-->
+                            <!--android:layout_width="0dp"-->
+                            <!--android:layout_height="@dimen/_8sdp"-->
+                            <!--android:layout_gravity="center_vertical"-->
+                            <!--android:layout_weight=".1"-->
+                            <!--app:srcCompat="@drawable/ic_down_arrow" />-->
 
 
-                    </LinearLayout>
+                    <!--</LinearLayout>-->
 
                     <!--<Spinner-->
                     <!--android:id="@+id/sp_state"-->
@@ -190,37 +192,51 @@
 
             </LinearLayout>
 
-            <com.ztp.app.Helper.MyTextInputLayout
-                android:id="@+id/et_city_layout"
+
+
+
+            <LinearLayout
                 android:layout_width="match_parent"
                 android:layout_height="wrap_content"
-                android:layout_marginTop="@dimen/_5sdp">
+                android:layout_marginTop="@dimen/_10sdp"
+                android:orientation="horizontal">
 
-                <com.ztp.app.Helper.MyTextInputEditText
-                    android:id="@+id/et_city"
-                    android:layout_width="match_parent"
+                <com.ztp.app.Helper.MyTextInputLayout
+                    android:layout_width="0dp"
                     android:layout_height="wrap_content"
-                    android:hint="City"
-                    android:textSize="@dimen/_12ssp" />
-            </com.ztp.app.Helper.MyTextInputLayout>
+                    android:layout_weight=".5"
+                    android:id="@+id/et_city_layout"
+                  >
 
-            <com.ztp.app.Helper.MyTextInputLayout
-                android:id="@+id/et_zip_layout"
-                android:layout_width="match_parent"
-                android:layout_height="wrap_content"
-                android:layout_marginTop="@dimen/_5sdp">
+                    <com.ztp.app.Helper.MyTextInputEditText
+                        android:id="@+id/etCity"
+                        android:layout_width="match_parent"
+                        android:layout_height="wrap_content"
+                        android:hint="@string/city"
+                        android:inputType="text"
+                        android:textSize="@dimen/_12ssp" />
+                </com.ztp.app.Helper.MyTextInputLayout>
 
-                <com.ztp.app.Helper.MyTextInputEditText
-                    android:id="@+id/et_zip"
-                    android:layout_width="match_parent"
+                <com.ztp.app.Helper.MyTextInputLayout
+                    android:id="@+id/et_zip_layout"
+                    android:layout_width="0dp"
                     android:layout_height="wrap_content"
-                    android:hint="Zip"
-                    android:textSize="@dimen/_12ssp"
-                    android:inputType="number"
+                    android:layout_weight=".5"
+                    >
 
-                    />
-            </com.ztp.app.Helper.MyTextInputLayout>
+                    <com.ztp.app.Helper.MyTextInputEditText
+                        android:id="@+id/et_zip"
+                        android:layout_width="match_parent"
+                        android:layout_height="wrap_content"
 
+                        android:hint="@string/postal_code"
+                        android:imeOptions="actionNext"
+                        android:inputType="number"
+                        android:maxLength="5"
+                        android:textSize="@dimen/_12ssp" />
+                </com.ztp.app.Helper.MyTextInputLayout>
+
+            </LinearLayout>
 
             <LinearLayout
                 android:layout_width="match_parent"
@@ -232,17 +248,16 @@
 
                 <Spinner
                     android:id="@+id/sp_time_zone"
-                    android:layout_width="0dp"
+                    android:layout_width="match_parent"
                     android:layout_height="wrap_content"
-                    android:layout_weight=".9"
-                    android:background="@null" />
+                    />
 
-                <ImageView
-                    android:layout_width="0dp"
-                    android:layout_height="@dimen/_8sdp"
-                    android:layout_gravity="center_vertical"
-                    android:layout_weight=".1"
-                    app:srcCompat="@drawable/ic_down_arrow" />
+                <!--<ImageView-->
+                    <!--android:layout_width="0dp"-->
+                    <!--android:layout_height="@dimen/_8sdp"-->
+                    <!--android:layout_gravity="center_vertical"-->
+                    <!--android:layout_weight=".1"-->
+                    <!--app:srcCompat="@drawable/ic_down_arrow" />-->
 
 
             </LinearLayout>
@@ -270,22 +285,30 @@
                     android:id="@+id/et_address"
                     android:layout_width="match_parent"
                     android:layout_height="wrap_content"
-                    android:hint="Address"
-                    android:textSize="@dimen/_12ssp" />
+                    android:hint="@string/address"
+                    android:textSize="@dimen/_12ssp"
+                    android:imeOptions="actionNext"
+                    android:inputType="text"
+
+                    />
             </com.ztp.app.Helper.MyTextInputLayout>
 
             <com.ztp.app.Helper.MyTextInputLayout
                 android:id="@+id/et_contact_name_layout"
                 android:layout_width="match_parent"
                 android:layout_height="wrap_content"
-                android:layout_marginTop="@dimen/_5sdp">
+                android:layout_marginTop="@dimen/_5sdp"
+                android:visibility="gone">
 
                 <com.ztp.app.Helper.MyTextInputEditText
                     android:id="@+id/et_contact_name"
                     android:layout_width="match_parent"
                     android:layout_height="wrap_content"
                     android:hint="@string/contact_name"
-                    android:textSize="@dimen/_12ssp" />
+                    android:textSize="@dimen/_12ssp"
+                    android:imeOptions="actionNext"
+                    android:inputType="text"
+                    />
             </com.ztp.app.Helper.MyTextInputLayout>
 
             <com.ztp.app.Helper.MyTextInputLayout
@@ -298,10 +321,11 @@
                     android:id="@+id/et_phone_no"
                     android:layout_width="match_parent"
                     android:layout_height="wrap_content"
-                    android:hint="@string/phone_no"
+                    android:hint="@string/phone"
                     android:textSize="@dimen/_12ssp"
                     android:inputType="phone"
-                    android:maxLength="13"
+                    android:maxLength="14"
+                    android:imeOptions="actionNext"
 
                     />
             </com.ztp.app.Helper.MyTextInputLayout>
@@ -317,7 +341,11 @@
                     android:layout_width="match_parent"
                     android:layout_height="wrap_content"
                     android:hint="@string/email"
-                    android:textSize="@dimen/_12ssp" />
+                    android:textSize="@dimen/_12ssp"
+                    android:imeOptions="actionNext"
+                    android:inputType="text"
+
+                    />
             </com.ztp.app.Helper.MyTextInputLayout>
 
 
@@ -326,16 +354,13 @@
                 android:layout_width="match_parent"
                 android:layout_height="wrap_content"
                 android:orientation="horizontal"
-                android:weightSum="100"
-                >
+                android:weightSum="100">
 
                 <com.ztp.app.Helper.MyTextInputLayout
-                    android:id="@+id/et_start_date_layout"
                     android:layout_width="0dp"
                     android:layout_height="wrap_content"
                     android:layout_marginTop="@dimen/_5sdp"
-                    android:layout_weight="50"
-                    >
+                    android:layout_weight="50">
 
                     <com.ztp.app.Helper.MyTextInputEditText
                         android:id="@+id/et_start_date"
@@ -345,6 +370,10 @@
                         android:hint="@string/start_date"
                         android:textSize="@dimen/_12ssp"
                         android:editable="false"
+                        android:imeOptions="actionNext"
+                        android:inputType="text"
+                        android:focusable="false"
+
                         />
                 </com.ztp.app.Helper.MyTextInputLayout>
 
@@ -363,6 +392,9 @@
                         android:hint="@string/end_date"
                         android:textSize="@dimen/_12ssp"
                         android:editable="false"
+                        android:imeOptions="actionDone"
+                        android:inputType="text"
+                        android:focusable="false"
 
                         />
                 </com.ztp.app.Helper.MyTextInputLayout>
@@ -375,8 +407,7 @@
                 android:layout_width="match_parent"
                 android:layout_height="wrap_content"
                 android:text="@string/location"
-                android:textColor="@color/black"
-                android:textSize="@dimen/_10ssp"
+                android:textSize="@dimen/_15ssp"
                 android:layout_marginTop="@dimen/_20sdp"/>
 
 
@@ -401,12 +432,12 @@
                     class="com.ztp.app.View.Fragment.CSO.Event.WorkaroundMapFragment"
                     android:layout_width="match_parent"
                     android:layout_height="match_parent"
+                    android:layout_marginLeft="-100dp"
+                    android:layout_marginTop="-100dp"
+                    android:layout_marginRight="-100dp"
+                    android:layout_marginBottom="-100dp"
                     android:scaleType="fitCenter"
                     android:tag="fragment_map"
-                    android:layout_marginLeft="-100dp"
-                    android:layout_marginRight="-100dp"
-                    android:layout_marginTop="-100dp"
-                    android:layout_marginBottom="-100dp"
 
                     />
 
@@ -454,7 +485,6 @@
                     android:layout_height="@dimen/_40sdp"
                     android:textAllCaps="false"
                     android:gravity="center"
-                    android:text="@string/update"
                     android:textSize="@dimen/_10ssp"
                     android:layout_weight=".5"
                     android:layout_margin="@dimen/_5sdp"/>

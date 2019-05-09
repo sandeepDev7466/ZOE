@@ -14,15 +14,19 @@ public class CsoRegisterResponseStep_1 {
     @SerializedName("res_data")
     @Expose
     private ResData resData;
+    @SerializedName("res_message")
+    @Expose
+    private String resMessage;
+
 
     public CsoRegisterResponseStep_1() {
     }
 
-    public CsoRegisterResponseStep_1(String apiResKey, String resStatus, ResData resData) {
-        super();
+    public CsoRegisterResponseStep_1(String apiResKey, String resStatus, ResData resData, String resMessage) {
         this.apiResKey = apiResKey;
         this.resStatus = resStatus;
         this.resData = resData;
+        this.resMessage = resMessage;
     }
 
     public String getApiResKey() {
@@ -48,6 +52,15 @@ public class CsoRegisterResponseStep_1 {
     public void setResData(ResData resData) {
         this.resData = resData;
     }
+
+    public String getResMessage() {
+        return resMessage;
+    }
+
+    public void setResMessage(String resMessage) {
+        this.resMessage = resMessage;
+    }
+
     public class ResData {
 
         @SerializedName("user_id")

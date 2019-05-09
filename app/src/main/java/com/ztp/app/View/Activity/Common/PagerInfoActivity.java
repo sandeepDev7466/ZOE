@@ -1,11 +1,22 @@
 package com.ztp.app.View.Activity.Common;
 
+import android.Manifest;
+import android.app.Activity;
+import android.os.Build;
 import android.os.Bundle;
 import android.support.design.widget.TabLayout;
 import android.support.v4.view.ViewPager;
 import android.support.v7.app.AppCompatActivity;
+import android.widget.Toast;
 
 import com.eftimoff.viewpagertransformers.TabletTransformer;
+import com.karumi.dexter.Dexter;
+import com.karumi.dexter.MultiplePermissionsReport;
+import com.karumi.dexter.PermissionToken;
+import com.karumi.dexter.listener.DexterError;
+import com.karumi.dexter.listener.PermissionRequest;
+import com.karumi.dexter.listener.PermissionRequestErrorListener;
+import com.karumi.dexter.listener.multi.MultiplePermissionsListener;
 import com.ztp.app.R;
 import com.ztp.app.View.Pager.ViewInfoPager;
 
@@ -43,43 +54,38 @@ public class PagerInfoActivity extends AppCompatActivity {
         data.clear();
 
         HashMap<String, Object> map1 = new HashMap<>();
-        //map1.put("image", R.drawable.clock);
         map1.put("image", R.drawable.track_hours);
-        map1.put("title", "TRACK YOUR HOURS");
+        map1.put("title", getString(R.string.track_your_hours));
         map1.put("color", "#59ED96");
-        map1.put("description", "One centralized location to track your community service hours and manage your progress to put target GPA. ");
+        map1.put("description", getString(R.string.track_hours_message));
         data.add(map1);
 
         HashMap<String, Object> map2 = new HashMap<>();
-        //map2.put("image", R.drawable.document);
         map2.put("image", R.drawable.documents);
-        map2.put("title", "A PLACE FOR DOCUMENTS");
+        map2.put("title", getString(R.string.place_for_documents));
         map2.put("color", "#3FDDD0");
-        map2.put("description", "Load and store files to keep you organized and on track. Managing your hours quick and easy. ");
+        map2.put("description", getString(R.string.place_for_documents_message));
         data.add(map2);
 
         HashMap<String, Object> map3 = new HashMap<>();
-        //map3.put("image", R.drawable.event);
         map3.put("image", R.drawable.cso_events);
-        map3.put("title", "BOOK YOUR CSO EVENTS");
+        map3.put("title", getString(R.string.book_your_cso_events));
         map3.put("color", "#0F96F9");
-        map3.put("description", "It's so easy to manage your volunteer Calendar and connect with community service organizations. ");
+        map3.put("description", getString(R.string.book_your_cso_events_message));
         data.add(map3);
 
         HashMap<String, Object> map4 = new HashMap<>();
-        //map4.put("image", R.drawable.hangout);
         map4.put("image", R.drawable.hangout);
-        map4.put("title", "SOMEWHERE TO HANGOUT");
+        map4.put("title", getString(R.string.somewhere_to_hangout));
         map4.put("color", "#63F5B7");
-        map4.put("description", "Keep the conversation going! Chat with your friends and keep in the loop with the CSO announcements.");
+        map4.put("description", getString(R.string.somewhere_to_hangout_message));
         data.add(map4);
 
         HashMap<String, Object> map5 = new HashMap<>();
-        //map5.put("image", R.drawable.connected);
         map5.put("image", R.drawable.chat_connected);
-        map5.put("title", "YOU'RE CONNECTED");
+        map5.put("title", getString(R.string.you_are_connected));
         map5.put("color", "#3FDDD0");
-        map5.put("description", "Have direct access to school and CSO administrators. Ask questions,get feedback and keep up to date. ");
+        map5.put("description", getString(R.string.you_are_connected_message));
         data.add(map5);
 
         return data;
@@ -96,5 +102,45 @@ public class PagerInfoActivity extends AppCompatActivity {
             super.onBackPressed();
         }
 
+    }
+
+    @Override
+    protected void onResume() {
+        super.onResume();
+
+        if (Build.VERSION.SDK_INT >= 23) {
+            requestPermission();
+        }
+    }
+
+    private void requestPermission()
+    {
+        Dexter.withActivity(this)
+                .withPermissions(Manifest.permission.READ_PHONE_STATE,Manifest.permission.READ_EXTERNAL_STORAGE, Manifest.permission.ACCESS_FINE_LOCATION, Manifest.permission.ACCESS_COARSE_LOCATION)
+                .withListener(new MultiplePermissionsListener() {
+                    @Override
+                    public void onPermissionsChecked(MultiplePermissionsReport report) {
+                        if (report.areAllPermissionsGranted()) {
+                        }
+
+                        // check for permanent denial of any permission
+                        if (report.isAnyPermissionPermanentlyDenied()) {
+                            Toast.makeText(PagerInfoActivity.this, "Permission denied", Toast.LENGTH_SHORT).show();
+                        }
+                    }
+
+                    @Override
+                    public void onPermissionRationaleShouldBeShown(List<PermissionRequest> permissions, PermissionToken token) {
+                        token.continuePermissionRequest();
+                    }
+                })
+                .onSameThread()
+                .withErrorListener(new PermissionRequestErrorListener() {
+                    @Override
+                    public void onError(DexterError error) {
+                        Toast.makeText(PagerInfoActivity.this, "Error occurred " + error.toString(), Toast.LENGTH_SHORT).show();
+                    }
+                })
+                .check();
     }
 }

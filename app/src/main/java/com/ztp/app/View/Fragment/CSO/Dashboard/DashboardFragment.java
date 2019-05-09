@@ -1,11 +1,16 @@
 package com.ztp.app.View.Fragment.CSO.Dashboard;
 
 
+import android.arch.lifecycle.LifecycleOwner;
+import android.arch.lifecycle.Observer;
+import android.arch.lifecycle.ViewModelProviders;
 import android.content.Context;
 import android.content.Intent;
 import android.os.Bundle;
 import android.os.Handler;
+import android.support.annotation.Nullable;
 import android.support.v4.app.Fragment;
+import android.support.v4.app.FragmentActivity;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
@@ -13,16 +18,22 @@ import android.view.ViewStub;
 import android.widget.ImageView;
 import android.widget.LinearLayout;
 import android.widget.ListView;
+import android.widget.Toast;
 
 import com.applandeo.materialcalendarview.CalendarView;
 import com.applandeo.materialcalendarview.EventDay;
 import com.applandeo.materialcalendarview.listeners.OnDayClickListener;
 import com.ztp.app.Data.Local.SharedPrefrence.SharedPref;
+import com.ztp.app.Data.Remote.Model.Request.GetMonthEventDateRequest;
+import com.ztp.app.Data.Remote.Model.Response.GetMonthEventDateResponse;
 import com.ztp.app.Helper.MyBoldTextView;
 import com.ztp.app.Helper.MyHeadingTextView;
 import com.ztp.app.Helper.MyTextView;
+import com.ztp.app.Helper.MyToast;
 import com.ztp.app.R;
+import com.ztp.app.Utils.Utility;
 import com.ztp.app.View.Activity.CSO.CsoDashboardActivity;
+import com.ztp.app.Viewmodel.GetMonthEventDateViewModel;
 
 import java.text.SimpleDateFormat;
 import java.util.ArrayList;
@@ -48,20 +59,14 @@ public class DashboardFragment extends Fragment {
     SharedPref sharedPref;
     ImageView vol_img, con_img;
     MyTextView vol_txt, con_txt;
-
-
     List<EventDay> events;
-    Calendar calendar;
-    CalendarView simpleCalendarView;
-
-
     private CalendarView mCalendarView;
     private List<EventDay> mEventDays = new ArrayList<>();
-
-    ViewStub viewStub;
     LinearLayout parentLayout;
     View childLayout;
-
+    GetMonthEventDateViewModel getMonthEventDateViewModel;
+    MyToast myToast;
+    List<GetMonthEventDateResponse.ResData> eventsList = new ArrayList<>();
 
     public DashboardFragment() {
 
@@ -82,6 +87,36 @@ public class DashboardFragment extends Fragment {
         upcoming_text = v.findViewById(R.id.upcoming_text);
         bottomLayout = v.findViewById(R.id.bottomLayout);
         sharedPref = SharedPref.getInstance(context);
+        myToast = new MyToast(context);
+       /* getMonthEventDateViewModel = ViewModelProviders.of((FragmentActivity) context).get(GetMonthEventDateViewModel.class);
+
+
+        if(Utility.isNetworkAvailable(context))
+        {
+            getMonthEventDateViewModel.getMonthEventDateResponse(new GetMonthEventDateRequest()).observe((LifecycleOwner) context, getMonthEventDateResponse -> {
+
+                if(getMonthEventDateResponse!=null)
+                {
+                    if(getMonthEventDateResponse.getResStatus().equalsIgnoreCase("200"))
+                    {
+                        eventsList = getMonthEventDateResponse.getResData();
+                    }
+                    else
+                    {
+                        myToast.show(getString(R.string.something_went_wrong), Toast.LENGTH_SHORT,false);
+                    }
+                }
+                else
+                {
+                    myToast.show(getString(R.string.err_server), Toast.LENGTH_SHORT,false);
+                }
+
+            });
+        }
+        else
+        {
+          myToast.show(getString(R.string.no_internet_connection), Toast.LENGTH_SHORT,false);
+        }*/
 
 
         vol_img = v.findViewById(R.id.vol_img);
@@ -147,8 +182,6 @@ public class DashboardFragment extends Fragment {
 
                 }
             });
-
-
         }
 
 
@@ -185,13 +218,6 @@ public class DashboardFragment extends Fragment {
         upcomingEventModelArrayList.add(upcomingEventModel);
         UpcomingEventAdapter adapter = new UpcomingEventAdapter(upcomingEventModelArrayList, getActivity());
         lv_upcoming_event.setAdapter(adapter);
-
-
-       /* calendarView.setOnDayClickListener(eventDay -> {
-
-            Calendar clickedDayCalendar = eventDay.getCalendar();
-
-        });*/
 
 
         return v;

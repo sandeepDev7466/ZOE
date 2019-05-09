@@ -19,7 +19,7 @@ public class StudentRegisterViewModel extends ViewModel {
     private ApiInterface apiInterface = Api.getClient();
     StudentRegisterRequest studentRegisterRequest;
 
-    public LiveData<StudentRegisterResponse> getRegisterResponse(StudentRegisterRequest studentRegisterRequest) {
+    public LiveData<StudentRegisterResponse> getStudentRegisterResponse(StudentRegisterRequest studentRegisterRequest) {
         registerResponseMutableLiveData = new MutableLiveData<>();
         this.studentRegisterRequest = studentRegisterRequest;
         registerResponse();

@@ -1,11 +1,11 @@
 package com.ztp.app.Helper;
 
-import android.annotation.SuppressLint;
-import android.content.Context;
-import android.graphics.Canvas;
-import android.graphics.Typeface;
-import android.util.AttributeSet;
-import android.widget.TextView;
+        import android.annotation.SuppressLint;
+        import android.content.Context;
+        import android.graphics.Canvas;
+        import android.graphics.Typeface;
+        import android.util.AttributeSet;
+        import android.widget.TextView;
 
 @SuppressLint("AppCompatCustomView")
 public class MyTextView extends TextView {

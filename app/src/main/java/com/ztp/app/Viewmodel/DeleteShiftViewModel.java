@@ -13,7 +13,13 @@ import retrofit2.Call;
 import retrofit2.Callback;
 import retrofit2.Response;
 
+/**
+ * Created by htl-dev on 24-04-2019.
+ */
+
 public class DeleteShiftViewModel extends ViewModel {
+
+
     private MutableLiveData<DeleteShiftResponse> deleteShiftResponseMutableLiveData;
     private ApiInterface apiInterface = Api.getClient();
     private DeleteShiftRequest deleteShiftRequest;
@@ -45,4 +51,8 @@ public class DeleteShiftViewModel extends ViewModel {
             }
         });
     }
+
+
+
+
 }

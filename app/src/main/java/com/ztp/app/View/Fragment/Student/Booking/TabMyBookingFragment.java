@@ -1,25 +1,38 @@
 package com.ztp.app.View.Fragment.Student.Booking;
 
+import android.arch.lifecycle.LifecycleOwner;
+import android.arch.lifecycle.Observer;
+import android.arch.lifecycle.ViewModelProviders;
 import android.content.Context;
 import android.os.Bundle;
+import android.support.annotation.Nullable;
 import android.support.v4.app.Fragment;
+import android.support.v4.app.FragmentActivity;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
 import android.widget.ListView;
+import android.widget.Toast;
 
+import com.ztp.app.Data.Local.SharedPrefrence.SharedPref;
+import com.ztp.app.Data.Remote.Model.Request.VolunteerAllRequest;
+import com.ztp.app.Data.Remote.Model.Response.VolunteerAllResponse;
+import com.ztp.app.Helper.MyProgressDialog;
+import com.ztp.app.Helper.MyTextView;
+import com.ztp.app.Helper.MyToast;
 import com.ztp.app.R;
-
-import java.util.ArrayList;
-import java.util.HashMap;
-import java.util.List;
-import java.util.Map;
+import com.ztp.app.Utils.Utility;
+import com.ztp.app.Viewmodel.VolunteerAllRequestViewModel;
 
 public class TabMyBookingFragment extends Fragment {
 
     Context context;
     ListView listView;
-    List<Map<String, String>> dataList = new ArrayList<>();
+    MyTextView noData;
+    SharedPref sharedPref;
+    MyProgressDialog myProgressDialog;
+    MyToast myToast;
+    VolunteerAllRequestViewModel volunteerAllRequestViewModel;
 
     @Override
     public View onCreateView(LayoutInflater inflater, ViewGroup container,
@@ -27,9 +40,47 @@ public class TabMyBookingFragment extends Fragment {
 
         View view = inflater.inflate(R.layout.fragment_tab_my_booking, container, false);
         listView = view.findViewById(R.id.listView);
+        noData = view.findViewById(R.id.noData);
+        sharedPref = SharedPref.getInstance(context);
+        volunteerAllRequestViewModel = ViewModelProviders.of((FragmentActivity) context).get(VolunteerAllRequestViewModel.class);
+        myProgressDialog = new MyProgressDialog(context);
+        myToast = new MyToast(context);
 
-        MyBookingAdapter myBookingAdapter = new MyBookingAdapter(context,getDataList());
-        listView.setAdapter(myBookingAdapter);
+        if (Utility.isNetworkAvailable(context)) {
+            myProgressDialog.show(getString(R.string.please_wait));
+            volunteerAllRequestViewModel.getVolunteerAllRequetResponse(new VolunteerAllRequest(sharedPref.getUserId())).observe((LifecycleOwner) context, new Observer<VolunteerAllResponse>() {
+                @Override
+                public void onChanged(@Nullable VolunteerAllResponse volunteerAllResponse) {
+
+                    if (volunteerAllResponse != null) {
+                        if (volunteerAllResponse.getResStatus().equalsIgnoreCase("200")) {
+                            if (volunteerAllResponse.getResData() != null && volunteerAllResponse.getResData().size() > 0) {
+                                listView.setVisibility(View.VISIBLE);
+                                noData.setVisibility(View.INVISIBLE);
+                                MyBookingAdapter myBookingAdapter = new MyBookingAdapter(context, volunteerAllResponse.getResData());
+                                listView.setAdapter(myBookingAdapter);
+                            } else {
+                                listView.setVisibility(View.INVISIBLE);
+                                noData.setVisibility(View.VISIBLE);
+                            }
+                        } else {
+                            listView.setVisibility(View.INVISIBLE);
+                            noData.setVisibility(View.VISIBLE);
+                            // myToast.show(getString(R.string.something_went_wrong), Toast.LENGTH_SHORT,false);
+                        }
+                    } else {
+                        listView.setVisibility(View.INVISIBLE);
+                        noData.setVisibility(View.VISIBLE);
+                        myToast.show(getString(R.string.err_server), Toast.LENGTH_SHORT, false);
+                    }
+                    myProgressDialog.dismiss();
+                }
+            });
+        } else {
+            listView.setVisibility(View.INVISIBLE);
+            noData.setVisibility(View.VISIBLE);
+            myToast.show(getString(R.string.no_internet_connection), Toast.LENGTH_SHORT, false);
+        }
 
         return view;
     }
@@ -39,51 +90,5 @@ public class TabMyBookingFragment extends Fragment {
         super.onAttach(context);
         this.context = context;
 
-    }
-
-    public List<Map<String, String>> getDataList() {
-
-        Map<String, String> map1 = new HashMap<>();
-        map1.put("text","Atlanta Mission Food Drive");
-        map1.put("date","12");
-        map1.put("time","4pm - 8pm");
-        map1.put("month","APR");
-        dataList.add(map1);
-
-        Map<String, String> map2 = new HashMap<>();
-        map2.put("text","Atlanta Mission Food Drive");
-        map2.put("date","14");
-        map2.put("time","4pm - 8pm");
-        map2.put("month","APR");
-        dataList.add(map2);
-
-        Map<String, String> map3 = new HashMap<>();
-        map3.put("text","Atlanta Mission Food Drive");
-        map3.put("date","23");
-        map3.put("time","4pm - 8pm");
-        map3.put("month","APR");
-        dataList.add(map3);
-
-        Map<String, String> map4 = new HashMap<>();
-        map4.put("text","Atlanta Mission Food Drive");
-        map4.put("date","29");
-        map4.put("time","4pm - 8pm");
-        map4.put("month","APR");
-        dataList.add(map4);
-
-        Map<String, String> map5 = new HashMap<>();
-        map5.put("text","Atlanta Mission Food Drive");
-        map5.put("date","19");
-        map5.put("time","4pm - 8pm");
-        map5.put("month","APR");
-        dataList.add(map5);
-
-        return dataList;
-    }
-
-    @Override
-    public void onResume() {
-        super.onResume();
-        dataList = new ArrayList<>();
     }
 }

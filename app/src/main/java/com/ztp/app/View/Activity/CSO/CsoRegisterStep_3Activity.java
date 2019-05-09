@@ -1,13 +1,16 @@
 package com.ztp.app.View.Activity.CSO;
 
+import android.app.Dialog;
 import android.arch.lifecycle.LifecycleOwner;
 import android.arch.lifecycle.ViewModelProviders;
 import android.content.Context;
 import android.content.Intent;
 import android.os.Bundle;
 import android.support.v7.app.AppCompatActivity;
+import android.view.LayoutInflater;
 import android.view.View;
 import android.widget.ImageView;
+import android.widget.LinearLayout;
 import android.widget.RadioButton;
 import android.widget.ScrollView;
 import android.widget.Toast;
@@ -21,6 +24,7 @@ import com.ztp.app.Helper.MyTextInputEditText;
 import com.ztp.app.Helper.MyToast;
 import com.ztp.app.R;
 import com.ztp.app.Utils.Utility;
+import com.ztp.app.View.Activity.Common.LoginActivity;
 import com.ztp.app.View.Activity.Common.ValidateOTPActivity;
 import com.ztp.app.Viewmodel.CsoRegisterStep_3ViewModel;
 
@@ -131,8 +135,39 @@ public class CsoRegisterStep_3Activity extends AppCompatActivity implements View
 
     @Override
     public void onBackPressed() {
-        super.onBackPressed();
-        overridePendingTransition(R.anim.fade_in, R.anim.fade_out);
+
+        Dialog dialog = new Dialog(context);
+        View view = LayoutInflater.from(context).inflate(R.layout.exit_dialog, null);
+        dialog.setContentView(view);
+        dialog.setCancelable(false);
+
+        LinearLayout yes = view.findViewById(R.id.yes);
+        LinearLayout no = view.findViewById(R.id.no);
+
+        yes.setOnClickListener(v -> {
+            dialog.dismiss();
+
+            if(sharedPref.getIsLogin())
+            {
+                startActivity(new Intent(context,CsoDashboardActivity.class));
+                finish();
+
+            }
+            else
+            {
+                startActivity(new Intent(context, LoginActivity.class));
+                finish();
+            }
+
+            overridePendingTransition(R.anim.fade_in, R.anim.fade_out);
+        });
+
+        no.setOnClickListener(v -> {
+            dialog.dismiss();
+        });
+
+        dialog.show();
+
     }
 
     @Override
@@ -172,8 +207,6 @@ public class CsoRegisterStep_3Activity extends AppCompatActivity implements View
 
                 break;
             case R.id.register:
-                /*startActivity(new Intent(this, CsoDashboardActivity.class));
-                overridePendingTransition(R.anim.fade_in, R.anim.fade_out);*/
 
                 if (yes1.isChecked() || no1.isChecked()) {
                     if (etServices.getText() != null && !etServices.getText().toString().isEmpty()) {
@@ -189,7 +222,7 @@ public class CsoRegisterStep_3Activity extends AppCompatActivity implements View
                                         if (yes2.isChecked() || no2.isChecked()) {
                                             if (yes3.isChecked() || no3.isChecked()) {
 
-                                                myProgressDialog.show("Registering...");
+                                                myProgressDialog.show(getString(R.string.please_wait));
 
                                                 CsoRegisterRequestStep_3 csoRegisterRequest_3 = new CsoRegisterRequestStep_3();
 
@@ -218,57 +251,68 @@ public class CsoRegisterStep_3Activity extends AppCompatActivity implements View
                                                 else if (no4.isChecked())
                                                     csoRegisterRequest_3.setOrg_501C3("0");
 
-                                                csoRegisterStep_3ViewModel.getRegisterResponse(csoRegisterRequest_3).observe((LifecycleOwner) context, registerResponse -> {
+                                                if(Utility.isNetworkAvailable(context)) {
+                                                    csoRegisterStep_3ViewModel.getRegisterResponse(csoRegisterRequest_3).observe((LifecycleOwner) context, registerResponse -> {
 
-                                                    if (registerResponse != null && registerResponse.getResStatus().equalsIgnoreCase("200")) {
-                                                        sharedPref.setOtp(registerResponse.getResData().getPhoneOtp());
+                                                        if(registerResponse != null) {
+                                                            if (registerResponse.getResStatus().equalsIgnoreCase("200")) {
+                                                                sharedPref.setOtp(registerResponse.getResData().getPhoneOtp());
 
-                                                        if (action.equalsIgnoreCase("update")) {
-                                                            myToast.show("Profile updated", Toast.LENGTH_SHORT, true);
-                                                            Intent intent1 = new Intent(context, CsoDashboardActivity.class);
-                                                            intent1.addFlags(Intent.FLAG_ACTIVITY_NEW_TASK | Intent.FLAG_ACTIVITY_CLEAR_TASK);
-                                                            startActivity(intent1);
-                                                            overridePendingTransition(R.anim.fade_in, R.anim.fade_out);
-                                                        } else {
-                                                            Intent intent1 = new Intent(context, ValidateOTPActivity.class);
-                                                            intent1.addFlags(Intent.FLAG_ACTIVITY_NEW_TASK | Intent.FLAG_ACTIVITY_CLEAR_TASK);
-                                                            startActivity(intent1);
-                                                            overridePendingTransition(R.anim.fade_in, R.anim.fade_out);
+                                                                if (action.equalsIgnoreCase("update")) {
+                                                                    myToast.show(getString(R.string.profile_updated), Toast.LENGTH_SHORT, true);
+                                                                    Intent intent1 = new Intent(context, CsoDashboardActivity.class);
+                                                                    intent1.addFlags(Intent.FLAG_ACTIVITY_NEW_TASK | Intent.FLAG_ACTIVITY_CLEAR_TASK);
+                                                                    startActivity(intent1);
+                                                                    overridePendingTransition(R.anim.fade_in, R.anim.fade_out);
+                                                                } else {
+                                                                    Intent intent1 = new Intent(context, ValidateOTPActivity.class);
+                                                                    intent1.addFlags(Intent.FLAG_ACTIVITY_NEW_TASK | Intent.FLAG_ACTIVITY_CLEAR_TASK);
+                                                                    startActivity(intent1);
+                                                                    overridePendingTransition(R.anim.fade_in, R.anim.fade_out);
+                                                                }
+
+                                                            } else {
+                                                                myToast.show(getString(R.string.err_org_inf_regisitration_failed), Toast.LENGTH_SHORT, false);
+                                                            }
+                                                        }
+                                                        else
+                                                        {
+                                                            myToast.show(getString(R.string.err_server), Toast.LENGTH_SHORT, false);
                                                         }
 
-                                                    } else {
-                                                        myToast.show("Organisation information registration failed", Toast.LENGTH_SHORT, false);
-                                                    }
+                                                        myProgressDialog.dismiss();
 
-                                                    myProgressDialog.dismiss();
-
-                                                });
-
+                                                    });
+                                                }
+                                                else
+                                                {
+                                                    myToast.show(getString(R.string.no_internet_connection), Toast.LENGTH_SHORT, false);
+                                                }
 
                                             } else {
-                                                myToast.show("Check Your Choice", Toast.LENGTH_SHORT, false);
+                                                myToast.show(getString(R.string.check_your_choice), Toast.LENGTH_SHORT, false);
                                             }
                                         } else {
-                                            myToast.show("Check Your Choice", Toast.LENGTH_SHORT, false);
+                                            myToast.show(getString(R.string.check_your_choice), Toast.LENGTH_SHORT, false);
                                         }
                                     } else {
-                                        myToast.show("Enter volunteer information", Toast.LENGTH_SHORT, false);
+                                        myToast.show(getString(R.string.err_enter_volunterr_inf), Toast.LENGTH_SHORT, false);
                                     }
 
                                 } else {
-                                    myToast.show("Enter time period", Toast.LENGTH_SHORT, false);
+                                    myToast.show(getString(R.string.err_enter_time_period), Toast.LENGTH_SHORT, false);
                                 }
                             } else {
-                                myToast.show("Describe person", Toast.LENGTH_SHORT, false);
+                                myToast.show(getString(R.string.err_describe_person), Toast.LENGTH_SHORT, false);
                             }
                         } else {
-                            myToast.show("Enter your target", Toast.LENGTH_SHORT, false);
+                            myToast.show(getString(R.string.err_enter_your_target), Toast.LENGTH_SHORT, false);
                         }
                     } else {
-                        myToast.show("Enter type of services offered", Toast.LENGTH_SHORT, false);
+                        myToast.show(getString(R.string.err_type_service), Toast.LENGTH_SHORT, false);
                     }
                 } else {
-                    myToast.show("Check Your Choice", Toast.LENGTH_SHORT, false);
+                    myToast.show(getString(R.string.check_your_choice), Toast.LENGTH_SHORT, false);
                 }
 
 

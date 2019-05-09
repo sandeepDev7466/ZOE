@@ -1,5 +1,6 @@
 package com.ztp.app.View.Activity.Common;
 
+import android.app.Dialog;
 import android.arch.lifecycle.LifecycleOwner;
 import android.arch.lifecycle.ViewModelProviders;
 import android.content.Context;
@@ -7,6 +8,7 @@ import android.content.Intent;
 import android.os.Bundle;
 import android.os.CountDownTimer;
 import android.support.v7.app.AppCompatActivity;
+import android.view.LayoutInflater;
 import android.view.View;
 import android.widget.ImageView;
 import android.widget.LinearLayout;
@@ -45,16 +47,14 @@ public class ValidateOTPActivity extends AppCompatActivity implements View.OnCli
         setContentView(R.layout.activity_validate_otp);
         if (getSupportActionBar() != null)
             getSupportActionBar().hide();
-        context = this;
-        myProgressDialog = new MyProgressDialog(context);
-        validateOtpViewModel = ViewModelProviders.of(this).get(ValidateOtpViewModel.class);
+
         init();
-        etOtp.setText(sharedPref.getOtp());
-        etOtp.requestFocus();
-        startTimer(5 * 60 * 1000);
     }
 
     private void init() {
+        context = this;
+        myProgressDialog = new MyProgressDialog(context);
+        validateOtpViewModel = ViewModelProviders.of(this).get(ValidateOtpViewModel.class);
         myToast = new MyToast(context);
         sharedPref = SharedPref.getInstance(context);
         counter = findViewById(R.id.counter);
@@ -64,6 +64,9 @@ public class ValidateOTPActivity extends AppCompatActivity implements View.OnCli
         change_phone = findViewById(R.id.change_phone);
         back = findViewById(R.id.back);
         etOtp = findViewById(R.id.etOtp);
+        etOtp.setText(sharedPref.getOtp());
+        etOtp.requestFocus();
+        startTimer(5 * 60 * 1000);
 
         resendOtp.setOnClickListener(this);
         submit.setOnClickListener(this);
@@ -101,7 +104,7 @@ public class ValidateOTPActivity extends AppCompatActivity implements View.OnCli
 
                 if (etOtp.getText() != null && !etOtp.getText().toString().isEmpty()) {
                     if (Utility.isNetworkAvailable(context)) {
-                        myProgressDialog.show("Validating OTP...");
+                        myProgressDialog.show(getString(R.string.validating_otp));
                         hitAPI(etOtp.getText().toString());
                     } else {
                         myToast.show(getString(R.string.no_internet_connection), Toast.LENGTH_SHORT, false);
@@ -122,22 +125,51 @@ public class ValidateOTPActivity extends AppCompatActivity implements View.OnCli
         validateOtpRequest.setUserType(sharedPref.getUserType());
         validateOtpRequest.setUserId(sharedPref.getUserId());
 
-        validateOtpViewModel.getValidateOtpResponse(validateOtpRequest).observe((LifecycleOwner) context, validateOtpResponse -> {
-            if (validateOtpResponse != null) {
-                if (validateOtpResponse.getResStatus().equalsIgnoreCase("200")) {
-                    Intent intent1 = new Intent(context, LoginActivity.class);
-                    intent1.addFlags(Intent.FLAG_ACTIVITY_NEW_TASK | Intent.FLAG_ACTIVITY_CLEAR_TASK);
-                    startActivity(intent1);
-                    overridePendingTransition(R.anim.fade_in, R.anim.fade_out);
-                    myToast.show(getString(R.string.OTP_verified_successfully_please_login_to_continue), Toast.LENGTH_SHORT, true);
+        if(Utility.isNetworkAvailable(context)) {
+            validateOtpViewModel.getValidateOtpResponse(validateOtpRequest).observe((LifecycleOwner) context, validateOtpResponse -> {
+                if (validateOtpResponse != null) {
+                    if (validateOtpResponse.getResStatus().equalsIgnoreCase("200")) {
+                        Intent intent1 = new Intent(context, LoginActivity.class);
+                        intent1.addFlags(Intent.FLAG_ACTIVITY_NEW_TASK | Intent.FLAG_ACTIVITY_CLEAR_TASK);
+                        startActivity(intent1);
+                        overridePendingTransition(R.anim.fade_in, R.anim.fade_out);
+                        myToast.show(getString(R.string.OTP_verified_successfully_please_login_to_continue), Toast.LENGTH_SHORT, true);
+                    } else {
+                        myToast.show(getString(R.string.otp_validation_failed), Toast.LENGTH_SHORT, false);
+                    }
                 } else {
-                    myToast.show(getString(R.string.otp_validation_failed), Toast.LENGTH_SHORT, false);
+                    myToast.show(getString(R.string.err_server), Toast.LENGTH_SHORT, false);
                 }
-            } else {
-                myToast.show(getString(R.string.something_went_wrong), Toast.LENGTH_SHORT, false);
-            }
-            myProgressDialog.dismiss();
+                myProgressDialog.dismiss();
+            });
+        }else
+        {
+            myToast.show(getString(R.string.no_internet_connection), Toast.LENGTH_SHORT, false);
+        }
+
+    }
+
+    @Override
+    public void onBackPressed() {
+        Dialog dialog = new Dialog(context);
+        View view = LayoutInflater.from(context).inflate(R.layout.exit_dialog, null);
+        dialog.setContentView(view);
+        dialog.setCancelable(false);
+
+        LinearLayout yes = view.findViewById(R.id.yes);
+        LinearLayout no = view.findViewById(R.id.no);
+
+        yes.setOnClickListener(v -> {
+            dialog.dismiss();
+            super.onBackPressed();
+            overridePendingTransition(R.anim.fade_in, R.anim.fade_out);
         });
+
+        no.setOnClickListener(v -> {
+            dialog.dismiss();
+        });
+
+        dialog.show();
 
     }
 }

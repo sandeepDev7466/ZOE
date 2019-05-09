@@ -20,7 +20,6 @@ import com.ztp.app.Helper.MyToast;
 import com.ztp.app.R;
 import com.ztp.app.View.Activity.Common.LoginActivity;
 import com.ztp.app.View.Activity.Common.PagerInfoActivity;
-import com.ztp.app.View.Activity.Common.SelectionActivity;
 
 import java.util.HashMap;
 
@@ -37,6 +36,7 @@ public class InfoPagerFragment extends Fragment {
     MyProgressDialog progressDialog;
     MyToast myToast;
     SharedPref sharedPref;
+
     public InfoPagerFragment() {
     }
 
@@ -62,9 +62,9 @@ public class InfoPagerFragment extends Fragment {
             total = Integer.parseInt(bundle.getString("total"));
             mainLayout.setBackgroundColor(Color.parseColor(String.valueOf(map.get("color"))));
             if (position == total - 1)
-                next.setText("I'M DONE");
+                next.setText(R.string.imdone);
             else
-                next.setText("CONTINUE");
+                next.setText(R.string.cont);
 
             title.setText(String.valueOf(map.get("title")));
             description.setText(String.valueOf(map.get("description")));
@@ -77,11 +77,11 @@ public class InfoPagerFragment extends Fragment {
 
             if (position == total - 1) {
                 Intent intent = new Intent(context, LoginActivity.class);
-                intent.addFlags(Intent.FLAG_ACTIVITY_CLEAR_TOP | Intent.FLAG_ACTIVITY_NEW_TASK);
+                intent.addFlags(Intent.FLAG_ACTIVITY_NEW_TASK | Intent.FLAG_ACTIVITY_CLEAR_TASK);
                 startActivity(intent);
                 sharedPref.setFirstRun(true);
             } else {
-                next.setText("CONTINUE");
+                next.setText(R.string.cont);
                 ((PagerInfoActivity) context).getViewPager().setCurrentItem(((PagerInfoActivity) context).getViewPager().getCurrentItem() + 1);
             }
 
@@ -90,7 +90,7 @@ public class InfoPagerFragment extends Fragment {
         skip.setOnClickListener(v -> {
 
             Intent intent = new Intent(context, LoginActivity.class);
-            intent.addFlags(Intent.FLAG_ACTIVITY_CLEAR_TOP | Intent.FLAG_ACTIVITY_NEW_TASK);
+            intent.addFlags(Intent.FLAG_ACTIVITY_NEW_TASK | Intent.FLAG_ACTIVITY_CLEAR_TASK);
             startActivity(intent);
             sharedPref.setFirstRun(true);
 

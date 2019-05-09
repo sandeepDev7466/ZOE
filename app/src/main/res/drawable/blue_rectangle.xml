@@ -9,10 +9,10 @@
         android:right="@dimen/_5sdp"/>
 
     <corners
-        android:bottomLeftRadius="@dimen/_5sdp"
-        android:bottomRightRadius="@dimen/_5sdp"
-        android:topLeftRadius="@dimen/_5sdp"
-        android:topRightRadius="@dimen/_5sdp" />
+        android:bottomLeftRadius="@dimen/_3sdp"
+        android:bottomRightRadius="@dimen/_3sdp"
+        android:topLeftRadius="@dimen/_3sdp"
+        android:topRightRadius="@dimen/_3sdp" />
 
 
 </shape>

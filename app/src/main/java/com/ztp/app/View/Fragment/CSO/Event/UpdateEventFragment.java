@@ -67,6 +67,7 @@ import com.ztp.app.Helper.MyProgressDialog;
 import com.ztp.app.Helper.MyTextInputEditText;
 import com.ztp.app.Helper.MyToast;
 import com.ztp.app.R;
+import com.ztp.app.Utils.GPSTracker;
 import com.ztp.app.Utils.Utility;
 import com.ztp.app.View.Activity.CSO.CsoDashboardActivity;
 import com.ztp.app.View.Activity.CSO.CsoRegisterStep_2Activity;
@@ -158,16 +159,13 @@ public class UpdateEventFragment extends Fragment implements OnMapReadyCallback,
     String str_start_date="";
     String str_end_date="";
 
-
-
-
     Button update;
     Button clear;
 
     GetEventsResponse.EventData eventData;
 
-
-
+    GPSTracker gpsTracker;
+    double latitude, longitude;
     final Calendar myCalendar = Calendar.getInstance();
 
     @Override
@@ -176,8 +174,13 @@ public class UpdateEventFragment extends Fragment implements OnMapReadyCallback,
         // Inflate the layout for this fragment
         View v=inflater.inflate(R.layout.fragment_update_event, container, false);
 
-
-
+        gpsTracker = new GPSTracker(context);
+        if (gpsTracker.getIsGPSTrackingEnabled()) {
+            latitude = gpsTracker.getLatitude();
+            longitude = gpsTracker.getLongitude();
+        } else {
+            gpsTracker.showSettingsAlert();
+        }
 
         sharedPref = SharedPref.getInstance(context);
         sp_country=v.findViewById(R.id.sp_country);
@@ -340,8 +343,13 @@ public class UpdateEventFragment extends Fragment implements OnMapReadyCallback,
             @Override
             public void onClick(View v) {
 
-                Utility.replaceFragment(context, new AddNewShiftFragment(), "AddNewShiftFragment");
-
+                populateData(eventData);
+                countryListData.clear();
+                stateListData.clear();
+                timezoneListData.clear();
+                getCountryList(eventData.getEventCountry());
+                getTimeZonelist();
+                getEventType();
             }
         });
 
@@ -562,24 +570,34 @@ public class UpdateEventFragment extends Fragment implements OnMapReadyCallback,
 
         countryList = new ArrayList<>();
         if (Utility.isNetworkAvailable(context)) {
-            myProgressDialog.show("Please wait...");
+            myProgressDialog.show(getString(R.string.please_wait));
             countryModel.getCountryResponse(context).observe((LifecycleOwner) context, countryResponse -> {
 
                 if (countryResponse != null) {
-                    countryListData = countryResponse.getResData();
-                    for (int i = 0; i < countryListData.size(); i++) {
-                        countryList.add(countryListData.get(i).getCountryName());
-                    }
+                    if(countryResponse.getResStatus().equalsIgnoreCase("200")) {
+                        countryListData = countryResponse.getResData();
+                        for (int i = 0; i < countryListData.size(); i++) {
+                            countryList.add(countryListData.get(i).getCountryName());
+                        }
 
-                    countryList.add(0, "Select Country");
-                    setCountrySpinner(countryListData);
+                        countryList.add(0, getString(R.string.select_country));
+                        setCountrySpinner(countryListData);
+                    }
+                    else
+                    {
+                        myToast.show(getString(R.string.something_went_wrong), Toast.LENGTH_SHORT, false);
+                    }
+                }
+                else
+                {
+                    myToast.show(getString(R.string.err_server), Toast.LENGTH_SHORT, false);
                 }
                 myProgressDialog.dismiss();
 
             });
         } else {
             myToast.show(getString(R.string.no_internet_connection), Toast.LENGTH_SHORT, false);
-            countryList.add("Select Country");
+            countryList.add(getString(R.string.select_country));
             setCountrySpinner(countryListData);
         }
     }
@@ -601,14 +619,14 @@ public class UpdateEventFragment extends Fragment implements OnMapReadyCallback,
     private void getStateList(String country_id) {
         stateList = new ArrayList<>();
         if (Utility.isNetworkAvailable(context)) {
-            myProgressDialog.show("Fetching states...");
+            myProgressDialog.show(getString(R.string.please_wait));
             stateModel.getStateResponse(context,new StateRequest(country_id)).observe((LifecycleOwner) context, stateResponse -> {
-                if (stateResponse != null) {
+                if (stateResponse != null && stateResponse.getResStatus().equalsIgnoreCase("200")) {
                     stateListData = stateResponse.getStateList();
                     for (int i = 0; i < stateListData.size(); i++) {
                         stateList.add(stateListData.get(i).getStateName());
                     }
-                    stateList.add(0, "Select State");
+                    stateList.add(0, getString(R.string.select_state));
                     setStateSpinner(stateListData);
                 }
                 myProgressDialog.dismiss();
@@ -652,13 +670,13 @@ public class UpdateEventFragment extends Fragment implements OnMapReadyCallback,
     {
         zoneList = new ArrayList<>();
         if (Utility.isNetworkAvailable(context)) {
-            myProgressDialog.show("Please wait...");
+            myProgressDialog.show(getString(R.string.please_wait));
 
             timeZoneViewModel.getTimezoneResponse(context).observe((LifecycleOwner) context, new Observer<TimeZoneResponse>() {
                 @Override
                 public void onChanged(@Nullable TimeZoneResponse timeZoneResponse) {
 
-                    if (timeZoneResponse != null) {
+                    if (timeZoneResponse != null && timeZoneResponse.getResStatus().equalsIgnoreCase("200")) {
                         timezoneListData = timeZoneResponse.getResData();
                         for (int i = 0; i < timezoneListData.size(); i++) {
                             timezoneList.add(timezoneListData.get(i).getTimezoneName());
@@ -685,15 +703,15 @@ public class UpdateEventFragment extends Fragment implements OnMapReadyCallback,
 
         eventTypeList = new ArrayList<>();
         if (Utility.isNetworkAvailable(context)) {
-            myProgressDialog.show("Please wait...");
+            myProgressDialog.show(getString(R.string.please_wait));
             eventTypeViewModel.getEventTypeResponse(context).observe((LifecycleOwner) context, eventTypeResponse -> {
 
-                if (eventTypeResponse != null) {
+                if (eventTypeResponse != null && eventTypeResponse.getResStatus().equalsIgnoreCase("200")) {
                     eventTypeListData = eventTypeResponse.getResData();
                     for (int i = 0; i < eventTypeListData.size(); i++) {
                         eventTypeList.add(eventTypeListData.get(i).getEventTypeName());
                     }
-                    eventTypeList.add(0, "Select Event Type");
+                    eventTypeList.add(0, getString(R.string.select_event_type));
                     setEventTypeSpinner(eventTypeListData);
                 }
                 myProgressDialog.dismiss();
@@ -721,7 +739,7 @@ public class UpdateEventFragment extends Fragment implements OnMapReadyCallback,
 
     private void submit()
     {
-        myProgressDialog.show("Saving...");
+        myProgressDialog.show(getString(R.string.please_wait));
         str_event=et_event.getText().toString().trim();
         str_event_description=et_event_description.getText().toString().trim();
         str_city=et_city.getText().toString().trim();
@@ -745,8 +763,8 @@ public class UpdateEventFragment extends Fragment implements OnMapReadyCallback,
         eventAddRequest.setEvent_city(str_city);
         eventAddRequest.setEvent_postcode(str_zip);
         eventAddRequest.setEvent_timezone(timezone_id);
-        eventAddRequest.setEvent_latitude("26.09");
-        eventAddRequest.setEvent_longitude("32.08");
+        eventAddRequest.setEvent_latitude(String.valueOf(latitude));
+        eventAddRequest.setEvent_longitude(String.valueOf(longitude));
         eventAddRequest.setEvent_phone(str_phone_no);
         eventAddRequest.setEvent_email(str_email);
         eventAddRequest.setEvent_image("abc.jpg");
@@ -756,19 +774,22 @@ public class UpdateEventFragment extends Fragment implements OnMapReadyCallback,
         addEventViewModel.getRegisterResponse(eventAddRequest).observe((LifecycleOwner) context, registerResponse -> {
 
             if (registerResponse != null && registerResponse.getResStatus().equalsIgnoreCase("200")) {
+/*
 
                 Toast.makeText(getActivity(), "Event Added Successfully...",
                         Toast.LENGTH_LONG).show();
+*/
 
-//                myToast.show(registerResponse.toString().trim(), false);
+                myToast.show(getString(R.string.toast_event_added_success), true);
                 myProgressDialog.dismiss();
             } else {
 
-                Toast.makeText(getActivity(), "Failed...",
-                        Toast.LENGTH_LONG).show();
+               /* Toast.makeText(getActivity(), "Failed...",
+
+                        Toast.LENGTH_LONG).show();*/
+                myToast.show(getString(R.string.failed), true);
                 myProgressDialog.dismiss();
-//                myToast.show("Basic information registration failed", Toast.LENGTH_SHORT, false);
-//                myProgressDialog.dismiss();
+
             }
 
 
@@ -801,7 +822,7 @@ public class UpdateEventFragment extends Fragment implements OnMapReadyCallback,
 
     public void updateData()
     {
-        myProgressDialog.show("Saving...");
+        myProgressDialog.show(getString(R.string.please_wait));
         str_event=et_event.getText().toString().trim();
         str_event_description=et_event_description.getText().toString().trim();
         str_city=et_city.getText().toString().trim();
@@ -825,8 +846,8 @@ public class UpdateEventFragment extends Fragment implements OnMapReadyCallback,
         eventUpdateRequest.setEvent_city(str_city);
         eventUpdateRequest.setEvent_postcode(str_zip);
         eventUpdateRequest.setEvent_timezone(timezone_id);
-        eventUpdateRequest.setEvent_latitude("26.09");
-        eventUpdateRequest.setEvent_longitude("32.08");
+        eventUpdateRequest.setEvent_latitude(String.valueOf(latitude));
+        eventUpdateRequest.setEvent_longitude(String.valueOf(longitude));
         eventUpdateRequest.setEvent_phone(str_phone_no);
         eventUpdateRequest.setEvent_email(str_email);
         eventUpdateRequest.setEvent_image("abc.jpg");
@@ -841,15 +862,16 @@ public class UpdateEventFragment extends Fragment implements OnMapReadyCallback,
 
             if (updateResponse != null && updateResponse.getResStatus().equalsIgnoreCase("200")) {
 
-                Toast.makeText(getActivity(), "Event Updated Successfully...",
-                        Toast.LENGTH_LONG).show();
+              /*  Toast.makeText(getActivity(), getString(R.string.event_updated_successfully),
+                        Toast.LENGTH_LONG).show();*/
 
-//                myToast.show(registerResponse.toString().trim(), true);
+                myToast.show(getString(R.string.event_updated_successfully), true);
                 myProgressDialog.dismiss();
             } else {
 
-                Toast.makeText(getActivity(), "Failed...",
-                        Toast.LENGTH_LONG).show();
+              /*  Toast.makeText(getActivity(), "Failed...",
+                        Toast.LENGTH_LONG).show();*/
+                myToast.show(getString(R.string.failed), false);
 
 //                myToast.show("Basic information registration failed", Toast.LENGTH_SHORT, false);
 //                myProgressDialog.dismiss();
@@ -861,19 +883,10 @@ public class UpdateEventFragment extends Fragment implements OnMapReadyCallback,
     }
 
     private void updateLabel() {
-        String myFormat = "yyyy-MM-dd"; //In which you need put here
-        SimpleDateFormat sdf = new SimpleDateFormat(myFormat, Locale.US);
-
-      //  et_start_date.setText(sdf.format(myCalendar.getTime()));
-
         et_start_date.setText(Utility.formatDateFull(myCalendar.getTime()));
     }
 
     private void updateLabelone() {
-        String myFormat = "yyyy-MM-dd"; //In which you need put here
-        SimpleDateFormat sdf = new SimpleDateFormat(myFormat, Locale.US);
-
-       // et_end_date.setText(sdf.format(myCalendar.getTime()));
 
         et_end_date.setText(Utility.formatDateFull(myCalendar.getTime()));
     }

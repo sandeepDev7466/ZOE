@@ -33,15 +33,21 @@ public class MyProgressDialog {
         if (dialog.isShowing())
             dialog.dismiss();
     }
-    public void setProgress(int progress)
-    {
+
+    public void setProgress(int progress) {
         numberProgressBar.setVisibility(View.VISIBLE);
         ((NumberProgressBar) numberProgressBar.findViewById(R.id.number_progress_bar)).setProgress(progress);
 
     }
 
-    public NumberProgressBar getNumberProgressBar()
-    {
+    public boolean isShowing() {
+        if (dialog.isShowing())
+            return true;
+        else
+            return false;
+    }
+
+    public NumberProgressBar getNumberProgressBar() {
         return numberProgressBar;
     }
 }

@@ -79,8 +79,8 @@ public class StateResponse {
         @ColumnInfo(name = "state_name")
         private String stateName;
 
-        public State() {
-        }
+//        public State() {
+//        }
 
         public State(int id, String stateId, String stateCode, String stateName) {
             this.id = id;

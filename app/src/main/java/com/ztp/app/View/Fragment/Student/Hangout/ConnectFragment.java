@@ -39,7 +39,7 @@ public class ConnectFragment extends Fragment {
         viewPager = view.findViewById(R.id.viewPager);
         tabLayout = view.findViewById(R.id.tabLayout);
         typeFriend = view.findViewById(R.id.typeFriend);
-        typeFriend.setText("MY FRIENDS");
+        typeFriend.setText(R.string.my_friends);
 
         ConnectPager connectPager = new ConnectPager(getChildFragmentManager(), getMyFriendData(), getPotentialFriendData(), 2);
         viewPager.setAdapter(connectPager);
@@ -57,11 +57,11 @@ public class ConnectFragment extends Fragment {
 
                 if(i==0)
                 {
-                    typeFriend.setText("MY FRIENDS");
+                    typeFriend.setText(R.string.my_friends);
                 }
                 else if(i==1)
                 {
-                    typeFriend.setText("POTENTIAL FRIENDS");
+                    typeFriend.setText(R.string.potential_friends);
                 }
 
             }

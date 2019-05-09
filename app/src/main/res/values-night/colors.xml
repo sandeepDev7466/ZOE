@@ -9,7 +9,7 @@
 
     <color name="background">#2A282A</color>
     <color name="background_2">#e4e4e4</color>
-    <color name="background_3">#bdbdbd</color>
+    <color name="background_3">#848484</color>
     <color name="bottom_navigation_background">#4E4C4E</color>
     <color name="white">#ffffff</color>
     <color name="black">#000000</color>
@@ -27,6 +27,8 @@
     <color name="tab_hangout">#21e680</color>
     <color name="tab_target">#59ed96</color>
     <color name="tab_booking">#0b51f8</color>
+
+    <color name="background_4">#797979</color>
 
 
 </resources>

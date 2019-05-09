@@ -14,15 +14,18 @@ public class StudentRegisterResponse {
     @SerializedName("res_data")
     @Expose
     private ResData resData;
+    @SerializedName("res_message")
+    @Expose
+    private String resMessage;
 
     public StudentRegisterResponse() {
     }
 
-    public StudentRegisterResponse(String apiResKey, String resStatus, ResData resData) {
-        super();
+    public StudentRegisterResponse(String apiResKey, String resStatus, ResData resData, String resMessage) {
         this.apiResKey = apiResKey;
         this.resStatus = resStatus;
         this.resData = resData;
+        this.resMessage = resMessage;
     }
 
     public String getApiResKey() {
@@ -47,6 +50,14 @@ public class StudentRegisterResponse {
 
     public void setResData(ResData resData) {
         this.resData = resData;
+    }
+
+    public String getResMessage() {
+        return resMessage;
+    }
+
+    public void setResMessage(String resMessage) {
+        this.resMessage = resMessage;
     }
 
     public class ResData {

@@ -21,7 +21,7 @@
                 <com.ztp.app.Helper.MyHeadingTextView
                     android:layout_width="match_parent"
                     android:layout_height="@dimen/_30sdp"
-                    android:text="EVENT"
+                    android:text="@string/event"
                     android:layout_gravity="center"
                     android:textSize="@dimen/_15ssp"
                     android:background="@color/blue_light"
@@ -55,8 +55,7 @@
                             android:layout_height="wrap_content"
                             android:layout_gravity="center"
                             android:layout_marginLeft="@dimen/_10sdp"
-                            android:text="@string/edit"
-                            android:textColor="@color/black" />
+                            android:text="@string/edit" />
 
 
                     </LinearLayout>
@@ -85,7 +84,6 @@
                             android:layout_width="wrap_content"
                             android:layout_height="wrap_content"
                             android:text="@string/delete"
-                            android:textColor="@color/black"
                             android:layout_marginLeft="@dimen/_10sdp"
                             android:layout_gravity="center"
                             />
@@ -99,7 +97,7 @@
                 <com.ztp.app.Helper.MyHeadingTextView
                     android:layout_width="match_parent"
                     android:layout_height="@dimen/_30sdp"
-                    android:text="SHIFT"
+                    android:text="@string/shift"
                     android:layout_gravity="center"
                     android:textSize="@dimen/_15ssp"
                     android:background="@color/blue_light"
@@ -131,7 +129,6 @@
                             android:layout_width="wrap_content"
                             android:layout_height="wrap_content"
                             android:text="@string/add_shift"
-                            android:textColor="@color/black"
                             android:layout_marginLeft="@dimen/_10sdp"
                             />
 
@@ -163,7 +160,6 @@
                             android:layout_width="wrap_content"
                             android:layout_height="wrap_content"
                             android:text="@string/view_shift"
-                            android:textColor="@color/black"
                             android:layout_marginStart="@dimen/_10sdp"
                             />
 

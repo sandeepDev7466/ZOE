@@ -1,6 +1,6 @@
 package com.ztp.app.View.Activity.CSO;
 
-import android.Manifest;
+import android.app.Dialog;
 import android.arch.lifecycle.LifecycleOwner;
 import android.arch.lifecycle.ViewModelProviders;
 import android.content.Context;
@@ -9,22 +9,20 @@ import android.net.Uri;
 import android.os.Build;
 import android.os.Bundle;
 import android.support.v7.app.AppCompatActivity;
+import android.telephony.PhoneNumberFormattingTextWatcher;
+import android.text.Editable;
+import android.text.TextWatcher;
+import android.view.LayoutInflater;
 import android.view.View;
-import android.webkit.MimeTypeMap;
 import android.widget.AdapterView;
 import android.widget.ArrayAdapter;
 import android.widget.ImageView;
+import android.widget.LinearLayout;
 import android.widget.ScrollView;
 import android.widget.Spinner;
 import android.widget.Toast;
 
-import com.karumi.dexter.Dexter;
-import com.karumi.dexter.MultiplePermissionsReport;
-import com.karumi.dexter.PermissionToken;
-import com.karumi.dexter.listener.DexterError;
-import com.karumi.dexter.listener.PermissionRequest;
-import com.karumi.dexter.listener.PermissionRequestErrorListener;
-import com.karumi.dexter.listener.multi.MultiplePermissionsListener;
+import com.raywenderlich.android.validatetor.ValidateTor;
 import com.ztp.app.Data.Local.SharedPrefrence.SharedPref;
 import com.ztp.app.Data.Remote.Model.Request.CsoRegisterRequestStep_2;
 import com.ztp.app.Data.Remote.Model.Request.StateRequest;
@@ -37,11 +35,13 @@ import com.ztp.app.Data.Remote.Service.ApiInterface;
 import com.ztp.app.Helper.MyButton;
 import com.ztp.app.Helper.MyProgressDialog;
 import com.ztp.app.Helper.MyTextInputEditText;
+import com.ztp.app.Helper.MyTextInputLayout;
 import com.ztp.app.Helper.MyToast;
 import com.ztp.app.R;
 import com.ztp.app.Utils.GPSTracker;
 import com.ztp.app.Utils.RuntimePermission;
 import com.ztp.app.Utils.Utility;
+import com.ztp.app.View.Activity.Common.LoginActivity;
 import com.ztp.app.Viewmodel.CountryViewModel;
 import com.ztp.app.Viewmodel.CsoRegisterStep_2ViewModel;
 import com.ztp.app.Viewmodel.StateViewModel;
@@ -53,7 +53,6 @@ import java.util.List;
 import okhttp3.MediaType;
 import okhttp3.MultipartBody;
 import okhttp3.RequestBody;
-import okhttp3.ResponseBody;
 import retrofit2.Call;
 import retrofit2.Callback;
 import retrofit2.Response;
@@ -65,7 +64,8 @@ public class CsoRegisterStep_2Activity extends AppCompatActivity implements View
     Context context;
     ImageView back, uploadDoc;
     CsoRegisterStep_2ViewModel csoRegisterStep_2ViewModel;
-    MyTextInputEditText etOrgName, etOrgEmail, etOrgPhone, etOrgWebsite, etOrgMission, etOrgCause, etOrgProfile, etCity, etPostalCode, etAddress, etTaxId, etUploadDocument;
+    MyTextInputLayout etOrgNameLayout, etOrgEmailLayout, etOrganizationPhoneLayout, etOrgWebsiteLayout, etPostalCodeLayout;
+    MyTextInputEditText etOrgName, etOrgEmail, etOrganizationPhone, etOrgWebsite, etOrgMission, etOrgCause, etOrgProfile, etCity, etPostalCode, etAddress, etTaxId, etUploadDocument;
     Spinner sp_country, sp_state;
     String country_id, state_id;
     ScrollView scrollView;
@@ -85,6 +85,8 @@ public class CsoRegisterStep_2Activity extends AppCompatActivity implements View
     String path;
     GPSTracker gpsTracker;
     private double latitude, longitude;
+    ValidateTor validate;
+    boolean error = false;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -111,9 +113,9 @@ public class CsoRegisterStep_2Activity extends AppCompatActivity implements View
             @Override
             public void onItemSelected(AdapterView<?> parentView, View selectedItemView, int position, long id) {
 
-                    country_id = countryListData.get(position).getCountryId();
-                    if (stateListData.size() == 0)
-                        getStateList(country_id);
+                country_id = countryListData.get(position).getCountryId();
+                if (stateListData.size() == 0)
+                    getStateList(country_id);
 
             }
 
@@ -128,7 +130,7 @@ public class CsoRegisterStep_2Activity extends AppCompatActivity implements View
             @Override
             public void onItemSelected(AdapterView<?> parentView, View selectedItemView, int position, long id) {
 
-                    state_id = stateListData.get(position).getStateId();
+                state_id = stateListData.get(position).getStateId();
 
             }
 
@@ -138,71 +140,168 @@ public class CsoRegisterStep_2Activity extends AppCompatActivity implements View
             }
 
         });
-    }
 
-    @Override
-    protected void onResume() {
-        super.onResume();
+        etOrgName.addTextChangedListener(new TextWatcher() {
+            @Override
+            public void beforeTextChanged(CharSequence s, int start, int count, int after) {
 
-        if (Build.VERSION.SDK_INT >= 23) {
-            giveMultiplePermission();
-        } else {
-            gpsTracker = new GPSTracker(context);
-            if (gpsTracker.getIsGPSTrackingEnabled()) {
-                latitude = gpsTracker.getLatitude();
-                longitude = gpsTracker.getLongitude();
-            } else {
-                gpsTracker.showSettingsAlert();
             }
+
+            @Override
+            public void onTextChanged(CharSequence s, int start, int before, int count) {
+
+            }
+
+            @Override
+            public void afterTextChanged(Editable s) {
+
+                if (s != null && s.length() > 0) {
+                    if (!Utility.isValidName(s.toString())) {
+                        etOrgNameLayout.setError(getString(R.string.err_org_name));
+                        error = true;
+                    } else {
+                        etOrgNameLayout.setError(null);
+                        error = false;
+                    }
+                } else {
+                    etOrgNameLayout.setError(null);
+                    error = false;
+                }
+            }
+        });
+
+        etOrgEmail.addTextChangedListener(new TextWatcher() {
+            @Override
+            public void beforeTextChanged(CharSequence s, int start, int count, int after) {
+
+            }
+
+            @Override
+            public void onTextChanged(CharSequence s, int start, int before, int count) {
+
+            }
+
+            @Override
+            public void afterTextChanged(Editable s) {
+
+                if (s != null && s.length() > 0) {
+                    if (!Utility.isValidEmail(s.toString())) {
+                        etOrgEmailLayout.setError(getString(R.string.err_enter_valid_email));
+                        error = true;
+                    } else {
+                        etOrgEmailLayout.setError(null);
+                        error = false;
+                    }
+                } else {
+                    etOrgEmailLayout.setError(null);
+                    error = false;
+                }
+            }
+        });
+
+        if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.LOLLIPOP) {
+
+            etOrganizationPhone.addTextChangedListener(new PhoneNumberFormattingTextWatcher("US"));
+
+        } else {
+            etOrganizationPhone.addTextChangedListener(new PhoneNumberFormattingTextWatcher());
         }
+
+        etOrganizationPhone.addTextChangedListener(new TextWatcher() {
+            @Override
+            public void beforeTextChanged(CharSequence s, int start, int count, int after) {
+
+            }
+
+            @Override
+            public void onTextChanged(CharSequence s, int start, int before, int count) {
+
+            }
+
+            @Override
+            public void afterTextChanged(Editable s) {
+
+                if (s != null && s.length() > 0) {
+                    if (!Utility.isValidPhoneNumber(s.toString())) {
+                        etOrganizationPhoneLayout.setError(getString(R.string.err_enter_valid_phone));
+                        error = true;
+                    } else {
+                        etOrganizationPhoneLayout.setError(null);
+                        error = false;
+                    }
+                } else {
+                    etOrganizationPhoneLayout.setError(null);
+                    error = false;
+                }
+            }
+        });
+
+        etOrgWebsite.addTextChangedListener(new TextWatcher() {
+            @Override
+            public void beforeTextChanged(CharSequence s, int start, int count, int after) {
+
+            }
+
+            @Override
+            public void onTextChanged(CharSequence s, int start, int before, int count) {
+
+            }
+
+            @Override
+            public void afterTextChanged(Editable s) {
+
+                if (s != null && s.length() > 0) {
+                    if (!Utility.isValidWebsite(s.toString())) {
+                        etOrgWebsiteLayout.setError(getString(R.string.err_enter_valid_website_address));
+                        error = true;
+                    } else {
+                        etOrgWebsiteLayout.setError(null);
+                        error = false;
+                    }
+                } else {
+                    etOrgWebsiteLayout.setError(null);
+                    error = false;
+                }
+            }
+        });
+        etPostalCode.addTextChangedListener(new TextWatcher() {
+            @Override
+            public void beforeTextChanged(CharSequence s, int start, int count, int after) {
+
+            }
+
+            @Override
+            public void onTextChanged(CharSequence s, int start, int before, int count) {
+
+            }
+
+            @Override
+            public void afterTextChanged(Editable s) {
+
+                if (s != null && s.length() > 0) {
+                    if (!Utility.isValidPostalCode(s.toString())) {
+                        etPostalCodeLayout.setError(getString(R.string.err_enter_valid_postal));
+                        error = true;
+                    } else {
+                        etPostalCodeLayout.setError(null);
+                        error = false;
+                    }
+                } else {
+                    etPostalCodeLayout.setError(null);
+                    error = false;
+                }
+            }
+        });
+
     }
 
-    private void giveMultiplePermission() {
-
-        Dexter.withActivity(this)
-                .withPermissions(Manifest.permission.READ_EXTERNAL_STORAGE, Manifest.permission.ACCESS_FINE_LOCATION, Manifest.permission.ACCESS_COARSE_LOCATION)
-                .withListener(new MultiplePermissionsListener() {
-                    @Override
-                    public void onPermissionsChecked(MultiplePermissionsReport report) {
-                        if (report.areAllPermissionsGranted()) {
-                            gpsTracker = new GPSTracker(context);
-                            if (gpsTracker.getIsGPSTrackingEnabled()) {
-                                latitude = gpsTracker.getLatitude();
-                                longitude = gpsTracker.getLongitude();
-                            } else {
-                                gpsTracker.showSettingsAlert();
-                            }
-
-                        }
-
-                        // check for permanent denial of any permission
-                        if (report.isAnyPermissionPermanentlyDenied()) {
-                            myToast.show("Permission denied", Toast.LENGTH_SHORT, false);
-                        }
-                    }
-
-                    @Override
-                    public void onPermissionRationaleShouldBeShown(List<PermissionRequest> permissions, PermissionToken token) {
-                        token.continuePermissionRequest();
-                    }
-                })
-                .onSameThread()
-                .withErrorListener(new PermissionRequestErrorListener() {
-                    @Override
-                    public void onError(DexterError error) {
-                        myToast.show("Error occurred " + error.toString(), Toast.LENGTH_SHORT, false);
-                    }
-                })
-                .check();
-
-    }
 
     private void fillData() {
 
         flag = true;
         etOrgName.setText(getProfileResponse.getResData().getOrgName());
         etOrgEmail.setText(getProfileResponse.getResData().getOrgEmail());
-        etOrgPhone.setText(getProfileResponse.getResData().getOrgPhone());
+        etOrganizationPhone.setText(getProfileResponse.getResData().getOrgPhone());
         etOrgWebsite.setText(getProfileResponse.getResData().getOrgWebsite());
         etOrgMission.setText(getProfileResponse.getResData().getOrgMission());
         etOrgCause.setText(getProfileResponse.getResData().getOrgCause());
@@ -219,6 +318,16 @@ public class CsoRegisterStep_2Activity extends AppCompatActivity implements View
 
     private void init() {
         context = this;
+
+        gpsTracker = new GPSTracker(context);
+        if (gpsTracker.getIsGPSTrackingEnabled()) {
+            latitude = gpsTracker.getLatitude();
+            longitude = gpsTracker.getLongitude();
+        } else {
+            gpsTracker.showSettingsAlert();
+        }
+
+        validate = new ValidateTor();
         runtimePermission = RuntimePermission.getInstance();
         myProgressDialog = new MyProgressDialog(context);
         sharedPref = SharedPref.getInstance(context);
@@ -233,7 +342,7 @@ public class CsoRegisterStep_2Activity extends AppCompatActivity implements View
         uploadDoc = findViewById(R.id.uploadDoc);
         etOrgName = findViewById(R.id.etOrgName);
         etOrgEmail = findViewById(R.id.etOrgEmail);
-        etOrgPhone = findViewById(R.id.etOrgPhone);
+        etOrganizationPhone = findViewById(R.id.etOrganizationPhone);
         etOrgWebsite = findViewById(R.id.etOrgWebsite);
         etOrgMission = findViewById(R.id.etOrgMission);
         etOrgCause = findViewById(R.id.etOrgCause);
@@ -246,10 +355,17 @@ public class CsoRegisterStep_2Activity extends AppCompatActivity implements View
         sp_country = findViewById(R.id.country);
         sp_state = findViewById(R.id.state);
 
+        etOrgNameLayout = findViewById(R.id.etOrgNameLayout);
+        etOrgEmailLayout = findViewById(R.id.etOrgEmailLayout);
+        etOrganizationPhoneLayout = findViewById(R.id.etOrganizationPhoneLayout);
+        etOrgWebsiteLayout = findViewById(R.id.etOrgWebsiteLayout);
+        etPostalCodeLayout = findViewById(R.id.etPostalCodeLayout);
+
         clear.setOnClickListener(this);
         next.setOnClickListener(this);
         back.setOnClickListener(this);
         uploadDoc.setOnClickListener(this);
+
     }
 
     private void setCountrySpinner(List<CountryResponse.Country> countryList) {
@@ -267,23 +383,21 @@ public class CsoRegisterStep_2Activity extends AppCompatActivity implements View
     }
 
 
-
     @Override
     public void onClick(View v) {
         switch (v.getId()) {
             case R.id.clear:
 
                 if (action.equalsIgnoreCase("update"))
-                fillData();
-                else
-                {
+                    fillData();
+                else {
                     country_id = "";
                     state_id = "";
                     sp_country.setSelection(0, true);
                     sp_state.setSelection(0, true);
                     etOrgName.setText("");
                     etOrgEmail.setText("");
-                    etOrgPhone.setText("");
+                    etOrganizationPhone.setText("");
                     etOrgWebsite.setText("");
                     etOrgMission.setText("");
                     etOrgCause.setText("");
@@ -293,106 +407,111 @@ public class CsoRegisterStep_2Activity extends AppCompatActivity implements View
                     etAddress.setText("");
                     etTaxId.setText("");
                     etUploadDocument.setText("");
-                    path= "";
+                    path = "";
                 }
                 scrollView.fullScroll(ScrollView.FOCUS_UP);
 
                 break;
             case R.id.next:
-                /*startActivity(new Intent(context, CsoRegisterStep_3Activity.class));
-                overridePendingTransition(R.anim.fade_in, R.anim.fade_out);*/
 
                 if (etOrgName.getText() != null && !etOrgName.getText().toString().isEmpty()) {
-
+                    if (!Utility.isValidName(etOrgName.getText().toString())) {
+                        myToast.show(getString(R.string.err_org_name), Toast.LENGTH_SHORT, false);
+                        return;
+                    }
                     if (etOrgEmail.getText() != null && !etOrgEmail.getText().toString().isEmpty()) {
-
-                        if (etOrgPhone.getText() != null && !etOrgPhone.getText().toString().isEmpty()) {
-
+                        if (!Utility.isValidEmail(etOrgEmail.getText().toString())) {
+                            myToast.show(getString(R.string.err_enter_valid_email), Toast.LENGTH_SHORT, false);
+                            return;
+                        }
+                        if (etOrganizationPhone.getText() != null && !etOrganizationPhone.getText().toString().isEmpty()) {
+                            if (!Utility.isValidPhoneNumber(etOrganizationPhone.getText().toString())) {
+                                myToast.show(getString(R.string.err_enter_valid_phone), Toast.LENGTH_SHORT, false);
+                                return;
+                            }
                             if (etOrgWebsite.getText() != null && !etOrgWebsite.getText().toString().isEmpty()) {
+                                if (!Utility.isValidWebsite(etOrgWebsite.getText().toString())) {
+                                    myToast.show(getString(R.string.err_enter_valid_website_address), Toast.LENGTH_SHORT, false);
+                                    return;
+                                }
+                                if (etOrgMission.getText() != null && !etOrgMission.getText().toString().isEmpty()) {
 
-                                if (etOrgWebsite.getText() != null && !etOrgWebsite.getText().toString().isEmpty()) {
+                                    if (etOrgCause.getText() != null && !etOrgCause.getText().toString().isEmpty()) {
 
-                                    if (etOrgMission.getText() != null && !etOrgMission.getText().toString().isEmpty()) {
+                                        if (etOrgProfile.getText() != null && !etOrgProfile.getText().toString().isEmpty()) {
 
-                                        if (etOrgCause.getText() != null && !etOrgCause.getText().toString().isEmpty()) {
+                                            if (country_id != null && !country_id.isEmpty()) {
 
-                                            if (etOrgProfile.getText() != null && !etOrgProfile.getText().toString().isEmpty()) {
+                                                if (state_id != null && !state_id.isEmpty()) {
 
-                                                if (country_id != null && !country_id.isEmpty()) {
+                                                    if (etCity.getText() != null && !etCity.getText().toString().isEmpty()) {
 
-                                                    if (state_id != null && !state_id.isEmpty()) {
+                                                        if (etPostalCode.getText() != null && !etPostalCode.getText().toString().isEmpty()) {
+                                                            if (!Utility.isValidPostalCode(etPostalCode.getText().toString())) {
+                                                                myToast.show(getString(R.string.err_enter_valid_postal), Toast.LENGTH_SHORT, false);
+                                                                return;
+                                                            }
+                                                            if (etAddress.getText() != null && !etAddress.getText().toString().isEmpty()) {
 
-                                                        if (etCity.getText() != null && !etCity.getText().toString().isEmpty()) {
+                                                                if (etTaxId.getText() != null && !etTaxId.getText().toString().isEmpty()) {
 
-                                                            if (etPostalCode.getText() != null && !etPostalCode.getText().toString().isEmpty()) {
+                                                                    if (etUploadDocument.getText() != null && !etUploadDocument.getText().toString().isEmpty()) {
 
-                                                                if (etAddress.getText() != null && !etAddress.getText().toString().isEmpty()) {
+                                                                        if (path != null) {
 
-                                                                    if (etTaxId.getText() != null && !etTaxId.getText().toString().isEmpty()) {
-
-                                                                        if (etUploadDocument.getText() != null && !etUploadDocument.getText().toString().isEmpty()) {
-
-                                                                            if(path!=null)
-                                                                            {
-                                                                                uploadDocument(new File(path));
-                                                                            }
-                                                                            else
-                                                                            {
-                                                                                myToast.show("Upload Document", Toast.LENGTH_SHORT, false);
-                                                                            }
+                                                                            uploadDocument(new File(path));
 
                                                                         } else {
-                                                                            myToast.show("Upload Document Title", Toast.LENGTH_SHORT, false);
+                                                                            myToast.show(getString(R.string.err_upload_document), Toast.LENGTH_SHORT, false);
                                                                         }
 
                                                                     } else {
-                                                                        myToast.show("Enter EIN/Tax Id", Toast.LENGTH_SHORT, false);
+                                                                        myToast.show(getString(R.string.err_upload_document_title), Toast.LENGTH_SHORT, false);
                                                                     }
 
                                                                 } else {
-                                                                    myToast.show("Enter Address", Toast.LENGTH_SHORT, false);
+                                                                    myToast.show(getString(R.string.err_enter_taxId), Toast.LENGTH_SHORT, false);
                                                                 }
+
                                                             } else {
-                                                                myToast.show("Enter Postal Code", Toast.LENGTH_SHORT, false);
+                                                                myToast.show(getString(R.string.err_enter_address), Toast.LENGTH_SHORT, false);
                                                             }
                                                         } else {
-                                                            myToast.show("Enter City", Toast.LENGTH_SHORT, false);
+                                                            myToast.show(getString(R.string.err_enter_postal_code), Toast.LENGTH_SHORT, false);
                                                         }
-
                                                     } else {
-                                                        myToast.show("Select State", Toast.LENGTH_SHORT, false);
+                                                        myToast.show(getString(R.string.err_enter_city), Toast.LENGTH_SHORT, false);
                                                     }
+
                                                 } else {
-                                                    myToast.show("Select Country", Toast.LENGTH_SHORT, false);
+                                                    myToast.show(getString(R.string.err_select_state), Toast.LENGTH_SHORT, false);
                                                 }
                                             } else {
-                                                myToast.show("Enter Organization Profile", Toast.LENGTH_SHORT, false);
+                                                myToast.show(getString(R.string.err_select_country), Toast.LENGTH_SHORT, false);
                                             }
-
                                         } else {
-                                            myToast.show("Enter Organization Cause", Toast.LENGTH_SHORT, false);
+                                            myToast.show(getString(R.string.err_org_profile), Toast.LENGTH_SHORT, false);
                                         }
 
                                     } else {
-                                        myToast.show("Enter Organization Mission", Toast.LENGTH_SHORT, false);
+                                        myToast.show(getString(R.string.err_org_cause), Toast.LENGTH_SHORT, false);
                                     }
 
                                 } else {
-                                    myToast.show("Enter Organization Website", Toast.LENGTH_SHORT, false);
+                                    myToast.show(getString(R.string.err_org_mission), Toast.LENGTH_SHORT, false);
                                 }
 
                             } else {
-                                myToast.show("Enter Organization Website", Toast.LENGTH_SHORT, false);
+                                myToast.show(getString(R.string.err_org_website), Toast.LENGTH_SHORT, false);
                             }
-
                         } else {
-                            myToast.show("Enter Organization Phone", Toast.LENGTH_SHORT, false);
+                            myToast.show(getString(R.string.err_org_phone), Toast.LENGTH_SHORT, false);
                         }
                     } else {
-                        myToast.show("Enter Organization Email", Toast.LENGTH_SHORT, false);
+                        myToast.show(getString(R.string.err_org_email), Toast.LENGTH_SHORT, false);
                     }
                 } else {
-                    myToast.show("Enter Organization Name", Toast.LENGTH_SHORT, false);
+                    myToast.show(getString(R.string.err_enter_org_name), Toast.LENGTH_SHORT, false);
                 }
 
                 break;
@@ -405,7 +524,7 @@ public class CsoRegisterStep_2Activity extends AppCompatActivity implements View
                     intent.setType("*/*");
                     startActivityForResult(intent, PICKFILE_REQUEST_CODE);
                 } else {
-                    myToast.show("Enter Document Title", Toast.LENGTH_SHORT, false);
+                    myToast.show(getString(R.string.err_document_title), Toast.LENGTH_SHORT, false);
                 }
 
                 break;
@@ -414,7 +533,7 @@ public class CsoRegisterStep_2Activity extends AppCompatActivity implements View
 
     private void hitRegisterApi() {
 
-        myProgressDialog.show("Registering...");
+        myProgressDialog.show(getString(R.string.please_wait));
 
         CsoRegisterRequestStep_2 csoRegisterRequest_2 = new CsoRegisterRequestStep_2();
         csoRegisterRequest_2.setUserId(sharedPref.getUserId());
@@ -422,7 +541,7 @@ public class CsoRegisterStep_2Activity extends AppCompatActivity implements View
         csoRegisterRequest_2.setUserDevice(Utility.getDeviceId(context));
         csoRegisterRequest_2.setOrgName(etOrgName.getText().toString());
         csoRegisterRequest_2.setOrgEmail(etOrgEmail.getText().toString());
-        csoRegisterRequest_2.setOrgPhone(etOrgPhone.getText().toString());
+        csoRegisterRequest_2.setOrgPhone(etOrganizationPhone.getText().toString());
         csoRegisterRequest_2.setOrgWebsite(etOrgWebsite.getText().toString());
         csoRegisterRequest_2.setOrgMission(etOrgMission.getText().toString());
         csoRegisterRequest_2.setOrgCause(etOrgCause.getText().toString());
@@ -438,30 +557,36 @@ public class CsoRegisterStep_2Activity extends AppCompatActivity implements View
         csoRegisterRequest_2.setOrgLatitude(String.valueOf(latitude));
         csoRegisterRequest_2.setOrgLongitude(String.valueOf(longitude));
 
-        csoRegisterStep_2ViewModel.getRegisterResponse(csoRegisterRequest_2).observe((LifecycleOwner) context, registerResponse -> {
+        if (Utility.isNetworkAvailable(context)) {
+            csoRegisterStep_2ViewModel.getRegisterResponse(csoRegisterRequest_2).observe((LifecycleOwner) context, registerResponse -> {
 
-            if (registerResponse != null && registerResponse.getResStatus().equalsIgnoreCase("200")) {
+                if (registerResponse != null) {
+                    if (registerResponse.getResStatus().equalsIgnoreCase("200")) {
 
-                Intent intent1 = new Intent(context, CsoRegisterStep_3Activity.class);
-                //intent1.addFlags(Intent.FLAG_ACTIVITY_NEW_TASK | Intent.FLAG_ACTIVITY_CLEAR_TASK);
-                if (action.equalsIgnoreCase("update")) {
-                    intent1.putExtra("action", "update");
-                    intent1.putExtra("model", getProfileResponse);
+                        Intent intent1 = new Intent(context, CsoRegisterStep_3Activity.class);
+                        intent1.addFlags(Intent.FLAG_ACTIVITY_NEW_TASK | Intent.FLAG_ACTIVITY_CLEAR_TASK);
+                        if (action.equalsIgnoreCase("update")) {
+                            intent1.putExtra("action", "update");
+                            intent1.putExtra("model", getProfileResponse);
+                        } else {
+                            intent1.putExtra("action", "register");
+                        }
+                        startActivity(intent1);
+                        overridePendingTransition(R.anim.fade_in, R.anim.fade_out);
+
+                    } else {
+                        myToast.show(getString(R.string.err_org_inf_regisitration_failed), Toast.LENGTH_SHORT, false);
+                    }
                 } else {
-                    intent1.putExtra("action", "register");
+                    myToast.show(getString(R.string.err_server), Toast.LENGTH_SHORT, false);
                 }
-                startActivity(intent1);
-                overridePendingTransition(R.anim.fade_in, R.anim.fade_out);
 
-            } else {
-                myToast.show("Organisation information registration failed", Toast.LENGTH_SHORT, false);
-            }
+                myProgressDialog.dismiss();
 
-            myProgressDialog.dismiss();
-
-        });
-
-
+            });
+        } else {
+            myToast.show(getString(R.string.no_internet_connection), Toast.LENGTH_SHORT, false);
+        }
     }
 
 
@@ -487,7 +612,7 @@ public class CsoRegisterStep_2Activity extends AppCompatActivity implements View
     private void uploadDocument(File fileToUpload) {
 
 
-        myProgressDialog.show("Uploading...");
+        myProgressDialog.show(getString(R.string.please_wait));
         MultipartBody.Part filePart = MultipartBody.Part.createFormData("user_id_file", fileToUpload.getName(), RequestBody.create(MediaType.parse("*/*"), fileToUpload));
         //String extension = MimeTypeMap.getFileExtensionFromUrl(fileToUpload.toString());
         ApiInterface apiInterface = Api.getClient();
@@ -503,11 +628,11 @@ public class CsoRegisterStep_2Activity extends AppCompatActivity implements View
 
                     if (response.body().getResStatus().equalsIgnoreCase("200")) {
                         myProgressDialog.dismiss();
-                        myToast.show("File uploaded successfully", Toast.LENGTH_SHORT, true);
+                        myToast.show(getString(R.string.file_uploaded_successfully), Toast.LENGTH_SHORT, true);
                         hitRegisterApi();
                     } else {
                         myProgressDialog.dismiss();
-                        myToast.show("File upload failed", Toast.LENGTH_SHORT, true);
+                        myToast.show(getString(R.string.err_file_upload_failed), Toast.LENGTH_SHORT, true);
                     }
                 }
             }
@@ -522,8 +647,35 @@ public class CsoRegisterStep_2Activity extends AppCompatActivity implements View
 
     @Override
     public void onBackPressed() {
-        super.onBackPressed();
-        overridePendingTransition(R.anim.fade_in, R.anim.fade_out);
+
+        Dialog dialog = new Dialog(context);
+        View view = LayoutInflater.from(context).inflate(R.layout.exit_dialog, null);
+        dialog.setContentView(view);
+        dialog.setCancelable(false);
+
+        LinearLayout yes = view.findViewById(R.id.yes);
+        LinearLayout no = view.findViewById(R.id.no);
+
+        yes.setOnClickListener(v -> {
+            dialog.dismiss();
+
+            if (sharedPref.getIsLogin()) {
+                startActivity(new Intent(context, CsoDashboardActivity.class));
+                finish();
+
+            } else {
+                startActivity(new Intent(context, LoginActivity.class));
+                finish();
+            }
+
+            overridePendingTransition(R.anim.fade_in, R.anim.fade_out);
+        });
+
+        no.setOnClickListener(v -> {
+            dialog.dismiss();
+        });
+
+        dialog.show();
     }
 
     public int getCountryPosition() {
@@ -554,21 +706,27 @@ public class CsoRegisterStep_2Activity extends AppCompatActivity implements View
 
         countryList = new ArrayList<>();
         if (Utility.isNetworkAvailable(context)) {
-            myProgressDialog.show("Please wait...");
+            myProgressDialog.show(getString(R.string.please_wait));
             countryModel.getCountryResponse(context).observe((LifecycleOwner) context, countryResponse -> {
 
                 if (countryResponse != null) {
-                    countryListData = countryResponse.getResData();
-                    for (int i = 0; i < countryListData.size(); i++) {
-                        countryList.add(countryListData.get(i).getCountryName());
+                    if (countryResponse.getResStatus().equalsIgnoreCase("200")) {
+                        countryListData = countryResponse.getResData();
+                        for (int i = 0; i < countryListData.size(); i++) {
+                            countryList.add(countryListData.get(i).getCountryName());
+                        }
+
+                        setCountrySpinner(countryListData);
+                    } else {
+                        myToast.show(getString(R.string.something_went_wrong), Toast.LENGTH_SHORT, false);
                     }
-                    countryList.add(0, "Select Country");
-                    setCountrySpinner(countryListData);
+                } else {
+                    myToast.show(getString(R.string.err_server), Toast.LENGTH_SHORT, false);
                 }
-                myProgressDialog.dismiss();
 
                 if (action.equalsIgnoreCase("update"))
-                fillData();
+                    fillData();
+                myProgressDialog.dismiss();
 
             });
         } else {
@@ -581,15 +739,21 @@ public class CsoRegisterStep_2Activity extends AppCompatActivity implements View
     private void getStateList(String country_id) {
         stateList = new ArrayList<>();
         if (Utility.isNetworkAvailable(context)) {
-            myProgressDialog.show("Please wait...");
+            myProgressDialog.show(getString(R.string.please_wait));
             stateModel.getStateResponse(context, new StateRequest(country_id)).observe((LifecycleOwner) context, stateResponse -> {
                 if (stateResponse != null) {
-                    stateListData = stateResponse.getStateList();
-                    for (int i = 0; i < stateListData.size(); i++) {
-                        stateList.add(stateListData.get(i).getStateName());
+                    if (stateResponse.getResStatus().equalsIgnoreCase("200")) {
+                        stateListData = stateResponse.getStateList();
+                        for (int i = 0; i < stateListData.size(); i++) {
+                            stateList.add(stateListData.get(i).getStateName());
+                        }
+
+                        setStateSpinner(stateListData);
+                    } else {
+                        myToast.show(getString(R.string.something_went_wrong), Toast.LENGTH_SHORT, false);
                     }
-                    stateList.add(0, "Select State");
-                    setStateSpinner(stateListData);
+                } else {
+                    myToast.show(getString(R.string.err_server), Toast.LENGTH_SHORT, false);
                 }
                 myProgressDialog.dismiss();
             });
