@@ -13,7 +13,8 @@
         android:dividerHeight="0.5dp"
         tools:listitem="@layout/fragment_volunteers_row"
         android:visibility="invisible"
-        android:padding="@dimen/_10sdp"/>
+        android:padding="@dimen/_10sdp"
+        android:overScrollMode="never"/>
 
     <com.ztp.app.Helper.MyTextView
         android:id="@+id/noData"

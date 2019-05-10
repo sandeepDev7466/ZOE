@@ -88,6 +88,9 @@ public class GetShiftListResponse {
         @SerializedName("shift_update_date")
         @Expose
         private String shift_update_date;
+        @SerializedName("volunteer_apply")
+        @Expose
+        private String volunteer_apply;
 
         public String getShift_id() {
             return shift_id;
@@ -169,6 +172,13 @@ public class GetShiftListResponse {
             this.shift_update_date = shift_update_date;
         }
 
+        public String getVolunteer_apply() {
+            return volunteer_apply;
+        }
+
+        public void setVolunteer_apply(String volunteer_apply) {
+            this.volunteer_apply = volunteer_apply;
+        }
     }
 
 

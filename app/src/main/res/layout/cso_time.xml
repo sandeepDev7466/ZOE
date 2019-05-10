@@ -13,11 +13,11 @@
        >
 
         <com.ztp.app.Helper.MyTextView
-            android:id="@+id/text"
+            android:id="@+id/tv_shift"
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
             android:textSize="@dimen/_13ssp"
-            android:text="2016-03-05:4:00PM-8PM(6/6)"
+
             />
 
     </LinearLayout>
@@ -29,7 +29,7 @@
         android:gravity="center">
 
         <ImageView
-            android:id="@+id/edit"
+            android:id="@+id/imv_edit"
             android:layout_width="@dimen/_12sdp"
             android:layout_height="@dimen/_12sdp"
             app:srcCompat="@drawable/ic_edit" />

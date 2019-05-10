@@ -12,5 +12,6 @@
         android:divider="@color/background_3"
         android:layout_marginStart="@dimen/_20sdp"
         android:layout_marginEnd="@dimen/_20sdp"
-        tools:listitem="@layout/fragment_student_row"/>
+        tools:listitem="@layout/fragment_student_row"
+        android:overScrollMode="never"/>
 </LinearLayout>

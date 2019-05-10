@@ -157,40 +157,60 @@ public class EventListAdapter extends BaseAdapter {
                 delete_event.setOnClickListener(vs -> {
                     dialog.dismiss();
 
-                    DeleteEventRequest deleteEventRequest = new DeleteEventRequest();
-                    deleteEventRequest.setEvent_id(eventData.getEventId());
+                    Dialog dia = new Dialog(context);
+                    View v1 = LayoutInflater.from(context).inflate(R.layout.delete_dialog, null);
+                    dia.setContentView(v1);
+                    dia.setCancelable(false);
 
-                    if(Utility.isNetworkAvailable(context)) {
-                        myProgressDialog.show(context.getString(R.string.please_wait));
-                        eventDeleteViewModel.getDeleteEventResponse(deleteEventRequest).observe((LifecycleOwner) context, deleteEventResponse -> {
+                    LinearLayout yes = v1.findViewById(R.id.yes);
+                    LinearLayout no = v1.findViewById(R.id.no);
 
-                            if(deleteEventResponse != null) {
-                                if (deleteEventResponse.getResStatus().equalsIgnoreCase("200")) {
+                    yes.setOnClickListener(view2 -> {
+                        dia.dismiss();
 
-                                    new MyToast(context).show(context.getString(R.string.event_deleted_successfully), Toast.LENGTH_SHORT, true);
+                        DeleteEventRequest deleteEventRequest = new DeleteEventRequest();
+                        deleteEventRequest.setEvent_id(eventData.getEventId());
 
-                                    eventDataList.remove(eventData);
+                        if(Utility.isNetworkAvailable(context)) {
+                            myProgressDialog.show(context.getString(R.string.please_wait));
+                            eventDeleteViewModel.getDeleteEventResponse(deleteEventRequest).observe((LifecycleOwner) context, deleteEventResponse -> {
 
-                                    notifyDataSetChanged();
+                                if(deleteEventResponse != null) {
+                                    if (deleteEventResponse.getResStatus().equalsIgnoreCase("200")) {
 
-                                } else {
+                                        new MyToast(context).show(context.getString(R.string.event_deleted_successfully), Toast.LENGTH_SHORT, true);
 
-                                    new MyToast(context).show(context.getString(R.string.failed), Toast.LENGTH_SHORT, false);
+                                        eventDataList.remove(eventData);
 
+                                        notifyDataSetChanged();
+
+                                    } else {
+
+                                        new MyToast(context).show(context.getString(R.string.failed), Toast.LENGTH_SHORT, false);
+
+                                    }
                                 }
-                            }
-                            else
-                            {
-                                new MyToast(context).show(context.getString(R.string.err_server), Toast.LENGTH_SHORT, false);
-                            }
+                                else
+                                {
+                                    new MyToast(context).show(context.getString(R.string.err_server), Toast.LENGTH_SHORT, false);
+                                }
 
-                            myProgressDialog.dismiss();
-                        });
-                    }
-                    else
-                    {
-                        new MyToast(context).show(context.getString(R.string.no_internet_connection), Toast.LENGTH_SHORT, false);
-                    }
+                                myProgressDialog.dismiss();
+                            });
+                        }
+                        else
+                        {
+                            new MyToast(context).show(context.getString(R.string.no_internet_connection), Toast.LENGTH_SHORT, false);
+                        }
+
+                    });
+
+                    no.setOnClickListener(view2 -> {
+                        dia.dismiss();
+                    });
+
+                    dia.show();
+
                 });
 
                 add_shift.setOnClickListener(vs -> {

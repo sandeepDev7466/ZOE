@@ -1,35 +1,62 @@
 package com.ztp.app.View.Fragment.Student.Booking;
 
+import android.arch.lifecycle.ViewModelProviders;
 import android.content.Context;
 import android.os.Bundle;
 import android.support.v4.app.Fragment;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
+import android.widget.AbsListView;
 import android.widget.ListView;
-
+import android.widget.ProgressBar;
+import android.widget.Toast;
+import com.ztp.app.Data.Local.SharedPrefrence.SharedPref;
+import com.ztp.app.Data.Remote.Model.Request.SearchEventRequest;
+import com.ztp.app.Data.Remote.Model.Response.SearchEventResponse;
+import com.ztp.app.Helper.MyProgressDialog;
+import com.ztp.app.Helper.MyTextView;
+import com.ztp.app.Helper.MyToast;
 import com.ztp.app.R;
-
+import com.ztp.app.Utils.Utility;
+import com.ztp.app.View.Fragment.Student.Extra.SearchedEventAdapter;
+import com.ztp.app.Viewmodel.SearchEventViewModel;
 import java.util.ArrayList;
-import java.util.HashMap;
 import java.util.List;
-import java.util.Map;
 
-public class TabFindCsoFragment extends Fragment {
-
+public class TabFindCsoFragment extends Fragment implements AbsListView.OnScrollListener {
+    MyProgressDialog myProgressDialog;
+    ProgressBar progress;
+    MyToast myToast;
     Context context;
+    SharedPref sharedPref;
     ListView listView;
-    List<Map<String, Object>> dataList = new ArrayList<>();
+    final static int DIFF = 5;
+    int offset = 0, limit = DIFF;
+    List<SearchEventResponse.SearchedEvent> searchEventList = new ArrayList<>();
+    SearchEventViewModel searchEventViewModel;
+    SearchedEventAdapter searchedEventAdapter;
+    boolean hit = true;
+    MyTextView search;
+
     @Override
     public View onCreateView(LayoutInflater inflater, ViewGroup container,
                              Bundle savedInstanceState) {
 
         View view = inflater.inflate(R.layout.fragment_tab_find_cso, container, false);
+        sharedPref = SharedPref.getInstance(context);
+        myProgressDialog = new MyProgressDialog(context);
+        myToast = new MyToast(context);
+        search = view.findViewById(R.id.search);
         listView = view.findViewById(R.id.listView);
-
-        FindCsoAdapter findCsoAdapter = new FindCsoAdapter(context,getDataList());
-        listView.setAdapter(findCsoAdapter);
-
+        searchEventViewModel = ViewModelProviders.of(this).get(SearchEventViewModel.class);
+        progress = view.findViewById(R.id.progress);
+        listView.setOnScrollListener(this);
+        if ((Utility.isNetworkAvailable(context))) {
+            myProgressDialog.show(getString(R.string.please_wait));
+            search("", offset, limit, false);
+        } else
+            myToast.show(getString(R.string.no_internet_connection), Toast.LENGTH_LONG, false);
 
         return view;
     }
@@ -40,50 +67,74 @@ public class TabFindCsoFragment extends Fragment {
         this.context = context;
     }
 
-    public List<Map<String, Object>> getDataList() {
+    private void search(String query, int offset, int limit, boolean type) {
 
-        Map<String, Object> map1 = new HashMap<>();
-        map1.put("text","Atlanta Mission Food Drive");
-        map1.put("status","Donations dropped off at the school.");
-        map1.put("time",new String[]{"2016-03-05:4:00PM-8PM(6/6)",
-                "2016-03-05:4:00PM-8PM(6/6)",
-                "2016-03-05:4:00PM-8PM(6/6)",
-                "2016-03-05:4:00PM-8PM(6/6)"});
-        dataList.add(map1);
-
-        Map<String, Object> map2 = new HashMap<>();
-        map2.put("text","Atlanta Mission Food Drive");
-        map2.put("status","Donations dropped off at the school.");
-        map2.put("time",new String[]{"2016-03-05:4:00PM-8PM(6/6)",
-                "2016-03-05:4:00PM-8PM(6/6)",
-                "2016-03-05:4:00PM-8PM(6/6)",
-                "2016-03-05:4:00PM-8PM(6/6)"});
-        dataList.add(map2);
-
-        Map<String, Object> map3 = new HashMap<>();
-        map3.put("text","Atlanta Mission Food Drive");
-        map3.put("status","Donations dropped off at the school.");
-        map3.put("time",new String[]{"2016-03-05:4:00PM-8PM(6/6)",
-                "2016-03-05:4:00PM-8PM(6/6)",
-                "2016-03-05:4:00PM-8PM(6/6)",
-                "2016-03-05:4:00PM-8PM(6/6)"});
-        dataList.add(map3);
-
-        Map<String, Object> map4 = new HashMap<>();
-        map4.put("text","Atlanta Mission Food Drive");
-        map4.put("status","Donations dropped off at the school.");
-        map4.put("time",new String[]{"2016-03-05:4:00PM-8PM(6/6)",
-                "2016-03-05:4:00PM-8PM(6/6)",
-                "2016-03-05:4:00PM-8PM(6/6)",
-                "2016-03-05:4:00PM-8PM(6/6)"});
-        dataList.add(map4);
-
-        return dataList;
+        if (hit) {
+            searchEventViewModel.getSearchedEventsResponse(new SearchEventRequest(sharedPref.getUserId(), query, String.valueOf(offset), String.valueOf(limit))).observe(this, searchEventResponse -> {
+                if (type) {
+                    progress.setVisibility(View.GONE);
+                }
+                if (searchEventResponse != null) {
+                    if (searchEventResponse.getResStatus().equalsIgnoreCase("200")) {
+                        if (searchEventResponse.getSearchedEvents() != null) {
+                            if (type) {
+                                searchEventList.addAll(searchEventResponse.getSearchedEvents());
+                            } else {
+                                searchEventList = searchEventResponse.getSearchedEvents();
+                            }
+                            listView.setVisibility(View.VISIBLE);
+                            search.setVisibility(View.GONE);
+                            searchedEventAdapter = new SearchedEventAdapter(context, searchEventList);
+                            listView.setAdapter(searchedEventAdapter);
+                            listView.setSelection(offset);
+                            hit = true;
+                        } else {
+                            hit = false;
+                        }
+                    } else {
+                        if (!type) {
+                            listView.setVisibility(View.GONE);
+                            search.setVisibility(View.VISIBLE);
+                            search.setText(R.string.no_events_found);
+                        }
+                    }
+                } else {
+                    myToast.show(getString(R.string.err_server), Toast.LENGTH_LONG, false);
+                }
+                if (myProgressDialog.isShowing())
+                    myProgressDialog.dismiss();
+            });
+        }
     }
+
 
     @Override
     public void onResume() {
         super.onResume();
-        dataList = new ArrayList<>();
+
+    }
+
+    @Override
+    public void onScrollStateChanged(AbsListView view, int scrollState) {
+        if (scrollState == AbsListView.OnScrollListener.SCROLL_STATE_IDLE
+                && (listView.getLastVisiblePosition() - listView.getHeaderViewsCount() -
+                listView.getFooterViewsCount()) >= (searchedEventAdapter.getCount() - 1)) {
+
+            if (searchedEventAdapter.getCount() == limit) {
+                offset = offset + limit;
+                limit = offset + DIFF;
+                if (Utility.isNetworkAvailable(context)) {
+                    progress.setVisibility(View.VISIBLE);
+                    search("", offset, limit, true);
+                } else
+                    myToast.show(getString(R.string.no_internet_connection), Toast.LENGTH_LONG, false);
+            }
+
+        }
+    }
+
+    @Override
+    public void onScroll(AbsListView view, int firstVisibleItem, int visibleItemCount, int totalItemCount) {
+
     }
 }

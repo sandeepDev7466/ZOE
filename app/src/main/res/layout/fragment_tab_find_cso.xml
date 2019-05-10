@@ -1,18 +1,40 @@
 <?xml version="1.0" encoding="utf-8"?>
-<FrameLayout
-    xmlns:android="http://schemas.android.com/apk/res/android"
+<RelativeLayout xmlns:android="http://schemas.android.com/apk/res/android"
     android:layout_width="match_parent"
-    android:layout_height="match_parent">
+    android:layout_height="match_parent"
+    xmlns:tools="http://schemas.android.com/tools">
+
+<LinearLayout
+    android:layout_width="match_parent"
+    android:layout_height="match_parent"
+    android:orientation="horizontal"
+    android:gravity="center">
 
     <ListView
         android:id="@+id/listView"
         android:layout_width="match_parent"
         android:layout_height="match_parent"
         android:scrollbars="none"
-        android:divider="@null"
-        android:layout_marginStart="@dimen/_20sdp"
-        android:layout_marginEnd="@dimen/_20sdp"
-        android:layout_marginTop="@dimen/_20sdp"/>
+        tools:listitem="@layout/event_list_item"
+        android:overScrollMode="never"
+        android:visibility="gone" />
+
+    <com.ztp.app.Helper.MyTextView
+        android:id="@+id/search"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:visibility="gone"
+        />
+
+</LinearLayout>
+
+<ProgressBar
+    android:id="@+id/progress"
+    android:layout_width="@dimen/_20sdp"
+    android:layout_height="@dimen/_20sdp"
+    android:visibility="gone"
+    android:layout_alignParentBottom="true"
+    android:layout_centerHorizontal="true"/>
 
 
-</FrameLayout>
+</RelativeLayout>

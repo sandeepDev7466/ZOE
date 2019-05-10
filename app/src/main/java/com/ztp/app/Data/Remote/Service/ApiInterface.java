@@ -14,6 +14,7 @@ import com.ztp.app.Data.Remote.Model.Request.GetEventShiftRequest;
 import com.ztp.app.Data.Remote.Model.Request.GetEventsRequest;
 import com.ztp.app.Data.Remote.Model.Request.GetMonthEventDateRequest;
 import com.ztp.app.Data.Remote.Model.Request.GetProfileRequest;
+import com.ztp.app.Data.Remote.Model.Request.GetSearchShiftListRequest;
 import com.ztp.app.Data.Remote.Model.Request.GetShiftDetailRequest;
 import com.ztp.app.Data.Remote.Model.Request.GetShiftListRequest;
 import com.ztp.app.Data.Remote.Model.Request.LoginRequest;
@@ -168,5 +169,7 @@ public interface ApiInterface {
     @POST("cso-action.php?api_key=1234&action=get_month_event")
     Call<GetMonthEventDateResponse> getGetMonthEventDate(@Body GetMonthEventDateRequest getMonthEventDateRequest);
 
+    @POST("search-event.php?api_key=1234&action=get_all_shift_vol")
+    Call<GetShiftListResponse> getSearchShiftList(@Body GetSearchShiftListRequest getShiftListRequest);
 
 }

@@ -65,6 +65,7 @@
                     android:divider="@color/background_3"
                     android:dividerHeight="0.7dp"
                     android:nestedScrollingEnabled="true"
+                    android:overScrollMode="never"
                     android:scrollbars="none"
                     tools:ignore="UnusedAttribute">
 

@@ -85,7 +85,7 @@ public class Utility {
     }
 
     public static String getCurrentTime() {
-        return new SimpleDateFormat("yyyy-MM-dd HH:mm:ss", Locale.ENGLISH).format(Calendar.getInstance().getTime());
+        return new SimpleDateFormat("MM-dd-yyyy HH:mm:ss", Locale.ENGLISH).format(Calendar.getInstance().getTime());
     }
 
 
@@ -103,7 +103,7 @@ public class Utility {
 
 
     public static Date convertStringToDate(String dateStr) {
-        DateFormat format = new SimpleDateFormat("yyyy-MM-dd HH:mm:ss", Locale.ENGLISH);
+        DateFormat format = new SimpleDateFormat("MM-dd-yyyy HH:mm:ss", Locale.ENGLISH);
         format.setTimeZone(TimeZone.getTimeZone("Asia/Kolkata"));
         Date date = null;
         try {
@@ -128,7 +128,7 @@ public class Utility {
 
     public static String formatDateFullTime(Date date) {
 
-        String format = "dd-MM-yyyy HH:mm:ss";
+        String format = "MM-dd-yyyy HH:mm:ss";
         SimpleDateFormat simpleDateFormat = new SimpleDateFormat(format);
         simpleDateFormat.setTimeZone(TimeZone.getTimeZone("Asia/Kolkata"));
         String formattedNow = simpleDateFormat.format(date);

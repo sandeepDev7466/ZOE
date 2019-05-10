@@ -69,10 +69,10 @@
         android:gravity="center">
 
         <ImageView
-            android:id="@+id/event"
+            android:id="@+id/imv_status"
             android:layout_width="@dimen/_20sdp"
             android:layout_height="@dimen/_20sdp"
-            app:srcCompat="@drawable/ic_calendar" />
+          />
 
     </LinearLayout>
 

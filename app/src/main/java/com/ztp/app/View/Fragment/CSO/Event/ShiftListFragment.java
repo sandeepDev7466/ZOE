@@ -10,6 +10,8 @@ import android.view.ViewGroup;
 import android.widget.ListView;
 import android.widget.Toast;
 
+import com.ztp.app.Data.Local.SharedPrefrence.SharedPref;
+import com.ztp.app.Data.Remote.Model.Request.GetSearchShiftListRequest;
 import com.ztp.app.Data.Remote.Model.Request.GetShiftListRequest;
 import com.ztp.app.Data.Remote.Model.Response.GetEventsResponse;
 import com.ztp.app.Helper.MyProgressDialog;
@@ -34,13 +36,14 @@ public class ShiftListFragment extends Fragment {
     MyProgressDialog myProgressDialog;
     MyToast myToast;
     MyTextView noData;
-
+SharedPref sharedPref;
 
     @Override
     public View onCreateView(LayoutInflater inflater, ViewGroup container,
                              Bundle savedInstanceState) {
 
         View v = inflater.inflate(R.layout.fragment_shift_list, container, false);
+        sharedPref = SharedPref.getInstance(context);
         getShiftListViewModel = ViewModelProviders.of(this).get(GetShiftListViewModel.class);
         myProgressDialog = new MyProgressDialog(context);
         myToast = new MyToast(context);
@@ -58,12 +61,12 @@ public class ShiftListFragment extends Fragment {
         myProgressDialog.show(getString(R.string.please_wait));
         lv_shift_list = v.findViewById(R.id.lv_shift_list);
         if(Utility.isNetworkAvailable(context)) {
-            getShiftListViewModel.getShiftResponseLiveData(new GetShiftListRequest(event_id)).observe(this, getShiftListResponse -> {
+            getShiftListViewModel.getSearchShiftResponseLiveData(new GetSearchShiftListRequest(event_id, sharedPref.getUserId())).observe(this, getShiftListResponse -> {
                 if (getShiftListResponse != null && getShiftListResponse.getShiftData() != null) {
 
                     noData.setVisibility(View.INVISIBLE);
                     lv_shift_list.setVisibility(View.VISIBLE);
-                    ShiftListAdapter adapter = new ShiftListAdapter(context, getShiftListResponse.getShiftData());
+                    ShiftListAdapter adapter = new ShiftListAdapter(context, getShiftListResponse.getShiftData(),event_id);
                     lv_shift_list.setAdapter(adapter);
                 } else {
                     noData.setVisibility(View.VISIBLE);

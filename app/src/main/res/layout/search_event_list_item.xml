@@ -72,7 +72,8 @@
         <ImageView
             android:layout_width="@dimen/_20sdp"
             android:layout_height="@dimen/_20sdp"
-            app:srcCompat="@drawable/ic_calendar" />
+            app:srcCompat="@drawable/ic_calendar"
+            android:id="@+id/imv_view"/>
 
     </LinearLayout>
 

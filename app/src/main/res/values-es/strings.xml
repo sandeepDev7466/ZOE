@@ -267,8 +267,8 @@
     <string name="my_friends">MIS AMIGOS</string>
     <string name="potential_friends">AMIGOS POTENCIALES</string>
     <string name="no_events_found">No se encontraron eventos</string>
-    <string name="event">EVENTO</string>
-    <string name="shift">CAMBIO</string>
+    <string name="event">Evento</string>
+    <string name="shift">Cambio</string>
     <string name="gpa">GPA</string>
     <string name="hrs">HORAS</string>
     <string name="search_events_by_city_state_zip_email_amp_location">Buscar eventos por ciudad, estado, código postal, correo electrónico y ubicación.</string>

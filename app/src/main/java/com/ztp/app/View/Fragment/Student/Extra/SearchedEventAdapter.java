@@ -1,5 +1,7 @@
 package com.ztp.app.View.Fragment.Student.Extra;
 
+import android.app.Dialog;
+import android.arch.lifecycle.LifecycleOwner;
 import android.content.Context;
 import android.os.Bundle;
 import android.text.format.DateFormat;
@@ -7,11 +9,20 @@ import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
 import android.widget.BaseAdapter;
+import android.widget.ImageView;
+import android.widget.LinearLayout;
+import android.widget.Toast;
+
+import com.ztp.app.Data.Remote.Model.Request.DeleteEventRequest;
 import com.ztp.app.Data.Remote.Model.Response.SearchEventResponse;
 import com.ztp.app.Helper.MyBoldTextView;
 import com.ztp.app.Helper.MyTextView;
+import com.ztp.app.Helper.MyToast;
 import com.ztp.app.R;
 import com.ztp.app.Utils.Utility;
+import com.ztp.app.View.Fragment.CSO.Event.AddNewShiftFragment;
+import com.ztp.app.View.Fragment.CSO.Event.ShiftListFragment;
+import com.ztp.app.View.Fragment.CSO.Event.TabNewEventFragment;
 import com.ztp.app.View.Fragment.Common.EventDetailFragment;
 
 import java.util.Date;
@@ -52,6 +63,7 @@ public class SearchedEventAdapter extends BaseAdapter {
             holder.date = view.findViewById(R.id.date);
             holder.month = view.findViewById(R.id.month);
             holder.day = view.findViewById(R.id.day);
+            holder.imv_view = view.findViewById(R.id.imv_view);
             view.setTag(holder);
 
         } else {
@@ -71,17 +83,35 @@ public class SearchedEventAdapter extends BaseAdapter {
         holder.month.setText(monthString);
         holder.day.setText(dayOfTheWeek);
 
-        view.setOnClickListener(v -> {
 
-            //SearchEventResponse.SearchedEvent searchEvent = (SearchEventResponse.SearchedEvent) v.getTag();
+        holder.imv_view.setOnClickListener(v -> {
 
-            // SearchEventDetailFragment
-            EventDetailFragment eventDetailFragment = new EventDetailFragment();
-            Bundle b = new Bundle();
-            b.putString("event_id",searchedEvent.getEventId());
-            eventDetailFragment.setArguments(b);
 
-            Utility.replaceFragment(context, eventDetailFragment, "EventDetailFragment");
+            Dialog dialog = new Dialog(context);
+            View view1 = LayoutInflater.from(context).inflate(R.layout.event_action_layout_view_only, null);
+            dialog.setContentView(view1);
+            dialog.show();
+
+
+            LinearLayout view_shift = view1.findViewById(R.id.view_shift);
+            LinearLayout view_event = view1.findViewById(R.id.view_event);
+
+            view_shift.setOnClickListener(vs -> {
+                dialog.dismiss();
+                ShiftListFragment shiftListFragment = new ShiftListFragment();
+                Bundle bundle = new Bundle();
+                bundle.putString("event_id", searchedEvent.getEventId());
+                shiftListFragment.setArguments(bundle);
+                Utility.replaceFragment(context, shiftListFragment, "ShiftListFragment");
+            });
+            view_event.setOnClickListener(vs -> {
+                dialog.dismiss();
+                EventDetailFragment eventFragment = new EventDetailFragment();
+                Bundle bundle = new Bundle();
+                bundle.putString("event_id", searchedEvent.getEventId());
+                eventFragment.setArguments(bundle);
+                Utility.replaceFragment(context, eventFragment, "EventDetailFragment");
+            });
         });
 
         return view;
@@ -90,5 +120,6 @@ public class SearchedEventAdapter extends BaseAdapter {
     private class Holder {
         MyBoldTextView title,date,month,day;
         MyTextView description;
+        ImageView imv_view;
     }
 }

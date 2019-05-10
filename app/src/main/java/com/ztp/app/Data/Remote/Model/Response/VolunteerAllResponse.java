@@ -130,6 +130,7 @@ public class VolunteerAllResponse {
         public ResData() {
         }
 
+
         public ResData(String mapId, String userId, String eventId, String csoId, String shiftId, String attendPresent, String attendInTime, String attendOutTime, String attendHours, String attendCsoGrade, String attendGradeDate, String attendCsoRemarks, String attendRemarksDate, String attendRate, String attendRateRemarks, String attendRateDate, String mapStatus, String mapAddDate, String mapUpdateDate, String eventHeading, String shiftDate, String shiftStartTime, String shiftEndTime, String shiftRank, String shiftTask) {
             super();
             this.mapId = mapId;

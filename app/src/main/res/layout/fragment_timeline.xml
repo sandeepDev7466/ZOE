@@ -27,6 +27,7 @@
         android:layout_height="match_parent"
         android:scrollbars="none"
         android:dividerHeight="0.4dp"
+        android:overScrollMode="never"
         android:divider="@color/background_3"
         android:layout_marginStart="@dimen/_20sdp"
         android:layout_marginEnd="@dimen/_20sdp"/>

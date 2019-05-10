@@ -16,6 +16,7 @@ import com.ztp.app.Helper.MyBoldTextView;
 import com.ztp.app.Helper.MyTextView;
 import com.ztp.app.Helper.MyToast;
 import com.ztp.app.R;
+import com.ztp.app.Utils.Constants;
 import com.ztp.app.Utils.Utility;
 
 import java.util.Date;
@@ -59,38 +60,55 @@ class MyBookingAdapter extends BaseAdapter {
             holder.description = view.findViewById(R.id.description);
             holder.time = view.findViewById(R.id.time);
             holder.month = view.findViewById(R.id.month);
-            holder.event = view.findViewById(R.id.event);
+            holder.imv_status = view.findViewById(R.id.imv_status);
             view.setTag(holder);
 
         } else {
             holder = (Holder) view.getTag();
         }
-
+        if (data.getMapStatus().equalsIgnoreCase(Constants.NewRequestVol)) {
+            holder.imv_status.setImageResource(R.drawable.vol_request);
+        }
+        else if (data.getMapStatus().equalsIgnoreCase(Constants.AcceptedByCSO)) {
+            holder.imv_status.setImageResource(R.drawable.vol_pending);
+        }else if (data.getMapStatus().equalsIgnoreCase(Constants.DeclinedByCSO)) {
+            holder.imv_status.setImageResource(R.drawable.vol_pending);
+        }else if (data.getMapStatus().equalsIgnoreCase(Constants.CompletedByVol)) {
+            holder.imv_status.setImageResource(R.drawable.vol_pending);
+        }else if (data.getMapStatus().equalsIgnoreCase(Constants.MoreInfoByCSO)) {
+            holder.imv_status.setImageResource(R.drawable.vol_pending);
+        }else if (data.getMapStatus().equalsIgnoreCase(Constants.RejectedCompleteByCSO)) {
+            holder.imv_status.setImageResource(R.drawable.vol_pending);
+        }else if (data.getMapStatus().equalsIgnoreCase(Constants.CompletedVerifiedByCSO)) {
+            holder.imv_status.setImageResource(R.drawable.vol_pending);
+        }else if (data.getMapStatus().equalsIgnoreCase(Constants.WithdrawnVol)) {
+            holder.imv_status.setImageResource(R.drawable.vol_pending);
+        }
         holder.title.setText(data.getEventHeading());
         holder.description.setText(data.getShiftTask());
-        holder.time.setText(data.getShiftStartTime()+" - "+data.getShiftEndTime());
+        holder.time.setText(data.getShiftStartTime() + " - " + data.getShiftEndTime());
 
 
         Date date = Utility.convertStringToDateWithoutTime(data.getShiftDate());
 
         String dayOfTheWeek = (String) DateFormat.format("EE", date); // Thursday
-        String day          = (String) DateFormat.format("dd",   date); // 20
-        String monthString  = (String) DateFormat.format("MMM",  date); // Jun
-        String monthNumber  = (String) DateFormat.format("MM",   date); // 06
-        String year         = (String) DateFormat.format("yyyy", date); // 2013
+        String day = (String) DateFormat.format("dd", date); // 20
+        String monthString = (String) DateFormat.format("MMM", date); // Jun
+        String monthNumber = (String) DateFormat.format("MM", date); // 06
+        String year = (String) DateFormat.format("yyyy", date); // 2013
 
         holder.month.setText(monthString.toUpperCase());
         holder.day.setText(day);
 
-        view.setOnClickListener(v -> openDialog("Delete booking for",data.getEventHeading(),data.getShiftStartTime()+" - "+data.getShiftEndTime()));
+        holder.imv_status.setOnClickListener(v -> openDialog("Delete booking for", data.getEventHeading(), data.getShiftStartTime() + " - " + data.getShiftEndTime()));
 
         return view;
     }
 
-    private void openDialog(String title_str,String message_str,String time_str) {
+    private void openDialog(String title_str, String message_str, String time_str) {
 
         Dialog dialog = new Dialog(context);
-        View view = LayoutInflater.from(context).inflate(R.layout.custom_yes_no_dialog,null);
+        View view = LayoutInflater.from(context).inflate(R.layout.custom_yes_no_dialog, null);
         dialog.setContentView(view);
         dialog.setCancelable(false);
 
@@ -107,7 +125,7 @@ class MyBookingAdapter extends BaseAdapter {
 
         yes.setOnClickListener(v -> {
             dialog.dismiss();
-            myToast.show("Booking deleted successfully", Toast.LENGTH_SHORT,true);
+            myToast.show("Booking deleted successfully", Toast.LENGTH_SHORT, true);
         });
 
         no.setOnClickListener(v -> {
@@ -119,8 +137,8 @@ class MyBookingAdapter extends BaseAdapter {
     }
 
     private class Holder {
-        MyTextView day, time,description;
-        MyBoldTextView month ,title;
-        ImageView event;
+        MyTextView day, time, description;
+        MyBoldTextView month, title;
+        ImageView imv_status;
     }
 }

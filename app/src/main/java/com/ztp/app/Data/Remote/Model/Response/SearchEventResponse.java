@@ -120,11 +120,14 @@ public class SearchEventResponse {
         @SerializedName("event_status")
         @Expose
         private String eventStatus;
+        @SerializedName("volunteer_apply")
+        @Expose
+        private String volunteer_apply;
 
         public SearchedEvent() {
         }
 
-        public SearchedEvent(String eventId, String userId, String eventTypeId, String eventHeading, String eventDetails, String eventAddress, String eventCountry, String eventCountryName, String eventState, String eventStateName, String eventCity, String eventPostcode, String eventTimezone, String eventLatitude, String eventLongitude, String eventEmail, String eventPhone, String eventImage, String eventRegisterStartDate, String eventRegisterEndDate, String eventAddDate, String eventUpdateDate, String eventStatus) {
+        public SearchedEvent(String eventId, String userId, String eventTypeId, String eventHeading, String eventDetails, String eventAddress, String eventCountry, String eventCountryName, String eventState, String eventStateName, String eventCity, String eventPostcode, String eventTimezone, String eventLatitude, String eventLongitude, String eventEmail, String eventPhone, String eventImage, String eventRegisterStartDate, String eventRegisterEndDate, String eventAddDate, String eventUpdateDate, String eventStatus, String volunteer_apply) {
             super();
             this.eventId = eventId;
             this.userId = userId;
@@ -149,6 +152,7 @@ public class SearchEventResponse {
             this.eventAddDate = eventAddDate;
             this.eventUpdateDate = eventUpdateDate;
             this.eventStatus = eventStatus;
+            this.volunteer_apply = volunteer_apply;
         }
 
         public String getEventId() {
@@ -335,5 +339,12 @@ public class SearchEventResponse {
             this.eventStatus = eventStatus;
         }
 
+        public String getVolunteer_apply() {
+            return volunteer_apply;
+        }
+
+        public void setVolunteer_apply(String volunteer_apply) {
+            this.volunteer_apply = volunteer_apply;
+        }
     }
 }

@@ -36,7 +36,8 @@
         android:dividerHeight="0.4dp"
         android:divider="@color/background_3"
         android:layout_marginStart="@dimen/_20sdp"
-        android:layout_marginEnd="@dimen/_20sdp"/>
+        android:layout_marginEnd="@dimen/_20sdp"
+        android:overScrollMode="never"/>
 
 
 </LinearLayout>

@@ -22,6 +22,7 @@
                     android:layout_width="match_parent"
                     android:layout_height="@dimen/_30sdp"
                     android:text="@string/event"
+                    android:textAllCaps="true"
                     android:layout_gravity="center"
                     android:textSize="@dimen/_15ssp"
                     android:background="@color/blue_light"
@@ -39,7 +40,7 @@
                         android:id="@+id/edit_event"
                         android:layout_width="0dp"
                         android:layout_height="match_parent"
-                        android:layout_weight=".5"
+                        android:layout_weight=".33"
                         android:orientation="horizontal"
                         android:gravity="center">
 
@@ -55,7 +56,8 @@
                             android:layout_height="wrap_content"
                             android:layout_gravity="center"
                             android:layout_marginLeft="@dimen/_10sdp"
-                            android:text="@string/edit" />
+                            android:text="@string/edit"
+                            android:textColor="@color/black" />
 
 
                     </LinearLayout>
@@ -69,13 +71,13 @@
                         android:id="@+id/delete_event"
                         android:layout_width="0dp"
                         android:layout_height="match_parent"
-                        android:layout_weight=".5"
+                        android:layout_weight=".33"
                         android:gravity="center">
 
                         <ImageView
                             android:layout_width="@dimen/_15sdp"
                             android:layout_height="@dimen/_15sdp"
-                            android:src="@drawable/ic_logout"
+                            android:src="@drawable/ic_bin"
                             android:layout_gravity="center"
                             />
 
@@ -84,6 +86,7 @@
                             android:layout_width="wrap_content"
                             android:layout_height="wrap_content"
                             android:text="@string/delete"
+                            android:textColor="@color/black"
                             android:layout_marginLeft="@dimen/_10sdp"
                             android:layout_gravity="center"
                             />
@@ -91,13 +94,45 @@
 
 
                     </LinearLayout>
+                    <View
+                        android:layout_width="0.5dp"
+                        android:layout_height="match_parent"
+                        android:background="@color/background_3"/>
 
+                    <LinearLayout
+                        android:id="@+id/view_event"
+                        android:layout_width="0dp"
+                        android:layout_height="match_parent"
+                        android:layout_weight=".33"
+                        android:gravity="center">
+
+                        <ImageView
+                            android:layout_width="@dimen/_15sdp"
+                            android:layout_height="@dimen/_15sdp"
+                            android:src="@drawable/ic_view"
+                            android:layout_gravity="center"
+                            />
+
+
+                        <com.ztp.app.Helper.MyTextView
+                            android:layout_width="wrap_content"
+                            android:layout_height="wrap_content"
+                            android:text="@string/view_shift"
+                            android:textColor="@color/black"
+                            android:layout_marginLeft="@dimen/_10sdp"
+                            android:layout_gravity="center"
+                            />
+
+
+
+                    </LinearLayout>
                 </LinearLayout>
 
                 <com.ztp.app.Helper.MyHeadingTextView
                     android:layout_width="match_parent"
                     android:layout_height="@dimen/_30sdp"
                     android:text="@string/shift"
+                    android:textAllCaps="true"
                     android:layout_gravity="center"
                     android:textSize="@dimen/_15ssp"
                     android:background="@color/blue_light"
@@ -129,6 +164,7 @@
                             android:layout_width="wrap_content"
                             android:layout_height="wrap_content"
                             android:text="@string/add_shift"
+                            android:textColor="@color/black"
                             android:layout_marginLeft="@dimen/_10sdp"
                             />
 
@@ -152,7 +188,7 @@
                         <ImageView
                             android:layout_width="@dimen/_15sdp"
                             android:layout_height="@dimen/_15sdp"
-                            android:src="@drawable/ic_list"
+                            android:src="@drawable/ic_view"
                             />
 
 
@@ -160,6 +196,7 @@
                             android:layout_width="wrap_content"
                             android:layout_height="wrap_content"
                             android:text="@string/view_shift"
+                            android:textColor="@color/black"
                             android:layout_marginStart="@dimen/_10sdp"
                             />
 

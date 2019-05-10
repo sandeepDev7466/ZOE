@@ -108,15 +108,12 @@ public class EventDetailFragment extends Fragment implements View.OnClickListene
     }
 
     private void setData() {
-       // Picasso.with(context).load(resData.getEventImage()).error(R.drawable.cso_events).into(imv_event_detail);
-
-       /* Glide.with(context)
+//        Picasso.with(context).load(resData.getEventImage()).error(R.drawable.cso_events).into(imv_event_detail);
+        Glide
+                .with(context)
                 .load(resData.getEventImage())
-                .centerCrop()
-                .placeholder(R.drawable.loader)
-                .error(R.drawable.cso_events)
+
                 .into(imv_event_detail);
-*/
         tv_heading.setText(resData.getEventHeading());
         tv_enddate.setText(resData.getEventRegisterEndDate());
         tv_startdate.setText(resData.getEventRegisterStartDate());

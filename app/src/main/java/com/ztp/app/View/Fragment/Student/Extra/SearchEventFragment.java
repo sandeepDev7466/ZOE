@@ -117,6 +117,7 @@ public class SearchEventFragment extends Fragment implements AbsListView.OnScrol
                 } else
                     myToast.show(getString(R.string.no_internet_connection), Toast.LENGTH_LONG, false);
             }
+
         }
     }
 
@@ -155,9 +156,11 @@ public class SearchEventFragment extends Fragment implements AbsListView.OnScrol
                             hit = false;
                         }
                     } else {
-                        lv_events.setVisibility(View.GONE);
-                        search.setVisibility(View.VISIBLE);
-                        search.setText(R.string.no_events_found);
+                        if(!type) {
+                            lv_events.setVisibility(View.GONE);
+                            search.setVisibility(View.VISIBLE);
+                            search.setText(R.string.no_events_found);
+                        }
                     }
                 } else {
                     myToast.show(getString(R.string.err_server), Toast.LENGTH_LONG, false);

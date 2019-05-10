@@ -21,7 +21,8 @@
         android:layout_marginStart="@dimen/_20sdp"
         android:layout_marginEnd="@dimen/_20sdp"
         android:scrollbars="none"
-        android:visibility="invisible"/>
+        android:visibility="invisible"
+        android:overScrollMode="never"/>
 
     <com.ztp.app.Helper.MyTextView
         android:id="@+id/noData"
