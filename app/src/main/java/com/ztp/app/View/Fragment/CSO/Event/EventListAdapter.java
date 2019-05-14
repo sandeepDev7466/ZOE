@@ -17,7 +17,10 @@ import android.widget.ImageView;
 import android.widget.LinearLayout;
 import android.widget.Toast;
 
+import com.ztp.app.Data.Local.SharedPrefrence.SharedPref;
+import com.ztp.app.Data.Remote.Model.Request.ChangeStatusByCSORequest;
 import com.ztp.app.Data.Remote.Model.Request.DeleteEventRequest;
+import com.ztp.app.Data.Remote.Model.Request.PublishRequest;
 import com.ztp.app.Data.Remote.Model.Response.GetEventsResponse;
 import com.ztp.app.Helper.MyBoldTextView;
 import com.ztp.app.Helper.MyProgressDialog;
@@ -25,7 +28,9 @@ import com.ztp.app.Helper.MyTextView;
 import com.ztp.app.Helper.MyToast;
 import com.ztp.app.R;
 import com.ztp.app.Utils.Utility;
+import com.ztp.app.Viewmodel.ChangeVolunteerStatusViewModel;
 import com.ztp.app.Viewmodel.EventDeleteViewModel;
+import com.ztp.app.Viewmodel.PublishViewModel;
 
 import java.text.SimpleDateFormat;
 import java.util.Calendar;
@@ -39,12 +44,17 @@ public class EventListAdapter extends BaseAdapter {
     String[] month = {"JAN", "FEB", "MAR", "APR", "MAY", "JUN", "JUL", "AUG", "SEP", "OCT", "NOV", "DEC"};
     private MyProgressDialog myProgressDialog;
     private EventDeleteViewModel eventDeleteViewModel;
+    MyToast myToast;
+    SharedPref sharedPref;
+    PublishViewModel publishViewModel;
 
     public EventListAdapter(Context context, List<GetEventsResponse.EventData> eventDataList) {
         this.context = context;
         this.eventDataList = eventDataList;
         myProgressDialog = new MyProgressDialog(context);
         eventDeleteViewModel = ViewModelProviders.of((FragmentActivity) context).get(EventDeleteViewModel.class);
+        publishViewModel = ViewModelProviders.of((FragmentActivity) context).get(PublishViewModel.class);
+        sharedPref = SharedPref.getInstance(context);
     }
 
     @Override
@@ -76,6 +86,7 @@ public class EventListAdapter extends BaseAdapter {
                 holder.month = view.findViewById(R.id.month);
                 holder.day = view.findViewById(R.id.day);
                 holder.schedule = view.findViewById(R.id.schedule);
+                holder.imv_publish = view.findViewById(R.id.imv_publish);
 
                 view.setTag(holder);
             } else {
@@ -89,10 +100,10 @@ public class EventListAdapter extends BaseAdapter {
             Date date = Utility.convertStringToDate(eventData.getEventAddDate());
 
             String dayOfTheWeek = (String) DateFormat.format("EE", date); // Thursday
-            String day          = (String) DateFormat.format("dd",   date); // 20
-            String monthString  = (String) DateFormat.format("MMM",  date); // Jun
-            String monthNumber  = (String) DateFormat.format("MM",   date); // 06
-            String year         = (String) DateFormat.format("yyyy", date); // 2013
+            String day = (String) DateFormat.format("dd", date); // 20
+            String monthString = (String) DateFormat.format("MMM", date); // Jun
+            String monthNumber = (String) DateFormat.format("MM", date); // 06
+            String year = (String) DateFormat.format("yyyy", date); // 2013
 
             holder.date.setText(day);
             holder.month.setText(monthString);
@@ -112,8 +123,6 @@ public class EventListAdapter extends BaseAdapter {
             holder.month.setText(month[cal.get(Calendar.MONTH)]);
             //holder.day.setText(String.valueOf(cal.get(Calendar.DAY_OF_MONTH)));
             holder.time.setText(String.valueOf(cal.get(Calendar.HOUR) + ":" + cal.get(Calendar.MINUTE)));*/
-
-
 
 
             holder.schedule.setOnClickListener(v -> {
@@ -157,60 +166,36 @@ public class EventListAdapter extends BaseAdapter {
                 delete_event.setOnClickListener(vs -> {
                     dialog.dismiss();
 
-                    Dialog dia = new Dialog(context);
-                    View v1 = LayoutInflater.from(context).inflate(R.layout.delete_dialog, null);
-                    dia.setContentView(v1);
-                    dia.setCancelable(false);
+                    DeleteEventRequest deleteEventRequest = new DeleteEventRequest();
+                    deleteEventRequest.setEvent_id(eventData.getEventId());
 
-                    LinearLayout yes = v1.findViewById(R.id.yes);
-                    LinearLayout no = v1.findViewById(R.id.no);
+                    if (Utility.isNetworkAvailable(context)) {
+                        myProgressDialog.show(context.getString(R.string.please_wait));
+                        eventDeleteViewModel.getDeleteEventResponse(deleteEventRequest).observe((LifecycleOwner) context, deleteEventResponse -> {
 
-                    yes.setOnClickListener(view2 -> {
-                        dia.dismiss();
+                            if (deleteEventResponse != null) {
+                                if (deleteEventResponse.getResStatus().equalsIgnoreCase("200")) {
 
-                        DeleteEventRequest deleteEventRequest = new DeleteEventRequest();
-                        deleteEventRequest.setEvent_id(eventData.getEventId());
+                                    new MyToast(context).show(context.getString(R.string.event_deleted_successfully), Toast.LENGTH_SHORT, true);
 
-                        if(Utility.isNetworkAvailable(context)) {
-                            myProgressDialog.show(context.getString(R.string.please_wait));
-                            eventDeleteViewModel.getDeleteEventResponse(deleteEventRequest).observe((LifecycleOwner) context, deleteEventResponse -> {
+                                    eventDataList.remove(eventData);
 
-                                if(deleteEventResponse != null) {
-                                    if (deleteEventResponse.getResStatus().equalsIgnoreCase("200")) {
+                                    notifyDataSetChanged();
 
-                                        new MyToast(context).show(context.getString(R.string.event_deleted_successfully), Toast.LENGTH_SHORT, true);
+                                } else {
 
-                                        eventDataList.remove(eventData);
+                                    new MyToast(context).show(context.getString(R.string.failed), Toast.LENGTH_SHORT, false);
 
-                                        notifyDataSetChanged();
-
-                                    } else {
-
-                                        new MyToast(context).show(context.getString(R.string.failed), Toast.LENGTH_SHORT, false);
-
-                                    }
                                 }
-                                else
-                                {
-                                    new MyToast(context).show(context.getString(R.string.err_server), Toast.LENGTH_SHORT, false);
-                                }
+                            } else {
+                                new MyToast(context).show(context.getString(R.string.err_server), Toast.LENGTH_SHORT, false);
+                            }
 
-                                myProgressDialog.dismiss();
-                            });
-                        }
-                        else
-                        {
-                            new MyToast(context).show(context.getString(R.string.no_internet_connection), Toast.LENGTH_SHORT, false);
-                        }
-
-                    });
-
-                    no.setOnClickListener(view2 -> {
-                        dia.dismiss();
-                    });
-
-                    dia.show();
-
+                            myProgressDialog.dismiss();
+                        });
+                    } else {
+                        new MyToast(context).show(context.getString(R.string.no_internet_connection), Toast.LENGTH_SHORT, false);
+                    }
                 });
 
                 add_shift.setOnClickListener(vs -> {
@@ -232,7 +217,15 @@ public class EventListAdapter extends BaseAdapter {
                     Utility.replaceFragment(context, shiftListFragment, "ShiftListFragment");
                 });
             });
-
+            holder.imv_publish.setOnClickListener(new View.OnClickListener() {
+                @Override
+                public void onClick(View v) {
+                    if (eventData.getEventStatus().equalsIgnoreCase("10"))
+                        publish(eventData.getEventId(), "u");
+                    else if (eventData.getEventStatus().equalsIgnoreCase("20"))
+                        publish(eventData.getEventId(), "p");
+                }
+            });
 
         } catch (Exception e) {
             e.printStackTrace();
@@ -242,8 +235,37 @@ public class EventListAdapter extends BaseAdapter {
     }
 
     private class Holder {
-        MyBoldTextView title,date,month,day;
-        ImageView schedule;
+        MyBoldTextView title, date, month, day;
+        ImageView schedule, imv_publish;
         MyTextView description;
+    }
+
+    public void publish(String event_id, String status) {
+        PublishRequest publishRequest = new PublishRequest();
+        publishRequest.setUser_id(sharedPref.getUserId());
+        publishRequest.setUser_type(sharedPref.getUserType());
+        publishRequest.setUser_device(Utility.getDeviceId(context));
+        publishRequest.setAction_type(status);
+        publishRequest.setEvent_id(event_id);
+
+        if (Utility.isNetworkAvailable(context)) {
+            myProgressDialog.show(context.getString(R.string.please_wait));
+            publishViewModel.getResponse(publishRequest).observe((FragmentActivity) context, publishResponse -> {
+                if (publishResponse != null) {
+                    if (publishResponse.getResStatus().equalsIgnoreCase("200")) {
+                        if (status.equalsIgnoreCase("p"))
+                            new MyToast(context).show(context.getString(R.string.toast_volunteer_failed), Toast.LENGTH_SHORT, false);
+                        else
+                            new MyToast(context).show(context.getString(R.string.toast_volunteer_failed), Toast.LENGTH_SHORT, false);
+
+                    }
+                } else {
+                    new MyToast(context).show(context.getString(R.string.err_server), Toast.LENGTH_SHORT, false);
+                }
+                myProgressDialog.dismiss();
+            });
+        } else {
+            new MyToast(context).show(context.getString(R.string.no_internet_connection), Toast.LENGTH_SHORT, false);
+        }
     }
 }

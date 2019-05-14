@@ -74,6 +74,12 @@
             android:layout_width="@dimen/_20sdp"
             android:layout_height="@dimen/_20sdp"
             app:srcCompat="@drawable/ic_calendar" />
+        <ImageView
+            android:id="@+id/imv_publish"
+            android:layout_marginLeft="@dimen/_10sdp"
+            android:layout_width="@dimen/_20sdp"
+            android:layout_height="@dimen/_20sdp"
+            app:srcCompat="@drawable/publish" />
 
     </LinearLayout>
 

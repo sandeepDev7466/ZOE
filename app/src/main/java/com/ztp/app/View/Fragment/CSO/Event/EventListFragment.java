@@ -1,8 +1,6 @@
 package com.ztp.app.View.Fragment.CSO.Event;
 
-import android.annotation.SuppressLint;
 import android.content.Context;
-import android.net.Uri;
 import android.os.Bundle;
 import android.support.design.widget.TabLayout;
 import android.support.v4.app.Fragment;
@@ -15,8 +13,6 @@ import android.widget.ImageView;
 import com.ztp.app.Data.Local.SharedPrefrence.SharedPref;
 import com.ztp.app.Helper.MyHeadingTextView;
 import com.ztp.app.R;
-import com.ztp.app.View.Fragment.Student.Booking.TabFindCsoFragment;
-import com.ztp.app.View.Fragment.Student.Booking.TabMyBookingFragment;
 
 public class EventListFragment extends Fragment {
 
@@ -53,13 +49,10 @@ public class EventListFragment extends Fragment {
                     View v = tab.getCustomView();
                     ImageView image = v.findViewById(R.id.image);
                     MyHeadingTextView text = v.findViewById(R.id.text);
-                    if(theme)
-                    {
+                    if (theme) {
                         text.setTextColor(getResources().getColor(R.color.black));
                         image.setColorFilter(getResources().getColor(R.color.black));
-                    }
-                    else
-                    {
+                    } else {
                         text.setTextColor(getResources().getColor(R.color.white));
                         image.setColorFilter(getResources().getColor(R.color.white));
                     }
@@ -76,13 +69,10 @@ public class EventListFragment extends Fragment {
                     ImageView image = v.findViewById(R.id.image);
                     MyHeadingTextView text = v.findViewById(R.id.text);
 
-                    if(theme)
-                    {
+                    if (theme) {
                         text.setTextColor(getResources().getColor(R.color.background_3));
                         image.setColorFilter(getResources().getColor(R.color.background_3));
-                    }
-                    else
-                    {
+                    } else {
                         text.setTextColor(getResources().getColor(R.color.tab_unselected));
                         image.setColorFilter(getResources().getColor(R.color.tab_unselected));
                     }
@@ -119,6 +109,11 @@ public class EventListFragment extends Fragment {
         return view;
     }
 
+    public ViewPager getViewPager()
+    {
+        return  viewPager;
+    }
+
     private void setViewPager() {
 
         EventPager eventPager = new EventPager(getChildFragmentManager());
@@ -127,8 +122,9 @@ public class EventListFragment extends Fragment {
 
         TabNewEventFragment tabNewEventFragment = new TabNewEventFragment();
         Bundle bundle = new Bundle();
-        bundle.putString("action","add");
+        bundle.putString("action", "add");
         tabNewEventFragment.setArguments(bundle);
+
         eventPager.addFragment(tabNewEventFragment);
 
         viewPager.setAdapter(eventPager);
@@ -151,13 +147,10 @@ public class EventListFragment extends Fragment {
         if (position == 0) {
             text.setText(R.string.tab_myevent);
             image.setImageResource(R.drawable.ic_calendar);
-            if(theme)
-            {
+            if (theme) {
                 text.setTextColor(getResources().getColor(R.color.black));
                 image.setColorFilter(getResources().getColor(R.color.black));
-            }
-            else
-            {
+            } else {
                 text.setTextColor(getResources().getColor(R.color.white));
                 image.setColorFilter(getResources().getColor(R.color.white));
             }
@@ -165,13 +158,10 @@ public class EventListFragment extends Fragment {
             text.setText(R.string.tab_newevent);
             image.setImageResource(R.drawable.ic_add);
 
-            if(theme)
-            {
+            if (theme) {
                 text.setTextColor(getResources().getColor(R.color.background_3));
                 image.setColorFilter(getResources().getColor(R.color.background_3));
-            }
-            else
-            {
+            } else {
                 text.setTextColor(getResources().getColor(R.color.tab_unselected));
                 image.setColorFilter(getResources().getColor(R.color.tab_unselected));
             }

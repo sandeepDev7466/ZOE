@@ -11,7 +11,7 @@
         android:id="@+id/tv_heading"
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
-        android:layout_marginTop="@dimen/_25sdp"
+        android:layout_marginTop="@dimen/_15sdp"
         android:textColor="@color/tab_booking"
         android:textSize="@dimen/_15ssp"
         android:gravity="center"/>
@@ -21,12 +21,56 @@
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
         android:textSize="@dimen/_10ssp"
-        android:layout_marginTop="@dimen/_20sdp"/>
-
+        android:layout_marginTop="@dimen/_5sdp"
+        android:gravity="center"/>
     <LinearLayout
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
-        android:layout_marginTop="@dimen/_15sdp"
+        android:layout_marginTop="@dimen/_5sdp"
+        android:orientation="horizontal"
+        android:weightSum="2">
+
+        <com.ztp.app.Helper.MyTextView
+            android:layout_width="0dp"
+            android:layout_height="match_parent"
+            android:layout_weight="1"
+            android:text="@string/event_name"
+            android:textColor="@color/tab_booking"
+            android:textSize="@dimen/_13ssp" />
+
+        <com.ztp.app.Helper.MyTextView
+            android:id="@+id/tv_event_name"
+            android:layout_width="0dp"
+            android:layout_height="match_parent"
+            android:layout_weight="1"
+            android:textSize="@dimen/_13ssp" />
+    </LinearLayout>
+    <LinearLayout
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:layout_marginTop="@dimen/_5sdp"
+        android:orientation="horizontal"
+        android:weightSum="2">
+
+        <com.ztp.app.Helper.MyTextView
+            android:layout_width="0dp"
+            android:layout_height="match_parent"
+            android:layout_weight="1"
+            android:text="@string/shift_task"
+            android:textColor="@color/tab_booking"
+            android:textSize="@dimen/_13ssp" />
+
+        <com.ztp.app.Helper.MyTextView
+            android:id="@+id/tv_shift_task"
+            android:layout_width="0dp"
+            android:layout_height="match_parent"
+            android:layout_weight="1"
+            android:textSize="@dimen/_13ssp" />
+    </LinearLayout>
+    <LinearLayout
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:layout_marginTop="@dimen/_5sdp"
         android:orientation="horizontal"
         android:weightSum="2">
 
@@ -74,13 +118,14 @@
         android:layout_height="wrap_content"
         android:layout_marginTop="@dimen/_5sdp"
         android:orientation="horizontal"
-        android:weightSum="2">
+        android:weightSum="2"
+        android:visibility="gone">
 
         <com.ztp.app.Helper.MyTextView
             android:layout_width="0dp"
             android:layout_height="match_parent"
             android:layout_weight="1"
-            android:text="@string/student_name"
+            android:text="@string/email"
             android:textColor="@color/tab_booking"
             android:textSize="@dimen/_13ssp"
             android:gravity="center_vertical"/>
@@ -153,8 +198,7 @@
             android:layout_height="@dimen/_25sdp"
             android:layout_gravity="left"
             android:layout_weight="0.2"
-            android:tint="@color/tab_booking"
-            app:srcCompat="@drawable/ic_cso" />
+           />
     </LinearLayout>
 
     <Space

@@ -91,9 +91,9 @@
     <string name="student_name">Nombre del estudiante</string>
     <string name="grad_date">Fecha de graduación</string>
     <string name="hrs_required">Horas requeridas</string>
-    <string name="rank">Rango</string>
-    <string name="date">Fecha</string>
-    <string name="time">Hora</string>
+    <string name="rank">Rango de turno</string>
+    <string name="date">Fecha de cambio</string>
+    <string name="time">Hora Hora de turno</string>
     <string name="change_status">Cambiar Estado</string>
     <string name="tab_students_followers">VER SEGUIDORES</string>
     <string name="tab_volunteers">Los voluntarios</string>
@@ -298,6 +298,41 @@
     <string name="tv_event_start_date">Fecha de inicio de registro</string>
     <string name="tv_event_end_date">Fecha de finalización del registro</string>
     <string name="volunteer_request">Solicitud enviada</string>
+    <string name="err_enter_valid_password">Ingrese una contraseña válida</string>
+    <string name="err_enter_valid_last_name">Ingrese un apellido válido</string>
+    <string name="err_enter_valid_first_name">Ingrese un Nombre válido</string>
+    <string name="shifts">CAMBIOS</string>
+    <string name="shift_updated_success">Cambio actualizado correctamente</string>
+    <string name="err_enter_start_time_first">Ingrese la hora de inicio primero</string>
+    <string name="err_endtime_notbefore_startime">La hora de finalización no puede ser anterior a la hora de inicio.</string>
+    <string name="status_volunteer">Voluntario por turno</string>
+    <string name="status_withdraw">Retirar</string>
+    <string name="status_initiate_DM">Iniciar DM a administrador de CSO que rechazó</string>
+    <string name="status_complete">Marca completa</string>
+    <string name="toast_volunteer_withdraw_success">Solicitud de voluntariado retirado con éxito</string>
+    <string name="toast_volunteer_complete_success">Solicitud de voluntario completada exitosamente</string>
+    <string name="toast_volunteer_failed">Estado de cambio fallado</string>
+    <string name="status_accept">Aceptar</string>
+    <string name="status_decline">Disminución</string>
+    <string name="status_verify">Verificar</string>
+    <string name="status_reject">Rechazar</string>
+    <string name="toast_accept_request_success">Petición aceptada</string>
+    <string name="toast_decline_request_success">Solicitud rechazada</string>
+    <string name="toast_reject_request_success">Solicitud rechazada</string>
+    <string name="toast_verify_cso_request_success">Solicitud Completada y Verificada</string>
+    <string name="toast_info_cso_request_success">Más información requerida</string>
+    <string name="toast_publish_success">Evento publicado con éxito</string>
+    <string name="toast_unpublish_success">Evento no publicado exitosamente</string>
+
+
+    <string name="confirm_delete">¿Confirmar eliminación?</string>
+    <string name="are_you_sure_you_want_to_delete">¿Estas seguro que quieres borrarlo?</string>
+    <string name="upload">Subir</string>
+    <string name="select_image_from">Seleccionar imagen de</string>
+    <string name="camera">Cámara</string>
+    <string name="gallery">Galería</string>
+
+
     <string-array name="gender">
         <item>Género</item>
         <item>Masculino</item>
@@ -330,12 +365,9 @@
         <item>Voluntario</item>
         <item>CSO</item>
     </string-array>
-    <string name="err_enter_valid_password">Ingrese una contraseña válida</string>
-    <string name="err_enter_valid_last_name">Ingrese un apellido válido</string>
-    <string name="err_enter_valid_first_name">Ingrese un Nombre válido</string>
-    <string name="shifts">CAMBIOS</string>
-    <string name="shift_updated_success">Cambio actualizado correctamente</string>
-    <string name="err_enter_start_time_first">Ingrese la hora de inicio primero</string>
-    <string name="err_endtime_notbefore_startime">La hora de finalización no puede ser anterior a la hora de inicio.</string>
+    <string name="upload_image_related_to_event">Subir imagen relacionada al evento.</string>
+    <string name="browse">Vistazo</string>
+    <string name="done">Hecho</string>
+
 
 </resources>

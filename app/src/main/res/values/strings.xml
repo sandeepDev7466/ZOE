@@ -89,9 +89,9 @@
     <string name="student_name">Student Name</string>
     <string name="grad_date">Grad Date</string>
     <string name="hrs_required">Hrs required</string>
-    <string name="rank">Rank</string>
-    <string name="date">Date</string>
-    <string name="time">Time</string>
+    <string name="rank">Shift Rank</string>
+    <string name="date">Shift Date</string>
+    <string name="time">Shift Time</string>
     <string name="change_status">Change Status</string>
     <string name="tab_students_followers">SEE FOLLOWERS</string>
     <string name="tab_volunteers">VOLUNTEERS</string>
@@ -277,7 +277,7 @@
     <string name="shift_start_time">Start Time</string>
     <string name="shift_end_time">End Time</string>
     <string name="shift_rank">Rank</string>
-    <string name="shift_task">Task</string>
+    <string name="shift_task">Shift Task</string>
     <string name="shift_status">Status</string>
     <string name="shift_add_date">Add Date</string>
     <string name="shift_update_date">Update Date</string>
@@ -296,6 +296,9 @@
     <string name="err_event_description_validation">Event description can only contain letters and numbers</string>
     <string name="volunteer_request">Request Sent</string>
     <string name="toast_volunteer_request_success">Volunteer Request sent Successfully</string>
+    <string name="toast_volunteer_withdraw_success">Volunteer Request Withdrawn Successfully</string>
+    <string name="toast_volunteer_complete_success">Volunteer Request Completed Successfully</string>
+    <string name="toast_volunteer_failed">Change Status Failed</string>
     <string name="tv_event_start_date">Registration Start Date</string>
     <string name="tv_event_end_date">Registration End Date</string>
     <string name="err_enter_valid_password">Enter valid Password</string>
@@ -305,8 +308,36 @@
     <string name="shift_updated_success">Shift updated successfully</string>
     <string name="err_enter_start_time_first">Enter start time first</string>
     <string name="err_endtime_notbefore_startime">End time can\'t be before Start time</string>
+
+//Volunteer
+    <string name="status_volunteer">Volunteer for Shift</string>
+    <string name="status_withdraw">Withdraw</string>
+    <string name="status_initiate_DM">Initiate DM to CSO Admin that declined</string>
+    <string name="status_complete">Mark Complete</string>
+//CSO
+    <string name="status_accept">Accept</string>
+    <string name="status_decline">Decline</string>
+    <string name="status_reject">Reject</string>
+    <string name="status_verify">Verify</string>
+
+    <string name="toast_accept_request_success">Request Accepted</string>
+    <string name="toast_decline_request_success">Request Declined</string>
+    <string name="toast_reject_request_success">Request Rejected</string>
+    <string name="toast_verify_cso_request_success">Request Completed and Verified</string>
+    <string name="toast_info_cso_request_success">More Info Required</string>
+    <string name="toast_publish_success">Event Published Successfully</string>
+    <string name="toast_unpublish_success">Event Un-Published Successfully</string>
+
+
     <string name="confirm_delete">Confirm delete?</string>
     <string name="are_you_sure_you_want_to_delete">Are you sure you want to delete?</string>
+    <string name="upload">Upload</string>
+    <string name="select_image_from">Select image from</string>
+    <string name="camera">Camera</string>
+    <string name="gallery">Gallery</string>
+    <string name="upload_image_related_to_event">Upload image related to event</string>
+    <string name="browse">Browse</string>
+    <string name="done">Done</string>
 
 
     <string-array name="gender">

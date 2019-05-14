@@ -150,7 +150,7 @@ public class SearchEventFragment extends Fragment implements AbsListView.OnScrol
                             search.setVisibility(View.GONE);
                             searchedEventAdapter = new SearchedEventAdapter(context, searchEventList);
                             lv_events.setAdapter(searchedEventAdapter);
-                            lv_events.setSelection(offset);
+                            lv_events.setSelection(offset>0?offset-1:0);
                             hit = true;
                         } else {
                             hit = false;
@@ -164,6 +164,9 @@ public class SearchEventFragment extends Fragment implements AbsListView.OnScrol
                     }
                 } else {
                     myToast.show(getString(R.string.err_server), Toast.LENGTH_LONG, false);
+                    lv_events.setVisibility(View.GONE);
+                    search.setVisibility(View.VISIBLE);
+                    hit = true;
                 }
             });
         }

@@ -2,6 +2,8 @@ package com.ztp.app.Data.Remote.Service;
 
 import com.ztp.app.Data.Remote.Model.Request.BlogSearchRequest;
 import com.ztp.app.Data.Remote.Model.Request.CSOAllRequest;
+import com.ztp.app.Data.Remote.Model.Request.ChangeStatusByCSORequest;
+import com.ztp.app.Data.Remote.Model.Request.ChangeVolunteerStatusRequest;
 import com.ztp.app.Data.Remote.Model.Request.CsoRegisterRequestStep_1;
 import com.ztp.app.Data.Remote.Model.Request.CsoRegisterRequestStep_2;
 import com.ztp.app.Data.Remote.Model.Request.CsoRegisterRequestStep_3;
@@ -19,6 +21,7 @@ import com.ztp.app.Data.Remote.Model.Request.GetShiftDetailRequest;
 import com.ztp.app.Data.Remote.Model.Request.GetShiftListRequest;
 import com.ztp.app.Data.Remote.Model.Request.LoginRequest;
 import com.ztp.app.Data.Remote.Model.Request.PostVolunteerRequest;
+import com.ztp.app.Data.Remote.Model.Request.PublishRequest;
 import com.ztp.app.Data.Remote.Model.Request.SearchEventRequest;
 import com.ztp.app.Data.Remote.Model.Request.ShiftUpdateRequest;
 import com.ztp.app.Data.Remote.Model.Request.SiftAddRequest;
@@ -30,6 +33,7 @@ import com.ztp.app.Data.Remote.Model.Request.VolunteerAllRequest;
 import com.ztp.app.Data.Remote.Model.Response.AddEventResponse;
 import com.ztp.app.Data.Remote.Model.Response.BlogSearchResponse;
 import com.ztp.app.Data.Remote.Model.Response.CSOAllResponse;
+import com.ztp.app.Data.Remote.Model.Response.ChangeStatusByCSOResponse;
 import com.ztp.app.Data.Remote.Model.Response.CountryResponse;
 import com.ztp.app.Data.Remote.Model.Response.CsoRegisterResponseStep_1;
 import com.ztp.app.Data.Remote.Model.Response.CsoRegisterResponseStep_2;
@@ -46,6 +50,7 @@ import com.ztp.app.Data.Remote.Model.Response.GetShiftDetailResponse;
 import com.ztp.app.Data.Remote.Model.Response.GetShiftListResponse;
 import com.ztp.app.Data.Remote.Model.Response.LoginResponse;
 import com.ztp.app.Data.Remote.Model.Response.PostVolunteerRequestResponse;
+import com.ztp.app.Data.Remote.Model.Response.PublishResponse;
 import com.ztp.app.Data.Remote.Model.Response.SchoolResponse;
 import com.ztp.app.Data.Remote.Model.Response.SearchEventResponse;
 import com.ztp.app.Data.Remote.Model.Response.ShiftAddResponse;
@@ -58,6 +63,7 @@ import com.ztp.app.Data.Remote.Model.Response.UpdateProfileResponse;
 import com.ztp.app.Data.Remote.Model.Response.UploadDocumentResponse;
 import com.ztp.app.Data.Remote.Model.Response.ValidateOtpResponse;
 import com.ztp.app.Data.Remote.Model.Response.VolunteerAllResponse;
+import com.ztp.app.Data.Remote.Model.Response.ChangeVolunteerStatusResponse;
 
 import okhttp3.MultipartBody;
 import okhttp3.ResponseBody;
@@ -127,11 +133,11 @@ public interface ApiInterface {
 
     @Multipart
     @POST("fileupload.php")//http://hashtaglabs.in/staging/supercomp/filedata.php
-    Call<ResponseBody> uploadDocument(@Part MultipartBody.Part filePart, @Query("user_id") String user_id, @Query("user_file_title") String use_file_title,@Query("fileExtension") String extension);
+    Call<ResponseBody> uploadDocument(@Part MultipartBody.Part filePart, @Query("user_id") String user_id, @Query("user_file_title") String use_file_title, @Query("fileExtension") String extension);
 
     @Multipart
     @POST("file-upload.php")//http://hashtaglabs.in/staging/supercomp/filedata.php
-    Call<UploadDocumentResponse> uploadDocumentNew(@Part MultipartBody.Part filePart, @Query("user_id") String user_id, @Query("user_file_title") String use_file_title,@Query("api_key") String apiKey,@Query("action") String action);
+    Call<UploadDocumentResponse> uploadDocumentNew(@Part MultipartBody.Part filePart, @Query("user_id") String user_id, @Query("user_file_title") String use_file_title, @Query("api_key") String apiKey, @Query("action") String action);
 
     @POST("cso-action.php?api_key=1234&action=get_shift_detail")
     Call<GetShiftDetailResponse> getShiftDetail(@Body GetShiftDetailRequest getShiftDetailRequest);
@@ -171,5 +177,14 @@ public interface ApiInterface {
 
     @POST("search-event.php?api_key=1234&action=get_all_shift_vol")
     Call<GetShiftListResponse> getSearchShiftList(@Body GetSearchShiftListRequest getShiftListRequest);
+
+    @POST("vol-action.php?api_key=1234&action=vol_request_status")
+    Call<ChangeVolunteerStatusResponse> changeVolunteerStatus(@Body ChangeVolunteerStatusRequest changeVolunteerStatusRequest);
+
+    @POST("cso-action.php?api_key=1234&action=col_request_status")
+    Call<ChangeStatusByCSOResponse> changeStatusByCSO(@Body ChangeStatusByCSORequest changeStatusByCSORequest);
+
+    @POST("cso-action.php?api_key=1234&action=p_even")
+    Call<PublishResponse> publish(@Body PublishRequest publishRequest);
 
 }

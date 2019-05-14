@@ -20,6 +20,8 @@ public class SharedPref {
     private String email = "email";
     private String language = "language";
     private String otp = "otp";
+    private String isChanged = "isChanged";
+    private String eventImageBase64 = "eventImageBase64";
 
     public static SharedPref getInstance(Context context) {
         if (instance == null) {
@@ -114,5 +116,21 @@ public class SharedPref {
 
     public void setOtp(String otp_txt) {
         editor.putString(otp, otp_txt).apply();
+    }
+
+    public boolean getIsChanged() {
+        return sharedPreferences.getBoolean(isChanged, false);
+    }
+
+    public void setIsChanged(boolean isChange) {
+        editor.putBoolean(isChanged, isChange).apply();
+    }
+
+    public String getEventImageBase64() {
+       return sharedPreferences.getString(eventImageBase64, "");
+    }
+
+    public void setEventImageBase64(String eventimagebase64) {
+        editor.putString(eventImageBase64, eventimagebase64).apply();
     }
 }

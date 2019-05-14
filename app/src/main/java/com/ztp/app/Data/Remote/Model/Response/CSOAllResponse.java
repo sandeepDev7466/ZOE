@@ -50,6 +50,7 @@ public class CSOAllResponse {
     public void setResStatus(String resStatus) {
         this.resStatus = resStatus;
     }
+
     public class ResData {
 
         @SerializedName("map_id")
@@ -127,16 +128,23 @@ public class CSOAllResponse {
         @SerializedName("shift_task")
         @Expose
         private String shiftTask;
+        @SerializedName("user_f_name")
+        @Expose
+        private String user_f_name;
+        @SerializedName("user_l_name")
+        @Expose
+        private String user_l_name;
+        @SerializedName("user_email")
+        @Expose
+        private String user_email;
 
         /**
          * No args constructor for use in serialization
-         *
          */
         public ResData() {
         }
 
         /**
-         *
          * @param attendCsoRemarks
          * @param attendInTime
          * @param eventHeading
@@ -163,7 +171,7 @@ public class CSOAllResponse {
          * @param attendHours
          * @param mapUpdateDate
          */
-        public ResData(String mapId, String userId, String eventId, String csoId, String shiftId, String attendPresent, String attendInTime, String attendOutTime, String attendHours, String attendCsoGrade, String attendGradeDate, String attendCsoRemarks, String attendRemarksDate, String attendRate, String attendRateRemarks, String attendRateDate, String mapStatus, String mapAddDate, String mapUpdateDate, String eventHeading, String shiftDate, String shiftStartTime, String shiftEndTime, String shiftRank, String shiftTask) {
+        public ResData(String mapId, String userId, String eventId, String csoId, String shiftId, String attendPresent, String attendInTime, String attendOutTime, String attendHours, String attendCsoGrade, String attendGradeDate, String attendCsoRemarks, String attendRemarksDate, String attendRate, String attendRateRemarks, String attendRateDate, String mapStatus, String mapAddDate, String mapUpdateDate, String eventHeading, String shiftDate, String shiftStartTime, String shiftEndTime, String shiftRank, String shiftTask, String user_f_name, String user_l_name, String user_email) {
             super();
             this.mapId = mapId;
             this.userId = userId;
@@ -190,6 +198,9 @@ public class CSOAllResponse {
             this.shiftEndTime = shiftEndTime;
             this.shiftRank = shiftRank;
             this.shiftTask = shiftTask;
+            this.user_f_name = user_f_name;
+            this.user_l_name = user_l_name;
+            this.user_email = user_email;
         }
 
         public String getMapId() {
@@ -392,5 +403,28 @@ public class CSOAllResponse {
             this.shiftTask = shiftTask;
         }
 
+        public String getUser_f_name() {
+            return user_f_name;
+        }
+
+        public void setUser_f_name(String user_f_name) {
+            this.user_f_name = user_f_name;
+        }
+
+        public String getUser_l_name() {
+            return user_l_name;
+        }
+
+        public void setUser_l_name(String user_l_name) {
+            this.user_l_name = user_l_name;
+        }
+
+        public String getUser_email() {
+            return user_email;
+        }
+
+        public void setUser_email(String user_email) {
+            this.user_email = user_email;
+        }
     }
 }

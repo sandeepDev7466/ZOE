@@ -5,6 +5,7 @@ import android.arch.lifecycle.LifecycleOwner;
 import android.arch.lifecycle.Observer;
 import android.arch.lifecycle.ViewModelProviders;
 import android.content.Context;
+import android.content.Intent;
 import android.graphics.Color;
 import android.hardware.Sensor;
 import android.hardware.SensorEvent;
@@ -27,6 +28,7 @@ import android.view.ViewGroup;
 import android.widget.AdapterView;
 import android.widget.ArrayAdapter;
 import android.widget.Button;
+import android.widget.ImageView;
 import android.widget.ScrollView;
 import android.widget.Spinner;
 import android.widget.Toast;
@@ -42,6 +44,7 @@ import com.google.android.gms.maps.model.LatLng;
 import com.google.android.gms.maps.model.Marker;
 import com.google.android.gms.maps.model.MarkerOptions;
 import com.raywenderlich.android.validatetor.ValidateTor;
+import com.squareup.picasso.Picasso;
 import com.ztp.app.Data.Local.SharedPrefrence.SharedPref;
 import com.ztp.app.Data.Remote.Model.Request.EventAddRequest;
 import com.ztp.app.Data.Remote.Model.Request.EventUpdateRequest;
@@ -51,6 +54,9 @@ import com.ztp.app.Data.Remote.Model.Response.EventTypeResponse;
 import com.ztp.app.Data.Remote.Model.Response.GetEventsResponse;
 import com.ztp.app.Data.Remote.Model.Response.StateResponse;
 import com.ztp.app.Data.Remote.Model.Response.TimeZoneResponse;
+import com.ztp.app.Data.Remote.Model.Response.UploadDocumentResponse;
+import com.ztp.app.Data.Remote.Service.Api;
+import com.ztp.app.Data.Remote.Service.ApiInterface;
 import com.ztp.app.Helper.MyBoldTextView;
 import com.ztp.app.Helper.MyProgressDialog;
 import com.ztp.app.Helper.MyTextInputEditText;
@@ -68,12 +74,20 @@ import com.ztp.app.Viewmodel.StateViewModel;
 import com.ztp.app.Viewmodel.TimeZoneViewModel;
 import com.ztp.app.Viewmodel.UpdateEventViewModel;
 
+import java.io.File;
 import java.text.ParseException;
 import java.util.ArrayList;
 import java.util.Calendar;
 import java.util.Date;
 import java.util.List;
 import java.util.TimeZone;
+
+import okhttp3.MediaType;
+import okhttp3.MultipartBody;
+import okhttp3.RequestBody;
+import retrofit2.Call;
+import retrofit2.Callback;
+import retrofit2.Response;
 
 public class TabNewEventFragment extends Fragment implements OnMapReadyCallback, GoogleApiClient.ConnectionCallbacks,
         GoogleApiClient.OnConnectionFailedListener,
@@ -143,6 +157,8 @@ public class TabNewEventFragment extends Fragment implements OnMapReadyCallback,
     String type;
     GetEventsResponse.EventData eventData;
     MyBoldTextView heading;
+    //ImageView edit;
+    ImageView image;
 
     @SuppressLint("ClickableViewAccessibility")
     @Override
@@ -180,7 +196,7 @@ public class TabNewEventFragment extends Fragment implements OnMapReadyCallback,
         etPostalCodeLayout = v.findViewById(R.id.et_zip_layout);
         et_event_layout = v.findViewById(R.id.et_event_layout);
         et_event_description_layout = v.findViewById(R.id.et_event_description_layout);
-
+        //edit = v.findViewById(R.id.edit);
         update = v.findViewById(R.id.update);
         clear = v.findViewById(R.id.clear);
         myToast = new MyToast(context);
@@ -190,8 +206,8 @@ public class TabNewEventFragment extends Fragment implements OnMapReadyCallback,
         timeZoneViewModel = ViewModelProviders.of(this).get(TimeZoneViewModel.class);
         eventTypeViewModel = ViewModelProviders.of(this).get(GetEventTypeViewModel.class);
         addEventViewModel = ViewModelProviders.of(this).get(AddEventViewModel.class);
-
         updateEventViewModel = ViewModelProviders.of(this).get(UpdateEventViewModel.class);
+        image = v.findViewById(R.id.image);
 
 
         Bundle b = getArguments();
@@ -433,6 +449,17 @@ public class TabNewEventFragment extends Fragment implements OnMapReadyCallback,
 
         });
 
+        image.setOnClickListener(v15 -> {
+
+            Intent intent = new Intent(context, UpdateImageActivity.class);
+            intent.putExtra("action", type);
+            if(type.equalsIgnoreCase("update"))
+            intent.putExtra("image",eventData.getEventImage());
+            startActivity(intent);
+            ((AppCompatActivity) context).overridePendingTransition(R.anim.fade_in, R.anim.fade_out);
+
+        });
+
 
         SupportMapFragment mapFragment = (SupportMapFragment) getChildFragmentManager()
                 .findFragmentById(R.id.fragment_map);
@@ -484,7 +511,14 @@ public class TabNewEventFragment extends Fragment implements OnMapReadyCallback,
                                                         if (et_start_date.getText() != null && !et_start_date.getText().toString().isEmpty()) {
                                                             if (et_end_date.getText() != null && !et_end_date.getText().toString().isEmpty()) {
                                                                 if (!errorPostalCode && !errorPhone && !errorEmail && !errorEventName && !errorEventDescription) {
-                                                                    submit();
+
+
+                                                                    if (UpdateImageActivity.uploadFile != null)
+                                                                        uploadDocument(UpdateImageActivity.uploadFile);
+                                                                    else
+                                                                        submit();
+
+
                                                                 } else {
                                                                     myToast.show(getString(R.string.err_invalid_data), Toast.LENGTH_SHORT, false);
                                                                 }
@@ -560,6 +594,45 @@ public class TabNewEventFragment extends Fragment implements OnMapReadyCallback,
         if (mapView != null) {
             mapView.onResume();
         }
+
+           /* if (sharedPref.getEventImageBase64() != null && !sharedPref.getEventImageBase64().equalsIgnoreCase("")) {
+                image.setImageBitmap(Utility.decodeBase64(sharedPref.getEventImageBase64()));
+            }*/
+    }
+
+
+    private void uploadDocument(File fileToUpload) {
+
+
+        myProgressDialog.show(getString(R.string.please_wait));
+        MultipartBody.Part filePart = MultipartBody.Part.createFormData("user_id_file", fileToUpload.getName(), RequestBody.create(MediaType.parse("*/*"), fileToUpload));
+        ApiInterface apiInterface = Api.getClient();
+
+        Call<UploadDocumentResponse> call = apiInterface.uploadDocumentNew(filePart, sharedPref.getUserId(), UpdateImageActivity.uploadFile.getName(), "1234", "cso_event_file_upload");
+
+        call.enqueue(new Callback<UploadDocumentResponse>() {
+            @Override
+            public void onResponse(Call<UploadDocumentResponse> call, Response<UploadDocumentResponse> response) {
+
+                if (response.body() != null) {
+
+                    if (response.body().getResStatus().equalsIgnoreCase("200")) {
+                        myProgressDialog.dismiss();
+                        myToast.show(getString(R.string.file_uploaded_successfully), Toast.LENGTH_SHORT, true);
+                        submit();
+                    } else {
+                        myProgressDialog.dismiss();
+                        myToast.show(getString(R.string.err_file_upload_failed), Toast.LENGTH_SHORT, true);
+                    }
+                }
+            }
+
+            @Override
+            public void onFailure(Call<UploadDocumentResponse> call, Throwable t) {
+                t.printStackTrace();
+                myProgressDialog.dismiss();
+            }
+        });
     }
 
     public void populateData(GetEventsResponse.EventData eventData) {
@@ -573,6 +646,8 @@ public class TabNewEventFragment extends Fragment implements OnMapReadyCallback,
         et_email.setText(eventData.getEventEmail());
         et_start_date.setText(eventData.getEventRegisterStartDate());
         et_end_date.setText(eventData.getEventRegisterEndDate());
+        if(!eventData.getEventImage().isEmpty())
+        Picasso.with(context).load(eventData.getEventImage()).error(R.drawable.no_image).into(image);
 
       /*  Date d = Utility.convertStringToDateWithoutTime(eventData.getEventRegisterStartDate());
         Date ed = Utility.convertStringToDateWithoutTime(eventData.getEventRegisterEndDate());
@@ -960,7 +1035,7 @@ public class TabNewEventFragment extends Fragment implements OnMapReadyCallback,
             eventAddRequest.setEvent_longitude(String.valueOf(longitude));
             eventAddRequest.setEvent_phone(str_phone_no);
             eventAddRequest.setEvent_email(str_email);
-            eventAddRequest.setEvent_image("abc.jpg");
+            eventAddRequest.setEvent_image(UpdateImageActivity.uploadFile != null ? UpdateImageActivity.uploadFile.getName() : "");
             eventAddRequest.setEvent_register_start_date(str_start_date);
             eventAddRequest.setEvent_register_end_date(str_end_date);
 
@@ -1012,7 +1087,7 @@ public class TabNewEventFragment extends Fragment implements OnMapReadyCallback,
             eventUpdateRequest.setEvent_longitude(String.valueOf(longitude));
             eventUpdateRequest.setEvent_phone(str_phone_no);
             eventUpdateRequest.setEvent_email(str_email);
-            eventUpdateRequest.setEvent_image("abc.jpg");
+            eventUpdateRequest.setEvent_image(UpdateImageActivity.uploadFile != null ? UpdateImageActivity.uploadFile.getName() : "");
             eventUpdateRequest.setEvent_register_start_date(str_start_date);
             eventUpdateRequest.setEvent_register_end_date(str_end_date);
             if (Utility.isNetworkAvailable(context)) {
@@ -1024,7 +1099,7 @@ public class TabNewEventFragment extends Fragment implements OnMapReadyCallback,
                             clear();
                             myToast.show(getString(R.string.event_updated_successfully), Toast.LENGTH_SHORT, true);
                             //getActivity().getFragmentManager().popBackStack();
-                            ((AppCompatActivity)context).onBackPressed();
+                            ((AppCompatActivity) context).onBackPressed();
 
                         } else {
 
@@ -1076,7 +1151,7 @@ public class TabNewEventFragment extends Fragment implements OnMapReadyCallback,
 //                et_start_date.setHintTextColor(Color.RED);
 //            } else {
             et_start_date.setText(date);
-           // et_start_date.setTextColor(Color.BLACK);
+            // et_start_date.setTextColor(Color.BLACK);
 
 //            }
             if (!et_end_date.getText().toString().equalsIgnoreCase("")) {

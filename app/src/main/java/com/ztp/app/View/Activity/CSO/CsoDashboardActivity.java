@@ -26,7 +26,9 @@ import com.ztp.app.View.Activity.Common.EditProfileActivity;
 import com.ztp.app.View.Activity.Common.LoginActivity;
 import com.ztp.app.View.Activity.Common.SettingsActivity;
 import com.ztp.app.View.Fragment.CSO.Dashboard.DashboardFragment;
+import com.ztp.app.View.Fragment.CSO.Event.EventListAdapter;
 import com.ztp.app.View.Fragment.CSO.Event.EventListFragment;
+import com.ztp.app.View.Fragment.CSO.Event.TabNewEventFragment;
 import com.ztp.app.View.Fragment.CSO.Message.MessageFragment;
 import com.ztp.app.View.Fragment.CSO.Students.StudentsFragment;
 
@@ -135,7 +137,10 @@ public class CsoDashboardActivity extends AppCompatActivity implements View.OnCl
     @Override
     protected void onRestart() {
         super.onRestart();
-        recreate();
+        if(sharedPref.getIsChanged()) {
+            recreate();
+            sharedPref.setIsChanged(false);
+        }
     }
 
     public void recreate() {
@@ -291,6 +296,15 @@ public class CsoDashboardActivity extends AppCompatActivity implements View.OnCl
                 recreate();
             }
         }
+
+       /* EventListFragment fragment = (EventListFragment) getSupportFragmentManager().findFragmentByTag("EventListFragment");
+        TabNewEventFragment frag1 = (TabNewEventFragment)fragment.getViewPager().getAdapter().instantiateItem(fragment.getViewPager(), fragment.getViewPager().getCurrentItem());
+        frag1.onActivityResult(requestCode, resultCode, data);
+
+        Utility.addFragment(context,fragment,"EventListFragment");
+        fragment.getViewPager().setCurrentItem(1);*/
+
+
     }
 
     public void setDashboardFragment() {

@@ -16,14 +16,14 @@ public class Constants {
     public static String user_type_student = "stu";
     public static String user_type_cso = "cso";
     public static String user_type_volunteer = "vol";
-    public static String NewRequestVol = "10";
-    public static String WithdrawnVol = "90";
-    public static String AcceptedByCSO = "20";
-    public static String DeclinedByCSO = "30";
-    public static String CompletedByVol = "40";
-    public static String MoreInfoByCSO = "50";
-    public static String RejectedCompleteByCSO = "60";
-    public static String CompletedVerifiedByCSO = "70";
+    public static int NewRequestVol = 10;
+    public static int WithdrawnVol = 90;
+    public static int AcceptedByCSO = 20;
+    public static int DeclinedByCSO = 30;
+    public static int CompletedByVol = 40;
+    public static int MoreInfoByCSO = 50;
+    public static int RejectedCompleteByCSO = 60;
+    public static int CompletedVerifiedByCSO = 70;
     public static String Volunter_apply_0 = "0";
     public static String Volunter_apply_1 = "1";
 }

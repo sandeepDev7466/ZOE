@@ -1,6 +1,5 @@
 package com.ztp.app.View.Fragment.CSO.Event;
 
-import android.app.Dialog;
 import android.arch.lifecycle.LifecycleOwner;
 import android.arch.lifecycle.ViewModelProviders;
 import android.content.Context;
@@ -125,55 +124,37 @@ public class ShiftListAdapter extends BaseAdapter {
                 @Override
                 public void onClick(View view) {
 
+                    DeleteShiftRequest deleteShiftRequest = new DeleteShiftRequest();
+                    deleteShiftRequest.setShiftId(shiftData.getShift_id());
 
-                    Dialog dialog = new Dialog(context);
-                    View view1 = LayoutInflater.from(context).inflate(R.layout.delete_dialog, null);
-                    dialog.setContentView(view1);
-                    dialog.setCancelable(false);
+                    if (Utility.isNetworkAvailable(context)) {
+                        myProgressDialog.show(context.getString(R.string.deleting_shift));
+                        deleteShiftViewModel.getDeleteShiftResponse(deleteShiftRequest).observe((LifecycleOwner) context, deleteShiftResponse -> {
 
-                    LinearLayout yes = view1.findViewById(R.id.yes);
-                    LinearLayout no = view1.findViewById(R.id.no);
+                            if (deleteShiftResponse != null) {
+                                if (deleteShiftResponse.getResStatus().equalsIgnoreCase("200")) {
 
-                    yes.setOnClickListener(v -> {
-                        dialog.dismiss();
+                                    new MyToast(context).show(context.getString(R.string.shift_deleted_successfully), Toast.LENGTH_SHORT, true);
 
-                        DeleteShiftRequest deleteShiftRequest = new DeleteShiftRequest();
-                        deleteShiftRequest.setShiftId(shiftData.getShift_id());
+                                    shiftDataList.remove(shiftData);
 
-                        if (Utility.isNetworkAvailable(context)) {
-                            myProgressDialog.show(context.getString(R.string.deleting_shift));
-                            deleteShiftViewModel.getDeleteShiftResponse(deleteShiftRequest).observe((LifecycleOwner) context, deleteShiftResponse -> {
+                                    notifyDataSetChanged();
 
-                                if (deleteShiftResponse != null) {
-                                    if (deleteShiftResponse.getResStatus().equalsIgnoreCase("200")) {
-
-                                        new MyToast(context).show(context.getString(R.string.shift_deleted_successfully), Toast.LENGTH_SHORT, true);
-
-                                        shiftDataList.remove(shiftData);
-
-                                        notifyDataSetChanged();
-
-                                    } else {
-
-                                        new MyToast(context).show(context.getString(R.string.failed), Toast.LENGTH_SHORT, false);
-                                    }
                                 } else {
-                                    new MyToast(context).show(context.getString(R.string.err_server), Toast.LENGTH_SHORT, false);
+
+                                    new MyToast(context).show(context.getString(R.string.failed), Toast.LENGTH_SHORT, false);
                                 }
+                            } else {
+                                new MyToast(context).show(context.getString(R.string.err_server), Toast.LENGTH_SHORT, false);
+                            }
 
-                                myProgressDialog.dismiss();
-                            });
-                        } else {
-                            new MyToast(context).show(context.getString(R.string.no_internet_connection), Toast.LENGTH_SHORT, false);
-                        }
+                            myProgressDialog.dismiss();
+                        });
+                    } else {
+                        new MyToast(context).show(context.getString(R.string.no_internet_connection), Toast.LENGTH_SHORT, false);
+                    }
 
-                    });
 
-                    no.setOnClickListener(v -> {
-                        dialog.dismiss();
-                    });
-
-                    dialog.show();
                 }
             });
             holder.imv_volunteer.setOnClickListener(new View.OnClickListener() {

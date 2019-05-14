@@ -11,6 +11,7 @@ import android.widget.AbsListView;
 import android.widget.ListView;
 import android.widget.ProgressBar;
 import android.widget.Toast;
+
 import com.ztp.app.Data.Local.SharedPrefrence.SharedPref;
 import com.ztp.app.Data.Remote.Model.Request.SearchEventRequest;
 import com.ztp.app.Data.Remote.Model.Response.SearchEventResponse;
@@ -21,6 +22,7 @@ import com.ztp.app.R;
 import com.ztp.app.Utils.Utility;
 import com.ztp.app.View.Fragment.Student.Extra.SearchedEventAdapter;
 import com.ztp.app.Viewmodel.SearchEventViewModel;
+
 import java.util.ArrayList;
 import java.util.List;
 
@@ -54,9 +56,14 @@ public class TabFindCsoFragment extends Fragment implements AbsListView.OnScroll
         listView.setOnScrollListener(this);
         if ((Utility.isNetworkAvailable(context))) {
             myProgressDialog.show(getString(R.string.please_wait));
+            listView.setVisibility(View.VISIBLE);
+            search.setVisibility(View.GONE);
             search("", offset, limit, false);
-        } else
+        } else {
             myToast.show(getString(R.string.no_internet_connection), Toast.LENGTH_LONG, false);
+            listView.setVisibility(View.GONE);
+            search.setVisibility(View.VISIBLE);
+        }
 
         return view;
     }
@@ -86,7 +93,7 @@ public class TabFindCsoFragment extends Fragment implements AbsListView.OnScroll
                             search.setVisibility(View.GONE);
                             searchedEventAdapter = new SearchedEventAdapter(context, searchEventList);
                             listView.setAdapter(searchedEventAdapter);
-                            listView.setSelection(offset);
+                            listView.setSelection(offset > 0 ? offset - 1 : 0);
                             hit = true;
                         } else {
                             hit = false;
@@ -100,18 +107,14 @@ public class TabFindCsoFragment extends Fragment implements AbsListView.OnScroll
                     }
                 } else {
                     myToast.show(getString(R.string.err_server), Toast.LENGTH_LONG, false);
+                    listView.setVisibility(View.GONE);
+                    search.setVisibility(View.VISIBLE);
+                    hit = true;
                 }
                 if (myProgressDialog.isShowing())
                     myProgressDialog.dismiss();
             });
         }
-    }
-
-
-    @Override
-    public void onResume() {
-        super.onResume();
-
     }
 
     @Override

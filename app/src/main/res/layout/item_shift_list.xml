@@ -258,18 +258,18 @@
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
         android:orientation="horizontal"
-        android:gravity="center"
+        android:gravity="right"
         android:layout_marginTop="@dimen/_10sdp"
         android:id="@+id/volunteer_layout"
-        android:visibility="gone">
+        android:visibility="visible">
 
 
         <ImageView
             android:id="@+id/imv_volunteer"
-            android:layout_width="@dimen/_50sdp"
-            android:layout_height="@dimen/_50sdp"
+            android:layout_width="@dimen/_40sdp"
+            android:layout_height="@dimen/_40sdp"
 
-
+android:src="@drawable/cso_approved"
             android:layout_gravity="center_horizontal"
 
             />

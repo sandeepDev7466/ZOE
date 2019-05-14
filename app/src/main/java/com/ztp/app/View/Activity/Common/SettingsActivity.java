@@ -51,12 +51,14 @@ public class SettingsActivity extends AppCompatActivity implements View.OnClickL
                 AppCompatDelegate.setDefaultNightMode(
                         AppCompatDelegate.MODE_NIGHT_YES);
                 recreate();
+                sharedPref.setIsChanged(true);
 
             } else {
                 sharedPref.setTheme(isOn);
                 AppCompatDelegate.setDefaultNightMode(
                         AppCompatDelegate.MODE_NIGHT_NO);
                 recreate();
+                sharedPref.setIsChanged(true);
             }
         });
 
@@ -65,25 +67,17 @@ public class SettingsActivity extends AppCompatActivity implements View.OnClickL
                 sharedPref.setLanguage(true);
                 Utility.setLocale(context, "es");
                 recreate();
+                sharedPref.setIsChanged(true);
 
             } else {
                 sharedPref.setLanguage(false);
                 Utility.setLocale(context, "en");
                 recreate();
+                sharedPref.setIsChanged(true);
             }
         });
 
     }
-
-  /*  public void back()
-    {
-        Intent returnIntent = getIntent();
-        setResult(RESULT_OK, returnIntent);
-        finish();
-        overridePendingTransition(R.anim.fade_in, R.anim.fade_out);
-
-    }*/
-
 
     @Override
     public void onBackPressed() {
@@ -91,10 +85,6 @@ public class SettingsActivity extends AppCompatActivity implements View.OnClickL
         overridePendingTransition(R.anim.fade_in, R.anim.fade_out);
     }
 
-   /* @Override
-    public void onBackPressed() {
-        back();
-    }*/
 
     public void recreate() {
         finish();

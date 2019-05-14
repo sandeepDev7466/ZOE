@@ -136,7 +136,10 @@ public class StudentDashboardActivity extends AppCompatActivity
     @Override
     protected void onRestart() {
         super.onRestart();
-        recreate();
+        if(sharedPref.getIsChanged()) {
+            recreate();
+            sharedPref.setIsChanged(false);
+        }
     }
 
     public void recreate()

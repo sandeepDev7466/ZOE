@@ -189,7 +189,7 @@
             android:text="@string/VOLUNTEER"
             android:textAllCaps="false"
             android:textSize="@dimen/_10ssp"
-          />
+          android:visibility="gone"/>
 
     </RelativeLayout>
 </LinearLayout>
