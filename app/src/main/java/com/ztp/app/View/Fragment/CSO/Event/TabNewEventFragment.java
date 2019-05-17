@@ -6,6 +6,7 @@ import android.arch.lifecycle.Observer;
 import android.arch.lifecycle.ViewModelProviders;
 import android.content.Context;
 import android.content.Intent;
+import android.graphics.Bitmap;
 import android.graphics.Color;
 import android.hardware.Sensor;
 import android.hardware.SensorEvent;
@@ -66,6 +67,7 @@ import com.ztp.app.R;
 import com.ztp.app.Utils.Constants;
 import com.ztp.app.Utils.GPSTracker;
 import com.ztp.app.Utils.Utility;
+import com.ztp.app.View.Activity.CSO.CsoDashboardActivity;
 import com.ztp.app.View.Fragment.Common.SelectDateFragment;
 import com.ztp.app.Viewmodel.AddEventViewModel;
 import com.ztp.app.Viewmodel.CountryViewModel;
@@ -159,6 +161,7 @@ public class TabNewEventFragment extends Fragment implements OnMapReadyCallback,
     MyBoldTextView heading;
     //ImageView edit;
     ImageView image;
+    boolean location;
 
     @SuppressLint("ClickableViewAccessibility")
     @Override
@@ -453,8 +456,8 @@ public class TabNewEventFragment extends Fragment implements OnMapReadyCallback,
 
             Intent intent = new Intent(context, UpdateImageActivity.class);
             intent.putExtra("action", type);
-            if(type.equalsIgnoreCase("update"))
-            intent.putExtra("image",eventData.getEventImage());
+            if (type.equalsIgnoreCase("update"))
+                intent.putExtra("image", eventData.getEventImage());
             startActivity(intent);
             ((AppCompatActivity) context).overridePendingTransition(R.anim.fade_in, R.anim.fade_out);
 
@@ -478,12 +481,12 @@ public class TabNewEventFragment extends Fragment implements OnMapReadyCallback,
         update.setOnClickListener(v1 -> {
 
             if (!event_type__id.equalsIgnoreCase("")) {
-                if (et_event.getText() != null && !et_event.getText().toString().isEmpty()) {
+                if (et_event.getText() != null && !et_event.getText().toString().trim().isEmpty()) {
                     if (!Utility.isValidName(et_event.getText().toString())) {
                         myToast.show(getString(R.string.err_event_name_validation), Toast.LENGTH_SHORT, false);
                         return;
                     }
-                    if (et_event_description.getText() != null && !et_event_description.getText().toString().isEmpty()) {
+                    if (et_event_description.getText() != null && !et_event_description.getText().toString().trim().isEmpty()) {
                         if (!Utility.isValidName(et_event_description.getText().toString())) {
                             myToast.show(getString(R.string.err_event_description_validation), Toast.LENGTH_SHORT, false);
                             return;
@@ -512,11 +515,7 @@ public class TabNewEventFragment extends Fragment implements OnMapReadyCallback,
                                                             if (et_end_date.getText() != null && !et_end_date.getText().toString().isEmpty()) {
                                                                 if (!errorPostalCode && !errorPhone && !errorEmail && !errorEventName && !errorEventDescription) {
 
-
-                                                                    if (UpdateImageActivity.uploadFile != null)
-                                                                        uploadDocument(UpdateImageActivity.uploadFile);
-                                                                    else
-                                                                        submit();
+                                                                    submit();
 
 
                                                                 } else {
@@ -595,44 +594,17 @@ public class TabNewEventFragment extends Fragment implements OnMapReadyCallback,
             mapView.onResume();
         }
 
-           /* if (sharedPref.getEventImageBase64() != null && !sharedPref.getEventImageBase64().equalsIgnoreCase("")) {
-                image.setImageBitmap(Utility.decodeBase64(sharedPref.getEventImageBase64()));
-            }*/
-    }
+        if (UpdateImageActivity.cameFrom) {
+            UpdateImageActivity.cameFrom = false;
+            Bitmap bitmap = Utility.decodeBase64(sharedPref.getEventImageBase64());
+            image.setImageBitmap(bitmap);
+        }
 
-
-    private void uploadDocument(File fileToUpload) {
-
-
-        myProgressDialog.show(getString(R.string.please_wait));
-        MultipartBody.Part filePart = MultipartBody.Part.createFormData("user_id_file", fileToUpload.getName(), RequestBody.create(MediaType.parse("*/*"), fileToUpload));
-        ApiInterface apiInterface = Api.getClient();
-
-        Call<UploadDocumentResponse> call = apiInterface.uploadDocumentNew(filePart, sharedPref.getUserId(), UpdateImageActivity.uploadFile.getName(), "1234", "cso_event_file_upload");
-
-        call.enqueue(new Callback<UploadDocumentResponse>() {
-            @Override
-            public void onResponse(Call<UploadDocumentResponse> call, Response<UploadDocumentResponse> response) {
-
-                if (response.body() != null) {
-
-                    if (response.body().getResStatus().equalsIgnoreCase("200")) {
-                        myProgressDialog.dismiss();
-                        myToast.show(getString(R.string.file_uploaded_successfully), Toast.LENGTH_SHORT, true);
-                        submit();
-                    } else {
-                        myProgressDialog.dismiss();
-                        myToast.show(getString(R.string.err_file_upload_failed), Toast.LENGTH_SHORT, true);
-                    }
-                }
-            }
-
-            @Override
-            public void onFailure(Call<UploadDocumentResponse> call, Throwable t) {
-                t.printStackTrace();
-                myProgressDialog.dismiss();
-            }
-        });
+        if (sharedPref.getLocation()) {
+            location = true;
+        } else {
+            location = false;
+        }
     }
 
     public void populateData(GetEventsResponse.EventData eventData) {
@@ -646,8 +618,8 @@ public class TabNewEventFragment extends Fragment implements OnMapReadyCallback,
         et_email.setText(eventData.getEventEmail());
         et_start_date.setText(eventData.getEventRegisterStartDate());
         et_end_date.setText(eventData.getEventRegisterEndDate());
-        if(!eventData.getEventImage().isEmpty())
-        Picasso.with(context).load(eventData.getEventImage()).error(R.drawable.no_image).into(image);
+        if (!eventData.getEventImage().isEmpty())
+            Picasso.with(context).load(eventData.getEventImage()).fit().placeholder(R.drawable.no_image).error(R.drawable.no_image).into(image);
 
       /*  Date d = Utility.convertStringToDateWithoutTime(eventData.getEventRegisterStartDate());
         Date ed = Utility.convertStringToDateWithoutTime(eventData.getEventRegisterEndDate());
@@ -774,7 +746,7 @@ public class TabNewEventFragment extends Fragment implements OnMapReadyCallback,
         googleMap.getUiSettings().setScrollGesturesEnabled(true);
         googleMap.getUiSettings().setTiltGesturesEnabled(true);
         mMap = googleMap;
-        mMap.getUiSettings().setScrollGesturesEnabled(false);
+        //mMap.getUiSettings().setScrollGesturesEnabled(false);
         mMap.setOnMarkerClickListener(this);
         mMap.setOnMarkerDragListener(this);
         mMap.setOnMapLongClickListener(this);
@@ -785,9 +757,11 @@ public class TabNewEventFragment extends Fragment implements OnMapReadyCallback,
         mMap.setMaxZoomPreference(50.0f);
 
         try {
-            LatLng sydneys = new LatLng(latitude, longitude);
-            mMap.moveCamera(CameraUpdateFactory.newLatLng(sydneys));
-            mMap.addMarker(new MarkerOptions().position(sydneys).title("Here"));
+            LatLng latlong = new LatLng(latitude, longitude);
+            mMap.moveCamera(CameraUpdateFactory.newLatLng(latlong));
+            if (location) {
+                mMap.addMarker(new MarkerOptions().position(latlong).title(getString(R.string.here)).snippet(latitude + "," + longitude));
+            }
         } catch (Exception e) {
             System.out.print(e);
         }
@@ -1031,11 +1005,16 @@ public class TabNewEventFragment extends Fragment implements OnMapReadyCallback,
             eventAddRequest.setEvent_city(str_city);
             eventAddRequest.setEvent_postcode(str_zip);
             eventAddRequest.setEvent_timezone(timezone_id);
-            eventAddRequest.setEvent_latitude(String.valueOf(latitude));
-            eventAddRequest.setEvent_longitude(String.valueOf(longitude));
+            if (location) {
+                eventAddRequest.setEvent_latitude(String.valueOf(latitude));
+                eventAddRequest.setEvent_longitude(String.valueOf(longitude));
+            } else {
+                eventAddRequest.setEvent_latitude("");
+                eventAddRequest.setEvent_longitude("");
+            }
             eventAddRequest.setEvent_phone(str_phone_no);
             eventAddRequest.setEvent_email(str_email);
-            eventAddRequest.setEvent_image(UpdateImageActivity.uploadFile != null ? UpdateImageActivity.uploadFile.getName() : "");
+            eventAddRequest.setEvent_image("");
             eventAddRequest.setEvent_register_start_date(str_start_date);
             eventAddRequest.setEvent_register_end_date(str_end_date);
 
@@ -1045,26 +1024,24 @@ public class TabNewEventFragment extends Fragment implements OnMapReadyCallback,
                     if (registerResponse != null) {
                         if (registerResponse.getResStatus().equalsIgnoreCase("200")) {
 
-                            EventListFragment parentFrag = ((EventListFragment) TabNewEventFragment.this.getParentFragment());
-                            parentFrag.viewPager.setCurrentItem(0, true);
-
-                            int index = parentFrag.viewPager.getCurrentItem();
-                            EventPager adapter = ((EventPager) parentFrag.viewPager.getAdapter());
-                            TabMyEventFragment fragment = (TabMyEventFragment) adapter.getItem(index);
-                            fragment.getData();
                             clear();
-
                             myToast.show(getString(R.string.toast_event_added_success), Toast.LENGTH_SHORT, true);
 
-                        } else {
+                            if (UpdateImageActivity.uploadFile != null)
+                                uploadDocument(UpdateImageActivity.uploadFile, registerResponse.getResData().getEventId());
+                            else {
 
+                                ((CsoDashboardActivity) context).setEventFragment();
+                                myProgressDialog.dismiss();
+                            }
+                        } else {
+                            myProgressDialog.dismiss();
                             myToast.show(getString(R.string.toast_event_added_failed), Toast.LENGTH_SHORT, false);
                         }
                     } else {
+                        myProgressDialog.dismiss();
                         myToast.show(getString(R.string.err_server), Toast.LENGTH_SHORT, false);
                     }
-
-                    myProgressDialog.dismiss();
 
                 });
             } else {
@@ -1083,11 +1060,18 @@ public class TabNewEventFragment extends Fragment implements OnMapReadyCallback,
             eventUpdateRequest.setEvent_city(str_city);
             eventUpdateRequest.setEvent_postcode(str_zip);
             eventUpdateRequest.setEvent_timezone(timezone_id);
-            eventUpdateRequest.setEvent_latitude(String.valueOf(latitude));
-            eventUpdateRequest.setEvent_longitude(String.valueOf(longitude));
+
+            if (location) {
+                eventUpdateRequest.setEvent_latitude(String.valueOf(latitude));
+                eventUpdateRequest.setEvent_longitude(String.valueOf(longitude));
+            } else {
+                eventUpdateRequest.setEvent_latitude("");
+                eventUpdateRequest.setEvent_longitude("");
+            }
+
             eventUpdateRequest.setEvent_phone(str_phone_no);
             eventUpdateRequest.setEvent_email(str_email);
-            eventUpdateRequest.setEvent_image(UpdateImageActivity.uploadFile != null ? UpdateImageActivity.uploadFile.getName() : "");
+            eventUpdateRequest.setEvent_image(""/*UpdateImageActivity.uploadFile != null ? UpdateImageActivity.uploadFile.getName() : */);
             eventUpdateRequest.setEvent_register_start_date(str_start_date);
             eventUpdateRequest.setEvent_register_end_date(str_end_date);
             if (Utility.isNetworkAvailable(context)) {
@@ -1098,26 +1082,63 @@ public class TabNewEventFragment extends Fragment implements OnMapReadyCallback,
 
                             clear();
                             myToast.show(getString(R.string.event_updated_successfully), Toast.LENGTH_SHORT, true);
-                            //getActivity().getFragmentManager().popBackStack();
-                            ((AppCompatActivity) context).onBackPressed();
+
+                            if (UpdateImageActivity.uploadFile != null)
+                                uploadDocument(UpdateImageActivity.uploadFile, eventData.getEventId());
+                            else {
+                                ((CsoDashboardActivity) context).setEventFragment();
+                                myProgressDialog.dismiss();
+                            }
 
                         } else {
-
+                            myProgressDialog.dismiss();
                             myToast.show(getString(R.string.err_event_not_updated), Toast.LENGTH_SHORT, false);
 
                         }
                     } else {
+                        myProgressDialog.dismiss();
                         myToast.show(getString(R.string.err_server), Toast.LENGTH_SHORT, false);
                     }
-
-                    myProgressDialog.dismiss();
                 });
             } else {
                 myToast.show(getString(R.string.no_internet_connection), Toast.LENGTH_SHORT, false);
             }
-
         }
+    }
 
+    private void uploadDocument(File fileToUpload, String event_id) {
+
+        //myProgressDialog.show(getString(R.string.please_wait));
+        MultipartBody.Part filePart = MultipartBody.Part.createFormData("event_image", fileToUpload.getName(), RequestBody.create(MediaType.parse("*/*"), fileToUpload));
+        ApiInterface apiInterface = Api.getClient();
+
+        Call<UploadDocumentResponse> call = apiInterface.uploadEventImage(filePart, event_id, sharedPref.getUserId(), "1234", "cso_event_file_upload");
+
+        call.enqueue(new Callback<UploadDocumentResponse>() {
+            @Override
+            public void onResponse(Call<UploadDocumentResponse> call, Response<UploadDocumentResponse> response) {
+
+                if (response.body() != null) {
+
+                    if (response.body().getResStatus().equalsIgnoreCase("200")) {
+                        myProgressDialog.dismiss();
+                        myToast.show(getString(R.string.file_uploaded_successfully), Toast.LENGTH_SHORT, true);
+
+
+                    } else {
+                        myProgressDialog.dismiss();
+                        myToast.show(getString(R.string.err_file_upload_failed), Toast.LENGTH_SHORT, true);
+                    }
+                    ((CsoDashboardActivity) context).setEventFragment();
+                }
+            }
+
+            @Override
+            public void onFailure(Call<UploadDocumentResponse> call, Throwable t) {
+                t.printStackTrace();
+                myProgressDialog.dismiss();
+            }
+        });
     }
 
     public static void setDate(String date) {
@@ -1220,7 +1241,6 @@ public class TabNewEventFragment extends Fragment implements OnMapReadyCallback,
     }
 
     public int getCountryPosition() {
-        int id = 3;
         int position = -1;
         for (int i = 0; i < countryListData.size(); i++) {
             if (countryListData.get(i).getCountryName().equalsIgnoreCase(eventData.getEventCountry()) || countryListData.get(i).getCountryId().equalsIgnoreCase(eventData.getEventCountry())) {
@@ -1232,7 +1252,6 @@ public class TabNewEventFragment extends Fragment implements OnMapReadyCallback,
     }
 
     public int getStatePosition() {
-        int id = 3;
         int position = -1;
         for (int i = 0; i < stateListData.size(); i++) {
             if (stateListData.get(i).getStateName().equalsIgnoreCase(eventData.getEventState()) || stateListData.get(i).getStateId().equalsIgnoreCase(eventData.getEventState())) {

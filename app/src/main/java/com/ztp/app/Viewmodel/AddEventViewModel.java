@@ -21,7 +21,6 @@ public class AddEventViewModel extends ViewModel {
     private ApiInterface apiInterface = Api.getClient();
     private EventAddRequest eventAddRequest;
 
-
     public LiveData<AddEventResponse> getRegisterResponse(EventAddRequest eventAddRequest) {
         eventAddResponseMutableLiveData = new MutableLiveData<>();
         this.eventAddRequest = eventAddRequest;

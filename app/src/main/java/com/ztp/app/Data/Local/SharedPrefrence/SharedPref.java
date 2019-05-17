@@ -22,6 +22,7 @@ public class SharedPref {
     private String otp = "otp";
     private String isChanged = "isChanged";
     private String eventImageBase64 = "eventImageBase64";
+    private String setLocation = "setLocation";
 
     public static SharedPref getInstance(Context context) {
         if (instance == null) {
@@ -132,5 +133,13 @@ public class SharedPref {
 
     public void setEventImageBase64(String eventimagebase64) {
         editor.putString(eventImageBase64, eventimagebase64).apply();
+    }
+
+    public boolean getLocation() {
+        return sharedPreferences.getBoolean(setLocation, false);
+    }
+
+    public void setLocation(boolean location) {
+        editor.putBoolean(setLocation, location).apply();
     }
 }

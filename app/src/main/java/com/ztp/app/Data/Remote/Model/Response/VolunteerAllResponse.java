@@ -1,5 +1,6 @@
 package com.ztp.app.Data.Remote.Model.Response;
 
+import java.io.Serializable;
 import java.util.List;
 import com.google.gson.annotations.Expose;
 import com.google.gson.annotations.SerializedName;
@@ -49,7 +50,7 @@ public class VolunteerAllResponse {
     public void setResStatus(String resStatus) {
         this.resStatus = resStatus;
     }
-    public class ResData {
+    public class ResData implements Serializable {
 
         @SerializedName("map_id")
         @Expose
@@ -111,7 +112,7 @@ public class VolunteerAllResponse {
         @SerializedName("event_heading")
         @Expose
         private String eventHeading;
-        @SerializedName("shift_date")
+        @SerializedName("shift_date_format")
         @Expose
         private String shiftDate;
         @SerializedName("shift_start_time")

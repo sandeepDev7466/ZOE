@@ -10,6 +10,8 @@ import android.database.Cursor;
 import android.graphics.Bitmap;
 import android.graphics.BitmapFactory;
 import android.graphics.Color;
+import android.location.Address;
+import android.location.Geocoder;
 import android.location.LocationManager;
 import android.net.ConnectivityManager;
 import android.net.Uri;
@@ -41,6 +43,7 @@ import com.ztp.app.R;
 
 import java.io.ByteArrayOutputStream;
 import java.io.File;
+import java.io.IOException;
 import java.net.InetAddress;
 import java.net.UnknownHostException;
 import java.text.DateFormat;
@@ -48,6 +51,7 @@ import java.text.ParseException;
 import java.text.SimpleDateFormat;
 import java.util.Calendar;
 import java.util.Date;
+import java.util.List;
 import java.util.Locale;
 import java.util.TimeZone;
 import java.util.concurrent.TimeUnit;
@@ -125,8 +129,8 @@ public class Utility {
         String format = "MM-dd-yyyy";
         SimpleDateFormat simpleDateFormat = new SimpleDateFormat(format, Locale.ENGLISH);
         simpleDateFormat.setTimeZone(TimeZone.getTimeZone("Asia/Kolkata"));
-        String formattedNow = simpleDateFormat.format(date);
-        return formattedNow;
+
+        return simpleDateFormat.format(date);
 
     }
 
@@ -134,11 +138,10 @@ public class Utility {
     public static String formatDateFullTime(Date date) {
 
         String format = "MM-dd-yyyy HH:mm:ss";
-        SimpleDateFormat simpleDateFormat = new SimpleDateFormat(format);
+        SimpleDateFormat simpleDateFormat = new SimpleDateFormat(format,Locale.ENGLISH);
         simpleDateFormat.setTimeZone(TimeZone.getTimeZone("Asia/Kolkata"));
-        String formattedNow = simpleDateFormat.format(date);
 
-        return formattedNow;
+        return simpleDateFormat.format(date);
 
     }
     public static int daysInBetween(Date startDateValue, Date endDateValue) {
@@ -444,5 +447,28 @@ public class Utility {
         byte[] decodedByte = Base64.decode(input, 0);
         return BitmapFactory
                 .decodeByteArray(decodedByte, 0, decodedByte.length);
+    }
+
+    public static String getAddressInformation(Context context,double lat, double lng) {
+        Geocoder geocoder = new Geocoder(context, Locale.getDefault());
+        String add;
+        try {
+            List<Address> addresses = geocoder.getFromLocation(lat, lng, 1);
+            Address obj = addresses.get(0);
+            add = obj.getAddressLine(0);
+            add = add + "\n" + obj.getCountryName();
+            add = add + "\n" + obj.getCountryCode();
+            add = add + "\n" + obj.getAdminArea();
+            add = add + "\n" + obj.getPostalCode();
+            add = add + "\n" + obj.getSubAdminArea();
+            add = add + "\n" + obj.getLocality();
+            add = add + "\n" + obj.getSubThoroughfare();
+
+        } catch (IOException e) {
+            // TODO Auto-generated catch block
+            e.printStackTrace();
+            add = "";
+        }
+        return  add;
     }
 }

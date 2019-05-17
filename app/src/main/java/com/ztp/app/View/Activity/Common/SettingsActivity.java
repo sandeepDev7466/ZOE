@@ -19,9 +19,9 @@ import com.ztp.app.View.Activity.Student.StudentDashboardActivity;
 public class SettingsActivity extends AppCompatActivity implements View.OnClickListener {
 
     Context context;
-    LabeledSwitch sw_theme, sw_language;
+    LabeledSwitch sw_theme, sw_language,sw_location;
     SharedPref sharedPref;
-    boolean theme, language;
+    boolean theme, language,location;
     ImageView back;
 
     @Override
@@ -35,14 +35,18 @@ public class SettingsActivity extends AppCompatActivity implements View.OnClickL
         Utility.makeStatusBarTransparent(context);
         sw_theme = findViewById(R.id.theme);
         sw_language = findViewById(R.id.language);
+        sw_location = findViewById(R.id.location);
         back = findViewById(R.id.back);
+
         back.setOnClickListener(this);
 
         theme = sharedPref.getTheme();
         language = sharedPref.getLanguage();
+        location = sharedPref.getLocation();
 
         sw_theme.setOn(theme);
         sw_language.setOn(language);
+        sw_location.setOn(location);
 
 
         sw_theme.setOnToggledListener((toggleableView, isOn) -> {
@@ -74,6 +78,17 @@ public class SettingsActivity extends AppCompatActivity implements View.OnClickL
                 Utility.setLocale(context, "en");
                 recreate();
                 sharedPref.setIsChanged(true);
+            }
+        });
+
+        sw_location.setOnToggledListener((toggleableView, isOn) -> {
+            if (isOn) {
+                sharedPref.setLocation(true);
+
+
+            } else {
+                sharedPref.setLocation(false);
+
             }
         });
 

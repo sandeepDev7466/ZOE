@@ -17,7 +17,7 @@ public class VolunteerAllRequestViewModel extends ViewModel {
     private VolunteerAllRequest volunteerAllRequest;
 
 
-    public LiveData<VolunteerAllResponse> getVolunteerAllRequetResponse(VolunteerAllRequest volunteerAllRequest) {
+    public LiveData<VolunteerAllResponse> getVolunteerAllRequestResponse(VolunteerAllRequest volunteerAllRequest) {
         volunteerAllResponseMutableLiveData = new MutableLiveData<>();
         this.volunteerAllRequest = volunteerAllRequest;
         getResponse();

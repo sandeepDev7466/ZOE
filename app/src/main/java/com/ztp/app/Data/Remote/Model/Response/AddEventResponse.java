@@ -3,10 +3,6 @@ package com.ztp.app.Data.Remote.Model.Response;
 import com.google.gson.annotations.Expose;
 import com.google.gson.annotations.SerializedName;
 
-/**
- * Created by htl-dev on 15-04-2019.
- */
-
 public class AddEventResponse {
 
 
@@ -18,12 +14,12 @@ public class AddEventResponse {
     private String resStatus;
     @SerializedName("res_data")
     @Expose
-    private AddEventResponse.ResData resData;
+    private ResData resData;
 
     public AddEventResponse() {
     }
 
-    public AddEventResponse(String apiResKey, String resStatus, AddEventResponse.ResData resData) {
+    public AddEventResponse(String apiResKey, String resStatus, ResData resData) {
         super();
         this.apiResKey = apiResKey;
         this.resStatus = resStatus;
@@ -46,36 +42,35 @@ public class AddEventResponse {
         this.resStatus = resStatus;
     }
 
-    public AddEventResponse.ResData getResData() {
+    public ResData getResData() {
         return resData;
     }
 
-    public void setResData(AddEventResponse.ResData resData) {
+    public void setResData(ResData resData) {
         this.resData = resData;
     }
+
     public class ResData {
 
-        @SerializedName("user_id")
+        @SerializedName("event_id")
         @Expose
-        private String userId;
+        private String eventId;
 
         public ResData() {
         }
 
-        public ResData(String userId) {
+        public ResData(String eventId) {
             super();
-            this.userId = userId;
+            this.eventId = eventId;
         }
 
-        public String getUserId() {
-            return userId;
+        public String getEventId() {
+            return eventId;
         }
 
-        public void setUserId(String userId) {
-            this.userId = userId;
+        public void setEventId(String eventId) {
+            this.eventId = eventId;
         }
 
     }
-
-
 }

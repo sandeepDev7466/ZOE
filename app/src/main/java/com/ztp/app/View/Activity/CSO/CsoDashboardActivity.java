@@ -31,6 +31,7 @@ import com.ztp.app.View.Fragment.CSO.Event.EventListFragment;
 import com.ztp.app.View.Fragment.CSO.Event.TabNewEventFragment;
 import com.ztp.app.View.Fragment.CSO.Message.MessageFragment;
 import com.ztp.app.View.Fragment.CSO.Students.StudentsFragment;
+import com.ztp.app.View.Fragment.CSO.Students.TabStudentsVolunteersFragment;
 
 public class CsoDashboardActivity extends AppCompatActivity implements View.OnClickListener {
 
@@ -137,7 +138,7 @@ public class CsoDashboardActivity extends AppCompatActivity implements View.OnCl
     @Override
     protected void onRestart() {
         super.onRestart();
-        if(sharedPref.getIsChanged()) {
+        if (sharedPref.getIsChanged()) {
             recreate();
             sharedPref.setIsChanged(false);
         }
@@ -331,6 +332,11 @@ public class CsoDashboardActivity extends AppCompatActivity implements View.OnCl
         Utility.replaceFragment(context, new MessageFragment(), "MessageFragment");
     }
 
+    public void setStudentFragmentFrom() {
+        setStudentAlpha();
+        Utility.replaceFragment(context, new TabStudentsVolunteersFragment(), "TabStudentsVolunteersFragment");
+
+    }
 
     private void setDashboardAlpha() {
         hangout.setAlpha(Constants.alpha);

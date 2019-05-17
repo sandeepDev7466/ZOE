@@ -1,7 +1,6 @@
 package com.ztp.app.View.Fragment.Student.Extra;
 
 import android.app.Dialog;
-import android.arch.lifecycle.LifecycleOwner;
 import android.content.Context;
 import android.os.Bundle;
 import android.text.format.DateFormat;
@@ -11,18 +10,13 @@ import android.view.ViewGroup;
 import android.widget.BaseAdapter;
 import android.widget.ImageView;
 import android.widget.LinearLayout;
-import android.widget.Toast;
 
-import com.ztp.app.Data.Remote.Model.Request.DeleteEventRequest;
 import com.ztp.app.Data.Remote.Model.Response.SearchEventResponse;
 import com.ztp.app.Helper.MyBoldTextView;
 import com.ztp.app.Helper.MyTextView;
-import com.ztp.app.Helper.MyToast;
 import com.ztp.app.R;
 import com.ztp.app.Utils.Utility;
-import com.ztp.app.View.Fragment.CSO.Event.AddNewShiftFragment;
-import com.ztp.app.View.Fragment.CSO.Event.ShiftListFragment;
-import com.ztp.app.View.Fragment.CSO.Event.TabNewEventFragment;
+import com.ztp.app.View.Fragment.Student.Booking.ShiftListFragment;
 import com.ztp.app.View.Fragment.Common.EventDetailFragment;
 
 import java.util.Date;
@@ -84,7 +78,7 @@ public class SearchedEventAdapter extends BaseAdapter {
         holder.day.setText(dayOfTheWeek);
 
 
-        holder.imv_view.setOnClickListener(v -> {
+        view.setOnClickListener(v -> {
 
 
             Dialog dialog = new Dialog(context);

@@ -21,7 +21,8 @@ import com.willy.ratingbar.BaseRatingBar;
 import com.willy.ratingbar.ScaleRatingBar;
 import com.ztp.app.Data.Remote.Model.Request.ShiftUpdateRequest;
 import com.ztp.app.Data.Remote.Model.Request.SiftAddRequest;
-import com.ztp.app.Data.Remote.Model.Response.GetShiftListResponse;
+import com.ztp.app.Data.Remote.Model.Response.GetCSOShiftResponse;
+import com.ztp.app.Data.Remote.Model.Response.GetVolunteerShiftListResponse;
 import com.ztp.app.Helper.MyProgressDialog;
 import com.ztp.app.Helper.MyTextInputEditText;
 import com.ztp.app.Helper.MyToast;
@@ -30,8 +31,6 @@ import com.ztp.app.Utils.Utility;
 import com.ztp.app.Viewmodel.AddShiftViewModel;
 import com.ztp.app.Viewmodel.UpdateShiftViewModel;
 
-import java.text.ParseException;
-import java.text.SimpleDateFormat;
 import java.util.Calendar;
 import java.util.Date;
 import java.util.Locale;
@@ -63,7 +62,7 @@ public class AddNewShiftFragment extends Fragment {
     Button clear;
     MyToast myToast;
     String event_id = "";
-    GetShiftListResponse.ShiftData shiftData;
+    GetCSOShiftResponse.ResData shiftData;
     String status = "";
     ScaleRatingBar rank;
     float ratingRank;
@@ -219,7 +218,7 @@ public class AddNewShiftFragment extends Fragment {
             update.setOnClickListener(v14 -> addShift());
         } else {
             Bundle b = getArguments();
-            shiftData = (GetShiftListResponse.ShiftData) b.getSerializable("shiftData");
+            shiftData = (GetCSOShiftResponse.ResData) b.getSerializable("shiftData");
             populateData(shiftData);
             update.setOnClickListener(v14 -> updateShift());
         }
@@ -328,7 +327,7 @@ public class AddNewShiftFragment extends Fragment {
 
                                 myProgressDialog.show(getString(R.string.please_wait));
                                 ShiftUpdateRequest shiftUpdateRequest = new ShiftUpdateRequest();
-                                shiftUpdateRequest.setShift_id(shiftData.getShift_id());
+                                shiftUpdateRequest.setShift_id(shiftData.getShiftId());
 
                                 Date d = Utility.convertStringToDateWithoutTime(str_date);
                                 shiftUpdateRequest.setShift_date(Utility.formatDateFull(d));
@@ -344,7 +343,7 @@ public class AddNewShiftFragment extends Fragment {
                                     updateShiftViewModel.getUpdateShiftResponse(shiftUpdateRequest).observe((LifecycleOwner) context, shiftResponse -> {
                                         if (shiftResponse != null) {
                                             if (shiftResponse.getResStatus().equalsIgnoreCase("200")) {
-                                                    myToast.show(getString(R.string.shift_updated_success), Toast.LENGTH_SHORT, true);
+                                                myToast.show(getString(R.string.shift_updated_success), Toast.LENGTH_SHORT, true);
                                                 ((AppCompatActivity)context).getSupportFragmentManager().popBackStack();
 
                                             } else {
@@ -382,12 +381,12 @@ public class AddNewShiftFragment extends Fragment {
     }
 
 
-    public void populateData(GetShiftListResponse.ShiftData shiftData) {
-        et_date.setText(shiftData.getShift_date());
-        et_start_time.setText(shiftData.getShift_start_time());
-        et_end_time_volunteers.setText(shiftData.getShift_end_time());
-        et_volunteer.setText(shiftData.getShift_vol_req());
-        et_task.setText(shiftData.getShift_task());
-        rank.setRating(Float.parseFloat(shiftData.getShift_rank()));
+    public void populateData(GetCSOShiftResponse.ResData shiftData) {
+        et_date.setText(shiftData.getShiftDate());
+        et_start_time.setText(shiftData.getShift_start_time_s());
+        et_end_time_volunteers.setText(shiftData.getShift_end_time_s());
+        et_volunteer.setText(shiftData.getShiftVolReq());
+        et_task.setText(shiftData.getShiftTask());
+        rank.setRating(Float.parseFloat(shiftData.getShiftRank()));
     }
 }

@@ -4,6 +4,7 @@ import com.ztp.app.Data.Remote.Model.Request.BlogSearchRequest;
 import com.ztp.app.Data.Remote.Model.Request.CSOAllRequest;
 import com.ztp.app.Data.Remote.Model.Request.ChangeStatusByCSORequest;
 import com.ztp.app.Data.Remote.Model.Request.ChangeVolunteerStatusRequest;
+import com.ztp.app.Data.Remote.Model.Request.CsoDashboardCombinedRequest;
 import com.ztp.app.Data.Remote.Model.Request.CsoRegisterRequestStep_1;
 import com.ztp.app.Data.Remote.Model.Request.CsoRegisterRequestStep_2;
 import com.ztp.app.Data.Remote.Model.Request.CsoRegisterRequestStep_3;
@@ -12,7 +13,7 @@ import com.ztp.app.Data.Remote.Model.Request.DeleteShiftRequest;
 import com.ztp.app.Data.Remote.Model.Request.EventAddRequest;
 import com.ztp.app.Data.Remote.Model.Request.EventUpdateRequest;
 import com.ztp.app.Data.Remote.Model.Request.GetEventDetailRequest;
-import com.ztp.app.Data.Remote.Model.Request.GetEventShiftRequest;
+import com.ztp.app.Data.Remote.Model.Request.GetCSOShiftRequest;
 import com.ztp.app.Data.Remote.Model.Request.GetEventsRequest;
 import com.ztp.app.Data.Remote.Model.Request.GetMonthEventDateRequest;
 import com.ztp.app.Data.Remote.Model.Request.GetProfileRequest;
@@ -35,6 +36,7 @@ import com.ztp.app.Data.Remote.Model.Response.BlogSearchResponse;
 import com.ztp.app.Data.Remote.Model.Response.CSOAllResponse;
 import com.ztp.app.Data.Remote.Model.Response.ChangeStatusByCSOResponse;
 import com.ztp.app.Data.Remote.Model.Response.CountryResponse;
+import com.ztp.app.Data.Remote.Model.Response.CsoDashboardCombinedResponse;
 import com.ztp.app.Data.Remote.Model.Response.CsoRegisterResponseStep_1;
 import com.ztp.app.Data.Remote.Model.Response.CsoRegisterResponseStep_2;
 import com.ztp.app.Data.Remote.Model.Response.CsoRegisterResponseStep_3;
@@ -42,12 +44,12 @@ import com.ztp.app.Data.Remote.Model.Response.DeleteEventResponse;
 import com.ztp.app.Data.Remote.Model.Response.DeleteShiftResponse;
 import com.ztp.app.Data.Remote.Model.Response.EventTypeResponse;
 import com.ztp.app.Data.Remote.Model.Response.GetEventDetailResponse;
-import com.ztp.app.Data.Remote.Model.Response.GetEventShiftResponse;
+import com.ztp.app.Data.Remote.Model.Response.GetCSOShiftResponse;
 import com.ztp.app.Data.Remote.Model.Response.GetEventsResponse;
 import com.ztp.app.Data.Remote.Model.Response.GetMonthEventDateResponse;
 import com.ztp.app.Data.Remote.Model.Response.GetProfileResponse;
 import com.ztp.app.Data.Remote.Model.Response.GetShiftDetailResponse;
-import com.ztp.app.Data.Remote.Model.Response.GetShiftListResponse;
+import com.ztp.app.Data.Remote.Model.Response.GetVolunteerShiftListResponse;
 import com.ztp.app.Data.Remote.Model.Response.LoginResponse;
 import com.ztp.app.Data.Remote.Model.Response.PostVolunteerRequestResponse;
 import com.ztp.app.Data.Remote.Model.Response.PublishResponse;
@@ -110,8 +112,8 @@ public interface ApiInterface {
     @POST("user-access.php?api_key=1234&action=update_account")
     Call<UpdateProfileResponse> doUpdateProfile(@Body UpdateProfileRequest updateProfileRequest);
 
-    @POST("cso-action.php?api_key=1234&action=get_all_shift")
-    Call<GetEventShiftResponse> getEventShift(@Body GetEventShiftRequest getEventShiftRequest);
+    /*@POST("cso-action.php?api_key=1234&action=get_all_shift")
+    Call<GetCSOShiftResponse> getEventShift(@Body GetCSOShiftRequest getEventShiftRequest);*/
 
     @POST("cso-action.php?api_key=1234&action=get_event_detail")
     Call<GetEventDetailResponse> getEventDetail(@Body GetEventDetailRequest getEventDetailRequest);
@@ -145,8 +147,8 @@ public interface ApiInterface {
     @POST("cso-action.php?api_key=1234&action=get_all_event")
     Call<GetEventsResponse> getEventList(@Body GetEventsRequest getEventsRequest);
 
-    @POST("cso-action.php?api_key=1234&action=get_all_shift")
-    Call<GetShiftListResponse> getShiftList(@Body GetShiftListRequest getShiftListRequest);
+  /*  @POST("cso-action.php?api_key=1234&action=get_all_shift")
+    Call<GetVolunteerShiftListResponse> getShiftList(@Body GetShiftListRequest getShiftListRequest);*/
 
     @POST("cso-action.php?api_key=1234&action=d_event")
     Call<DeleteEventResponse> getDeleteEvent(@Body DeleteEventRequest deleteEventRequest);
@@ -176,7 +178,7 @@ public interface ApiInterface {
     Call<GetMonthEventDateResponse> getGetMonthEventDate(@Body GetMonthEventDateRequest getMonthEventDateRequest);
 
     @POST("search-event.php?api_key=1234&action=get_all_shift_vol")
-    Call<GetShiftListResponse> getSearchShiftList(@Body GetSearchShiftListRequest getShiftListRequest);
+    Call<GetVolunteerShiftListResponse> getSearchShiftList(@Body GetSearchShiftListRequest getShiftListRequest);
 
     @POST("vol-action.php?api_key=1234&action=vol_request_status")
     Call<ChangeVolunteerStatusResponse> changeVolunteerStatus(@Body ChangeVolunteerStatusRequest changeVolunteerStatusRequest);
@@ -184,7 +186,19 @@ public interface ApiInterface {
     @POST("cso-action.php?api_key=1234&action=col_request_status")
     Call<ChangeStatusByCSOResponse> changeStatusByCSO(@Body ChangeStatusByCSORequest changeStatusByCSORequest);
 
-    @POST("cso-action.php?api_key=1234&action=p_even")
+    @POST("cso-action.php?api_key=1234&action=p_event")
     Call<PublishResponse> publish(@Body PublishRequest publishRequest);
+
+    @POST("cso-action.php?api_key=1234&action=get_all_shift")
+    Call<GetCSOShiftResponse> getCSOShift(@Body GetCSOShiftRequest getEventShiftRequest);
+
+    @Multipart
+    @POST("file-upload.php")
+    Call<UploadDocumentResponse> uploadEventImage(@Part MultipartBody.Part filePart,@Query("event_id") String event_id,@Query("user_id") String user_id, @Query("api_key") String apiKey, @Query("action") String action);
+
+    //@POST("cso-action.php?api_key=1234&action=cso_dashboard_combine")
+    @POST("cso-action.php?api_key=1234&action=cso_dashboard_combine_mob")
+    Call<CsoDashboardCombinedResponse> getCsoDashoardCombined(@Body CsoDashboardCombinedRequest csoDashboardCombinedRequest);
+
 
 }

@@ -19,6 +19,7 @@ import android.support.v4.content.FileProvider;
 import android.support.v7.app.AppCompatActivity;
 import android.util.Base64;
 import android.view.View;
+import android.widget.Button;
 import android.widget.ImageView;
 import android.widget.Toast;
 
@@ -35,6 +36,10 @@ import com.theartofdev.edmodo.cropper.CropImage;
 import com.theartofdev.edmodo.cropper.CropImageView;
 import com.ztp.app.BuildConfig;
 import com.ztp.app.Data.Local.SharedPrefrence.SharedPref;
+import com.ztp.app.Data.Remote.Model.Response.UploadDocumentResponse;
+import com.ztp.app.Data.Remote.Service.Api;
+import com.ztp.app.Data.Remote.Service.ApiInterface;
+import com.ztp.app.Helper.MyProgressDialog;
 import com.ztp.app.Helper.MyTextView;
 import com.ztp.app.Helper.MyToast;
 import com.ztp.app.R;
@@ -48,17 +53,27 @@ import java.text.SimpleDateFormat;
 import java.util.Date;
 import java.util.Locale;
 
+import okhttp3.MediaType;
+import okhttp3.MultipartBody;
+import okhttp3.RequestBody;
+import retrofit2.Call;
+import retrofit2.Callback;
+import retrofit2.Response;
+
 public class UpdateImageActivity extends AppCompatActivity implements View.OnClickListener {
 
     Context context;
     MyToast myToast;
-    public static String path;
-    public static File uploadFile;
+    String path;
+    public static File uploadFile = null;
+    public static boolean cameFrom = false;
     String type;
-    MyTextView browse,cancel;
+    MyTextView browse,fileName,file,title;
     ImageView image;
     SharedPref sharedPref;
     String imgPath;
+    Button upload,cancel;
+    MyProgressDialog myProgressDialog;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -68,20 +83,32 @@ public class UpdateImageActivity extends AppCompatActivity implements View.OnCli
         myToast = new MyToast(context);
         browse = findViewById(R.id.browse);
         cancel = findViewById(R.id.cancel);
+        upload = findViewById(R.id.upload);
         image = findViewById(R.id.image);
         sharedPref = SharedPref.getInstance(context);
+        myProgressDialog = new MyProgressDialog(context);
+        fileName = findViewById(R.id.fileName);
+        file = findViewById(R.id.file);
+        title = findViewById(R.id.title);
 
         browse.setOnClickListener(this);
         cancel.setOnClickListener(this);
+        upload.setOnClickListener(this);
 
         if (getIntent() != null) {
             type = getIntent().getStringExtra("action");
-            if(type.equalsIgnoreCase("update"))
-              imgPath = getIntent().getStringExtra("image");
-              if(imgPath!=null && !imgPath.isEmpty())
-              {
-                  Picasso.with(context).load(imgPath).error(R.drawable.no_image).into(image);
-              }
+            if(type.equalsIgnoreCase("update")) {
+                imgPath = getIntent().getStringExtra("image");
+                title.setText(getString(R.string.update_event_image));
+                if(imgPath!=null && !imgPath.isEmpty())
+                {
+                    Picasso.with(context).load(imgPath).fit().error(R.drawable.no_image).into(image);
+                }
+            }
+            else
+            {
+                title.setText(getString(R.string.add_event_image));
+            }
         }
     }
 
@@ -137,8 +164,9 @@ public class UpdateImageActivity extends AppCompatActivity implements View.OnCli
                     sharedPref.setEventImageBase64(Utility.encodeTobase64(bitmap));
                     path = resultUri.getPath();
                     uploadFile = new File(path);
-
-                    cancel.setText("Done");
+                    fileName.setVisibility(View.VISIBLE);
+                    file.setText(uploadFile.getName());
+                    cameFrom = true;
 
                 } else if (resultCode == CropImage.CROP_IMAGE_ACTIVITY_RESULT_ERROR_CODE) {
                     Exception error = result.getError();
@@ -160,7 +188,17 @@ public class UpdateImageActivity extends AppCompatActivity implements View.OnCli
                         .start(this);
                 break;
             case R.id.cancel:
+                uploadFile = null;
+                sharedPref.setEventImageBase64("");
+                cameFrom = false;
                 finish();
+                break;
+            case R.id.upload:
+               finish();
+               if(uploadFile!=null)
+                   cameFrom = true;
+               else
+                   cameFrom = false;
                 break;
         }
     }

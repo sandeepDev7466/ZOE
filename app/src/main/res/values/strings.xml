@@ -272,7 +272,7 @@
     <string name="gpa">GPA</string>
     <string name="hrs">HRS</string>
     <string name="search_events_by_city_state_zip_email_amp_location"><![CDATA[Search events by City, State, Zip, Email & Location.]]></string>
-    <string name="shift_date">Date</string>
+    <string name="shift_date">Shift Date</string>
     <string name="shift_volunteer_request">Volunteer Request</string>
     <string name="shift_start_time">Start Time</string>
     <string name="shift_end_time">End Time</string>
@@ -309,12 +309,12 @@
     <string name="err_enter_start_time_first">Enter start time first</string>
     <string name="err_endtime_notbefore_startime">End time can\'t be before Start time</string>
 
-//Volunteer
+    //Volunteer
     <string name="status_volunteer">Volunteer for Shift</string>
     <string name="status_withdraw">Withdraw</string>
     <string name="status_initiate_DM">Initiate DM to CSO Admin that declined</string>
     <string name="status_complete">Mark Complete</string>
-//CSO
+    //CSO
     <string name="status_accept">Accept</string>
     <string name="status_decline">Decline</string>
     <string name="status_reject">Reject</string>
@@ -325,9 +325,6 @@
     <string name="toast_reject_request_success">Request Rejected</string>
     <string name="toast_verify_cso_request_success">Request Completed and Verified</string>
     <string name="toast_info_cso_request_success">More Info Required</string>
-    <string name="toast_publish_success">Event Published Successfully</string>
-    <string name="toast_unpublish_success">Event Un-Published Successfully</string>
-
 
     <string name="confirm_delete">Confirm delete?</string>
     <string name="are_you_sure_you_want_to_delete">Are you sure you want to delete?</string>
@@ -338,6 +335,28 @@
     <string name="upload_image_related_to_event">Upload image related to event</string>
     <string name="browse">Browse</string>
     <string name="done">Done</string>
+
+    <string name="file_name">File Name :</string>
+    <string name="choose_image">CHOOSE IMAGE</string>
+    <string name="add_event_image">ADD EVENT IMAGE</string>
+    <string name="update_event_image">UPDATE EVENT IMAGE</string>
+    <string name="confirm_publish">Confirm Publish?</string>
+    <string name="confirm_unpublish">Confirm Unpublish?</string>
+    <string name="are_you_sure_you_want_to_publish">Are you sure you want to Publish the Event?</string>
+    <string name="are_you_sure_you_want_to_unpublish">Are you sure you want to Unpublish the Event?</string>
+    <string name="toast_publish_success">Event Published Successfully</string>
+    <string name="toast_publish_failed">Event Publish Request Failed</string>
+    <string name="toast_unpublish_success">Event Unpublished Successfully</string>
+    <string name="toast_unpublish_failed">Event Unpublish Request Failed</string>
+
+    <string name="volunteer_requested">Volunteer Requested</string>
+    <string name="creation_date">Creation Date</string>
+    <string name="rank_caps">RANK</string>
+    <string name="from"><b>From : </b></string>
+    <string name="volunteer_required">Volunteer Required</string>
+    <string name="here">Here</string>
+    <string name="Registration">Registration :</string>
+    <string name="to"> to </string>
 
 
     <string-array name="gender">
@@ -371,7 +390,6 @@
         <item>Volunteer</item>
         <item>CSO</item>
     </string-array>
-
 
 
 

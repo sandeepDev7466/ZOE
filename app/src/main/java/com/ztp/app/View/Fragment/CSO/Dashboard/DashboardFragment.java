@@ -14,26 +14,29 @@ import android.support.v4.app.FragmentActivity;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
-import android.view.ViewStub;
 import android.widget.ImageView;
 import android.widget.LinearLayout;
 import android.widget.ListView;
+import android.widget.ScrollView;
 import android.widget.Toast;
 
 import com.applandeo.materialcalendarview.CalendarView;
 import com.applandeo.materialcalendarview.EventDay;
-import com.applandeo.materialcalendarview.listeners.OnDayClickListener;
+import com.applandeo.materialcalendarview.exceptions.OutOfDateRangeException;
 import com.ztp.app.Data.Local.SharedPrefrence.SharedPref;
-import com.ztp.app.Data.Remote.Model.Request.GetMonthEventDateRequest;
-import com.ztp.app.Data.Remote.Model.Response.GetMonthEventDateResponse;
+import com.ztp.app.Data.Remote.Model.Request.CsoDashboardCombinedRequest;
+import com.ztp.app.Data.Remote.Model.Response.CsoDashboardCombinedResponse;
 import com.ztp.app.Helper.MyBoldTextView;
 import com.ztp.app.Helper.MyHeadingTextView;
+import com.ztp.app.Helper.MyProgressDialog;
 import com.ztp.app.Helper.MyTextView;
 import com.ztp.app.Helper.MyToast;
 import com.ztp.app.R;
+import com.ztp.app.Model.EventDayModel;
 import com.ztp.app.Utils.Utility;
 import com.ztp.app.View.Activity.CSO.CsoDashboardActivity;
-import com.ztp.app.Viewmodel.GetMonthEventDateViewModel;
+import com.ztp.app.View.Fragment.Common.EventDetailFragment;
+import com.ztp.app.Viewmodel.GetCsoDashoardCombinedViewModel;
 
 import java.text.SimpleDateFormat;
 import java.util.ArrayList;
@@ -44,12 +47,10 @@ import java.util.Locale;
 
 import static android.app.Activity.RESULT_OK;
 
-public class DashboardFragment extends Fragment {
+public class DashboardFragment extends Fragment implements View.OnClickListener {
 
 
     ListView lv_upcoming_event;
-    UpcomingEventModel upcomingEventModel;
-    ArrayList<UpcomingEventModel> upcomingEventModelArrayList = new ArrayList<>();
     MyBoldTextView tv_days, tv_hours, tv_minutes, tv_seconds;
     Context context;
     private Handler handler;
@@ -59,15 +60,20 @@ public class DashboardFragment extends Fragment {
     SharedPref sharedPref;
     ImageView vol_img, con_img;
     MyTextView vol_txt, con_txt;
-    List<EventDay> events;
+    List<EventDay> events = new ArrayList<>();
     private CalendarView mCalendarView;
     private List<EventDay> mEventDays = new ArrayList<>();
     LinearLayout parentLayout;
     View childLayout;
-    GetMonthEventDateViewModel getMonthEventDateViewModel;
+    GetCsoDashoardCombinedViewModel getCsoDashoardCombinedViewModel;
     MyToast myToast;
-    List<GetMonthEventDateResponse.ResData> eventsList = new ArrayList<>();
-
+    List<CsoDashboardCombinedResponse.CalendarData> calendarDataList = new ArrayList<>();
+    List<CsoDashboardCombinedResponse.EventData> eventDataList = new ArrayList<>();
+    List<CsoDashboardCombinedResponse.CountDownData> countDownDataList = new ArrayList<>();
+    List<EventDayModel> eventDayModelList = new ArrayList<>();
+    MyProgressDialog myProgressDialog;
+    ScrollView scrollView;
+    LinearLayout vol_req;
     public DashboardFragment() {
 
     }
@@ -87,142 +93,144 @@ public class DashboardFragment extends Fragment {
         upcoming_text = v.findViewById(R.id.upcoming_text);
         bottomLayout = v.findViewById(R.id.bottomLayout);
         sharedPref = SharedPref.getInstance(context);
+        scrollView = v.findViewById(R.id.scrollView);
         myToast = new MyToast(context);
-       /* getMonthEventDateViewModel = ViewModelProviders.of((FragmentActivity) context).get(GetMonthEventDateViewModel.class);
-
-
-        if(Utility.isNetworkAvailable(context))
-        {
-            getMonthEventDateViewModel.getMonthEventDateResponse(new GetMonthEventDateRequest()).observe((LifecycleOwner) context, getMonthEventDateResponse -> {
-
-                if(getMonthEventDateResponse!=null)
-                {
-                    if(getMonthEventDateResponse.getResStatus().equalsIgnoreCase("200"))
-                    {
-                        eventsList = getMonthEventDateResponse.getResData();
-                    }
-                    else
-                    {
-                        myToast.show(getString(R.string.something_went_wrong), Toast.LENGTH_SHORT,false);
-                    }
-                }
-                else
-                {
-                    myToast.show(getString(R.string.err_server), Toast.LENGTH_SHORT,false);
-                }
-
-            });
-        }
-        else
-        {
-          myToast.show(getString(R.string.no_internet_connection), Toast.LENGTH_SHORT,false);
-        }*/
-
-
+        myProgressDialog = new MyProgressDialog(context);
         vol_img = v.findViewById(R.id.vol_img);
         con_img = v.findViewById(R.id.con_img);
         vol_txt = v.findViewById(R.id.vol_txt);
         con_txt = v.findViewById(R.id.con_txt);
         parentLayout = v.findViewById(R.id.custom_calendar_container);
         theme = sharedPref.getTheme();
-        events = new ArrayList<>();
+        vol_req = v.findViewById(R.id.vol_req);
+        vol_req.setOnClickListener(this);
 
-        if (theme) {
-            bottomLayout.setBackgroundColor(getResources().getColor(R.color.white));
-            upcoming_text.setBackgroundColor(getResources().getColor(R.color.white));
-            upcoming_text.setTextColor(getResources().getColor(R.color.black));
-            vol_img.setColorFilter(getResources().getColor(R.color.white));
-            con_img.setColorFilter(getResources().getColor(R.color.white));
-            vol_txt.setTextColor(getResources().getColor(R.color.black));
-            con_txt.setTextColor(getResources().getColor(R.color.black));
+        getCsoDashoardCombinedViewModel = ViewModelProviders.of((FragmentActivity) context).get(GetCsoDashoardCombinedViewModel.class);
 
-            childLayout = inflater.inflate(R.layout.calendarview_night,
-                    (ViewGroup) v.findViewById(R.id.cal));
-            parentLayout.addView(childLayout);
-            mCalendarView = (CalendarView) childLayout.findViewById(R.id.calendarViews);
-            for (int i = 1; i < 10; i++) {
-                Calendar calendar = Calendar.getInstance();
-                calendar.set(2019, 0, i);
-                events.add(new EventDay(calendar, R.drawable.ic_calendars));
-                mCalendarView.setEvents(events);
-            }
+        if (Utility.isNetworkAvailable(context)) {
 
-            mCalendarView.setOnDayClickListener(new OnDayClickListener() {
+            myProgressDialog.show(getString(R.string.please_wait));
+
+            Calendar c = Calendar.getInstance();
+            int year = c.get(Calendar.YEAR);
+            int month = c.get(Calendar.MONTH);
+
+            getCsoDashoardCombinedViewModel.getCsoDashboardCombinedResponse(new CsoDashboardCombinedRequest(sharedPref.getUserId(), String.valueOf(month), String.valueOf(year), new SimpleDateFormat("MM-dd-yyyy", Locale.ENGLISH).format(new Date()))).observe((LifecycleOwner) context, new Observer<CsoDashboardCombinedResponse>() {
                 @Override
-                public void onDayClick(EventDay eventDay) {
+                public void onChanged(@Nullable CsoDashboardCombinedResponse csoDashboardCombinedResponse) {
+
+                    if (csoDashboardCombinedResponse != null) {
+                        if (csoDashboardCombinedResponse.getResStatus().equalsIgnoreCase("200")) {
+                            eventDataList = csoDashboardCombinedResponse.getResData().getEventData();
+                            calendarDataList = csoDashboardCombinedResponse.getResData().getCalendarData();
+                            countDownDataList = csoDashboardCombinedResponse.getResData().getCountDownData();
+
+                            countDownStart(countDownDataList.get(0).getShiftDate() + " " + countDownDataList.get(0).getShiftStartTime());
+
+                            if (theme) {
+                                bottomLayout.setBackgroundColor(getResources().getColor(R.color.white));
+                                upcoming_text.setBackgroundColor(getResources().getColor(R.color.white));
+                                upcoming_text.setTextColor(getResources().getColor(R.color.black));
+                                vol_img.setColorFilter(getResources().getColor(R.color.black));
+                                con_img.setColorFilter(getResources().getColor(R.color.black));
+                                vol_txt.setTextColor(getResources().getColor(R.color.black));
+                                con_txt.setTextColor(getResources().getColor(R.color.black));
+
+                                childLayout = inflater.inflate(R.layout.calendarview_night,
+                                        (ViewGroup) v.findViewById(R.id.cal));
+                                parentLayout.addView(childLayout);
+                                mCalendarView = (CalendarView) childLayout.findViewById(R.id.calendarViews);
+                            } else {
+
+                                bottomLayout.setBackgroundColor(getResources().getColor(R.color.black));
+                                upcoming_text.setBackgroundColor(getResources().getColor(R.color.black));
+                                upcoming_text.setTextColor(getResources().getColor(R.color.white));
+                                vol_img.setColorFilter(getResources().getColor(R.color.white));
+                                con_img.setColorFilter(getResources().getColor(R.color.white));
+                                vol_txt.setTextColor(getResources().getColor(R.color.white));
+                                con_txt.setTextColor(getResources().getColor(R.color.white));
+
+                                childLayout = inflater.inflate(R.layout.calendarview_day,
+                                        (ViewGroup) v.findViewById(R.id.cal));
+                                parentLayout.addView(childLayout);
+                                mCalendarView = (CalendarView) childLayout.findViewById(R.id.calendarViews);
+                            }
+
+                            for (int i = 0; i < calendarDataList.size(); i++) {
+                                Calendar calendar = Calendar.getInstance();
+                                String year = calendarDataList.get(i).getYr();
+                                String month = calendarDataList.get(i).getMn();
+                                String date = calendarDataList.get(i).getDt();
+
+                                calendar.set(Integer.parseInt(year), Integer.parseInt(month) - 1, Integer.parseInt(date));
+                                EventDay eventDay = new EventDay(calendar, R.drawable.ic_event);
+                                events.add(eventDay);
+                                mCalendarView.setEvents(events);
+
+                                eventDayModelList.add(new EventDayModel(eventDay, calendarDataList.get(i).getEventId(), calendarDataList.get(i).getEventHeading()));
+
+                            }
+
+                            try {
+                                mCalendarView.setDate(new Date());
+                            } catch (OutOfDateRangeException e) {
+                                e.printStackTrace();
+                            }
+
+                            mCalendarView.setOnDayClickListener(eventDay -> {
+
+                                String event_id = "";
+                                for (int i = 0; i < eventDayModelList.size(); i++) {
+                                    EventDayModel eventDayModel = eventDayModelList.get(i);
+                                    if (eventDayModel.getEventDay() == eventDay) {
+                                        event_id = eventDayModel.getEventId();
+                                        break;
+                                    }
+                                }
+
+
+                                EventDetailFragment eventDetailFragment = new EventDetailFragment();
+                                Bundle bundle = new Bundle();
+                                bundle.putString("event_id", event_id);
+                                eventDetailFragment.setArguments(bundle);
+                                Utility.replaceFragment(context, eventDetailFragment, "EventDetailFragment");
+
+
+                            });
+
+
+                            UpcomingEventAdapter adapter = new UpcomingEventAdapter(context, eventDataList);
+                            lv_upcoming_event.setAdapter(adapter);
+
+                            if(eventDataList.size()>3)
+                            {
+                                ViewGroup.LayoutParams lp = (ViewGroup.LayoutParams) lv_upcoming_event.getLayoutParams();
+                                lp.height = 800;
+                                lv_upcoming_event.setLayoutParams(lp);
+                            }
+                            else
+                            {
+                                Utility.setListViewHeightBasedOnChildren(lv_upcoming_event);
+                            }
+
+                        } else {
+                            myToast.show(getString(R.string.something_went_wrong), Toast.LENGTH_SHORT, false);
+                        }
+                    } else {
+                        myToast.show(getString(R.string.err_server), Toast.LENGTH_SHORT, false);
+                    }
+
+                    myProgressDialog.dismiss();
 
                 }
             });
-
 
         } else {
-
-            bottomLayout.setBackgroundColor(getResources().getColor(R.color.black));
-            upcoming_text.setBackgroundColor(getResources().getColor(R.color.black));
-            upcoming_text.setTextColor(getResources().getColor(R.color.white));
-            vol_img.setColorFilter(getResources().getColor(R.color.black));
-            con_img.setColorFilter(getResources().getColor(R.color.black));
-            vol_txt.setTextColor(getResources().getColor(R.color.white));
-            con_txt.setTextColor(getResources().getColor(R.color.white));
-
-            childLayout = inflater.inflate(R.layout.calendarview_day,
-                    (ViewGroup) v.findViewById(R.id.cal));
-            parentLayout.addView(childLayout);
-            mCalendarView = (CalendarView) childLayout.findViewById(R.id.calendarViews);
-            for (int i = 1; i < 10; i++) {
-                Calendar calendar = Calendar.getInstance();
-                calendar.set(2019, 0, i);
-                events.add(new EventDay(calendar, R.drawable.ic_calendars));
-                mCalendarView.setEvents(events);
-            }
-
-            mCalendarView.setOnDayClickListener(new OnDayClickListener() {
-                @Override
-                public void onDayClick(EventDay eventDay) {
-
-                }
-            });
+            myToast.show(getString(R.string.no_internet_connection), Toast.LENGTH_SHORT, false);
         }
-
-
-        countDownStart();
-
-        upcomingEventModel = new UpcomingEventModel();
-
-        upcomingEventModel.setName("Atlanta Mission Food Drive");
-        upcomingEventModel.setDate("2");
-        upcomingEventModel.setDay("Tuesday");
-        upcomingEventModel.setTime("4pm - 5pm");
-        upcomingEventModel.setMonth("APR");
-
-        upcomingEventModelArrayList.add(upcomingEventModel);
-
-        upcomingEventModel = new UpcomingEventModel();
-
-        upcomingEventModel.setName("Atlanta Mission Food Drive");
-        upcomingEventModel.setDate("10");
-        upcomingEventModel.setDay("Wednesday");
-        upcomingEventModel.setTime("4pm - 5pm");
-        upcomingEventModel.setMonth("APR");
-
-        upcomingEventModelArrayList.add(upcomingEventModel);
-
-        upcomingEventModel = new UpcomingEventModel();
-
-        upcomingEventModel.setName("Atlanta Mission Food Drive");
-        upcomingEventModel.setDate("28");
-        upcomingEventModel.setDay("Sunday");
-        upcomingEventModel.setTime("4pm - 5pm");
-        upcomingEventModel.setMonth("APR");
-
-        upcomingEventModelArrayList.add(upcomingEventModel);
-        UpcomingEventAdapter adapter = new UpcomingEventAdapter(upcomingEventModelArrayList, getActivity());
-        lv_upcoming_event.setAdapter(adapter);
-
 
         return v;
     }
-
 
     @Override
     public void onActivityResult(int requestCode, int resultCode, Intent data) {
@@ -246,16 +254,15 @@ public class DashboardFragment extends Fragment {
         this.context = context;
     }
 
-    public void countDownStart() {
+    public void countDownStart(String future) {
         handler = new Handler();
         Runnable runnable = new Runnable() {
             @Override
             public void run() {
                 handler.postDelayed(this, 1000);
                 try {
-                    SimpleDateFormat dateFormat = new SimpleDateFormat("yyyy-MM-dd", Locale.ENGLISH);
-                    Date futureDate = dateFormat.parse("2019-5-30");//event date
-                    Date currentDate = new Date();
+                    Date futureDate = Utility.convertStringToDate(future);//event date
+                    Date currentDate = Utility.convertStringToDate(Utility.getCurrentTime());
                     if (!currentDate.after(futureDate)) {
                         long diff = futureDate.getTime()
                                 - currentDate.getTime();
@@ -284,4 +291,13 @@ public class DashboardFragment extends Fragment {
     }
 
 
+    @Override
+    public void onClick(View v) {
+        switch (v.getId())
+        {
+            case R.id.vol_req:
+                ((CsoDashboardActivity) context).setStudentFragmentFrom();
+                break;
+        }
+    }
 }

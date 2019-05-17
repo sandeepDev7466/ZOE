@@ -3,6 +3,8 @@ package com.ztp.app.Data.Remote.Model.Response;
 import com.google.gson.annotations.Expose;
 import com.google.gson.annotations.SerializedName;
 
+import java.io.Serializable;
+
 public class GetEventDetailResponse {
 
     @SerializedName("api_res_key")
@@ -49,7 +51,7 @@ public class GetEventDetailResponse {
         this.resStatus = resStatus;
     }
 
-    public class ResData {
+    public class ResData implements Serializable {
 
         @SerializedName("event_id")
         @Expose

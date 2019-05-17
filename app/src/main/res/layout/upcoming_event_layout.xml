@@ -5,7 +5,7 @@
     android:orientation="horizontal"
     android:layout_width="match_parent"
     android:layout_height="wrap_content"
-    android:minHeight="@dimen/_50sdp"
+    android:minHeight="@dimen/_60sdp"
     android:padding="@dimen/_5sdp">
 
     <LinearLayout
@@ -50,18 +50,19 @@
         android:layout_gravity="center">
 
         <com.ztp.app.Helper.MyBoldTextView
-            android:id="@+id/textView_name"
+            android:id="@+id/heading"
             android:layout_width="match_parent"
             android:layout_height="wrap_content"
-            android:textSize="@dimen/_12ssp"
+            android:textSize="@dimen/_13ssp"
             android:maxLines="2"
             android:ellipsize="end"/>
 
         <com.ztp.app.Helper.MyTextView
-            android:id="@+id/textView_time"
+            android:id="@+id/time"
             android:layout_width="match_parent"
             android:layout_height="wrap_content"
             android:textSize="@dimen/_10ssp"
+            android:layout_marginTop="@dimen/_3sdp"
            />
 
     </LinearLayout>

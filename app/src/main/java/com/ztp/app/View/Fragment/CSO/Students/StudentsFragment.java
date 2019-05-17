@@ -17,7 +17,7 @@ import com.ztp.app.R;
 public class StudentsFragment extends Fragment {
 
     Context context;
-    ViewPager viewPager;
+    public static ViewPager viewPager;
     TabLayout tabLayout;
     SharedPref sharedPref;
     boolean theme;
@@ -114,6 +114,7 @@ public class StudentsFragment extends Fragment {
 
         return view;
     }
+
 
     private void setViewPager() {
 

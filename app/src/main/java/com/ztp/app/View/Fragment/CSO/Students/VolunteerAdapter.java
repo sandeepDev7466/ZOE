@@ -131,8 +131,7 @@ class VolunteerAdapter extends BaseAdapter {
                                 dataModel.getMapStatus().equalsIgnoreCase(String.valueOf(Constants.AcceptedByCSO)) ||
                                 dataModel.getMapStatus().equalsIgnoreCase(String.valueOf(Constants.CompletedByVol)) ||
                                 dataModel.getMapStatus().equalsIgnoreCase(String.valueOf(Constants.MoreInfoByCSO)) ||
-                                dataModel.getMapStatus().equalsIgnoreCase(String.valueOf(Constants.RejectedCompleteByCSO)) ||
-                                dataModel.getMapStatus().equalsIgnoreCase(String.valueOf(Constants.CompletedVerifiedByCSO))
+                                dataModel.getMapStatus().equalsIgnoreCase(String.valueOf(Constants.RejectedCompleteByCSO))
                 )
                     openDialog(Integer.parseInt(dataModel.getMapStatus()), dataModel.getMapId(), position);
             }

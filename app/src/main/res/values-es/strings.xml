@@ -321,16 +321,31 @@
     <string name="toast_reject_request_success">Solicitud rechazada</string>
     <string name="toast_verify_cso_request_success">Solicitud Completada y Verificada</string>
     <string name="toast_info_cso_request_success">Más información requerida</string>
-    <string name="toast_publish_success">Evento publicado con éxito</string>
-    <string name="toast_unpublish_success">Evento no publicado exitosamente</string>
-
-
     <string name="confirm_delete">¿Confirmar eliminación?</string>
     <string name="are_you_sure_you_want_to_delete">¿Estas seguro que quieres borrarlo?</string>
     <string name="upload">Subir</string>
     <string name="select_image_from">Seleccionar imagen de</string>
     <string name="camera">Cámara</string>
     <string name="gallery">Galería</string>
+    <string name="upload_image_related_to_event">Subir imagen relacionada al evento.</string>
+    <string name="browse">Vistazo</string>
+    <string name="done">Hecho</string>
+    <string name="file_name">Nombre del archivo :</string>
+    <string name="choose_image">ELEGIR IMAGEN</string>
+    <string name="add_event_image">AÑADIR IMAGEN DE EVENTO</string>
+    <string name="update_event_image">ACTUALIZAR LA IMAGEN DEL EVENTO</string>
+    <string name="confirm_publish">Confirmar publicar?</string>
+    <string name="confirm_unpublish">¿Confirmar no publicar?</string>
+    <string name="are_you_sure_you_want_to_publish">¿Seguro que quieres publicar el evento?</string>
+    <string name="are_you_sure_you_want_to_unpublish">¿Estás seguro de que deseas anular la publicación del evento?</string>
+    <string name="toast_publish_failed">Solicitud de publicación de evento fallida</string>
+    <string name="toast_unpublish_failed">Error en la solicitud de anulación de publicación</string>
+    <string name="toast_publish_success">Evento publicado con éxito</string>
+    <string name="toast_unpublish_success">Evento no publicado exitosamente</string>
+    <string name="volunteer_requested">Voluntario solicitado</string>
+    <string name="creation_date">Fecha de creación</string>
+    <string name="rank_caps">RANGO</string>
+    <string name="from"><b>Desde : </b></string>
 
 
     <string-array name="gender">
@@ -365,9 +380,10 @@
         <item>Voluntario</item>
         <item>CSO</item>
     </string-array>
-    <string name="upload_image_related_to_event">Subir imagen relacionada al evento.</string>
-    <string name="browse">Vistazo</string>
-    <string name="done">Hecho</string>
+    <string name="volunteer_required">Voluntario requerido</string>
+    <string name="here">aquí</string>
+    <string name="Registration">Registro:</string>
+    <string name="to">" a "</string>
 
 
 </resources>
