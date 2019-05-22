@@ -116,16 +116,25 @@ public class ShiftListForCalendarAdapter extends BaseAdapter {
         holder.shiftTask.setText(map.get("event_heading"));
         holder.shiftTime.setText("Time : " + map.get("shift_start_time") + " - " + map.get("shift_end_time"));
 
-        if (type.equalsIgnoreCase("MyBooking")) {
             view.setOnClickListener(new View.OnClickListener() {
                 @Override
                 public void onClick(View v) {
 
                         dialog.dismiss();
+
+                    if (type.equalsIgnoreCase("MyBooking")) {
                         openDialog(map.get("event_id"), position);
+                    }
+                    else
+                    {
+                        EventDetailFragment eventDetailFragment = new EventDetailFragment();
+                        Bundle bundle = new Bundle();
+                        bundle.putString("event_id", map.get("event_id"));
+                        eventDetailFragment.setArguments(bundle);
+                        Utility.replaceFragment(context, eventDetailFragment, "EventDetailFragment");
+                    }
                 }
             });
-        }
 
         return view;
     }
