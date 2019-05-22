@@ -14,6 +14,7 @@ import com.ztp.app.Helper.MyToast;
 import com.ztp.app.R;
 import com.ztp.app.Utils.Utility;
 import com.ztp.app.View.Activity.Student.StudentDashboardActivity;
+import com.ztp.app.View.Fragment.Student.Booking.TabFindCsoFragment;
 import com.ztp.app.View.Fragment.Student.Extra.SearchEventFragment;
 
 import java.util.ArrayList;
@@ -96,7 +97,6 @@ public class DashboardFragment extends Fragment implements View.OnClickListener 
     public void onClick(View v) {
         switch (v.getId()) {
             case R.id.volunter:
-                //myToast.show(getString(R.string.volunteer_for_an_event), Toast.LENGTH_SHORT, true);
                 Utility.replaceFragment(context, new SearchEventFragment(), "SearchEventFragment");
                 break;
             case R.id.upload:
@@ -109,8 +109,7 @@ public class DashboardFragment extends Fragment implements View.OnClickListener 
                 ((StudentDashboardActivity) context).setHangoutFragment();
                 break;
             case R.id.cso:
-                ((StudentDashboardActivity) context).setBookingFragment();
-
+                Utility.replaceFragment(context, new TabFindCsoFragment(), "TabFindCsoFragment");
                 break;
 
         }

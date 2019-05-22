@@ -242,22 +242,22 @@ public class StudentDashboardActivity extends AppCompatActivity
                 showHideSideNavigation();
                 break;
             case R.id.hangout:
-                if (!(getSupportFragmentManager().findFragmentById(R.id.body) instanceof HangoutFragment)) {
+                /*if (!(getSupportFragmentManager().findFragmentById(R.id.body) instanceof HangoutFragment)) {
                     title.setText(getString(R.string.hangout).toUpperCase());
                     setHangoutFragment();
-                }
+                }*/
                 break;
             case R.id.locker:
-                if (!(getSupportFragmentManager().findFragmentById(R.id.body) instanceof LockerFragment)) {
+                /*if (!(getSupportFragmentManager().findFragmentById(R.id.body) instanceof LockerFragment)) {
                     title.setText(getString(R.string.locker).toUpperCase());
                     setLockerFragment();
-                }
+                }*/
                 break;
             case R.id.target:
-                if (!(getSupportFragmentManager().findFragmentById(R.id.body) instanceof TargetFragment)) {
+                /*if (!(getSupportFragmentManager().findFragmentById(R.id.body) instanceof TargetFragment)) {
                     title.setText(getString(R.string.target).toUpperCase());
                     setTargetFragment();
-                }
+                }*/
                 break;
             case R.id.booking:
                 if (!(getSupportFragmentManager().findFragmentById(R.id.body) instanceof BookingFragment)) {

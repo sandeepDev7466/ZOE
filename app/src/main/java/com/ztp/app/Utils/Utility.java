@@ -110,6 +110,17 @@ public class Utility {
         return date;
     }
 
+    public static Date convertTimeToDate(String dateStr) {
+        DateFormat format = new SimpleDateFormat("HH:mm:ss", Locale.ENGLISH);
+        format.setTimeZone(TimeZone.getTimeZone("Asia/Kolkata"));
+        Date date = null;
+        try {
+            date = format.parse(dateStr);
+        } catch (ParseException e) {
+            e.printStackTrace();
+        }
+        return date;
+    }
 
     public static Date convertStringToDate(String dateStr) {
         DateFormat format = new SimpleDateFormat("MM-dd-yyyy HH:mm:ss", Locale.ENGLISH);
@@ -122,7 +133,6 @@ public class Utility {
         }
         return date;
     }
-
 
     public static String formatDateFull(Date date) {
 

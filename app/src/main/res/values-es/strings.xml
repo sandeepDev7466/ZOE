@@ -384,6 +384,18 @@
     <string name="here">aquí</string>
     <string name="Registration">Registro:</string>
     <string name="to">" a "</string>
+    <string name="change_rank">CAMBIAR RANGO</string>
+    <string name="current_rank">Posición actual</string>
+    <string name="select_rank">Seleccionar Rango</string>
+    <string name="change_hours">CAMBIAR HORAS</string>
+    <string name="current_hours">Horas actuales</string>
+    <string name="current_required_hours">Horas actuales / requeridas</string>
+    <string name="enter_hours">Introduce horas</string>
+    <string name="enter_actual_hours">Introduce las horas reales</string>
+    <string name="err_enter_hours">Entrar horas</string>
+    <string name="err_events_not_found">Eventos no encontrados</string>
+    <string name="close">CERRAR</string>
+    <string name="hrs_small">Horas</string>
 
 
 </resources>

@@ -5,7 +5,7 @@
     xmlns:app="http://schemas.android.com/apk/res-auto"
     android:id="@+id/cal">
 
-    <com.applandeo.materialcalendarview.CalendarView
+    <!--<com.applandeo.materialcalendarview.CalendarView
         android:id="@+id/calendarViews"
         android:layout_width="match_parent"
         android:layout_height="@dimen/_320sdp"
@@ -24,6 +24,20 @@
         app:abbreviationsLabelsColor="@color/white"
         app:forwardButtonSrc="@drawable/baseline_keyboard_arrow_right_24"
         app:previousButtonSrc="@drawable/baseline_keyboard_arrow_left_24"
-        app:anotherMonthsDaysLabelsColor="@color/background_4" />
+        app:anotherMonthsDaysLabelsColor="@color/background_4" />-->
+
+    <com.prolificinteractive.materialcalendarview.MaterialCalendarView
+        xmlns:app="http://schemas.android.com/apk/res-auto"
+        android:id="@+id/calendarViews"
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        app:mcv_calendarMode="month"
+        app:mcv_firstDayOfWeek="monday"
+        android:layout_marginStart="@dimen/_20sdp"
+        android:layout_marginEnd="@dimen/_20sdp"
+        app:mcv_weekDayLabels="@color/white"
+        app:mcv_arrowColor="@color/white">
+
+    </com.prolificinteractive.materialcalendarview.MaterialCalendarView>
 
 </LinearLayout>

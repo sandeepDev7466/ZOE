@@ -284,20 +284,48 @@ public class CsoDashboardCombinedResponse {
         @SerializedName("dt")
         @Expose
         private String dt;
+        @SerializedName("shift_task")
+        @Expose
+        private String shiftTask;
+        @SerializedName("shift_start_time")
+        @Expose
+        private String shiftStartTime;
+        @SerializedName("shift_end_time")
+        @Expose
+        private String shiftEndTime;
         @SerializedName("event_heading")
         @Expose
         private String eventHeading;
 
+        /**
+         * No args constructor for use in serialization
+         *
+         */
         public CalendarData() {
         }
 
-        public CalendarData(String eventId, String shiftDate, String yr, String mn, String dt, String eventHeading) {
+        /**
+         *
+         * @param eventHeading
+         * @param dt
+         * @param mn
+         * @param shiftDate
+         * @param shiftEndTime
+         * @param eventId
+         * @param yr
+         * @param shiftStartTime
+         * @param shiftTask
+         */
+        public CalendarData(String eventId, String shiftDate, String yr, String mn, String dt, String shiftTask, String shiftStartTime, String shiftEndTime, String eventHeading) {
             super();
             this.eventId = eventId;
             this.shiftDate = shiftDate;
             this.yr = yr;
             this.mn = mn;
             this.dt = dt;
+            this.shiftTask = shiftTask;
+            this.shiftStartTime = shiftStartTime;
+            this.shiftEndTime = shiftEndTime;
             this.eventHeading = eventHeading;
         }
 
@@ -341,6 +369,30 @@ public class CsoDashboardCombinedResponse {
             this.dt = dt;
         }
 
+        public String getShiftTask() {
+            return shiftTask;
+        }
+
+        public void setShiftTask(String shiftTask) {
+            this.shiftTask = shiftTask;
+        }
+
+        public String getShiftStartTime() {
+            return shiftStartTime;
+        }
+
+        public void setShiftStartTime(String shiftStartTime) {
+            this.shiftStartTime = shiftStartTime;
+        }
+
+        public String getShiftEndTime() {
+            return shiftEndTime;
+        }
+
+        public void setShiftEndTime(String shiftEndTime) {
+            this.shiftEndTime = shiftEndTime;
+        }
+
         public String getEventHeading() {
             return eventHeading;
         }
@@ -348,5 +400,6 @@ public class CsoDashboardCombinedResponse {
         public void setEventHeading(String eventHeading) {
             this.eventHeading = eventHeading;
         }
+
     }
 }

@@ -328,8 +328,8 @@ public class CsoDashboardActivity extends AppCompatActivity implements View.OnCl
 
 
     public void setMessageFragment() {
-        setMessageAlpha();
-        Utility.replaceFragment(context, new MessageFragment(), "MessageFragment");
+        /*setMessageAlpha();
+        Utility.replaceFragment(context, new MessageFragment(), "MessageFragment");*/
     }
 
     public void setStudentFragmentFrom() {

@@ -357,6 +357,19 @@
     <string name="here">Here</string>
     <string name="Registration">Registration :</string>
     <string name="to"> to </string>
+    <string name="change_rank">CHANGE RANK</string>
+    <string name="current_rank">Current Rank</string>
+    <string name="select_rank">Select Rank</string>
+    <string name="change_hours">CHANGE HOURS</string>
+    <string name="current_hours">Current Hours</string>
+    <string name="current_required_hours">Current/Required Hours</string>
+    <string name="enter_hours">Enter Hours</string>
+    <string name="enter_actual_hours">Enter actual hours</string>
+    <string name="err_enter_hours">Enter hours</string>
+    <string name="err_events_not_found">Events not found</string>
+    <string name="close">CLOSE</string>
+    <string name="hrs_small">Hrs</string>
+    <string name="attended_hrs">Attended Hrs</string>
 
 
     <string-array name="gender">

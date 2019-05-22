@@ -8,6 +8,7 @@ import android.view.View;
 
 import com.daimajia.numberprogressbar.NumberProgressBar;
 import com.ztp.app.R;
+import com.ztp.app.Utils.Utility;
 
 public class MyProgressDialog {
 

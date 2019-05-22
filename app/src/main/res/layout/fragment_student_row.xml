@@ -23,11 +23,12 @@
             android:textSize="@dimen/_13ssp"/>
 
         <com.ztp.app.Helper.MyTextView
+            android:id="@+id/tv_name"
             android:layout_width="0dp"
             android:layout_height="match_parent"
             android:layout_weight="1"
             android:textSize="@dimen/_13ssp"
-           android:id="@+id/tv_name"
+
             />
     </LinearLayout>
     <LinearLayout
@@ -46,11 +47,12 @@
             android:textSize="@dimen/_13ssp"/>
 
         <com.ztp.app.Helper.MyTextView
+            android:id="@+id/tv_date"
             android:layout_width="0dp"
             android:layout_height="match_parent"
             android:layout_weight="1"
             android:textSize="@dimen/_13ssp"
-            android:id="@+id/tv_date"/>
+            />
     </LinearLayout>
     <LinearLayout
         android:layout_width="match_parent"
@@ -63,23 +65,25 @@
             android:layout_width="0dp"
             android:layout_height="match_parent"
             android:layout_weight="1"
-            android:text="@string/hrs_required"
+            android:text="@string/attended_hrs"
             android:textColor="@color/tab_booking"
             android:textSize="@dimen/_13ssp"/>
 
         <com.ztp.app.Helper.MyTextView
+            android:id="@+id/tv_hrs"
             android:layout_width="0dp"
             android:layout_height="match_parent"
             android:layout_weight="1"
             android:textSize="@dimen/_13ssp"
-            android:id="@+id/tv_hrs"/>
+            />
     </LinearLayout>
     <LinearLayout
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
         android:orientation="horizontal"
         android:weightSum="2"
-        android:layout_marginTop="@dimen/_5sdp">
+        android:layout_marginTop="@dimen/_10sdp"
+        android:gravity="center_vertical">
 
         <com.ztp.app.Helper.MyTextView
             android:layout_width="0dp"
@@ -87,45 +91,38 @@
             android:layout_weight="1"
             android:text="@string/rank"
             android:textColor="@color/tab_booking"
-            android:textSize="@dimen/_13ssp"/>
+            android:textSize="@dimen/_13ssp"
+            android:gravity="center_vertical"/>
 
-        <com.willy.ratingbar.ScaleRatingBar
-            xmlns:app="http://schemas.android.com/apk/res-auto"
+        <LinearLayout
             android:layout_width="0dp"
-            android:layout_weight="1"
-            android:layout_height="wrap_content"
-            app:srb_clearRatingEnabled="true"
-            app:srb_clickable="true"
-            app:srb_drawableEmpty="@drawable/ic_star_empty"
-            app:srb_drawableFilled="@drawable/ic_star_filled"
-            app:srb_isIndicator="false"
-            app:srb_minimumStars="0"
-            app:srb_numStars="3"
-            app:srb_rating="2"
-            app:srb_scrollable="true"
-            app:srb_starHeight="@dimen/_15sdp"
-            app:srb_starPadding="@dimen/_2sdp"
-            app:srb_starWidth="@dimen/_15sdp"
-            app:srb_stepSize="0.5"
-            android:id="@+id/rb_rank"/>
+            android:layout_height="match_parent"
+            android:layout_weight="1">
+
+            <ImageView
+                android:id="@+id/rank"
+                android:layout_width="@dimen/_30sdp"
+                android:layout_height="@dimen/_30sdp"
+                android:src="@drawable/rank_royalty"
+                />
+
+        </LinearLayout>
+
+
     </LinearLayout>
     <LinearLayout
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
         android:orientation="horizontal"
-        android:gravity="right"
-      >
+        android:gravity="end"
+        android:layout_marginTop="@dimen/_5sdp">
         <ImageView
             android:id="@+id/imv_chat"
-            android:layout_width="@dimen/_15sdp"
-            android:layout_height="@dimen/_15sdp"
+            android:layout_width="@dimen/_20sdp"
+            android:layout_height="@dimen/_20sdp"
             android:tint="@color/tab_booking"
             app:srcCompat="@drawable/ic_message"
             android:layout_gravity="right"/>
     </LinearLayout>
-    <View
-        android:layout_width="match_parent"
-        android:layout_height="1dp"
-        android:background="@color/background_3"/>
 
 </LinearLayout>

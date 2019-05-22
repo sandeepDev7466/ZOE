@@ -6,13 +6,16 @@ import android.arch.lifecycle.Observer;
 import android.arch.lifecycle.ViewModelProviders;
 import android.content.Context;
 import android.os.Bundle;
+import android.support.annotation.NonNull;
 import android.support.annotation.Nullable;
 import android.support.v4.app.Fragment;
 import android.support.v4.app.FragmentActivity;
 import android.text.format.DateFormat;
+import android.util.Log;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
+import android.widget.Button;
 import android.widget.LinearLayout;
 import android.widget.ListView;
 import android.widget.Toast;
@@ -21,24 +24,27 @@ import com.applandeo.materialcalendarview.CalendarView;
 import com.applandeo.materialcalendarview.EventDay;
 import com.applandeo.materialcalendarview.exceptions.OutOfDateRangeException;
 import com.applandeo.materialcalendarview.listeners.OnDayClickListener;
+import com.google.gson.Gson;
+import com.prolificinteractive.materialcalendarview.CalendarDay;
+import com.prolificinteractive.materialcalendarview.MaterialCalendarView;
+import com.prolificinteractive.materialcalendarview.OnDateSelectedListener;
 import com.ztp.app.Data.Local.SharedPrefrence.SharedPref;
 import com.ztp.app.Data.Remote.Model.Request.ChangeVolunteerStatusRequest;
-import com.ztp.app.Data.Remote.Model.Request.DeleteShiftRequest;
 import com.ztp.app.Data.Remote.Model.Request.VolunteerAllRequest;
 import com.ztp.app.Data.Remote.Model.Response.VolunteerAllResponse;
 import com.ztp.app.Helper.MyProgressDialog;
-import com.ztp.app.Helper.MyTextView;
 import com.ztp.app.Helper.MyToast;
+import com.ztp.app.Model.EventDayModel;
 import com.ztp.app.R;
 import com.ztp.app.Utils.Constants;
+import com.ztp.app.Utils.EventDecorator;
+import com.ztp.app.Utils.TodayDateDecorator;
 import com.ztp.app.Utils.Utility;
-import com.ztp.app.View.Fragment.CSO.Event.AddNewShiftFragment;
+import com.ztp.app.View.Fragment.CSO.Dashboard.ShiftListForCalendarAdapter;
 import com.ztp.app.View.Fragment.Common.EventDetailFragment;
-import com.ztp.app.View.Fragment.Common.ShiftDetailFragment;
 import com.ztp.app.Viewmodel.ChangeVolunteerStatusViewModel;
 import com.ztp.app.Viewmodel.VolunteerAllRequestViewModel;
 
-import java.io.Serializable;
 import java.util.ArrayList;
 import java.util.Calendar;
 import java.util.Date;
@@ -48,29 +54,28 @@ import java.util.List;
 public class TabMyBookingFragment extends Fragment {
 
     Context context;
-    //    ListView listView;
-//    MyTextView noData;
     SharedPref sharedPref;
     MyProgressDialog myProgressDialog;
     MyToast myToast;
     VolunteerAllRequestViewModel volunteerAllRequestViewModel;
     LinearLayout parentLayout;
     boolean theme;
-    private CalendarView mCalendarView;
-    List<EventDay> events;
-    HashMap<EventDay, String> map;
-    HashMap<EventDay, VolunteerAllResponse.ResData> shift_map;
+    private MaterialCalendarView mCalendarView;
     View childLayout;
-    VolunteerAllResponse.ResData resData;
     ChangeVolunteerStatusViewModel changeVolunteerStatusViewModel;
+    private List<EventDayModel> mEventDays = new ArrayList<>();
+    private List<CalendarDay> calendarDayList = new ArrayList<>();
+    List<VolunteerAllResponse.ResData> resDataList = new ArrayList<>();
+    List<HashMap<String, String>> shiftDataList = new ArrayList<>();
+    String event_id, event_heading;
+    int pos;
+    boolean flag = false;
 
     @Override
     public View onCreateView(LayoutInflater inflater, ViewGroup container,
                              Bundle savedInstanceState) {
 
         View view = inflater.inflate(R.layout.fragment_tab_my_booking, container, false);
-//        listView = view.findViewById(R.id.listView);
-//        noData = view.findViewById(R.id.noData);
         sharedPref = SharedPref.getInstance(context);
         changeVolunteerStatusViewModel = ViewModelProviders.of((FragmentActivity) context).get(ChangeVolunteerStatusViewModel.class);
         volunteerAllRequestViewModel = ViewModelProviders.of((FragmentActivity) context).get(VolunteerAllRequestViewModel.class);
@@ -87,13 +92,9 @@ public class TabMyBookingFragment extends Fragment {
                     (ViewGroup) view.findViewById(R.id.cal));
         }
 
-        mCalendarView = (CalendarView) childLayout.findViewById(R.id.calendarViews);
-        try {
-            mCalendarView.setDate(new Date());
-        } catch (OutOfDateRangeException e) {
-            e.printStackTrace();
-        }
-
+        mCalendarView = (MaterialCalendarView) childLayout.findViewById(R.id.calendarViews);
+        Calendar instance = Calendar.getInstance();
+        mCalendarView.setSelectedDate(instance.getTime());
 
         getBooking(true);
 
@@ -107,7 +108,7 @@ public class TabMyBookingFragment extends Fragment {
 
     }
 
-    private void getBooking(boolean show) {
+    public void getBooking(boolean show) {
         if (parentLayout.getChildCount() > 0)
             parentLayout.removeAllViews();
         parentLayout.addView(childLayout);
@@ -120,80 +121,177 @@ public class TabMyBookingFragment extends Fragment {
 
                     if (volunteerAllResponse != null) {
                         if (volunteerAllResponse.getResStatus().equalsIgnoreCase("200")) {
+
                             if (volunteerAllResponse.getResData() != null && volunteerAllResponse.getResData().size() > 0) {
 //                                listView.setVisibility(View.VISIBLE);
 //                                noData.setVisibility(View.INVISIBLE);
 //                                MyBookingAdapter myBookingAdapter = new MyBookingAdapter(context, volunteerAllResponse.getResData());
 //                                listView.setAdapter(myBookingAdapter);
+                                resDataList = volunteerAllResponse.getResData();
+                                setCalendar(volunteerAllResponse.getResData());
                             } else {
-//                                listView.setVisibility(View.INVISIBLE);
-//                                noData.setVisibility(View.VISIBLE);
+                                myToast.show(getString(R.string.err_events_not_found), Toast.LENGTH_SHORT, false);
                             }
                         } else {
-//                            listView.setVisibility(View.INVISIBLE);
-//                            noData.setVisibility(View.VISIBLE);
-                            // myToast.show(getString(R.string.something_went_wrong), Toast.LENGTH_SHORT,false);
+                            myToast.show(getString(R.string.err_events_not_found), Toast.LENGTH_SHORT, false);
                         }
-                        setCalendar(volunteerAllResponse.getResData());
+
                     } else {
-//                        listView.setVisibility(View.INVISIBLE);
-//                        noData.setVisibility(View.VISIBLE);
-                        setCalendar(null);
                         myToast.show(getString(R.string.err_server), Toast.LENGTH_SHORT, false);
                     }
-
-
                 }
             });
+            myProgressDialog.dismiss();
         } else {
-//            listView.setVisibility(View.INVISIBLE);
-//            noData.setVisibility(View.VISIBLE);
             myToast.show(getString(R.string.no_internet_connection), Toast.LENGTH_SHORT, false);
         }
     }
 
     private void setCalendar(List<VolunteerAllResponse.ResData> resData) {
-        map = new HashMap<>();
-        shift_map = new HashMap<>();
-        events = new ArrayList<EventDay>();
 
-        mCalendarView = (CalendarView) childLayout.findViewById(R.id.calendarViews);
+        mEventDays = new ArrayList<>();
 
-        if (resData != null) {
-            for (int i = 0; i < resData.size(); i++) {
-                VolunteerAllResponse.ResData data = resData.get(i);
-                Calendar calendar = Calendar.getInstance();
-                Date date = Utility.convertStringToDateWithoutTime(data.getShiftDate());
-                String dayOfTheWeek = (String) DateFormat.format("EE", date); // Thursday
-                String day = (String) DateFormat.format("dd", date); // 20
-                String monthString = (String) DateFormat.format("MMM", date); // Jun
-                String monthNumber = (String) DateFormat.format("MM", date); // 06
-                String year = (String) DateFormat.format("yyyy", date); // 2013
-                calendar.set(Integer.parseInt(year), Integer.parseInt(monthNumber) - 1, Integer.parseInt(day));
-                EventDay eventDay = new EventDay(calendar, R.drawable.ic_event);
-                map.put(eventDay, data.getEventId());
-                shift_map.put(eventDay, data);
-                events.add(eventDay);
-                mCalendarView.setEvents(events);
-            }
+        mCalendarView = (MaterialCalendarView) childLayout.findViewById(R.id.calendarViews);
 
-        } else {
-            mCalendarView.setEvents(events);
+        for (int i = 0; i < resData.size(); i++) {
+            VolunteerAllResponse.ResData data = resData.get(i);
+            Calendar calendar = Calendar.getInstance();
+            Date date = Utility.convertStringToDateWithoutTime(data.getShiftDate());
+            String dayOfTheWeek = (String) DateFormat.format("EE", date); // Thursday
+            int day = Integer.parseInt(String.valueOf(DateFormat.format("dd", date))); // 20
+            String monthString = (String) DateFormat.format("MMM", date); // Jun
+            int month = Integer.parseInt(String.valueOf(DateFormat.format("MM", date))); // 06
+            int year = Integer.parseInt(String.valueOf(DateFormat.format("yyyy", date))); // 2013
+
+
+            EventDayModel eventDayModel = new EventDayModel();
+            eventDayModel.setCalendarDay(new CalendarDay(year, month - 1, day));
+            eventDayModel.setEventId(resData.get(i).getEventId());
+            eventDayModel.setEventHeading(resData.get(i).getEventHeading());
+            eventDayModel.setShiftDate(resData.get(i).getShiftDate());
+            eventDayModel.setShiftTask(resData.get(i).getShiftTask());
+            eventDayModel.setShiftStartTime(resData.get(i).getShiftStartTime());
+            eventDayModel.setShiftEndTime(resData.get(i).getShiftEndTime());
+            eventDayModel.setShiftId(resData.get(i).getShiftId());
+            eventDayModel.setMapId(resData.get(i).getMapId());
+            eventDayModel.setMapStatus(resData.get(i).getMapStatus());
+
+            mEventDays.add(eventDayModel);
+
         }
-        myProgressDialog.dismiss();
-        mCalendarView.setOnDayClickListener(new OnDayClickListener() {
+
+        setEventsOnCalendar(mEventDays);
+
+
+        mCalendarView.setOnDateChangedListener(new OnDateSelectedListener() {
             @Override
-            public void onDayClick(EventDay eventDay) {
-                if (map.get(eventDay) != null) {
-                    openDialog(eventDay);
+            public void onDateSelected(@NonNull MaterialCalendarView widget, @NonNull CalendarDay date, boolean selected) {
+
+
+                /*for(int i=0;i<mEventDays.size();i++)
+                {
+                    if(mEventDays.get(i).getCalendarDay().getDay() == date.getDay() && mEventDays.get(i).getCalendarDay().getMonth() == date.getMonth() && mEventDays.get(i).getCalendarDay().getYear() == date.getYear())
+                    {
+                        event_id = mEventDays.get(i).getEventId();
+                        event_heading = mEventDays.get(i).getEventHeading();
+                        pos = i;
+                        flag = true;
+                        break;
+                    }
                 }
+
+                if(flag) {
+                    flag = false;
+                    openDialog(event_id,pos);
+
+                   //openDateDialog()
+                }
+*/
+
+                HashMap<String, String> map;
+                shiftDataList = new ArrayList<>();
+                for (int i = 0; i < mEventDays.size(); i++) {
+                    if (mEventDays.get(i).getCalendarDay().getDay() == date.getDay() && mEventDays.get(i).getCalendarDay().getMonth() == date.getMonth() && mEventDays.get(i).getCalendarDay().getYear() == date.getYear()) {
+                        map = new HashMap<>();
+                        event_id = mEventDays.get(i).getEventId();
+                        event_heading = mEventDays.get(i).getEventHeading();
+                        map.put("shift_task", mEventDays.get(i).getShiftTask());
+                        map.put("shift_date", mEventDays.get(i).getShiftDate());
+                        map.put("shift_start_time", mEventDays.get(i).getShiftStartTime());
+                        map.put("shift_end_time", mEventDays.get(i).getShiftEndTime());
+                        map.put("event_heading", event_heading);
+                        map.put("event_id", event_id);
+                        map.put("shift_id",mEventDays.get(i).getShiftId());
+                        map.put("map_id",mEventDays.get(i).getMapId());
+                        map.put("map_status",mEventDays.get(i).getMapStatus());
+                        shiftDataList.add(map);
+                        flag = true;
+                        //break;
+                    }
+                }
+
+                if (flag) {
+                    flag = false;
+                    if (shiftDataList.size() > 1)
+                        openDateDialog(shiftDataList);
+                    else
+                        openDialog(event_id, pos);
+                }
+
+
+
+
+               /* EventDetailFragment eventDetailFragment = new EventDetailFragment();
+                Bundle bundle = new Bundle();
+                bundle.putString("event_id", event_id);
+                eventDetailFragment.setArguments(bundle);
+                Utility.replaceFragment(context, eventDetailFragment, "EventDetailFragment");*/
+
             }
         });
-
     }
 
+    private void openDateDialog(List<HashMap<String, String>> shiftDataList) {
+        Dialog dialog = new Dialog(context);
+        View view = LayoutInflater.from(context).inflate(R.layout.shift_list_for_event_dialog, null);
+        dialog.setContentView(view);
+        dialog.setCancelable(false);
 
-    private void openDialog(EventDay eventDay) {
+
+        ListView shiftList = view.findViewById(R.id.shiftList);
+        Button close = view.findViewById(R.id.close);
+
+
+        ShiftListForCalendarAdapter shiftListForCalendarAdapter = new ShiftListForCalendarAdapter(context, shiftDataList,"MyBooking",dialog,TabMyBookingFragment.this);
+        shiftList.setAdapter(shiftListForCalendarAdapter);
+
+        /*if (shiftDataList.size() > 1) {
+            shiftDataListTimeSorted = sortAccordingToTime(shiftDataList);
+            ShiftListForCalendarAdapter shiftListForCalendarAdapter = new ShiftListForCalendarAdapter(context, shiftDataListTimeSorted);
+            shiftList.setAdapter(shiftListForCalendarAdapter);
+        } else {
+            ShiftListForCalendarAdapter shiftListForCalendarAdapter = new ShiftListForCalendarAdapter(context, shiftDataList);
+            shiftList.setAdapter(shiftListForCalendarAdapter);
+        }*/
+        //Utility.setListViewHeightBasedOnChildren(shiftList);
+
+        close.setOnClickListener(v -> {
+            dialog.dismiss();
+        });
+
+        dialog.show();
+    }
+
+    private void setEventsOnCalendar(List<EventDayModel> eventDayModelList) {
+
+        for (int i = 0; i < eventDayModelList.size(); i++) {
+            CalendarDay day = eventDayModelList.get(i).getCalendarDay();
+            calendarDayList.add(day);
+            mCalendarView.addDecorator(new EventDecorator(getResources().getColor(R.color.blue_light), calendarDayList));
+        }
+    }
+
+    private void openDialog(String event_id, int pos) {
 
         Dialog dialog = new Dialog(context);
         View view1 = LayoutInflater.from(context).inflate(R.layout.booking_action_layout, null);
@@ -202,13 +300,13 @@ public class TabMyBookingFragment extends Fragment {
 
         LinearLayout view_event = view1.findViewById(R.id.view_event);
         LinearLayout change_status = view1.findViewById(R.id.change_status);
-        VolunteerAllResponse.ResData data = shift_map.get(eventDay);
+        VolunteerAllResponse.ResData data = resDataList.get(pos);
         view_event.setOnClickListener(vs -> {
             dialog.dismiss();
-            String id = map.get(eventDay);
+            //String id = map.get(eventDay);
             EventDetailFragment eventDetailFragment = new EventDetailFragment();
             Bundle bundle = new Bundle();
-            bundle.putString("event_id", id);
+            bundle.putString("event_id", event_id);
             bundle.putSerializable("shift_id", data.getShiftId());
             bundle.putBoolean("booking", true);
             eventDetailFragment.setArguments(bundle);

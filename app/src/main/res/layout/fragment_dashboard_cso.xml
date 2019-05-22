@@ -18,26 +18,9 @@
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
             android:orientation="vertical"
-            android:paddingLeft="@dimen/_10sdp"
-            android:paddingRight="@dimen/_10sdp"
-            android:paddingBottom="@dimen/_20sdp">
+            android:layout_gravity="center">
 
         </LinearLayout>
-
-        <!--<CalendarView-->
-        <!--android:id="@+id/simpleCalendarView"-->
-        <!--android:layout_width="wrap_content"-->
-        <!--android:layout_height="wrap_content"-->
-        <!--android:layout_gravity="center"-->
-        <!--/>-->
-
-        <!--<com.applandeo.materialcalendarview.CalendarView
-            android:id="@+id/calendarView"
-            android:layout_width="match_parent"
-            android:layout_height="wrap_content"
-            android:layout_gravity="center"
-            app:headerColor="#636363"
-           />-->
 
         <com.ztp.app.Helper.MyHeadingTextView
             android:id="@+id/upcoming_text"

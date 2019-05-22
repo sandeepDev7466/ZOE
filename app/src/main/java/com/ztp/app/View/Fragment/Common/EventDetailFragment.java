@@ -69,7 +69,6 @@ public class EventDetailFragment extends Fragment {
                 shift_id = b.getString("shift_id");
             if (b.get("booking") != null)
                 show = b.getBoolean("booking");
-
         }
         myProgressDialog = new MyProgressDialog(context);
         tv_address = view.findViewById(R.id.tv_event_address);

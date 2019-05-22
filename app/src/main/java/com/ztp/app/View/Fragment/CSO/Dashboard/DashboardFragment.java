@@ -1,28 +1,32 @@
 package com.ztp.app.View.Fragment.CSO.Dashboard;
 
 
+import android.app.Dialog;
 import android.arch.lifecycle.LifecycleOwner;
 import android.arch.lifecycle.Observer;
 import android.arch.lifecycle.ViewModelProviders;
 import android.content.Context;
 import android.content.Intent;
+import android.graphics.Color;
 import android.os.Bundle;
 import android.os.Handler;
+import android.support.annotation.NonNull;
 import android.support.annotation.Nullable;
 import android.support.v4.app.Fragment;
 import android.support.v4.app.FragmentActivity;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
+import android.widget.Button;
 import android.widget.ImageView;
 import android.widget.LinearLayout;
 import android.widget.ListView;
 import android.widget.ScrollView;
 import android.widget.Toast;
 
-import com.applandeo.materialcalendarview.CalendarView;
-import com.applandeo.materialcalendarview.EventDay;
-import com.applandeo.materialcalendarview.exceptions.OutOfDateRangeException;
+import com.prolificinteractive.materialcalendarview.CalendarDay;
+import com.prolificinteractive.materialcalendarview.MaterialCalendarView;
+import com.prolificinteractive.materialcalendarview.OnDateSelectedListener;
 import com.ztp.app.Data.Local.SharedPrefrence.SharedPref;
 import com.ztp.app.Data.Remote.Model.Request.CsoDashboardCombinedRequest;
 import com.ztp.app.Data.Remote.Model.Response.CsoDashboardCombinedResponse;
@@ -33,6 +37,7 @@ import com.ztp.app.Helper.MyTextView;
 import com.ztp.app.Helper.MyToast;
 import com.ztp.app.R;
 import com.ztp.app.Model.EventDayModel;
+import com.ztp.app.Utils.EventDecorator;
 import com.ztp.app.Utils.Utility;
 import com.ztp.app.View.Activity.CSO.CsoDashboardActivity;
 import com.ztp.app.View.Fragment.Common.EventDetailFragment;
@@ -41,13 +46,16 @@ import com.ztp.app.Viewmodel.GetCsoDashoardCombinedViewModel;
 import java.text.SimpleDateFormat;
 import java.util.ArrayList;
 import java.util.Calendar;
+import java.util.Collections;
+import java.util.Comparator;
 import java.util.Date;
+import java.util.HashMap;
 import java.util.List;
 import java.util.Locale;
 
 import static android.app.Activity.RESULT_OK;
 
-public class DashboardFragment extends Fragment implements View.OnClickListener {
+public class DashboardFragment extends Fragment implements View.OnClickListener{
 
 
     ListView lv_upcoming_event;
@@ -60,9 +68,9 @@ public class DashboardFragment extends Fragment implements View.OnClickListener 
     SharedPref sharedPref;
     ImageView vol_img, con_img;
     MyTextView vol_txt, con_txt;
-    List<EventDay> events = new ArrayList<>();
-    private CalendarView mCalendarView;
-    private List<EventDay> mEventDays = new ArrayList<>();
+    MaterialCalendarView mCalendarView;
+    private List<EventDayModel> mEventDays = new ArrayList<>();
+    private List<CalendarDay> calendarDayList = new ArrayList<>();
     LinearLayout parentLayout;
     View childLayout;
     GetCsoDashoardCombinedViewModel getCsoDashoardCombinedViewModel;
@@ -70,10 +78,13 @@ public class DashboardFragment extends Fragment implements View.OnClickListener 
     List<CsoDashboardCombinedResponse.CalendarData> calendarDataList = new ArrayList<>();
     List<CsoDashboardCombinedResponse.EventData> eventDataList = new ArrayList<>();
     List<CsoDashboardCombinedResponse.CountDownData> countDownDataList = new ArrayList<>();
-    List<EventDayModel> eventDayModelList = new ArrayList<>();
     MyProgressDialog myProgressDialog;
     ScrollView scrollView;
     LinearLayout vol_req;
+    String event_id, event_heading;
+    List<HashMap<String, String>> shiftDataList = new ArrayList<>();
+    boolean flag = false;
+
     public DashboardFragment() {
 
     }
@@ -120,7 +131,7 @@ public class DashboardFragment extends Fragment implements View.OnClickListener 
                 public void onChanged(@Nullable CsoDashboardCombinedResponse csoDashboardCombinedResponse) {
 
                     if (csoDashboardCombinedResponse != null) {
-                        if (csoDashboardCombinedResponse.getResStatus().equalsIgnoreCase("200")) {
+                        if (csoDashboardCombinedResponse.getResData() != null && csoDashboardCombinedResponse.getResStatus().equalsIgnoreCase("200")) {
                             eventDataList = csoDashboardCombinedResponse.getResData().getEventData();
                             calendarDataList = csoDashboardCombinedResponse.getResData().getCalendarData();
                             countDownDataList = csoDashboardCombinedResponse.getResData().getCountDownData();
@@ -139,7 +150,7 @@ public class DashboardFragment extends Fragment implements View.OnClickListener 
                                 childLayout = inflater.inflate(R.layout.calendarview_night,
                                         (ViewGroup) v.findViewById(R.id.cal));
                                 parentLayout.addView(childLayout);
-                                mCalendarView = (CalendarView) childLayout.findViewById(R.id.calendarViews);
+                                mCalendarView = (MaterialCalendarView) childLayout.findViewById(R.id.calendarViews);
                             } else {
 
                                 bottomLayout.setBackgroundColor(getResources().getColor(R.color.black));
@@ -153,65 +164,84 @@ public class DashboardFragment extends Fragment implements View.OnClickListener 
                                 childLayout = inflater.inflate(R.layout.calendarview_day,
                                         (ViewGroup) v.findViewById(R.id.cal));
                                 parentLayout.addView(childLayout);
-                                mCalendarView = (CalendarView) childLayout.findViewById(R.id.calendarViews);
+                                mCalendarView = (MaterialCalendarView) childLayout.findViewById(R.id.calendarViews);
                             }
 
+                            Calendar instance = Calendar.getInstance();
+                            mCalendarView.setSelectedDate(instance.getTime());
+
+                            mEventDays = new ArrayList<>();
                             for (int i = 0; i < calendarDataList.size(); i++) {
-                                Calendar calendar = Calendar.getInstance();
-                                String year = calendarDataList.get(i).getYr();
-                                String month = calendarDataList.get(i).getMn();
-                                String date = calendarDataList.get(i).getDt();
+                                int year = Integer.parseInt(calendarDataList.get(i).getYr());
+                                int month = Integer.parseInt(calendarDataList.get(i).getMn());
+                                int date = Integer.parseInt(calendarDataList.get(i).getDt());
 
-                                calendar.set(Integer.parseInt(year), Integer.parseInt(month) - 1, Integer.parseInt(date));
-                                EventDay eventDay = new EventDay(calendar, R.drawable.ic_event);
-                                events.add(eventDay);
-                                mCalendarView.setEvents(events);
+                                EventDayModel eventDayModel = new EventDayModel();
+                                eventDayModel.setCalendarDay(new CalendarDay(year, month - 1, date));
+                                eventDayModel.setEventId(calendarDataList.get(i).getEventId());
+                                eventDayModel.setEventHeading(calendarDataList.get(i).getEventHeading());
+                                eventDayModel.setShiftDate(calendarDataList.get(i).getShiftDate());
+                                eventDayModel.setShiftTask(calendarDataList.get(i).getShiftTask());
+                                eventDayModel.setShiftStartTime(calendarDataList.get(i).getShiftStartTime());
+                                eventDayModel.setShiftEndTime(calendarDataList.get(i).getShiftEndTime());
 
-                                eventDayModelList.add(new EventDayModel(eventDay, calendarDataList.get(i).getEventId(), calendarDataList.get(i).getEventHeading()));
+                                mEventDays.add(eventDayModel);
 
                             }
 
-                            try {
-                                mCalendarView.setDate(new Date());
-                            } catch (OutOfDateRangeException e) {
-                                e.printStackTrace();
-                            }
-
-                            mCalendarView.setOnDayClickListener(eventDay -> {
-
-                                String event_id = "";
-                                for (int i = 0; i < eventDayModelList.size(); i++) {
-                                    EventDayModel eventDayModel = eventDayModelList.get(i);
-                                    if (eventDayModel.getEventDay() == eventDay) {
-                                        event_id = eventDayModel.getEventId();
-                                        break;
-                                    }
-                                }
-
-
-                                EventDetailFragment eventDetailFragment = new EventDetailFragment();
-                                Bundle bundle = new Bundle();
-                                bundle.putString("event_id", event_id);
-                                eventDetailFragment.setArguments(bundle);
-                                Utility.replaceFragment(context, eventDetailFragment, "EventDetailFragment");
-
-
-                            });
-
+                            setEventsOnCalendar(mEventDays);
 
                             UpcomingEventAdapter adapter = new UpcomingEventAdapter(context, eventDataList);
                             lv_upcoming_event.setAdapter(adapter);
 
-                            if(eventDataList.size()>3)
-                            {
+                            if (eventDataList.size() > 3) {
                                 ViewGroup.LayoutParams lp = (ViewGroup.LayoutParams) lv_upcoming_event.getLayoutParams();
                                 lp.height = 800;
                                 lv_upcoming_event.setLayoutParams(lp);
-                            }
-                            else
-                            {
+                            } else {
                                 Utility.setListViewHeightBasedOnChildren(lv_upcoming_event);
                             }
+
+
+                            mCalendarView.setOnDateChangedListener(new OnDateSelectedListener() {
+                                @Override
+                                public void onDateSelected(@NonNull MaterialCalendarView widget, @NonNull CalendarDay date, boolean selected) {
+
+
+                                    HashMap<String, String> map;
+                                    shiftDataList = new ArrayList<>();
+                                    for (int i = 0; i < mEventDays.size(); i++) {
+                                        if (mEventDays.get(i).getCalendarDay().getDay() == date.getDay() && mEventDays.get(i).getCalendarDay().getMonth() == date.getMonth() && mEventDays.get(i).getCalendarDay().getYear() == date.getYear()) {
+                                            map = new HashMap<>();
+                                            event_id = mEventDays.get(i).getEventId();
+                                            event_heading = mEventDays.get(i).getEventHeading();
+                                            map.put("shift_task", mEventDays.get(i).getShiftTask());
+                                            map.put("shift_date", mEventDays.get(i).getShiftDate());
+                                            map.put("shift_start_time", mEventDays.get(i).getShiftStartTime());
+                                            map.put("shift_end_time", mEventDays.get(i).getShiftEndTime());
+                                            map.put("event_heading", event_heading);
+                                            map.put("event_id", event_id);
+                                            shiftDataList.add(map);
+                                            flag = true;
+                                            //break;
+                                        }
+                                    }
+
+                                    if (flag) {
+                                        flag = false;
+                                        openDateDialog(shiftDataList);
+                                    }
+
+                                    /*if(event_id!=null && event_heading!=null) {
+                                        EventDetailFragment eventDetailFragment = new EventDetailFragment();
+                                        Bundle bundle = new Bundle();
+                                        bundle.putString("event_id", event_id);
+                                        eventDetailFragment.setArguments(bundle);
+                                        Utility.replaceFragment(context, eventDetailFragment, "EventDetailFragment");
+                                    }*/
+
+                                }
+                            });
 
                         } else {
                             myToast.show(getString(R.string.something_went_wrong), Toast.LENGTH_SHORT, false);
@@ -232,17 +262,106 @@ public class DashboardFragment extends Fragment implements View.OnClickListener 
         return v;
     }
 
+    private void openDateDialog(List<HashMap<String, String>> shiftDataList) {
+        Dialog dialog = new Dialog(context);
+        View view = LayoutInflater.from(context).inflate(R.layout.shift_list_for_event_dialog, null);
+        dialog.setContentView(view);
+        dialog.setCancelable(false);
+
+
+        ListView shiftList = view.findViewById(R.id.shiftList);
+        Button close = view.findViewById(R.id.close);
+
+
+        ShiftListForCalendarAdapter shiftListForCalendarAdapter = new ShiftListForCalendarAdapter(context, shiftDataList,"Dashboard",dialog);
+        shiftList.setAdapter(shiftListForCalendarAdapter);
+
+        /*if (shiftDataList.size() > 1) {
+            shiftDataListTimeSorted = sortAccordingToTime(shiftDataList);
+            ShiftListForCalendarAdapter shiftListForCalendarAdapter = new ShiftListForCalendarAdapter(context, shiftDataListTimeSorted);
+            shiftList.setAdapter(shiftListForCalendarAdapter);
+        } else {
+            ShiftListForCalendarAdapter shiftListForCalendarAdapter = new ShiftListForCalendarAdapter(context, shiftDataList);
+            shiftList.setAdapter(shiftListForCalendarAdapter);
+        }*/
+            //Utility.setListViewHeightBasedOnChildren(shiftList);
+
+            close.setOnClickListener(v -> {
+                dialog.dismiss();
+            });
+
+            dialog.show();
+    }
+
+    private List<HashMap<String, String>> sortAccordingToTime(List<HashMap<String, String>> shiftDataList) {
+
+        List<HashMap<String, String>> shiftDataListSorted = new ArrayList<>();
+
+       for(int i=0;i<shiftDataList.size();i++)
+       {
+           for(int j=i+1;j<shiftDataList.size();j++)
+           {
+               Date low = Utility.convertTimeToDate(shiftDataList.get(i).get("shift_start_time"));
+               Date high = Utility.convertTimeToDate(shiftDataList.get(j).get("shift_end_time"));
+
+               if(low.before(high))
+               {
+                   shiftDataListSorted.add(shiftDataList.get(i));
+               }
+           }
+       }
+
+
+       /* for (int i = 0; i < shiftDataList.size()-1; i++) {
+            for (int j = 0; j < shiftDataList.size() - i - 1; j++) {
+                Date low = Utility.convertTimeToDate(shiftDataList.get(j).get("shift_start_time"));
+                Date high = Utility.convertTimeToDate(shiftDataList.get(j+1).get("shift_end_time"));
+
+                int hour1 = Integer.parseInt(shiftDataList.get(j).get("shift_start_time").split(":")[0]);
+                int minute1 = Integer.parseInt(shiftDataList.get(j).get("shift_start_time").split(":")[1]);
+                int seconds1 = Integer.parseInt(shiftDataList.get(j).get("shift_start_time").split(":")[2]);
+
+                int tempStart = (60 * minute1) + (3600 * hour1) + seconds1;
+
+                int hour2 = Integer.parseInt(shiftDataList.get(j+1).get("shift_end_time").split(":")[0]);
+                int minute2 = Integer.parseInt(shiftDataList.get(j+1).get("shift_end_time").split(":")[1]);
+                int seconds2 = Integer.parseInt(shiftDataList.get(j+1).get("shift_end_time").split(":")[2]);
+
+                int tempEnd= (60 * minute2) + (3600 * hour2) + seconds2;
+
+                if (tempStart > tempEnd) {
+                    *//*HashMap<String, String> map  = shiftDataList.get(j);
+                    shiftDataList.set(j,shiftDataList.get(j+1));
+                    shiftDataList.set(j+1,map);*//*
+
+                    Collections.swap(shiftDataList, j, j+1);
+                }
+            }
+        }*/
+
+        return shiftDataListSorted;
+    }
+
+    private void setEventsOnCalendar(List<EventDayModel> eventDayModelList) {
+
+        for (int i = 0; i < eventDayModelList.size(); i++) {
+            CalendarDay day = eventDayModelList.get(i).getCalendarDay();
+            calendarDayList.add(day);
+            mCalendarView.addDecorator(new EventDecorator(getResources().getColor(R.color.blue_light), calendarDayList));
+        }
+    }
+
     @Override
     public void onActivityResult(int requestCode, int resultCode, Intent data) {
         if (requestCode == CsoDashboardActivity.ADD_NOTE && resultCode == RESULT_OK) {
-            try {
+           /* try {
                 MyEventDay myEventDay = data.getParcelableExtra(CsoDashboardActivity.RESULT);
                 mCalendarView.setDate(myEventDay.getCalendar());
                 mEventDays.add(myEventDay);
                 mCalendarView.setEvents(mEventDays);
             } catch (Exception e) {
                 System.out.print(e);
-            }
+            }*/
         }
 
     }
@@ -293,8 +412,7 @@ public class DashboardFragment extends Fragment implements View.OnClickListener 
 
     @Override
     public void onClick(View v) {
-        switch (v.getId())
-        {
+        switch (v.getId()) {
             case R.id.vol_req:
                 ((CsoDashboardActivity) context).setStudentFragmentFrom();
                 break;

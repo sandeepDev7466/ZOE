@@ -5,6 +5,8 @@ import com.ztp.app.Data.Remote.Model.Request.CSOAllRequest;
 import com.ztp.app.Data.Remote.Model.Request.ChangeStatusByCSORequest;
 import com.ztp.app.Data.Remote.Model.Request.ChangeVolunteerStatusRequest;
 import com.ztp.app.Data.Remote.Model.Request.CsoDashboardCombinedRequest;
+import com.ztp.app.Data.Remote.Model.Request.CsoMarkHoursRequest;
+import com.ztp.app.Data.Remote.Model.Request.CsoMyVolunteerRequest;
 import com.ztp.app.Data.Remote.Model.Request.CsoRegisterRequestStep_1;
 import com.ztp.app.Data.Remote.Model.Request.CsoRegisterRequestStep_2;
 import com.ztp.app.Data.Remote.Model.Request.CsoRegisterRequestStep_3;
@@ -19,8 +21,8 @@ import com.ztp.app.Data.Remote.Model.Request.GetMonthEventDateRequest;
 import com.ztp.app.Data.Remote.Model.Request.GetProfileRequest;
 import com.ztp.app.Data.Remote.Model.Request.GetSearchShiftListRequest;
 import com.ztp.app.Data.Remote.Model.Request.GetShiftDetailRequest;
-import com.ztp.app.Data.Remote.Model.Request.GetShiftListRequest;
 import com.ztp.app.Data.Remote.Model.Request.LoginRequest;
+import com.ztp.app.Data.Remote.Model.Request.MarkRankRequest;
 import com.ztp.app.Data.Remote.Model.Request.PostVolunteerRequest;
 import com.ztp.app.Data.Remote.Model.Request.PublishRequest;
 import com.ztp.app.Data.Remote.Model.Request.SearchEventRequest;
@@ -31,12 +33,15 @@ import com.ztp.app.Data.Remote.Model.Request.StateRequest;
 import com.ztp.app.Data.Remote.Model.Request.UpdateProfileRequest;
 import com.ztp.app.Data.Remote.Model.Request.ValidateOtpRequest;
 import com.ztp.app.Data.Remote.Model.Request.VolunteerAllRequest;
+import com.ztp.app.Data.Remote.Model.Request.VolunteerDashboardCombineRequest;
 import com.ztp.app.Data.Remote.Model.Response.AddEventResponse;
 import com.ztp.app.Data.Remote.Model.Response.BlogSearchResponse;
 import com.ztp.app.Data.Remote.Model.Response.CSOAllResponse;
 import com.ztp.app.Data.Remote.Model.Response.ChangeStatusByCSOResponse;
 import com.ztp.app.Data.Remote.Model.Response.CountryResponse;
 import com.ztp.app.Data.Remote.Model.Response.CsoDashboardCombinedResponse;
+import com.ztp.app.Data.Remote.Model.Response.CsoMarkHoursResponse;
+import com.ztp.app.Data.Remote.Model.Response.CsoMyVolunteerResponse;
 import com.ztp.app.Data.Remote.Model.Response.CsoRegisterResponseStep_1;
 import com.ztp.app.Data.Remote.Model.Response.CsoRegisterResponseStep_2;
 import com.ztp.app.Data.Remote.Model.Response.CsoRegisterResponseStep_3;
@@ -51,6 +56,7 @@ import com.ztp.app.Data.Remote.Model.Response.GetProfileResponse;
 import com.ztp.app.Data.Remote.Model.Response.GetShiftDetailResponse;
 import com.ztp.app.Data.Remote.Model.Response.GetVolunteerShiftListResponse;
 import com.ztp.app.Data.Remote.Model.Response.LoginResponse;
+import com.ztp.app.Data.Remote.Model.Response.MarkRankResponse;
 import com.ztp.app.Data.Remote.Model.Response.PostVolunteerRequestResponse;
 import com.ztp.app.Data.Remote.Model.Response.PublishResponse;
 import com.ztp.app.Data.Remote.Model.Response.SchoolResponse;
@@ -66,6 +72,7 @@ import com.ztp.app.Data.Remote.Model.Response.UploadDocumentResponse;
 import com.ztp.app.Data.Remote.Model.Response.ValidateOtpResponse;
 import com.ztp.app.Data.Remote.Model.Response.VolunteerAllResponse;
 import com.ztp.app.Data.Remote.Model.Response.ChangeVolunteerStatusResponse;
+import com.ztp.app.Data.Remote.Model.Response.VolunteerDashboardCombineResponse;
 
 import okhttp3.MultipartBody;
 import okhttp3.ResponseBody;
@@ -199,6 +206,19 @@ public interface ApiInterface {
     //@POST("cso-action.php?api_key=1234&action=cso_dashboard_combine")
     @POST("cso-action.php?api_key=1234&action=cso_dashboard_combine_mob")
     Call<CsoDashboardCombinedResponse> getCsoDashoardCombined(@Body CsoDashboardCombinedRequest csoDashboardCombinedRequest);
+
+    @POST("cso-action.php?api_key=1234&action=mark_rank")
+    Call<MarkRankResponse> markRank(@Body MarkRankRequest markRankRequest);
+
+    @POST("cso-action.php?api_key=1234&action=my_volunteers")
+    Call<CsoMyVolunteerResponse> getCsoMyVolunteer(@Body CsoMyVolunteerRequest csoMyVolunteerRequest);
+
+    @POST("cso-action.php?api_key=1234&action=mark_hours")
+    Call<CsoMarkHoursResponse> csoMarkHours(@Body CsoMarkHoursRequest csoMarkHoursRequest);
+
+    @POST("api_key=1234&action=vol_dashboard_combine")
+    Call<VolunteerDashboardCombineResponse> getVolunteerDashboardCombined(@Body VolunteerDashboardCombineRequest volunteerDashboardCombineRequest);
+
 
 
 }

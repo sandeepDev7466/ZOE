@@ -16,8 +16,6 @@
         android:gravity="center"
         android:textAllCaps="true"/>
 
-
-
     <LinearLayout
         android:id="@+id/decline_layout"
         android:layout_width="match_parent"

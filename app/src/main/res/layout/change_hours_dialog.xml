@@ -1,0 +1,147 @@
+<?xml version="1.0" encoding="utf-8"?>
+<LinearLayout xmlns:android="http://schemas.android.com/apk/res/android"
+    android:layout_width="match_parent"
+    android:layout_height="wrap_content"
+    android:gravity="center"
+    android:minWidth="@dimen/_250sdp"
+    android:orientation="vertical">
+
+    <com.ztp.app.Helper.MyHeadingTextView
+        android:layout_width="match_parent"
+        android:layout_height="@dimen/_50sdp"
+        android:layout_gravity="center"
+        android:background="@color/blue_light"
+        android:gravity="center"
+        android:text="@string/change_hours"
+        android:textAllCaps="true"
+        android:textColor="@color/white"
+        android:textSize="@dimen/_20ssp" />
+
+    <LinearLayout
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:orientation="vertical">
+
+        <com.ztp.app.Helper.MyTextView
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:layout_marginTop="@dimen/_10sdp"
+            android:gravity="center"
+            android:text="@string/current_hours"
+            android:textColor="@color/blue_light"
+            android:textSize="@dimen/_13ssp" />
+
+        <com.ztp.app.Helper.MyTextView
+            android:id="@+id/currentHours"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:layout_gravity="center"
+            android:textSize="@dimen/_15ssp"
+            android:layout_marginTop="@dimen/_10sdp"/>
+
+       <!-- <LinearLayout
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:orientation="horizontal"
+            android:layout_marginTop="@dimen/_10sdp"
+            android:gravity="center">
+
+            <com.ztp.app.Helper.MyTextView
+                android:id="@+id/currentHours"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:layout_gravity="center"
+                android:textSize="@dimen/_15ssp" />
+
+            <com.ztp.app.Helper.MyTextView
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:layout_gravity="center"
+                android:textSize="@dimen/_15ssp"
+                android:text="/"/>
+
+            <com.ztp.app.Helper.MyTextView
+                android:id="@+id/requiredHours"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:layout_gravity="center"
+                android:textSize="@dimen/_15ssp" />
+
+
+
+        </LinearLayout>-->
+
+    </LinearLayout>
+
+    <View
+        android:layout_width="match_parent"
+        android:layout_height="0.7dp"
+        android:background="@color/background_3"
+        android:layout_marginTop="@dimen/_10sdp"
+        android:layout_marginStart="@dimen/_20sdp"
+        android:layout_marginEnd="@dimen/_20sdp"/>
+
+    <LinearLayout
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:orientation="vertical">
+
+        <com.ztp.app.Helper.MyTextView
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:layout_marginTop="@dimen/_10sdp"
+            android:gravity="center"
+            android:text="@string/enter_actual_hours"
+            android:textColor="@color/blue_light"
+            android:textSize="@dimen/_13ssp" />
+
+        <com.ztp.app.Helper.MyTextInputLayout
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:layout_marginTop="@dimen/_10sdp"
+            android:layout_marginStart="@dimen/_20sdp"
+            android:layout_marginEnd="@dimen/_20sdp">
+
+            <com.ztp.app.Helper.MyTextInputEditText
+                android:id="@+id/etHours"
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:hint="@string/enter_hours"
+                android:inputType="number"
+                android:textSize="@dimen/_12ssp" />
+        </com.ztp.app.Helper.MyTextInputLayout>
+
+    </LinearLayout>
+
+    <LinearLayout
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:orientation="horizontal"
+        android:layout_marginTop="@dimen/_20sdp"
+        android:gravity="center">
+
+        <Button
+            android:id="@+id/cancel"
+            android:layout_width="@dimen/_100sdp"
+            android:layout_height="@dimen/_40sdp"
+            style="@style/MyGrayButton"
+            android:text="@string/cancel"
+            android:layout_marginEnd="@dimen/_10sdp"
+            android:textSize="@dimen/_10ssp"/>
+
+        <Button
+            android:id="@+id/done"
+            android:layout_width="@dimen/_100sdp"
+            android:layout_height="@dimen/_40sdp"
+            style="@style/MyGreenButton"
+            android:text="@string/done"
+            android:layout_marginStart="@dimen/_10sdp"
+            android:textSize="@dimen/_10ssp"/>
+
+    </LinearLayout>
+
+    <Space
+        android:layout_width="match_parent"
+        android:layout_height="@dimen/_20sdp" />
+
+</LinearLayout>
