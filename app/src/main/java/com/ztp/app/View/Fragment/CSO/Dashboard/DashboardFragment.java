@@ -266,15 +266,16 @@ public class DashboardFragment extends Fragment implements View.OnClickListener{
         Dialog dialog = new Dialog(context);
         View view = LayoutInflater.from(context).inflate(R.layout.shift_list_for_event_dialog, null);
         dialog.setContentView(view);
-        dialog.setCancelable(false);
+        //dialog.setCancelable(false);
 
 
         ListView shiftList = view.findViewById(R.id.shiftList);
-        Button close = view.findViewById(R.id.close);
+       // Button close = view.findViewById(R.id.close);
 
 
         ShiftListForCalendarAdapter shiftListForCalendarAdapter = new ShiftListForCalendarAdapter(context, shiftDataList,"Dashboard",dialog);
         shiftList.setAdapter(shiftListForCalendarAdapter);
+
 
         /*if (shiftDataList.size() > 1) {
             shiftDataListTimeSorted = sortAccordingToTime(shiftDataList);
@@ -286,10 +287,10 @@ public class DashboardFragment extends Fragment implements View.OnClickListener{
         }*/
             //Utility.setListViewHeightBasedOnChildren(shiftList);
 
-            close.setOnClickListener(v -> {
+           /* close.setOnClickListener(v -> {
                 dialog.dismiss();
             });
-
+*/
             dialog.show();
     }
 
