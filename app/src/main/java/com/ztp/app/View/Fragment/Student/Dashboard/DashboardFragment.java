@@ -16,6 +16,7 @@ import com.ztp.app.Utils.Utility;
 import com.ztp.app.View.Activity.Student.StudentDashboardActivity;
 import com.ztp.app.View.Fragment.Student.Booking.TabFindCsoFragment;
 import com.ztp.app.View.Fragment.Student.Extra.SearchEventFragment;
+import com.ztp.app.View.Fragment.Student.Extra.UpcomingEventsFragment;
 
 import java.util.ArrayList;
 import java.util.HashMap;
@@ -28,7 +29,7 @@ public class DashboardFragment extends Fragment implements View.OnClickListener 
     TabLayout tabLayout;
     int count;
     List<HashMap<String, Object>> data = new ArrayList<>();
-    LinearLayout volunter, upload, target, message, cso;
+    LinearLayout volunter, upload, target, message, cso,upcoming_events;
     MyToast myToast;
 
     public DashboardFragment() {
@@ -54,13 +55,14 @@ public class DashboardFragment extends Fragment implements View.OnClickListener 
         target = view.findViewById(R.id.target);
         message = view.findViewById(R.id.message);
         cso = view.findViewById(R.id.cso);
+        upcoming_events = view.findViewById(R.id.upcoming_event);
 
         volunter.setOnClickListener(this);
         upload.setOnClickListener(this);
         target.setOnClickListener(this);
         message.setOnClickListener(this);
         cso.setOnClickListener(this);
-
+        upcoming_events.setOnClickListener(this);
 
         count = getData().size();
         DashboardFragmentPager hangoutFragmentPager = new DashboardFragmentPager(getChildFragmentManager(), count, getData());
@@ -110,6 +112,9 @@ public class DashboardFragment extends Fragment implements View.OnClickListener 
                 break;
             case R.id.cso:
                 Utility.replaceFragment(context, new TabFindCsoFragment(), "TabFindCsoFragment");
+                break;
+            case R.id.upcoming_event:
+                Utility.replaceFragment(context, new UpcomingEventsFragment(), "UpcomingEventsFragment");
                 break;
 
         }

@@ -1,29 +1,27 @@
 package com.ztp.app.View.Fragment.CSO.Dashboard;
 
-
 import android.app.Dialog;
 import android.arch.lifecycle.LifecycleOwner;
 import android.arch.lifecycle.Observer;
 import android.arch.lifecycle.ViewModelProviders;
 import android.content.Context;
 import android.content.Intent;
-import android.graphics.Color;
 import android.os.Bundle;
 import android.os.Handler;
 import android.support.annotation.NonNull;
 import android.support.annotation.Nullable;
 import android.support.v4.app.Fragment;
 import android.support.v4.app.FragmentActivity;
+import android.util.Log;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
-import android.widget.Button;
 import android.widget.ImageView;
 import android.widget.LinearLayout;
 import android.widget.ListView;
 import android.widget.ScrollView;
 import android.widget.Toast;
-
+import com.google.gson.Gson;
 import com.prolificinteractive.materialcalendarview.CalendarDay;
 import com.prolificinteractive.materialcalendarview.MaterialCalendarView;
 import com.prolificinteractive.materialcalendarview.OnDateSelectedListener;
@@ -35,33 +33,29 @@ import com.ztp.app.Helper.MyHeadingTextView;
 import com.ztp.app.Helper.MyProgressDialog;
 import com.ztp.app.Helper.MyTextView;
 import com.ztp.app.Helper.MyToast;
-import com.ztp.app.R;
 import com.ztp.app.Model.EventDayModel;
+import com.ztp.app.R;
 import com.ztp.app.Utils.EventDecorator;
 import com.ztp.app.Utils.Utility;
 import com.ztp.app.View.Activity.CSO.CsoDashboardActivity;
-import com.ztp.app.View.Fragment.Common.EventDetailFragment;
 import com.ztp.app.Viewmodel.GetCsoDashoardCombinedViewModel;
-
 import java.text.SimpleDateFormat;
 import java.util.ArrayList;
 import java.util.Calendar;
-import java.util.Collections;
-import java.util.Comparator;
 import java.util.Date;
 import java.util.HashMap;
 import java.util.List;
 import java.util.Locale;
-
 import static android.app.Activity.RESULT_OK;
 
-public class DashboardFragment extends Fragment implements View.OnClickListener{
+public class DashboardFragment extends Fragment implements View.OnClickListener {
 
 
     ListView lv_upcoming_event;
     MyBoldTextView tv_days, tv_hours, tv_minutes, tv_seconds;
     Context context;
     private Handler handler;
+    private Runnable runnable;
     MyHeadingTextView upcoming_text;
     LinearLayout bottomLayout;
     boolean theme;
@@ -77,13 +71,13 @@ public class DashboardFragment extends Fragment implements View.OnClickListener{
     MyToast myToast;
     List<CsoDashboardCombinedResponse.CalendarData> calendarDataList = new ArrayList<>();
     List<CsoDashboardCombinedResponse.EventData> eventDataList = new ArrayList<>();
-    List<CsoDashboardCombinedResponse.CountDownData> countDownDataList = new ArrayList<>();
     MyProgressDialog myProgressDialog;
     ScrollView scrollView;
-    LinearLayout vol_req;
+    LinearLayout vol_req,timerLayout;
     String event_id, event_heading;
     List<HashMap<String, String>> shiftDataList = new ArrayList<>();
     boolean flag = false;
+    int countDown = 0;
 
     public DashboardFragment() {
 
@@ -94,7 +88,6 @@ public class DashboardFragment extends Fragment implements View.OnClickListener{
                              Bundle savedInstanceState) {
 
         View v = inflater.inflate(R.layout.fragment_dashboard_cso, container, false);
-
 
         lv_upcoming_event = v.findViewById(R.id.lv_upcoming_event);
         tv_days = v.findViewById(R.id.days);
@@ -114,7 +107,41 @@ public class DashboardFragment extends Fragment implements View.OnClickListener{
         parentLayout = v.findViewById(R.id.custom_calendar_container);
         theme = sharedPref.getTheme();
         vol_req = v.findViewById(R.id.vol_req);
+        timerLayout = v.findViewById(R.id.timerLayout);
         vol_req.setOnClickListener(this);
+
+        if (theme) {
+            bottomLayout.setBackgroundColor(getResources().getColor(R.color.white));
+            upcoming_text.setBackgroundColor(getResources().getColor(R.color.white));
+            upcoming_text.setTextColor(getResources().getColor(R.color.black));
+            vol_img.setColorFilter(getResources().getColor(R.color.black));
+            con_img.setColorFilter(getResources().getColor(R.color.black));
+            vol_txt.setTextColor(getResources().getColor(R.color.black));
+            con_txt.setTextColor(getResources().getColor(R.color.black));
+
+            childLayout = inflater.inflate(R.layout.calendarview_night,
+                    (ViewGroup) v.findViewById(R.id.cal));
+            parentLayout.addView(childLayout);
+            mCalendarView = (MaterialCalendarView) childLayout.findViewById(R.id.calendarViews);
+        } else {
+
+            bottomLayout.setBackgroundColor(getResources().getColor(R.color.black));
+            upcoming_text.setBackgroundColor(getResources().getColor(R.color.black));
+            upcoming_text.setTextColor(getResources().getColor(R.color.white));
+            vol_img.setColorFilter(getResources().getColor(R.color.white));
+            con_img.setColorFilter(getResources().getColor(R.color.white));
+            vol_txt.setTextColor(getResources().getColor(R.color.white));
+            con_txt.setTextColor(getResources().getColor(R.color.white));
+
+            childLayout = inflater.inflate(R.layout.calendarview_day,
+                    (ViewGroup) v.findViewById(R.id.cal));
+            parentLayout.addView(childLayout);
+            mCalendarView = (MaterialCalendarView) childLayout.findViewById(R.id.calendarViews);
+        }
+
+        Calendar instance = Calendar.getInstance();
+        mCalendarView.setSelectedDate(instance.getTime());
+
 
         getCsoDashoardCombinedViewModel = ViewModelProviders.of((FragmentActivity) context).get(GetCsoDashoardCombinedViewModel.class);
 
@@ -124,113 +151,114 @@ public class DashboardFragment extends Fragment implements View.OnClickListener{
 
             Calendar c = Calendar.getInstance();
             int year = c.get(Calendar.YEAR);
-            int month = c.get(Calendar.MONTH);
+            int month = c.get(Calendar.MONTH)+1;
 
-            getCsoDashoardCombinedViewModel.getCsoDashboardCombinedResponse(new CsoDashboardCombinedRequest(sharedPref.getUserId(), String.valueOf(month), String.valueOf(year), new SimpleDateFormat("MM-dd-yyyy", Locale.ENGLISH).format(new Date()))).observe((LifecycleOwner) context, new Observer<CsoDashboardCombinedResponse>() {
+            CsoDashboardCombinedRequest csoDashboardCombinedRequest = new CsoDashboardCombinedRequest();
+            csoDashboardCombinedRequest.setUserId(sharedPref.getUserId());
+            csoDashboardCombinedRequest.setEventMonth(String.valueOf(month));
+            csoDashboardCombinedRequest.setEventYear(String.valueOf(year));
+            csoDashboardCombinedRequest.setCountdownDate(new SimpleDateFormat("MM-dd-yyyy", Locale.ENGLISH).format(new Date()));
+
+            Log.i("REQUEST", "" + new Gson().toJson(csoDashboardCombinedRequest));
+
+            getCsoDashoardCombinedViewModel.getCsoDashboardCombinedResponse(csoDashboardCombinedRequest).observe((LifecycleOwner) context, new Observer<CsoDashboardCombinedResponse>() {
                 @Override
                 public void onChanged(@Nullable CsoDashboardCombinedResponse csoDashboardCombinedResponse) {
 
                     if (csoDashboardCombinedResponse != null) {
-                        if (csoDashboardCombinedResponse.getResData() != null && csoDashboardCombinedResponse.getResStatus().equalsIgnoreCase("200")) {
-                            eventDataList = csoDashboardCombinedResponse.getResData().getEventData();
-                            calendarDataList = csoDashboardCombinedResponse.getResData().getCalendarData();
-                            countDownDataList = csoDashboardCombinedResponse.getResData().getCountDownData();
+                        Log.i("RESPONSE", "" + new Gson().toJson(csoDashboardCombinedResponse));
+                        if (csoDashboardCombinedResponse.getResStatus().equalsIgnoreCase("200")) {
 
-                            countDownStart(countDownDataList.get(0).getShiftDate() + " " + countDownDataList.get(0).getShiftStartTime());
+                            if(csoDashboardCombinedResponse.getResData()!=null) {
 
-                            if (theme) {
-                                bottomLayout.setBackgroundColor(getResources().getColor(R.color.white));
-                                upcoming_text.setBackgroundColor(getResources().getColor(R.color.white));
-                                upcoming_text.setTextColor(getResources().getColor(R.color.black));
-                                vol_img.setColorFilter(getResources().getColor(R.color.black));
-                                con_img.setColorFilter(getResources().getColor(R.color.black));
-                                vol_txt.setTextColor(getResources().getColor(R.color.black));
-                                con_txt.setTextColor(getResources().getColor(R.color.black));
+                                upcoming_text.setVisibility(View.VISIBLE);
+                                lv_upcoming_event.setVisibility(View.VISIBLE);
+                                timerLayout.setVisibility(View.VISIBLE);
+                                eventDataList = csoDashboardCombinedResponse.getResData().getEventData();
+                                calendarDataList = csoDashboardCombinedResponse.getResData().getCalendarData();
+                                //countDownDataList = csoDashboardCombinedResponse.getResData().getCountDownData();
 
-                                childLayout = inflater.inflate(R.layout.calendarview_night,
-                                        (ViewGroup) v.findViewById(R.id.cal));
-                                parentLayout.addView(childLayout);
-                                mCalendarView = (MaterialCalendarView) childLayout.findViewById(R.id.calendarViews);
-                            } else {
+                                //startCountDown(eventDataList);
 
-                                bottomLayout.setBackgroundColor(getResources().getColor(R.color.black));
-                                upcoming_text.setBackgroundColor(getResources().getColor(R.color.black));
-                                upcoming_text.setTextColor(getResources().getColor(R.color.white));
-                                vol_img.setColorFilter(getResources().getColor(R.color.white));
-                                con_img.setColorFilter(getResources().getColor(R.color.white));
-                                vol_txt.setTextColor(getResources().getColor(R.color.white));
-                                con_txt.setTextColor(getResources().getColor(R.color.white));
+                                if(calendarDataList!=null) {
+                                    mEventDays = new ArrayList<>();
+                                    for (int i = 0; i < calendarDataList.size(); i++) {
+                                        int year = Integer.parseInt(calendarDataList.get(i).getYr());
+                                        int month = Integer.parseInt(calendarDataList.get(i).getMn());
+                                        int date = Integer.parseInt(calendarDataList.get(i).getDt());
 
-                                childLayout = inflater.inflate(R.layout.calendarview_day,
-                                        (ViewGroup) v.findViewById(R.id.cal));
-                                parentLayout.addView(childLayout);
-                                mCalendarView = (MaterialCalendarView) childLayout.findViewById(R.id.calendarViews);
-                            }
+                                        EventDayModel eventDayModel = new EventDayModel();
+                                        eventDayModel.setCalendarDay(new CalendarDay(year, month - 1, date));
+                                        eventDayModel.setEventId(calendarDataList.get(i).getEventId());
+                                        eventDayModel.setEventHeading(calendarDataList.get(i).getEventHeading());
+                                        eventDayModel.setShiftDate(calendarDataList.get(i).getShiftDate());
+                                        eventDayModel.setShiftTask(calendarDataList.get(i).getShiftTask());
+                                        eventDayModel.setShiftStartTime(calendarDataList.get(i).getShiftStartTime());
+                                        eventDayModel.setShiftEndTime(calendarDataList.get(i).getShiftEndTime());
+                                        eventDayModel.setShiftId(calendarDataList.get(i).getShiftId());
 
-                            Calendar instance = Calendar.getInstance();
-                            mCalendarView.setSelectedDate(instance.getTime());
+                                        mEventDays.add(eventDayModel);
 
-                            mEventDays = new ArrayList<>();
-                            for (int i = 0; i < calendarDataList.size(); i++) {
-                                int year = Integer.parseInt(calendarDataList.get(i).getYr());
-                                int month = Integer.parseInt(calendarDataList.get(i).getMn());
-                                int date = Integer.parseInt(calendarDataList.get(i).getDt());
+                                    }
 
-                                EventDayModel eventDayModel = new EventDayModel();
-                                eventDayModel.setCalendarDay(new CalendarDay(year, month - 1, date));
-                                eventDayModel.setEventId(calendarDataList.get(i).getEventId());
-                                eventDayModel.setEventHeading(calendarDataList.get(i).getEventHeading());
-                                eventDayModel.setShiftDate(calendarDataList.get(i).getShiftDate());
-                                eventDayModel.setShiftTask(calendarDataList.get(i).getShiftTask());
-                                eventDayModel.setShiftStartTime(calendarDataList.get(i).getShiftStartTime());
-                                eventDayModel.setShiftEndTime(calendarDataList.get(i).getShiftEndTime());
+                                    setEventsOnCalendar(mEventDays);
+                                }
 
-                                mEventDays.add(eventDayModel);
+                                if(eventDataList!=null) {
+                                    UpcomingEventAdapter adapter = new UpcomingEventAdapter(context, eventDataList);
+                                    lv_upcoming_event.setAdapter(adapter);
+                                    if (eventDataList.size() > 3) {
+                                        ViewGroup.LayoutParams lp = (ViewGroup.LayoutParams) lv_upcoming_event.getLayoutParams();
+                                        lp.height = 800;
+                                        lv_upcoming_event.setLayoutParams(lp);
+                                    } else {
+                                        Utility.setListViewHeightBasedOnChildren(lv_upcoming_event);
+                                    }
 
-                            }
+                                    countDownStart(eventDataList.get(countDown).getShiftDate() + " " + eventDataList.get(countDown).getShiftStartTime());
 
-                            setEventsOnCalendar(mEventDays);
-
-                            UpcomingEventAdapter adapter = new UpcomingEventAdapter(context, eventDataList);
-                            lv_upcoming_event.setAdapter(adapter);
-
-                            if (eventDataList.size() > 3) {
-                                ViewGroup.LayoutParams lp = (ViewGroup.LayoutParams) lv_upcoming_event.getLayoutParams();
-                                lp.height = 800;
-                                lv_upcoming_event.setLayoutParams(lp);
-                            } else {
-                                Utility.setListViewHeightBasedOnChildren(lv_upcoming_event);
-                            }
+                                }
+                                else
+                                {
+                                    tv_days.setText("00");
+                                    tv_hours.setText("00");
+                                    tv_minutes.setText("00");
+                                    tv_seconds.setText("00");
+                                    upcoming_text.setVisibility(View.GONE);
+                                    lv_upcoming_event.setVisibility(View.GONE);
+                                }
 
 
-                            mCalendarView.setOnDateChangedListener(new OnDateSelectedListener() {
-                                @Override
-                                public void onDateSelected(@NonNull MaterialCalendarView widget, @NonNull CalendarDay date, boolean selected) {
+
+                                mCalendarView.setOnDateChangedListener(new OnDateSelectedListener() {
+                                    @Override
+                                    public void onDateSelected(@NonNull MaterialCalendarView widget, @NonNull CalendarDay date, boolean selected) {
 
 
-                                    HashMap<String, String> map;
-                                    shiftDataList = new ArrayList<>();
-                                    for (int i = 0; i < mEventDays.size(); i++) {
-                                        if (mEventDays.get(i).getCalendarDay().getDay() == date.getDay() && mEventDays.get(i).getCalendarDay().getMonth() == date.getMonth() && mEventDays.get(i).getCalendarDay().getYear() == date.getYear()) {
-                                            map = new HashMap<>();
-                                            event_id = mEventDays.get(i).getEventId();
-                                            event_heading = mEventDays.get(i).getEventHeading();
-                                            map.put("shift_task", mEventDays.get(i).getShiftTask());
-                                            map.put("shift_date", mEventDays.get(i).getShiftDate());
-                                            map.put("shift_start_time", mEventDays.get(i).getShiftStartTime());
-                                            map.put("shift_end_time", mEventDays.get(i).getShiftEndTime());
-                                            map.put("event_heading", event_heading);
-                                            map.put("event_id", event_id);
-                                            shiftDataList.add(map);
-                                            flag = true;
-                                            //break;
+                                        HashMap<String, String> map;
+                                        shiftDataList = new ArrayList<>();
+                                        for (int i = 0; i < mEventDays.size(); i++) {
+                                            if (mEventDays.get(i).getCalendarDay().getDay() == date.getDay() && mEventDays.get(i).getCalendarDay().getMonth() == date.getMonth() && mEventDays.get(i).getCalendarDay().getYear() == date.getYear()) {
+                                                map = new HashMap<>();
+                                                event_id = mEventDays.get(i).getEventId();
+                                                event_heading = mEventDays.get(i).getEventHeading();
+                                                map.put("shift_task", mEventDays.get(i).getShiftTask());
+                                                map.put("shift_date", mEventDays.get(i).getShiftDate());
+                                                map.put("shift_start_time", mEventDays.get(i).getShiftStartTime());
+                                                map.put("shift_end_time", mEventDays.get(i).getShiftEndTime());
+                                                map.put("event_heading", event_heading);
+                                                map.put("event_id", event_id);
+                                                map.put("shift_id", mEventDays.get(i).getShiftId());
+                                                shiftDataList.add(map);
+                                                flag = true;
+                                                //break;
+                                            }
                                         }
-                                    }
 
-                                    if (flag) {
-                                        flag = false;
-                                        openDateDialog(shiftDataList);
-                                    }
+                                        if (flag) {
+                                            flag = false;
+                                            openDateDialog(shiftDataList);
+                                        }
 
                                     /*if(event_id!=null && event_heading!=null) {
                                         EventDetailFragment eventDetailFragment = new EventDetailFragment();
@@ -240,14 +268,28 @@ public class DashboardFragment extends Fragment implements View.OnClickListener{
                                         Utility.replaceFragment(context, eventDetailFragment, "EventDetailFragment");
                                     }*/
 
-                                }
-                            });
+                                    }
+                                });
+                            }
+                            else
+                            {
+                                myToast.show(getString(R.string.no_events_found), Toast.LENGTH_SHORT, false);
+                                upcoming_text.setVisibility(View.GONE);
+                                lv_upcoming_event.setVisibility(View.GONE);
+                                timerLayout.setVisibility(View.GONE);
+                            }
 
-                        } else {
-                            myToast.show(getString(R.string.something_went_wrong), Toast.LENGTH_SHORT, false);
+                        } else if(csoDashboardCombinedResponse.getResStatus().equalsIgnoreCase("401")){
+                            myToast.show(getString(R.string.no_events_found), Toast.LENGTH_SHORT, false);
+                            upcoming_text.setVisibility(View.GONE);
+                            lv_upcoming_event.setVisibility(View.GONE);
+                            timerLayout.setVisibility(View.GONE);
                         }
                     } else {
                         myToast.show(getString(R.string.err_server), Toast.LENGTH_SHORT, false);
+                        upcoming_text.setVisibility(View.GONE);
+                        lv_upcoming_event.setVisibility(View.GONE);
+                        timerLayout.setVisibility(View.GONE);
                     }
 
                     myProgressDialog.dismiss();
@@ -257,11 +299,19 @@ public class DashboardFragment extends Fragment implements View.OnClickListener{
 
         } else {
             myToast.show(getString(R.string.no_internet_connection), Toast.LENGTH_SHORT, false);
+            upcoming_text.setVisibility(View.GONE);
+            lv_upcoming_event.setVisibility(View.GONE);
         }
 
         return v;
     }
 
+    /*private void startCountDown(List<CsoDashboardCombinedResponse.EventData> eventDataList) {
+
+        countDownStart(countDownDataList.get(0).getShiftDate() + " " + countDownDataList.get(0).getShiftStartTime());
+
+    }
+*/
     private void openDateDialog(List<HashMap<String, String>> shiftDataList) {
         Dialog dialog = new Dialog(context);
         View view = LayoutInflater.from(context).inflate(R.layout.shift_list_for_event_dialog, null);
@@ -270,11 +320,13 @@ public class DashboardFragment extends Fragment implements View.OnClickListener{
 
 
         ListView shiftList = view.findViewById(R.id.shiftList);
-       // Button close = view.findViewById(R.id.close);
+        // Button close = view.findViewById(R.id.close);
 
 
-        ShiftListForCalendarAdapter shiftListForCalendarAdapter = new ShiftListForCalendarAdapter(context, shiftDataList,"Dashboard",dialog);
-        shiftList.setAdapter(shiftListForCalendarAdapter);
+        if(shiftDataList!=null) {
+            ShiftListForCalendarAdapter shiftListForCalendarAdapter = new ShiftListForCalendarAdapter(context, shiftDataList, "Dashboard", dialog);
+            shiftList.setAdapter(shiftListForCalendarAdapter);
+        }
 
 
         /*if (shiftDataList.size() > 1) {
@@ -285,16 +337,16 @@ public class DashboardFragment extends Fragment implements View.OnClickListener{
             ShiftListForCalendarAdapter shiftListForCalendarAdapter = new ShiftListForCalendarAdapter(context, shiftDataList);
             shiftList.setAdapter(shiftListForCalendarAdapter);
         }*/
-            //Utility.setListViewHeightBasedOnChildren(shiftList);
+        //Utility.setListViewHeightBasedOnChildren(shiftList);
 
            /* close.setOnClickListener(v -> {
                 dialog.dismiss();
             });
 */
-            dialog.show();
+        dialog.show();
     }
 
-    private List<HashMap<String, String>> sortAccordingToTime(List<HashMap<String, String>> shiftDataList) {
+   /* private List<HashMap<String, String>> sortAccordingToTime(List<HashMap<String, String>> shiftDataList) {
 
         List<HashMap<String, String>> shiftDataListSorted = new ArrayList<>();
 
@@ -313,7 +365,7 @@ public class DashboardFragment extends Fragment implements View.OnClickListener{
        }
 
 
-       /* for (int i = 0; i < shiftDataList.size()-1; i++) {
+       *//* for (int i = 0; i < shiftDataList.size()-1; i++) {
             for (int j = 0; j < shiftDataList.size() - i - 1; j++) {
                 Date low = Utility.convertTimeToDate(shiftDataList.get(j).get("shift_start_time"));
                 Date high = Utility.convertTimeToDate(shiftDataList.get(j+1).get("shift_end_time"));
@@ -331,17 +383,17 @@ public class DashboardFragment extends Fragment implements View.OnClickListener{
                 int tempEnd= (60 * minute2) + (3600 * hour2) + seconds2;
 
                 if (tempStart > tempEnd) {
-                    *//*HashMap<String, String> map  = shiftDataList.get(j);
+                    *//**//*HashMap<String, String> map  = shiftDataList.get(j);
                     shiftDataList.set(j,shiftDataList.get(j+1));
-                    shiftDataList.set(j+1,map);*//*
+                    shiftDataList.set(j+1,map);*//**//*
 
                     Collections.swap(shiftDataList, j, j+1);
                 }
             }
-        }*/
+        }*//*
 
         return shiftDataListSorted;
-    }
+    }*/
 
     private void setEventsOnCalendar(List<EventDayModel> eventDayModelList) {
 
@@ -376,13 +428,13 @@ public class DashboardFragment extends Fragment implements View.OnClickListener{
 
     public void countDownStart(String future) {
         handler = new Handler();
-        Runnable runnable = new Runnable() {
+        runnable = new Runnable() {
             @Override
             public void run() {
                 handler.postDelayed(this, 1000);
                 try {
-                    Date futureDate = Utility.convertStringToDate(future);//event date
-                    Date currentDate = Utility.convertStringToDate(Utility.getCurrentTime());
+                    Date futureDate = Utility.convertStringToDateTimer(future);//event date
+                    Date currentDate = Utility.convertStringToDateTimer(Utility.getCurrentTime());
                     if (!currentDate.after(futureDate)) {
                         long diff = futureDate.getTime()
                                 - currentDate.getTime();
@@ -398,9 +450,10 @@ public class DashboardFragment extends Fragment implements View.OnClickListener{
                         tv_minutes.setText(String.format(Locale.ENGLISH, "%02d", minutes));
                         tv_seconds.setText(String.format(Locale.ENGLISH, "%02d", seconds));
                     } else {
-                        /*tvEventStart.setVisibility(View.VISIBLE);
-                        tvEventStart.setText("The event started!");
-                        textViewGone();*/
+                        handler.removeCallbacks(runnable);
+                        countDown++;
+                        if(eventDataList != null && eventDataList.get(countDown) != null)
+                        countDownStart(eventDataList.get(countDown).getShiftDate() + " " + eventDataList.get(countDown).getShiftStartTime());
                     }
                 } catch (Exception e) {
                     e.printStackTrace();

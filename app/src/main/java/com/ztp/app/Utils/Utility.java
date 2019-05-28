@@ -97,6 +97,13 @@ public class Utility {
         return new SimpleDateFormat("MM-dd-yyyy HH:mm:ss", Locale.ENGLISH).format(Calendar.getInstance().getTime());
     }
 
+    public static String getCurrentDate() {
+        return new SimpleDateFormat("MM-dd-yyyy", Locale.ENGLISH).format(Calendar.getInstance().getTime());
+    }
+
+    public static String getCurrentTimeOnly() {
+        return new SimpleDateFormat("HH:mm:ss", Locale.ENGLISH).format(Calendar.getInstance().getTime());
+    }
 
     public static Date convertStringToDateWithoutTime(String dateStr) {
         DateFormat format = new SimpleDateFormat("MM-dd-yyyy", Locale.ENGLISH);
@@ -123,6 +130,18 @@ public class Utility {
     }
 
     public static Date convertStringToDate(String dateStr) {
+        DateFormat format = new SimpleDateFormat("dd/M/yyyy hh:mm:ss", Locale.ENGLISH);
+        format.setTimeZone(TimeZone.getTimeZone("Asia/Kolkata"));
+        Date date = null;
+        try {
+            date = format.parse(dateStr);
+        } catch (ParseException e) {
+            e.printStackTrace();
+        }
+        return date;
+    }
+
+    public static Date convertStringToDateTimer(String dateStr) {
         DateFormat format = new SimpleDateFormat("MM-dd-yyyy HH:mm:ss", Locale.ENGLISH);
         format.setTimeZone(TimeZone.getTimeZone("Asia/Kolkata"));
         Date date = null;
@@ -147,7 +166,7 @@ public class Utility {
 
     public static String formatDateFullTime(Date date) {
 
-        String format = "MM-dd-yyyy HH:mm:ss";
+        String format = "dd/M/yyyy hh:mm:ss";
         SimpleDateFormat simpleDateFormat = new SimpleDateFormat(format,Locale.ENGLISH);
         simpleDateFormat.setTimeZone(TimeZone.getTimeZone("Asia/Kolkata"));
 

@@ -46,12 +46,15 @@ public class CSOShiftListAdapter extends BaseAdapter {
     String event_id;
     VolunteerEventRequestViewModel volunteerEventRequestViewModel;
     Holder holder;
+    String eventStartDate,eventEndDate;
 
-    public CSOShiftListAdapter(Context context, List<GetCSOShiftResponse.ResData> shiftDataList, String event_id) {
+    public CSOShiftListAdapter(Context context, List<GetCSOShiftResponse.ResData> shiftDataList, String event_id,String eventStartDate,String eventEndDate) {
         this.context = context;
         sharedPref = SharedPref.getInstance(context);
         this.shiftDataList = shiftDataList;
         this.event_id = event_id;
+        this.eventStartDate = eventStartDate;
+        this.eventEndDate = eventEndDate;
         myProgressDialog = new MyProgressDialog(context);
         deleteShiftViewModel = ViewModelProviders.of((FragmentActivity) context).get(DeleteShiftViewModel.class);
         volunteerEventRequestViewModel = ViewModelProviders.of((FragmentActivity) context).get(VolunteerEventRequestViewModel.class);
@@ -80,21 +83,6 @@ public class CSOShiftListAdapter extends BaseAdapter {
             if (view == null) {
                 view = LayoutInflater.from(context).inflate(R.layout.shift_list_item, null);
 
-//                holder.shift_date = view.findViewById(R.id.shift_date);
-//                holder.shift_vol_req = view.findViewById(R.id.shift_vol_req);
-//                holder.shift_start_time = view.findViewById(R.id.shift_start_time);
-//                holder.shift_end_time = view.findViewById(R.id.shift_end_time);
-//                holder.shift_rank = view.findViewById(R.id.shift_rank);
-//                holder.shift_status = view.findViewById(R.id.shift_status);
-//                holder.shift_add_date = view.findViewById(R.id.shift_add_date);
-//                holder.shift_update_date = view.findViewById(R.id.shift_update_date);
-//                holder.shift_task = view.findViewById(R.id.shift_task);
-//                holder.imv_edit = view.findViewById(R.id.imv_edit);
-//                holder.imv_delete = view.findViewById(R.id.imv_delete);
-//                holder.volunteer_layout = view.findViewById(R.id.volunteer_layout);
-//                holder.cso_layout = view.findViewById(R.id.cso_layout);
-//                holder.imv_volunteer = view.findViewById(R.id.imv_volunteer);
-
                 holder.shift_date = view.findViewById(R.id.shift_date);
                 holder.title = view.findViewById(R.id.title);
                 holder.description = view.findViewById(R.id.description);
@@ -107,69 +95,8 @@ public class CSOShiftListAdapter extends BaseAdapter {
                 holder = (Holder) view.getTag();
             }
 
-//            holder.cso_layout.setVisibility(View.GONE);
-//            holder.volunteer_layout.setVisibility(View.GONE);
-//
-//
-//            Date d = Utility.convertStringToDateWithoutTime(shiftData.getShiftDate());
-//
-//            holder.shift_date.setText(Utility.formatDateFull(d));
-//
-//            holder.shift_vol_req.setText(shiftData.getShiftVolReq());
-//            holder.shift_start_time.setText(shiftData.getShift_start_time_s());
-//            holder.shift_end_time.setText(shiftData.getShift_end_time_s());
-//            holder.shift_rank.setText(shiftData.getShiftRank());
-//            holder.shift_status.setText(shiftData.getShiftStatus());
-//            holder.shift_task.setText(shiftData.getShiftTask());
-
-
-//            holder.imv_edit.setOnClickListener(view1 -> {
-//
-//                AddNewShiftFragment updateShiftFragment = new AddNewShiftFragment();
-//                Bundle bundle = new Bundle();
-//                bundle.putSerializable("shiftData",  shiftData);
-//                bundle.putString("status", "update");
-//                updateShiftFragment.setArguments(bundle);
-//                Utility.replaceFragment(context, updateShiftFragment, "AddNewShiftFragment");
-//            });
-
-
-//            holder.imv_delete.setOnClickListener(view12 -> {
-//
-//                DeleteShiftRequest deleteShiftRequest = new DeleteShiftRequest();
-//                deleteShiftRequest.setShiftId(shiftData.getShiftId());
-//
-//                if (Utility.isNetworkAvailable(context)) {
-//                    myProgressDialog.show(context.getString(R.string.deleting_shift));
-//                    deleteShiftViewModel.getDeleteShiftResponse(deleteShiftRequest).observe((LifecycleOwner) context, deleteShiftResponse -> {
-//
-//                        if (deleteShiftResponse != null) {
-//                            if (deleteShiftResponse.getResStatus().equalsIgnoreCase("200")) {
-//
-//                                new MyToast(context).show(context.getString(R.string.shift_deleted_successfully), Toast.LENGTH_SHORT, true);
-//
-//                                shiftDataList.remove(shiftData);
-//
-//                                notifyDataSetChanged();
-//
-//                            } else {
-//
-//                                new MyToast(context).show(context.getString(R.string.failed), Toast.LENGTH_SHORT, false);
-//                            }
-//                        } else {
-//                            new MyToast(context).show(context.getString(R.string.err_server), Toast.LENGTH_SHORT, false);
-//                        }
-//
-//                        myProgressDialog.dismiss();
-//                    });
-//                } else {
-//                    new MyToast(context).show(context.getString(R.string.no_internet_connection), Toast.LENGTH_SHORT, false);
-//                }
-//
-//
-//            });
             holder.title.setText(shiftData.getShiftTask());
-            holder.description.setText(shiftData.getShift_start_time_s() + " - "+shiftData.getShift_end_time_s());
+            holder.description.setText(shiftData.getShiftStartTime() + " - "+shiftData.getShiftEndTime());
 
             Date date = Utility.convertStringToDateWithoutTime(shiftData.getShiftDate());
 
@@ -201,6 +128,8 @@ public class CSOShiftListAdapter extends BaseAdapter {
                         Bundle bundle = new Bundle();
                         bundle.putSerializable("shiftData", shiftData);
                         bundle.putString("status", "update");
+                        bundle.putString("event_start_date",eventStartDate);
+                        bundle.putString("event_end_date",eventEndDate);
                         updateShiftFragment.setArguments(bundle);
                         Utility.replaceFragment(context, updateShiftFragment, "AddNewShiftFragment");
                     });
@@ -236,7 +165,7 @@ public class CSOShiftListAdapter extends BaseAdapter {
 
                                             notifyDataSetChanged();
 
-                                        } else {
+                                        } else if(deleteShiftResponse.getResStatus().equalsIgnoreCase("401")){
 
                                             new MyToast(context).show(context.getString(R.string.failed), Toast.LENGTH_SHORT, false);
                                         }

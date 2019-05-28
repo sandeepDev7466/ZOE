@@ -83,8 +83,6 @@ public class CsoRegisterStep_2Activity extends AppCompatActivity implements View
     boolean flag = false;
     RuntimePermission runtimePermission;
     String path;
-    GPSTracker gpsTracker;
-    private double latitude, longitude;
     ValidateTor validate;
     boolean error = false;
 
@@ -318,15 +316,6 @@ public class CsoRegisterStep_2Activity extends AppCompatActivity implements View
 
     private void init() {
         context = this;
-
-        gpsTracker = new GPSTracker(context);
-        if (gpsTracker.getIsGPSTrackingEnabled()) {
-            latitude = gpsTracker.getLatitude();
-            longitude = gpsTracker.getLongitude();
-        } else {
-            gpsTracker.showSettingsAlert();
-        }
-
         validate = new ValidateTor();
         runtimePermission = RuntimePermission.getInstance();
         myProgressDialog = new MyProgressDialog(context);
@@ -554,8 +543,8 @@ public class CsoRegisterStep_2Activity extends AppCompatActivity implements View
         csoRegisterRequest_2.setOrgTaxid(etTaxId.getText().toString());
         csoRegisterRequest_2.setUserIdFile(etUploadDocument.getText().toString());
         csoRegisterRequest_2.setUserFileTitle(etUploadDocument.getText().toString());
-        csoRegisterRequest_2.setOrgLatitude(String.valueOf(latitude));
-        csoRegisterRequest_2.setOrgLongitude(String.valueOf(longitude));
+        csoRegisterRequest_2.setOrgLatitude("0.00");
+        csoRegisterRequest_2.setOrgLongitude("0.00");
 
         if (Utility.isNetworkAvailable(context)) {
             csoRegisterStep_2ViewModel.getRegisterResponse(csoRegisterRequest_2).observe((LifecycleOwner) context, registerResponse -> {
@@ -574,7 +563,7 @@ public class CsoRegisterStep_2Activity extends AppCompatActivity implements View
                         startActivity(intent1);
                         overridePendingTransition(R.anim.fade_in, R.anim.fade_out);
 
-                    } else {
+                    } else if(registerResponse.getResStatus().equalsIgnoreCase("401")){
                         myToast.show(getString(R.string.err_org_inf_regisitration_failed), Toast.LENGTH_SHORT, false);
                     }
                 } else {
@@ -710,15 +699,16 @@ public class CsoRegisterStep_2Activity extends AppCompatActivity implements View
             countryModel.getCountryResponse(context).observe((LifecycleOwner) context, countryResponse -> {
 
                 if (countryResponse != null) {
-                    if (countryResponse.getResStatus().equalsIgnoreCase("200")) {
+                    if (countryResponse.getResStatus().equalsIgnoreCase("200") && countryResponse.getResData() != null) {
                         countryListData = countryResponse.getResData();
                         for (int i = 0; i < countryListData.size(); i++) {
                             countryList.add(countryListData.get(i).getCountryName());
                         }
 
                         setCountrySpinner(countryListData);
-                    } else {
-                        myToast.show(getString(R.string.something_went_wrong), Toast.LENGTH_SHORT, false);
+                    }
+                    else if(countryResponse.getResStatus().equalsIgnoreCase("401")){
+                        myToast.show(getString(R.string.err_no_country_found), Toast.LENGTH_SHORT, false);
                     }
                 } else {
                     myToast.show(getString(R.string.err_server), Toast.LENGTH_SHORT, false);
@@ -749,8 +739,9 @@ public class CsoRegisterStep_2Activity extends AppCompatActivity implements View
                         }
 
                         setStateSpinner(stateListData);
-                    } else {
-                        myToast.show(getString(R.string.something_went_wrong), Toast.LENGTH_SHORT, false);
+                    } else if(stateResponse.getResStatus().equalsIgnoreCase("401"))
+                    {
+                        myToast.show(getString(R.string.err_no_state_found), Toast.LENGTH_SHORT, false);
                     }
                 } else {
                     myToast.show(getString(R.string.err_server), Toast.LENGTH_SHORT, false);

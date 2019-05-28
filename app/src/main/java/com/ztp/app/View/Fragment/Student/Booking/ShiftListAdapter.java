@@ -203,10 +203,18 @@ public class ShiftListAdapter extends BaseAdapter {
         if (Utility.isNetworkAvailable(context)) {
             myProgressDialog.show(context.getString(R.string.please_wait));
             volunteerEventRequestViewModel.getPostVolunteerRequestResponseLiveData(postVolunteerRequest).observe((FragmentActivity) context, postVolunteerRequestResponse -> {
-                if (postVolunteerRequestResponse != null && postVolunteerRequestResponse.getResData() != null) {
-                    holder.imv_volunteer.setEnabled(false);
-                    new MyToast(context).show(context.getString(R.string.toast_volunteer_request_success), Toast.LENGTH_SHORT, true);
-                    refresh(position);
+                if (postVolunteerRequestResponse != null) {
+                    if(postVolunteerRequestResponse.getResStatus().equalsIgnoreCase("200"))
+                    {
+                        holder.imv_volunteer.setEnabled(false);
+                        new MyToast(context).show(context.getString(R.string.toast_volunteer_request_success), Toast.LENGTH_SHORT, true);
+                        refresh(position);
+                    }
+                    else if(postVolunteerRequestResponse.getResStatus().equalsIgnoreCase("401"))
+                    {
+                        new MyToast(context).show(context.getString(R.string.err_no_data_found), Toast.LENGTH_SHORT, false);
+                    }
+
                 } else {
                     new MyToast(context).show(context.getString(R.string.err_server), Toast.LENGTH_SHORT, false);
                 }

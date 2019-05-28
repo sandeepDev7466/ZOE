@@ -94,6 +94,7 @@ class VolunteerAdapter extends BaseAdapter {
             holder.tv_shift_task = view.findViewById(R.id.tv_shift_task);
             holder.rank = view.findViewById(R.id.rank);
             holder.tv_hrs = view.findViewById(R.id.tv_hrs);
+            holder.imv_chat = view.findViewById(R.id.imv_chat);
             view.setTag(holder);
 
         } else {
@@ -125,12 +126,11 @@ class VolunteerAdapter extends BaseAdapter {
         else if (dataModel.getAttendRank().equalsIgnoreCase(""))
             Picasso.with(context).load(R.drawable.not_available).fit().into(holder.rank);
 
-
-       /* if (dataModel.getMapStatus().equalsIgnoreCase(String.valueOf(Constants.WithdrawnVol))) {
+        if (dataModel.getMapStatus().equalsIgnoreCase(String.valueOf(Constants.WithdrawnVol))) {
             holder.imv_status.setImageResource(R.drawable.blocked);
         } else if (dataModel.getMapStatus().equalsIgnoreCase("")) {
             holder.imv_status.setImageResource(R.drawable.blocked);
-        }*/
+        }else
         if (dataModel.getMapStatus().equalsIgnoreCase(String.valueOf(Constants.NewRequestVol))) {
             holder.imv_status.setImageResource(R.drawable.vol_pending);
         } else if (dataModel.getMapStatus().equalsIgnoreCase(String.valueOf(Constants.AcceptedByCSO))) {
@@ -141,6 +141,7 @@ class VolunteerAdapter extends BaseAdapter {
             holder.imv_status.setImageResource(R.drawable.vol_completed);
         } else if (dataModel.getMapStatus().equalsIgnoreCase(String.valueOf(Constants.MoreInfoByCSO))) {
             holder.imv_status.setImageResource(R.drawable.more_info);
+            holder.imv_chat.setVisibility(View.VISIBLE);
         } else if (dataModel.getMapStatus().equalsIgnoreCase(String.valueOf(Constants.RejectedCompleteByCSO))) {
             holder.imv_status.setImageResource(R.drawable.cso_rejected);
         } else if (dataModel.getMapStatus().equalsIgnoreCase(String.valueOf(Constants.CompletedVerifiedByCSO))) {
@@ -192,7 +193,7 @@ class VolunteerAdapter extends BaseAdapter {
     private class Holder {
         MyTextView date, time, name, tv_heading, tv_desc, tv_shift_task, tv_event_name,tv_hrs;
         //ScaleRatingBar rb_rank;
-        ImageView imv_status, rank;
+        ImageView imv_status, rank,imv_chat;
     }
 
 
@@ -273,14 +274,25 @@ class VolunteerAdapter extends BaseAdapter {
 
     private void hitUpdateHoursApi(String userHours, CSOAllResponse.ResData dataModel) {
         myProgressDialog.show(context.getString(R.string.please_wait));
-        csoMarkHoursViewModel.getCsoMarkHoursResponse(new CsoMarkHoursRequest(sharedPref.getUserId(), sharedPref.getUserType(), Utility.getDeviceId(context), dataModel.getMapId(), userHours, dataModel.getUserId())).observe((LifecycleOwner) context, csoMarkHoursResponse -> {
+        CsoMarkHoursRequest csoMarkHoursRequest = new CsoMarkHoursRequest();
+        csoMarkHoursRequest.setUserId(sharedPref.getUserId());
+        csoMarkHoursRequest.setUserType(sharedPref.getUserType());
+        csoMarkHoursRequest.setUserDevice(Utility.getDeviceId(context));
+        csoMarkHoursRequest.setMapId(dataModel.getMapId());
+        csoMarkHoursRequest.setAttendHours(userHours);
+        csoMarkHoursRequest.setVolId(dataModel.getUserId());
+
+        Log.i("REQUEST", "" + new Gson().toJson(csoMarkHoursRequest));
+
+        csoMarkHoursViewModel.getCsoMarkHoursResponse(csoMarkHoursRequest).observe((LifecycleOwner) context, csoMarkHoursResponse -> {
 
             if (csoMarkHoursResponse != null) {
+                Log.i("RESPONSE", "" + new Gson().toJson(csoMarkHoursResponse));
                 if (csoMarkHoursResponse.getResStatus().equalsIgnoreCase("200")) {
                     dataModel.setAttendHours(userHours);
                     notifyDataSetChanged();
-                } else {
-                    myToast.show(context.getString(R.string.something_went_wrong), Toast.LENGTH_SHORT, false);
+                } else if(csoMarkHoursResponse.getResStatus().equalsIgnoreCase("401")){
+                    myToast.show(context.getString(R.string.hours_update_failed), Toast.LENGTH_SHORT, false);
                 }
             } else {
                 myToast.show(context.getString(R.string.err_server), Toast.LENGTH_SHORT, false);
@@ -288,7 +300,6 @@ class VolunteerAdapter extends BaseAdapter {
             myProgressDialog.dismiss();
         });
     }
-
 
     private void openDialog(int status, String MapID, int position) {
 
@@ -314,6 +325,8 @@ class VolunteerAdapter extends BaseAdapter {
                 decline_view.setVisibility(View.VISIBLE);
                 decline_layout.setVisibility(View.VISIBLE);
                 accept_layout.setVisibility(View.VISIBLE);
+                accept_view.setVisibility(View.VISIBLE);
+                info_layout.setVisibility(View.VISIBLE);
                 break;
             case 20:
                 decline_layout.setVisibility(View.VISIBLE);
@@ -394,6 +407,7 @@ class VolunteerAdapter extends BaseAdapter {
                                 break;
                             case 50:
                                 new MyToast(context).show(context.getString(R.string.toast_info_cso_request_success), Toast.LENGTH_SHORT, true);
+
                                 break;
                             case 60:
                                 new MyToast(context).show(context.getString(R.string.toast_reject_request_success), Toast.LENGTH_SHORT, true);
@@ -403,7 +417,7 @@ class VolunteerAdapter extends BaseAdapter {
                                 break;
                         }
                         refreshVolunteers(position, map_status);
-                    } else {
+                    } else if(changeStatusByCSOResponse.getResStatus().equalsIgnoreCase("401")){
                         new MyToast(context).show(context.getString(R.string.toast_volunteer_failed), Toast.LENGTH_SHORT, false);
                     }
                 } else {
@@ -541,8 +555,8 @@ class VolunteerAdapter extends BaseAdapter {
                 if (markRankResponse.getResStatus().equalsIgnoreCase("200")) {
                     dataModel.setAttendRank(rank);
                     notifyDataSetChanged();
-                } else {
-                    myToast.show(context.getString(R.string.something_went_wrong), Toast.LENGTH_SHORT, false);
+                } else if(markRankResponse.getResStatus().equalsIgnoreCase("401")){
+                    myToast.show(context.getString(R.string.err_rank_not_updated), Toast.LENGTH_SHORT, false);
                 }
             } else {
                 myToast.show(context.getString(R.string.err_server), Toast.LENGTH_SHORT, false);

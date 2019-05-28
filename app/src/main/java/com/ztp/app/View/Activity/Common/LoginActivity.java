@@ -158,12 +158,11 @@ public class LoginActivity extends AppCompatActivity implements View.OnClickList
                             model.getLoginResponse(new LoginRequest(etEmail.getText().toString(), etPassword.getText().toString(), Utility.getDeviceId(context), Utility.getCurrentTime())).observe(this, loginResponse -> {
 
                                 if(loginResponse != null) {
-                                    if (loginResponse.getResStatus().equalsIgnoreCase("200")) {
+                                    if (loginResponse.getResStatus().equalsIgnoreCase("200") && loginResponse.getResData() != null) {
                                         sharedPref.setFirstName(loginResponse.getResData().getUserFName());
                                         sharedPref.setLastName(loginResponse.getResData().getUserLName());
                                         sharedPref.setUserType(loginResponse.getResData().getUserType());
                                         sharedPref.setUserId(loginResponse.getResData().getUserId());
-                                        //sharedPref.setUserId("C20190409Q9l4hzL3916");
 
 
                                         if (loginResponse.getResData().getUserType().equalsIgnoreCase("stu") || loginResponse.getResData().getUserType().equalsIgnoreCase("vol")) {
@@ -179,7 +178,7 @@ public class LoginActivity extends AppCompatActivity implements View.OnClickList
                                             overridePendingTransition(R.anim.fade_in, R.anim.fade_out);
                                         }
 
-                                    } else {
+                                    } else if(loginResponse.getResStatus().equalsIgnoreCase("401")){
                                         etPassword.setText("");
                                         myToast.show(getString(R.string.wrong_email_or_password), Toast.LENGTH_SHORT, false);
                                     }

@@ -32,7 +32,6 @@ public class AddEventViewModel extends ViewModel {
     {
         Call<AddEventResponse> call = apiInterface.doAddEvent(eventAddRequest);
 
-
         call.enqueue(new Callback<AddEventResponse>() {
             @Override
             public void onResponse(Call<AddEventResponse> call, Response<AddEventResponse> response) {

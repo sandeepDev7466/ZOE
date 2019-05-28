@@ -331,9 +331,11 @@ public class UpdateEventFragment extends Fragment implements OnMapReadyCallback,
             @Override
             public void onClick(View v) {
 
-//                submit();
 
+                if(Utility.isNetworkAvailable(context))
                 updateData();
+                else
+                    myToast.show(getString(R.string.no_internet_connection),Toast.LENGTH_SHORT,false);
 
             }
         });
@@ -583,9 +585,9 @@ public class UpdateEventFragment extends Fragment implements OnMapReadyCallback,
                         countryList.add(0, getString(R.string.select_country));
                         setCountrySpinner(countryListData);
                     }
-                    else
+                    else if(countryResponse.getResStatus().equalsIgnoreCase("401"))
                     {
-                        myToast.show(getString(R.string.something_went_wrong), Toast.LENGTH_SHORT, false);
+                        myToast.show(getString(R.string.err_no_country_found), Toast.LENGTH_SHORT, false);
                     }
                 }
                 else
@@ -621,13 +623,24 @@ public class UpdateEventFragment extends Fragment implements OnMapReadyCallback,
         if (Utility.isNetworkAvailable(context)) {
             myProgressDialog.show(getString(R.string.please_wait));
             stateModel.getStateResponse(context,new StateRequest(country_id)).observe((LifecycleOwner) context, stateResponse -> {
-                if (stateResponse != null && stateResponse.getResStatus().equalsIgnoreCase("200")) {
-                    stateListData = stateResponse.getStateList();
-                    for (int i = 0; i < stateListData.size(); i++) {
-                        stateList.add(stateListData.get(i).getStateName());
+                if (stateResponse != null) {
+                    if(stateResponse.getResStatus().equalsIgnoreCase("200"))
+                    {
+                        stateListData = stateResponse.getStateList();
+                        for (int i = 0; i < stateListData.size(); i++) {
+                            stateList.add(stateListData.get(i).getStateName());
+                        }
+                        stateList.add(0, getString(R.string.select_state));
+                        setStateSpinner(stateListData);
                     }
-                    stateList.add(0, getString(R.string.select_state));
-                    setStateSpinner(stateListData);
+                    else if(stateResponse.getResStatus().equalsIgnoreCase("401"))
+                    {
+                        myToast.show(getString(R.string.err_no_state_found),Toast.LENGTH_SHORT,false);
+                    }
+                }
+                else
+                {
+                    myToast.show(getString(R.string.err_server),Toast.LENGTH_SHORT,false);
                 }
                 myProgressDialog.dismiss();
             });
@@ -676,14 +689,25 @@ public class UpdateEventFragment extends Fragment implements OnMapReadyCallback,
                 @Override
                 public void onChanged(@Nullable TimeZoneResponse timeZoneResponse) {
 
-                    if (timeZoneResponse != null && timeZoneResponse.getResStatus().equalsIgnoreCase("200")) {
-                        timezoneListData = timeZoneResponse.getResData();
-                        for (int i = 0; i < timezoneListData.size(); i++) {
-                            timezoneList.add(timezoneListData.get(i).getTimezoneName());
+                    if (timeZoneResponse != null) {
+                        if(timeZoneResponse.getResStatus().equalsIgnoreCase("200"))
+                        {
+                            timezoneListData = timeZoneResponse.getResData();
+                            if (timezoneListData.size() > 0) {
+                                for (int i = 0; i < timezoneListData.size(); i++) {
+                                    timezoneList.add(timezoneListData.get(i).getTimezoneName());
+                                }
+
+                                setTimezoneSpinner(timezoneListData);
+                            }
                         }
-
-
-                        setTimezoneSpinner(timezoneListData);
+                        else if(timeZoneResponse.getResStatus().equalsIgnoreCase("401"))
+                        {
+                            myToast.show(getString(R.string.err_no_timezone_found), Toast.LENGTH_SHORT, false);
+                        }
+                    }
+                    else {
+                        myToast.show(getString(R.string.something_went_wrong), Toast.LENGTH_SHORT, false);
                     }
                     myProgressDialog.dismiss();
                 }
@@ -693,9 +717,7 @@ public class UpdateEventFragment extends Fragment implements OnMapReadyCallback,
         } else {
             myToast.show(getString(R.string.no_internet_connection), Toast.LENGTH_SHORT, false);
 
-
         }
-
 
     }
 
@@ -706,13 +728,23 @@ public class UpdateEventFragment extends Fragment implements OnMapReadyCallback,
             myProgressDialog.show(getString(R.string.please_wait));
             eventTypeViewModel.getEventTypeResponse(context).observe((LifecycleOwner) context, eventTypeResponse -> {
 
-                if (eventTypeResponse != null && eventTypeResponse.getResStatus().equalsIgnoreCase("200")) {
-                    eventTypeListData = eventTypeResponse.getResData();
-                    for (int i = 0; i < eventTypeListData.size(); i++) {
-                        eventTypeList.add(eventTypeListData.get(i).getEventTypeName());
+                if(eventTypeResponse != null) {
+                    if (eventTypeResponse.getResStatus().equalsIgnoreCase("200")) {
+                        eventTypeListData = eventTypeResponse.getResData();
+                        for (int i = 0; i < eventTypeListData.size(); i++) {
+                            eventTypeList.add(eventTypeListData.get(i).getEventTypeName());
+                        }
+                        eventTypeList.add(0, getString(R.string.select_event_type));
+                        setEventTypeSpinner(eventTypeListData);
                     }
-                    eventTypeList.add(0, getString(R.string.select_event_type));
-                    setEventTypeSpinner(eventTypeListData);
+                    else if(eventTypeResponse.getResStatus().equalsIgnoreCase("401"))
+                    {
+                        myToast.show(getString(R.string.err_no_data_found), Toast.LENGTH_SHORT, false);
+                    }
+                }
+                else
+                {
+                    myToast.show(getString(R.string.err_server), Toast.LENGTH_SHORT, false);
                 }
                 myProgressDialog.dismiss();
 
@@ -774,19 +806,12 @@ public class UpdateEventFragment extends Fragment implements OnMapReadyCallback,
         addEventViewModel.getRegisterResponse(eventAddRequest).observe((LifecycleOwner) context, registerResponse -> {
 
             if (registerResponse != null && registerResponse.getResStatus().equalsIgnoreCase("200")) {
-/*
-
-                Toast.makeText(getActivity(), "Event Added Successfully...",
-                        Toast.LENGTH_LONG).show();
-*/
 
                 myToast.show(getString(R.string.toast_event_added_success), true);
                 myProgressDialog.dismiss();
             } else {
 
-               /* Toast.makeText(getActivity(), "Failed...",
 
-                        Toast.LENGTH_LONG).show();*/
                 myToast.show(getString(R.string.failed), true);
                 myProgressDialog.dismiss();
 
@@ -860,23 +885,22 @@ public class UpdateEventFragment extends Fragment implements OnMapReadyCallback,
 
         updateEventViewModel.getUpdateEventResponse(eventUpdateRequest).observe((LifecycleOwner) context, updateResponse -> {
 
-            if (updateResponse != null && updateResponse.getResStatus().equalsIgnoreCase("200")) {
+            if (updateResponse != null) {
 
-              /*  Toast.makeText(getActivity(), getString(R.string.event_updated_successfully),
-                        Toast.LENGTH_LONG).show();*/
+                if(updateResponse.getResStatus().equalsIgnoreCase("200"))
+                {
+                    myToast.show(getString(R.string.event_updated_successfully), true);
 
-                myToast.show(getString(R.string.event_updated_successfully), true);
-                myProgressDialog.dismiss();
+                }
+                else if(updateResponse.getResStatus().equalsIgnoreCase("401"))
+                {
+                    myToast.show(getString(R.string.err_event_not_updated), Toast.LENGTH_SHORT,false);
+                }
+
             } else {
-
-              /*  Toast.makeText(getActivity(), "Failed...",
-                        Toast.LENGTH_LONG).show();*/
-                myToast.show(getString(R.string.failed), false);
-
-//                myToast.show("Basic information registration failed", Toast.LENGTH_SHORT, false);
-//                myProgressDialog.dismiss();
+                myToast.show(getString(R.string.err_server), Toast.LENGTH_SHORT,false);
             }
-
+            myProgressDialog.dismiss();
 
         });
 

@@ -355,51 +355,54 @@ public class EditProfileActivity extends AppCompatActivity implements View.OnCli
                         for (int i = 0; i < schoolListData.size(); i++) {
                             schoolList.add(schoolListData.get(i).getSchoolName());
                         }
-                        //schoolList.add(0, "Select School");
                         setSchoolSpinner(schoolList);
-                        getProfileData();
-                    } else {
-                        myProgressDialog.dismiss();
-                        myToast.show(getString(R.string.err_no_school), Toast.LENGTH_SHORT, false);
                     }
-                } else {
-                    myProgressDialog.dismiss();
+                }
+                else if(schoolResponse != null && schoolResponse.getResStatus().equalsIgnoreCase("401"))
+                {
+                    myToast.show(getString(R.string.err_no_school), Toast.LENGTH_SHORT, false);
+                }
+                else {
                     myToast.show(getString(R.string.err_server), Toast.LENGTH_SHORT, false);
                 }
+                myProgressDialog.dismiss();
             });
         } else {
             myToast.show(getString(R.string.no_internet_connection), Toast.LENGTH_SHORT, false);
             schoolList.add("Select School");
         }
+
+        getProfileData();
     }
 
     private void getCountryList() {
 
         countryList = new ArrayList<>();
         if (Utility.isNetworkAvailable(context)) {
-            //myProgressDialog.show(getString(R.string.please_wait));
             countryModel.getCountryResponse(context).observe((LifecycleOwner) context, countryResponse -> {
                 if (countryResponse != null) {
-                    countryListData = countryResponse.getResData();
-                    if (countryListData.size() > 0) {
-                        for (int i = 0; i < countryListData.size(); i++) {
-                            countryList.add(countryListData.get(i).getCountryName());
-                        }
-                        setCountrySpinner(countryListData);
-                        myProgressDialog.dismiss();
-                    } else {
 
-                        myToast.show(getString(R.string.something_went_wrong), Toast.LENGTH_SHORT, false);
-                        myProgressDialog.dismiss();
+                    if(countryResponse.getResStatus().equalsIgnoreCase("200") && countryResponse.getResData()!=null)
+                    {
+                        countryListData = countryResponse.getResData();
+                        if (countryListData.size() > 0) {
+                            for (int i = 0; i < countryListData.size(); i++) {
+                                countryList.add(countryListData.get(i).getCountryName());
+                            }
+                            setCountrySpinner(countryListData);
+                        }
+                    }
+                    else if(countryResponse.getResStatus().equalsIgnoreCase("401")){
+
+                        myToast.show(getString(R.string.err_no_country_found), Toast.LENGTH_SHORT, false);
                     }
                 } else {
                     myToast.show(getString(R.string.err_server), Toast.LENGTH_SHORT, false);
-                    myProgressDialog.dismiss();
                 }
+                myProgressDialog.dismiss();
             });
         } else {
 
-            myProgressDialog.dismiss();
             myToast.show(getString(R.string.no_internet_connection), Toast.LENGTH_SHORT, false);
         }
 
@@ -412,22 +415,26 @@ public class EditProfileActivity extends AppCompatActivity implements View.OnCli
             if (!myProgressDialog.isShowing())
                 myProgressDialog.show(getString(R.string.please_wait));
             stateModel.getStateResponse(context, new StateRequest(country_id)).observe((LifecycleOwner) context, stateResponse -> {
-                if (stateResponse != null && stateResponse.getResStatus().equalsIgnoreCase("200")) {
-                    stateListData = stateResponse.getStateList();
-                    if (stateListData.size() > 0) {
-                        for (int i = 0; i < stateListData.size(); i++) {
-                            stateList.add(stateListData.get(i).getStateName());
+                if (stateResponse != null) {
+                    if(stateResponse.getResStatus().equalsIgnoreCase("200"))
+                    {
+                        stateListData = stateResponse.getStateList();
+                        if (stateListData.size() > 0) {
+                            for (int i = 0; i < stateListData.size(); i++) {
+                                stateList.add(stateListData.get(i).getStateName());
+                            }
+                            setStateSpinner(stateListData);
                         }
-                        setStateSpinner(stateListData);
-                        myProgressDialog.dismiss();
-                    } else {
-                        myProgressDialog.dismiss();
+                    }
+                    else if(stateResponse.getResStatus().equalsIgnoreCase("401"))
+                    {
                         myToast.show(getString(R.string.err_no_state_found), Toast.LENGTH_SHORT, false);
                     }
+
                 } else {
-                    myProgressDialog.dismiss();
                     myToast.show(getString(R.string.err_server), Toast.LENGTH_SHORT, false);
                 }
+                myProgressDialog.dismiss();
             });
         } else {
             myToast.show(getString(R.string.no_internet_connection), Toast.LENGTH_SHORT, false);
@@ -576,7 +583,7 @@ public class EditProfileActivity extends AppCompatActivity implements View.OnCli
                                 }
                             }
 
-                        } else {
+                        } else if(updateProfileResponse.getResStatus().equalsIgnoreCase("401")){
                             myToast.show(getString(R.string.something_went_wrong), Toast.LENGTH_SHORT, false);
                         }
                     }
@@ -609,41 +616,32 @@ public class EditProfileActivity extends AppCompatActivity implements View.OnCli
                 break;
 
             case R.id.clear:
-                /*etFirstName.setText("");
-                etLastName.setText("");
-                sp_country.setSelection(0, true);
-                sp_state.setSelection(0, true);
-                etCity.setText("");
-                etPostalCode.setText("");
-                etAddress.setText("");
-                etDob.setText("");
-                sp_gender.setSelection(0, true);
-                country_id = "";
-                state_id = "";
-                gender_id = "";*/
 
-                sharedPref.setUserType(getProfileResponse.getResData().getUserType().toUpperCase());
+                if(getProfileResponse.getResData() != null) {
 
-                setSchoolSpinnerValue(getProfileResponse.getResData().getSchoolId());
+                    sharedPref.setUserType(getProfileResponse.getResData().getUserType().toUpperCase());
 
-                etFirstName.setText(getProfileResponse.getResData().getUserFName());
-                etLastName.setText(getProfileResponse.getResData().getUserLName());
-                etEmail.setText(getProfileResponse.getResData().getUserEmail());
-                etPhone.setText(getProfileResponse.getResData().getUserPhone());
-                sp_country.setSelection(getCountryPosition(), true);
-                sp_state.setSelection(getStatePosition(), true);
-                etCity.setText(getProfileResponse.getResData().getUserCity());
-                etPostalCode.setText(getProfileResponse.getResData().getUserZipcode());
-                etAddress.setText(getProfileResponse.getResData().getUserAddress());
-                etDob.setText(getProfileResponse.getResData().getUserDob());
-                if (getProfileResponse.getResData().getUserGender().equalsIgnoreCase("m"))
-                    sp_gender.setSelection(1, true);
-                else if (getProfileResponse.getResData().getUserGender().equalsIgnoreCase("f"))
-                    sp_gender.setSelection(2, true);
-                else
-                    sp_gender.setSelection(3, true);
+                    setSchoolSpinnerValue(getProfileResponse.getResData().getSchoolId());
 
-                scrollView.fullScroll(ScrollView.FOCUS_UP);
+                    etFirstName.setText(getProfileResponse.getResData().getUserFName());
+                    etLastName.setText(getProfileResponse.getResData().getUserLName());
+                    //etEmail.setText(getProfileResponse.getResData().getUserEmail());
+                    //etPhone.setText(getProfileResponse.getResData().getUserPhone());
+                    sp_country.setSelection(getCountryPosition(), true);
+                    sp_state.setSelection(getStatePosition(), true);
+                    etCity.setText(getProfileResponse.getResData().getUserCity());
+                    etPostalCode.setText(getProfileResponse.getResData().getUserZipcode());
+                    etAddress.setText(getProfileResponse.getResData().getUserAddress());
+                    etDob.setText(getProfileResponse.getResData().getUserDob());
+                    if (getProfileResponse.getResData().getUserGender().equalsIgnoreCase("m"))
+                        sp_gender.setSelection(1, true);
+                    else if (getProfileResponse.getResData().getUserGender().equalsIgnoreCase("f"))
+                        sp_gender.setSelection(2, true);
+                    else
+                        sp_gender.setSelection(3, true);
+
+                    scrollView.fullScroll(ScrollView.FOCUS_UP);
+                }
                 break;
         }
     }
@@ -705,7 +703,7 @@ public class EditProfileActivity extends AppCompatActivity implements View.OnCli
             flag = true;
             try {
                 if(getProfileResponse != null) {
-                    if (getProfileResponse.getResStatus().equalsIgnoreCase("200")) {
+                    if (getProfileResponse.getResStatus().equalsIgnoreCase("200") && getProfileResponse.getResData()!=null) {
 
                         this.getProfileResponse = getProfileResponse;
 
@@ -729,7 +727,7 @@ public class EditProfileActivity extends AppCompatActivity implements View.OnCli
                         else
                             sp_gender.setSelection(3, true);
                         getCountryList();
-                    } else {
+                    } else if(getProfileResponse.getResStatus().equalsIgnoreCase("401")){
                         myToast.show(getString(R.string.err_no_profile_found), Toast.LENGTH_SHORT, false);
                         myProgressDialog.dismiss();
 

@@ -155,6 +155,7 @@ public class StudentRegisterActivity extends AppCompatActivity implements View.O
         etConfirmPassword = findViewById(R.id.etConfirmPassword);
         etAddress = findViewById(R.id.etAddress);
         schoolLayout = findViewById(R.id.schoolLayout);
+        schoolLayout.setVisibility(View.GONE);
 
         register.setOnClickListener(this);
         clear.setOnClickListener(this);
@@ -163,24 +164,26 @@ public class StudentRegisterActivity extends AppCompatActivity implements View.O
 
         setGenderSpinner();
         getCountryList();
-        getSchoolList();
-
 
         ArrayList<String> labels = new ArrayList<>();
-        labels.add(getString(R.string.STUDENT));
         labels.add(getString(R.string.VOLUNTEER));
+        labels.add(getString(R.string.STUDENT));
         typeSwitch.setLabels(labels);
-        type = "stu";
+        type = "vol";
 
         typeSwitch.setOnToggleSwitchChangeListener((position, isChecked) -> {
 
             if (position == 0) {
-                type = "stu";
-                schoolLayout.setVisibility(View.VISIBLE);
-                //clearData();
-            } else if (position == 1) {
+
                 type = "vol";
                 schoolLayout.setVisibility(View.GONE);
+                //clearData();
+
+            } else if (position == 1) {
+
+                type = "stu";
+                schoolLayout.setVisibility(View.VISIBLE);
+                getSchoolList();
                 //clearData();
             }
 
@@ -191,9 +194,7 @@ public class StudentRegisterActivity extends AppCompatActivity implements View.O
             public void onItemSelected(AdapterView<?> parentView, View selectedItemView, int position, long id) {
                 if (position > 0) {
                     school_id = schoolListData.get(position - 1).getSchoolId();
-                }
-                else if(position==0)
-                {
+                } else if (position == 0) {
                     school_id = "";
                 }
             }
@@ -211,9 +212,7 @@ public class StudentRegisterActivity extends AppCompatActivity implements View.O
             public void onItemSelected(AdapterView<?> parentView, View selectedItemView, int position, long id) {
                 if (position > 0) {
                     gender_id = getResources().getStringArray(R.array.gender)[position];
-                }
-                else if(position==0)
-                {
+                } else if (position == 0) {
                     gender_id = "";
                 }
             }
@@ -493,16 +492,21 @@ public class StudentRegisterActivity extends AppCompatActivity implements View.O
             myProgressDialog.show(getString(R.string.please_wait));
             schoolModel.getSchoolResponse().observe((LifecycleOwner) context, schoolResponse -> {
 
-                if (schoolResponse != null && schoolResponse.getResStatus().equalsIgnoreCase("200")) {
-                    schoolListData = schoolResponse.getSchoolData();
-                    if (schoolListData.size() > 0) {
-                        for (int i = 0; i < schoolListData.size(); i++) {
-                            schoolList.add(schoolListData.get(i).getSchoolName());
-                        }
-                        schoolList.add(0, getString(R.string.select_school));
-                        setSchoolSpinner(schoolList);
+                if (schoolResponse != null) {
+                    if(schoolResponse.getResStatus().equalsIgnoreCase("200"))
+                    {
+                        schoolListData = schoolResponse.getSchoolData();
+                        if (schoolListData.size() > 0) {
+                            for (int i = 0; i < schoolListData.size(); i++) {
+                                schoolList.add(schoolListData.get(i).getSchoolName());
+                            }
+                            schoolList.add(0, getString(R.string.select_school));
+                            setSchoolSpinner(schoolList);
 
-                    } else {
+                        }
+                    }
+                    else if(schoolResponse.getResStatus().equalsIgnoreCase("401"))
+                    {
                         myToast.show(getString(R.string.err_no_school), Toast.LENGTH_SHORT, false);
                     }
                 } else {
@@ -525,14 +529,17 @@ public class StudentRegisterActivity extends AppCompatActivity implements View.O
             countryModel.getCountryResponse(context).observe((LifecycleOwner) context, countryResponse -> {
 
                 if (countryResponse != null) {
+                    if (countryResponse.getResStatus().equalsIgnoreCase("200")) {
                     countryListData = countryResponse.getResData();
                     if (countryListData.size() > 0) {
                         for (int i = 0; i < countryListData.size(); i++) {
                             countryList.add(countryListData.get(i).getCountryName());
                         }
                         setCountrySpinner(countryList);
-                    } else {
-                        myToast.show(getString(R.string.something_went_wrong), Toast.LENGTH_SHORT, false);
+                    }
+                    } else if(countryResponse.getResStatus().equalsIgnoreCase("401"))
+                    {
+                        myToast.show(getString(R.string.err_no_country_found), Toast.LENGTH_SHORT, false);
                     }
                 } else {
                     myToast.show(getString(R.string.err_server), Toast.LENGTH_SHORT, false);
@@ -551,30 +558,21 @@ public class StudentRegisterActivity extends AppCompatActivity implements View.O
             myProgressDialog.show(getString(R.string.please_wait));
             stateModel.getStateResponse(context, new StateRequest(country_id)).observe((LifecycleOwner) context, stateResponse -> {
                 if (stateResponse != null) {
-                    if(stateResponse.getResStatus().equalsIgnoreCase("200")) {
+                    if (stateResponse.getResStatus().equalsIgnoreCase("200")) {
                         stateListData = stateResponse.getStateList();
                         if (stateListData.size() > 0) {
                             for (int i = 0; i < stateListData.size(); i++) {
                                 stateList.add(stateListData.get(i).getStateName());
                             }
-
                             setStateSpinner(stateList);
-                            myProgressDialog.dismiss();
-                        } else {
-                            myProgressDialog.dismiss();
-                            myToast.show(getString(R.string.err_no_state_found), Toast.LENGTH_SHORT, false);
-
                         }
-                    }else
-                    {
-                        myToast.show(getString(R.string.something_went_wrong), Toast.LENGTH_SHORT, false);
+                    } else if(stateResponse.getResStatus().equalsIgnoreCase("401")){
+                        myToast.show(getString(R.string.err_no_state_found), Toast.LENGTH_SHORT, false);
                     }
                 } else {
-                    myProgressDialog.dismiss();
                     myToast.show(getString(R.string.err_server), Toast.LENGTH_SHORT, false);
-
                 }
-
+                myProgressDialog.dismiss();
             });
         } else {
             myToast.show(getString(R.string.no_internet_connection), Toast.LENGTH_SHORT, false);
@@ -732,7 +730,7 @@ public class StudentRegisterActivity extends AppCompatActivity implements View.O
         if (etPassword.getText() == null || etPassword.getText().toString().isEmpty()) {
             myToast.show(getString(R.string.err_enter_password), Toast.LENGTH_SHORT, false);
             return;
-        }else if(!etPassword.getText().toString().isEmpty()) {
+        } else if (!etPassword.getText().toString().isEmpty()) {
             if (!validate.isAtleastLength(etPassword.getText().toString().toString(), 8)
                     && !validate.hasAtleastOneDigit(etPassword.getText().toString().toString())
                     && !validate.hasAtleastOneUppercaseCharacter(etPassword.getText().toString().toString())
@@ -744,7 +742,7 @@ public class StudentRegisterActivity extends AppCompatActivity implements View.O
         if (etConfirmPassword.getText() == null || etConfirmPassword.getText().toString().isEmpty()) {
             myToast.show(getString(R.string.err_enter_confirm_password), Toast.LENGTH_SHORT, false);
             return;
-        }else if(!etConfirmPassword.getText().toString().isEmpty()){
+        } else if (!etConfirmPassword.getText().toString().isEmpty()) {
             if (!validate.isAtleastLength(etPassword.getText().toString().toString(), 8)
                     && !validate.hasAtleastOneDigit(etPassword.getText().toString().toString())
                     && !validate.hasAtleastOneUppercaseCharacter(etPassword.getText().toString().toString())
@@ -762,7 +760,10 @@ public class StudentRegisterActivity extends AppCompatActivity implements View.O
                 StudentRegisterRequest studentRegisterRequest = new StudentRegisterRequest();
                 studentRegisterRequest.setUserType(sharedPref.getUserType());
                 studentRegisterRequest.setUserDevice(Utility.getDeviceId(context));
-                studentRegisterRequest.setSchoolId(school_id);
+                if (type.equalsIgnoreCase("stu"))
+                    studentRegisterRequest.setSchoolId(school_id);
+                else if(type.equalsIgnoreCase("vol"))
+                    studentRegisterRequest.setSchoolId("");
                 studentRegisterRequest.setUserFName(etFirstName.getText().toString());
                 studentRegisterRequest.setUserLName(etLastName.getText().toString());
                 studentRegisterRequest.setUserEmail(etEmail.getText().toString());
@@ -778,10 +779,10 @@ public class StudentRegisterActivity extends AppCompatActivity implements View.O
 
                 Log.i("REQUEST", "" + new Gson().toJson(studentRegisterRequest));
 
-                if(Utility.isNetworkAvailable(context)) {
+                if (Utility.isNetworkAvailable(context)) {
                     studentRegisterViewModel.getStudentRegisterResponse(studentRegisterRequest).observe((LifecycleOwner) context, registerResponse -> {
 
-                        if(registerResponse != null) {
+                        if (registerResponse != null) {
                             if (registerResponse.getResStatus().equalsIgnoreCase("200")) {
 
                                 Log.i("RESPONSE", "" + new Gson().toJson(registerResponse));
@@ -795,20 +796,17 @@ public class StudentRegisterActivity extends AppCompatActivity implements View.O
                                 startActivity(intent1);
                                 overridePendingTransition(R.anim.fade_in, R.anim.fade_out);
 
-                            } else {
+                            } else if(registerResponse.getResStatus().equalsIgnoreCase("401")){
                                 myToast.show(registerResponse.getResMessage(), Toast.LENGTH_SHORT, false);
                             }
-                        }else
-                        {
+                        } else {
                             myToast.show(getString(R.string.err_server), Toast.LENGTH_SHORT, false);
                         }
 
                         myProgressDialog.dismiss();
 
                     });
-                }
-                else
-                {
+                } else {
                     myToast.show(getString(R.string.no_internet_connection), Toast.LENGTH_SHORT, false);
                 }
             } else {

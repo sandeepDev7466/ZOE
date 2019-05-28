@@ -33,7 +33,7 @@ public class TabFindCsoFragment extends Fragment implements AbsListView.OnScroll
     Context context;
     SharedPref sharedPref;
     ListView listView;
-    final static int DIFF = 5;
+    final static int DIFF = 10;
     int offset = 0, limit = DIFF;
     List<SearchEventResponse.SearchedEvent> searchEventList = new ArrayList<>();
     SearchEventViewModel searchEventViewModel;
@@ -98,7 +98,7 @@ public class TabFindCsoFragment extends Fragment implements AbsListView.OnScroll
                         } else {
                             hit = false;
                         }
-                    } else {
+                    } else if(searchEventResponse.getResStatus().equalsIgnoreCase("401")){
                         if (!type) {
                             listView.setVisibility(View.GONE);
                             search.setVisibility(View.VISIBLE);

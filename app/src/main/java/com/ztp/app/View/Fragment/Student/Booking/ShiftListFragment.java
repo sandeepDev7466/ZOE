@@ -58,16 +58,34 @@ public class ShiftListFragment extends Fragment {
         lv_shift_list = v.findViewById(R.id.lv_shift_list);
         if (Utility.isNetworkAvailable(context)) {
             getVolunteerShiftListViewModel.getSearchShiftResponseLiveData(new GetSearchShiftListRequest(event_id, sharedPref.getUserId())).observe(this, getShiftListResponse -> {
-                if (getShiftListResponse != null && getShiftListResponse.getShiftData() != null) {
 
-                    noData.setVisibility(View.INVISIBLE);
-                    lv_shift_list.setVisibility(View.VISIBLE);
-                    ShiftListAdapter adapter = new ShiftListAdapter(context, getShiftListResponse.getShiftData(), event_id);
-                    lv_shift_list.setAdapter(adapter);
+                if (getShiftListResponse != null) {
+                    if(getShiftListResponse.getResStatus().equalsIgnoreCase("200"))
+                    {
+                        if (getShiftListResponse.getShiftData() != null && getShiftListResponse.getShiftData().size()>0) {
+
+                            noData.setVisibility(View.INVISIBLE);
+                            lv_shift_list.setVisibility(View.VISIBLE);
+                            ShiftListAdapter adapter = new ShiftListAdapter(context, getShiftListResponse.getShiftData(), event_id);
+                            lv_shift_list.setAdapter(adapter);
+                        }
+                        else
+                        {
+                            noData.setVisibility(View.VISIBLE);
+                            lv_shift_list.setVisibility(View.INVISIBLE);
+                            myToast.show(getString(R.string.err_no_data_found), Toast.LENGTH_SHORT, false);
+                        }
+                    }
+                    else if(getShiftListResponse.getResStatus().equalsIgnoreCase("401"))
+                    {
+                        noData.setVisibility(View.VISIBLE);
+                        lv_shift_list.setVisibility(View.INVISIBLE);
+                        myToast.show(getString(R.string.err_no_data_found), Toast.LENGTH_SHORT, false);
+                    }
                 } else {
-                    noData.setVisibility(View.VISIBLE);
-                    lv_shift_list.setVisibility(View.INVISIBLE);
+                    myToast.show(getString(R.string.err_server), Toast.LENGTH_SHORT, false);
                 }
+
                 myProgressDialog.dismiss();
 
             });

@@ -65,31 +65,32 @@ public class CsoRegisterStep_3Activity extends AppCompatActivity implements View
     }
 
     private void fillData() {
+        if(getProfileResponse.getResData()!=null) {
+            if (getProfileResponse.getResData().getOrgNonProfit().equalsIgnoreCase("1"))
+                yes1.setChecked(true);
+            else
+                no1.setChecked(true);
 
-        if (getProfileResponse.getResData().getOrgNonProfit().equalsIgnoreCase("1"))
-            yes1.setChecked(true);
-        else
-            no1.setChecked(true);
+            etServices.setText(getProfileResponse.getResData().getOrgService());
+            etTarget.setText(getProfileResponse.getResData().getOrgTarget());
+            etPerson.setText(getProfileResponse.getResData().getOrgProfile());
+            etTimePeriod.setText(getProfileResponse.getResData().getOrgMinTime());
+            etVolunteer.setText(getProfileResponse.getResData().getOrgVolunteerReq());
+            if (getProfileResponse.getResData().getOrgVoluteerPolice().equalsIgnoreCase("1"))
+                yes2.setChecked(true);
+            else
+                no2.setChecked(true);
 
-        etServices.setText(getProfileResponse.getResData().getOrgService());
-        etTarget.setText(getProfileResponse.getResData().getOrgTarget());
-        etPerson.setText(getProfileResponse.getResData().getOrgProfile());
-        etTimePeriod.setText(getProfileResponse.getResData().getOrgMinTime());
-        etVolunteer.setText(getProfileResponse.getResData().getOrgVolunteerReq());
-        if (getProfileResponse.getResData().getOrgVoluteerPolice().equalsIgnoreCase("1"))
-            yes2.setChecked(true);
-        else
-            no2.setChecked(true);
+            if (getProfileResponse.getResData().getOrgEasyAccess().equalsIgnoreCase("1"))
+                yes3.setChecked(true);
+            else
+                no3.setChecked(true);
 
-        if (getProfileResponse.getResData().getOrgEasyAccess().equalsIgnoreCase("1"))
-            yes3.setChecked(true);
-        else
-            no3.setChecked(true);
-
-        if (getProfileResponse.getResData().getOrg501C3().equalsIgnoreCase("1"))
-            yes4.setChecked(true);
-        else
-            no4.setChecked(true);
+            if (getProfileResponse.getResData().getOrg501C3().equalsIgnoreCase("1"))
+                yes4.setChecked(true);
+            else
+                no4.setChecked(true);
+        }
     }
 
     private void init() {
@@ -271,7 +272,7 @@ public class CsoRegisterStep_3Activity extends AppCompatActivity implements View
                                                                     overridePendingTransition(R.anim.fade_in, R.anim.fade_out);
                                                                 }
 
-                                                            } else {
+                                                            } else if(registerResponse.getResStatus().equalsIgnoreCase("401")) {
                                                                 myToast.show(getString(R.string.err_org_inf_regisitration_failed), Toast.LENGTH_SHORT, false);
                                                             }
                                                         }

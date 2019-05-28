@@ -16,6 +16,7 @@ import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
 import android.widget.Button;
+import android.widget.ImageView;
 import android.widget.LinearLayout;
 import android.widget.ListView;
 import android.widget.Toast;
@@ -132,8 +133,9 @@ public class TabMyBookingFragment extends Fragment {
                             } else {
                                 myToast.show(getString(R.string.err_events_not_found), Toast.LENGTH_SHORT, false);
                             }
-                        } else {
-                            myToast.show(getString(R.string.err_events_not_found), Toast.LENGTH_SHORT, false);
+                        } else if(volunteerAllResponse.getResStatus().equalsIgnoreCase("401")){
+                            //myToast.show(getString(R.string.err_events_not_found), Toast.LENGTH_SHORT, false);
+                            //setCalendar(volunteerAllResponse.getResData());
                         }
 
                     } else {
@@ -225,6 +227,7 @@ public class TabMyBookingFragment extends Fragment {
                         map.put("map_id",mEventDays.get(i).getMapId());
                         map.put("map_status",mEventDays.get(i).getMapStatus());
                         shiftDataList.add(map);
+                        pos = i;
                         flag = true;
                         //break;
                     }
@@ -336,19 +339,24 @@ public class TabMyBookingFragment extends Fragment {
         View volunteer_view = view.findViewById(R.id.volunteer_view);
         View withdraw_view = view.findViewById(R.id.withdraw_view);
         View initiate_view = view.findViewById(R.id.initiate_view);
+        ImageView imv_status = view.findViewById(R.id.imv_status);
+        ImageView imv_chat = view.findViewById(R.id.imv_chat);
 
         switch (status) {
 
             case 10:
                 withdraw_layout.setVisibility(View.VISIBLE);
+                imv_status.setImageResource(R.drawable.vol_pending);
                 break;
             case 20:
                 withdraw_layout.setVisibility(View.VISIBLE);
                 withdraw_view.setVisibility(View.VISIBLE);
                 complete_layout.setVisibility(View.VISIBLE);
+                imv_status.setImageResource(R.drawable.cso_approved);
                 break;
             case 30:
                 initiateDM_layout.setVisibility(View.VISIBLE);
+                imv_status.setImageResource(R.drawable.cso_declined);
                 break;
             case 50:
                 volunteer_layout.setVisibility(View.VISIBLE);
@@ -356,12 +364,17 @@ public class TabMyBookingFragment extends Fragment {
                 withdraw_layout.setVisibility(View.VISIBLE);
                 withdraw_view.setVisibility(View.VISIBLE);
                 complete_layout.setVisibility(View.VISIBLE);
+                imv_chat.setVisibility(View.VISIBLE);
+
+                imv_status.setImageResource(R.drawable.more_info);
                 break;
             case 60:
                 initiateDM_layout.setVisibility(View.VISIBLE);
+                imv_status.setImageResource(R.drawable.cso_rejected);
                 break;
             case 90:
                 volunteer_layout.setVisibility(View.VISIBLE);
+                imv_status.setImageResource(R.drawable.not_available);
                 break;
         }
 
@@ -411,7 +424,7 @@ public class TabMyBookingFragment extends Fragment {
                                 break;
                         }
                         getBooking(false);
-                    } else {
+                    } else if(changeVolunteerStatusResponse.getResStatus().equalsIgnoreCase("401")) {
                         myProgressDialog.dismiss();
                         new MyToast(context).show(context.getString(R.string.toast_volunteer_failed), Toast.LENGTH_SHORT, false);
                     }

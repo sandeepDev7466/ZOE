@@ -9,6 +9,7 @@ import android.content.Context;
 import android.os.Bundle;
 import android.support.v4.app.Fragment;
 import android.support.v7.app.AppCompatActivity;
+import android.util.Log;
 import android.view.LayoutInflater;
 import android.view.MotionEvent;
 import android.view.View;
@@ -17,6 +18,7 @@ import android.widget.Button;
 import android.widget.TimePicker;
 import android.widget.Toast;
 
+import com.google.gson.Gson;
 import com.willy.ratingbar.BaseRatingBar;
 import com.willy.ratingbar.ScaleRatingBar;
 import com.ztp.app.Data.Remote.Model.Request.ShiftUpdateRequest;
@@ -27,10 +29,12 @@ import com.ztp.app.Helper.MyProgressDialog;
 import com.ztp.app.Helper.MyTextInputEditText;
 import com.ztp.app.Helper.MyToast;
 import com.ztp.app.R;
+import com.ztp.app.Utils.Constants;
 import com.ztp.app.Utils.Utility;
 import com.ztp.app.Viewmodel.AddShiftViewModel;
 import com.ztp.app.Viewmodel.UpdateShiftViewModel;
 
+import java.text.ParseException;
 import java.util.Calendar;
 import java.util.Date;
 import java.util.Locale;
@@ -67,6 +71,7 @@ public class AddNewShiftFragment extends Fragment {
     ScaleRatingBar rank;
     float ratingRank;
     String startTime,endTime;
+    String startDate,endDate;
 
     @Override
     public View onCreateView(LayoutInflater inflater, ViewGroup container,
@@ -104,9 +109,18 @@ public class AddNewShiftFragment extends Fragment {
             event_id = getArguments().getString("event_id");
             status = "add";
             update.setText(R.string.add);
+            update.setOnClickListener(v14 -> addShift());
+            startDate = getArguments().getString("event_start_date");
+            endDate = getArguments().getString("event_end_date");
         } else {
             status = "update";
             update.setText(R.string.update);
+            Bundle b = getArguments();
+            shiftData = (GetCSOShiftResponse.ResData) b.getSerializable("shiftData");
+            startDate = getArguments().getString("event_start_date");
+            endDate = getArguments().getString("event_end_date");
+            populateData(shiftData);
+            update.setOnClickListener(v14 -> updateShift());
         }
 
         rank.setOnRatingChangeListener(new BaseRatingBar.OnRatingChangeListener() {
@@ -118,6 +132,8 @@ public class AddNewShiftFragment extends Fragment {
 
 
         myProgressDialog = new MyProgressDialog(context);
+
+
         DatePickerDialog.OnDateSetListener date = (view, year, monthOfYear, dayOfMonth) -> {
             // TODO Auto-generated method stub
             myCalendar.set(Calendar.YEAR, year);
@@ -130,9 +146,19 @@ public class AddNewShiftFragment extends Fragment {
         et_date.setOnTouchListener((v12, event) -> {
             if (event.getAction() == MotionEvent.ACTION_UP) {
 
-                new DatePickerDialog(context, date, myCalendar
+                DatePickerDialog datePickerDialog = new DatePickerDialog(context, date, myCalendar
                         .get(Calendar.YEAR), myCalendar.get(Calendar.MONTH),
-                        myCalendar.get(Calendar.DAY_OF_MONTH)).show();
+                        myCalendar.get(Calendar.DAY_OF_MONTH));
+
+                try {
+                    datePickerDialog.getDatePicker().setMinDate(Constants.ff.parse(startDate).getTime());
+
+                    datePickerDialog.getDatePicker().setMaxDate(Constants.ff.parse(endDate).getTime());
+
+                } catch (ParseException e) {
+                    e.printStackTrace();
+                }
+                datePickerDialog.show();
                 return true;
             }
             return false;
@@ -141,13 +167,15 @@ public class AddNewShiftFragment extends Fragment {
 
         et_start_time.setOnTouchListener((v1, event) -> {
             if (event.getAction() == MotionEvent.ACTION_UP) {
-
+                TimePickerDialog mTimePicker;
                 et_end_time_volunteers.setText("");
 
                 Calendar mcurrentTime = Calendar.getInstance();
                 int hour = mcurrentTime.get(Calendar.HOUR_OF_DAY);
                 int minute = mcurrentTime.get(Calendar.MINUTE);
-                TimePickerDialog mTimePicker;
+
+
+
                 mTimePicker = new TimePickerDialog(context, new TimePickerDialog.OnTimeSetListener() {
                     @Override
                     public void onTimeSet(TimePicker timePicker, int selectedHour, int selectedMinute) {
@@ -214,14 +242,6 @@ public class AddNewShiftFragment extends Fragment {
             return false;
         });
 
-        if (status.equalsIgnoreCase("add")) {
-            update.setOnClickListener(v14 -> addShift());
-        } else {
-            Bundle b = getArguments();
-            shiftData = (GetCSOShiftResponse.ResData) b.getSerializable("shiftData");
-            populateData(shiftData);
-            update.setOnClickListener(v14 -> updateShift());
-        }
 
         clear.setOnClickListener(v15 -> {
 
@@ -267,17 +287,20 @@ public class AddNewShiftFragment extends Fragment {
                                 siftAddRequest.setShift_task(str_task);
                                 siftAddRequest.setShift_rank(str_rank);
 
+                                Log.i("REQUEST",""+new Gson().toJson(siftAddRequest));
+
                                 if (Utility.isNetworkAvailable(context)) {
                                     addShiftViewModel.getAddShiftResponse(siftAddRequest).observe((LifecycleOwner) context, shiftResponse -> {
 
                                         if (shiftResponse != null) {
+                                            Log.i("RESPONSE",""+new Gson().toJson(shiftResponse));
                                             if (shiftResponse.getResStatus().equalsIgnoreCase("200")) {
                                                 if (status.equalsIgnoreCase("add"))
                                                     myToast.show(getString(R.string.shift_added_successfully), Toast.LENGTH_SHORT, true);
 
                                                 ((AppCompatActivity)context).getSupportFragmentManager().popBackStack();
-                                            } else {
-                                                myToast.show(getString(R.string.something_went_wrong), Toast.LENGTH_SHORT, false);
+                                            } else if(shiftResponse.getResStatus().equalsIgnoreCase("401")){
+                                                myToast.show(getString(R.string.err_shift_not_added), Toast.LENGTH_SHORT, false);
                                             }
                                         } else {
                                             myToast.show(getString(R.string.err_server), Toast.LENGTH_SHORT, false);
@@ -346,8 +369,8 @@ public class AddNewShiftFragment extends Fragment {
                                                 myToast.show(getString(R.string.shift_updated_success), Toast.LENGTH_SHORT, true);
                                                 ((AppCompatActivity)context).getSupportFragmentManager().popBackStack();
 
-                                            } else {
-                                                myToast.show(getString(R.string.something_went_wrong), Toast.LENGTH_SHORT, true);
+                                            } else if(shiftResponse.getResStatus().equalsIgnoreCase("401")){
+                                                myToast.show(getString(R.string.err_shift_update_failed), Toast.LENGTH_SHORT, true);
                                             }
                                         } else {
                                             myToast.show(getString(R.string.err_server), Toast.LENGTH_SHORT, true);
@@ -383,10 +406,13 @@ public class AddNewShiftFragment extends Fragment {
 
     public void populateData(GetCSOShiftResponse.ResData shiftData) {
         et_date.setText(shiftData.getShiftDate());
-        et_start_time.setText(shiftData.getShift_start_time_s());
-        et_end_time_volunteers.setText(shiftData.getShift_end_time_s());
+        et_start_time.setText(shiftData.getShiftStartTime());
+        et_end_time_volunteers.setText(shiftData.getShiftEndTime());
         et_volunteer.setText(shiftData.getShiftVolReq());
         et_task.setText(shiftData.getShiftTask());
+        if(!shiftData.getShiftRank().isEmpty())
         rank.setRating(Float.parseFloat(shiftData.getShiftRank()));
+        startTime = shiftData.getShiftStartTime();
+        endTime = shiftData.getShiftEndTime();
     }
 }

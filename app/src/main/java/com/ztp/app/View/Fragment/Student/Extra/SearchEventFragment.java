@@ -67,7 +67,7 @@ public class SearchEventFragment extends Fragment implements AbsListView.OnScrol
             @Override
             public boolean onQueryTextSubmit(String query) {
                 im.hideSoftInputFromWindow(searchView.getWindowToken(), 0);
-                queryString = query;
+                queryString = query.trim();
                 if ((Utility.isNetworkAvailable(context))) {
                     searchEventList = new ArrayList<>();
                     lv_events.setAdapter(null);
@@ -155,7 +155,7 @@ public class SearchEventFragment extends Fragment implements AbsListView.OnScrol
                         } else {
                             hit = false;
                         }
-                    } else {
+                    } else if(searchEventResponse.getResStatus().equalsIgnoreCase("401")){
                         if(!type) {
                             lv_events.setVisibility(View.GONE);
                             search.setVisibility(View.VISIBLE);

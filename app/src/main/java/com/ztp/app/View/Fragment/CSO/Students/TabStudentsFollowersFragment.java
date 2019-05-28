@@ -74,7 +74,7 @@ public class TabStudentsFollowersFragment extends Fragment {
                                 noData.setVisibility(View.VISIBLE);
                             }
                         }
-                        else
+                        else if(csoMyVolunteerResponse.getResStatus().equalsIgnoreCase("401"))
                         {
                             listView.setVisibility(View.INVISIBLE);
                             noData.setVisibility(View.VISIBLE);

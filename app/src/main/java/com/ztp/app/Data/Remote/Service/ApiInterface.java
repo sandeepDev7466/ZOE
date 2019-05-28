@@ -31,6 +31,7 @@ import com.ztp.app.Data.Remote.Model.Request.SiftAddRequest;
 import com.ztp.app.Data.Remote.Model.Request.StudentRegisterRequest;
 import com.ztp.app.Data.Remote.Model.Request.StateRequest;
 import com.ztp.app.Data.Remote.Model.Request.UpdateProfileRequest;
+import com.ztp.app.Data.Remote.Model.Request.UpdateVolunteerHoursRequest;
 import com.ztp.app.Data.Remote.Model.Request.ValidateOtpRequest;
 import com.ztp.app.Data.Remote.Model.Request.VolunteerAllRequest;
 import com.ztp.app.Data.Remote.Model.Request.VolunteerDashboardCombineRequest;
@@ -68,6 +69,7 @@ import com.ztp.app.Data.Remote.Model.Response.StateResponse;
 import com.ztp.app.Data.Remote.Model.Response.TimeZoneResponse;
 import com.ztp.app.Data.Remote.Model.Response.UpdateEventResponse;
 import com.ztp.app.Data.Remote.Model.Response.UpdateProfileResponse;
+import com.ztp.app.Data.Remote.Model.Response.UpdateVolunteerHoursResponse;
 import com.ztp.app.Data.Remote.Model.Response.UploadDocumentResponse;
 import com.ztp.app.Data.Remote.Model.Response.ValidateOtpResponse;
 import com.ztp.app.Data.Remote.Model.Response.VolunteerAllResponse;
@@ -216,9 +218,10 @@ public interface ApiInterface {
     @POST("cso-action.php?api_key=1234&action=mark_hours")
     Call<CsoMarkHoursResponse> csoMarkHours(@Body CsoMarkHoursRequest csoMarkHoursRequest);
 
-    @POST("api_key=1234&action=vol_dashboard_combine")
+    @POST("vol-action.php?api_key=1234&action=vol_dashboard_combine_mob")
     Call<VolunteerDashboardCombineResponse> getVolunteerDashboardCombined(@Body VolunteerDashboardCombineRequest volunteerDashboardCombineRequest);
 
-
+    @POST("vol-action.php?api_key=1234&action=update_vol_hours")
+    Call<UpdateVolunteerHoursResponse> updateVolunteerHours(@Body UpdateVolunteerHoursRequest updateVolunteerHoursRequest);
 
 }

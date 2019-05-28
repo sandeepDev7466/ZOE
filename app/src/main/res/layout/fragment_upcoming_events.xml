@@ -1,0 +1,46 @@
+<?xml version="1.0" encoding="utf-8"?>
+<FrameLayout
+    xmlns:android="http://schemas.android.com/apk/res/android"
+    xmlns:tools="http://schemas.android.com/tools"
+    android:layout_width="match_parent"
+    android:layout_height="match_parent"
+    tools:context=".View.Fragment.Student.Extra.UpcomingEventsFragment">
+
+    <LinearLayout
+        android:id="@+id/mainLayout"
+        android:layout_width="match_parent"
+        android:layout_height="match_parent"
+        android:orientation="vertical"
+        android:visibility="gone">
+
+        <com.ztp.app.Helper.MyHeadingTextView
+            android:layout_width="match_parent"
+            android:layout_height="@dimen/_50sdp"
+            android:gravity="center"
+            android:text="@string/upcoming_event"
+            android:textSize="@dimen/_25ssp" />
+
+        <ListView
+            android:id="@+id/lv_upcoming_event"
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:divider="@color/background_3"
+            android:dividerHeight="0.7dp"
+            android:nestedScrollingEnabled="true"
+            android:overScrollMode="never"
+            android:scrollbars="none"
+            tools:ignore="UnusedAttribute" />
+
+    </LinearLayout>
+
+   <com.ztp.app.Helper.MyTextView
+       android:id="@+id/noData"
+       android:layout_width="wrap_content"
+       android:layout_height="wrap_content"
+       android:text="@string/err_no_data_found"
+       android:textSize="@dimen/_10ssp"
+       android:layout_gravity="center"
+       android:visibility="gone"/>
+
+
+</FrameLayout>

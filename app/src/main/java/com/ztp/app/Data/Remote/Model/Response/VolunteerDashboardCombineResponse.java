@@ -2,7 +2,6 @@ package com.ztp.app.Data.Remote.Model.Response;
 
 import com.google.gson.annotations.Expose;
 import com.google.gson.annotations.SerializedName;
-
 import java.util.List;
 
 public class VolunteerDashboardCombineResponse {
@@ -79,6 +78,21 @@ public class VolunteerDashboardCombineResponse {
         @SerializedName("event_id")
         @Expose
         private String eventId;
+        @SerializedName("event_heading")
+        @Expose
+        private String eventHeading;
+        @SerializedName("event_status")
+        @Expose
+        private String eventStatus;
+        @SerializedName("event_add_date")
+        @Expose
+        private String eventAddDate;
+        @SerializedName("event_register_start_date")
+        @Expose
+        private String eventRegisterStartDate;
+        @SerializedName("event_register_end_date")
+        @Expose
+        private String eventRegisterEndDate;
         @SerializedName("shift_id")
         @Expose
         private String shiftId;
@@ -91,41 +105,22 @@ public class VolunteerDashboardCombineResponse {
         @SerializedName("shift_end_time")
         @Expose
         private String shiftEndTime;
-        @SerializedName("event_heading")
-        @Expose
-        private String eventHeading;
-        @SerializedName("shift_day")
-        @Expose
-        private String shiftDay;
-        @SerializedName("shift_month")
-        @Expose
-        private String shiftMonth;
-        @SerializedName("shift_day_num")
-        @Expose
-        private String shiftDayNum;
-        @SerializedName("shift_start_time_s")
-        @Expose
-        private String shiftStartTimeS;
-        @SerializedName("shift_end_time_s")
-        @Expose
-        private String shiftEndTimeS;
 
         public EventData() {
         }
 
-        public EventData(String eventId, String shiftId, String shiftDate, String shiftStartTime, String shiftEndTime, String eventHeading, String shiftDay, String shiftMonth, String shiftDayNum, String shiftStartTimeS, String shiftEndTimeS) {
+        public EventData(String eventId, String eventHeading, String eventStatus, String eventAddDate, String eventRegisterStartDate, String eventRegisterEndDate, String shiftId, String shiftDate, String shiftStartTime, String shiftEndTime) {
             super();
             this.eventId = eventId;
+            this.eventHeading = eventHeading;
+            this.eventStatus = eventStatus;
+            this.eventAddDate = eventAddDate;
+            this.eventRegisterStartDate = eventRegisterStartDate;
+            this.eventRegisterEndDate = eventRegisterEndDate;
             this.shiftId = shiftId;
             this.shiftDate = shiftDate;
             this.shiftStartTime = shiftStartTime;
             this.shiftEndTime = shiftEndTime;
-            this.eventHeading = eventHeading;
-            this.shiftDay = shiftDay;
-            this.shiftMonth = shiftMonth;
-            this.shiftDayNum = shiftDayNum;
-            this.shiftStartTimeS = shiftStartTimeS;
-            this.shiftEndTimeS = shiftEndTimeS;
         }
 
         public String getEventId() {
@@ -134,6 +129,46 @@ public class VolunteerDashboardCombineResponse {
 
         public void setEventId(String eventId) {
             this.eventId = eventId;
+        }
+
+        public String getEventHeading() {
+            return eventHeading;
+        }
+
+        public void setEventHeading(String eventHeading) {
+            this.eventHeading = eventHeading;
+        }
+
+        public String getEventStatus() {
+            return eventStatus;
+        }
+
+        public void setEventStatus(String eventStatus) {
+            this.eventStatus = eventStatus;
+        }
+
+        public String getEventAddDate() {
+            return eventAddDate;
+        }
+
+        public void setEventAddDate(String eventAddDate) {
+            this.eventAddDate = eventAddDate;
+        }
+
+        public String getEventRegisterStartDate() {
+            return eventRegisterStartDate;
+        }
+
+        public void setEventRegisterStartDate(String eventRegisterStartDate) {
+            this.eventRegisterStartDate = eventRegisterStartDate;
+        }
+
+        public String getEventRegisterEndDate() {
+            return eventRegisterEndDate;
+        }
+
+        public void setEventRegisterEndDate(String eventRegisterEndDate) {
+            this.eventRegisterEndDate = eventRegisterEndDate;
         }
 
         public String getShiftId() {
@@ -166,54 +201,6 @@ public class VolunteerDashboardCombineResponse {
 
         public void setShiftEndTime(String shiftEndTime) {
             this.shiftEndTime = shiftEndTime;
-        }
-
-        public String getEventHeading() {
-            return eventHeading;
-        }
-
-        public void setEventHeading(String eventHeading) {
-            this.eventHeading = eventHeading;
-        }
-
-        public String getShiftDay() {
-            return shiftDay;
-        }
-
-        public void setShiftDay(String shiftDay) {
-            this.shiftDay = shiftDay;
-        }
-
-        public String getShiftMonth() {
-            return shiftMonth;
-        }
-
-        public void setShiftMonth(String shiftMonth) {
-            this.shiftMonth = shiftMonth;
-        }
-
-        public String getShiftDayNum() {
-            return shiftDayNum;
-        }
-
-        public void setShiftDayNum(String shiftDayNum) {
-            this.shiftDayNum = shiftDayNum;
-        }
-
-        public String getShiftStartTimeS() {
-            return shiftStartTimeS;
-        }
-
-        public void setShiftStartTimeS(String shiftStartTimeS) {
-            this.shiftStartTimeS = shiftStartTimeS;
-        }
-
-        public String getShiftEndTimeS() {
-            return shiftEndTimeS;
-        }
-
-        public void setShiftEndTimeS(String shiftEndTimeS) {
-            this.shiftEndTimeS = shiftEndTimeS;
         }
 
     }

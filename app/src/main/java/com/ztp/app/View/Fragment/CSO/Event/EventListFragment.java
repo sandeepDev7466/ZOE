@@ -13,6 +13,7 @@ import android.widget.ImageView;
 import com.ztp.app.Data.Local.SharedPrefrence.SharedPref;
 import com.ztp.app.Helper.MyHeadingTextView;
 import com.ztp.app.R;
+import com.ztp.app.View.Activity.Common.SettingsActivity;
 
 public class EventListFragment extends Fragment {
 
@@ -175,5 +176,4 @@ public class EventListFragment extends Fragment {
         super.onAttach(context);
         this.context = context;
     }
-
 }

@@ -54,15 +54,34 @@ public class TabMyEventFragment extends Fragment {
     public void getData() {
         if(Utility.isNetworkAvailable(context)) {
             getEventsViewModel.getEventsResponseLiveData(new GetEventsRequest(sharedPref.getUserId())).observe(this, getEventsResponse -> {
-                if (getEventsResponse != null && getEventsResponse.getEventData() != null) {
-                    lv_event_list.setVisibility(View.VISIBLE);
-                    noData.setVisibility(View.INVISIBLE);
-                    adapter = new EventListAdapter(context, getEventsResponse.getEventData());
-                    lv_event_list.setAdapter(adapter);
-                } else {
-                    lv_event_list.setVisibility(View.INVISIBLE);
-                    noData.setVisibility(View.VISIBLE);
+
+                if(getEventsResponse != null)
+                {
+                    if(getEventsResponse.getResStatus().equalsIgnoreCase("200"))
+                    {
+                        if (getEventsResponse.getEventData() != null) {
+                            lv_event_list.setVisibility(View.VISIBLE);
+                            noData.setVisibility(View.INVISIBLE);
+                            adapter = new EventListAdapter(context, getEventsResponse.getEventData());
+                            lv_event_list.setAdapter(adapter);
+                        } else {
+                            lv_event_list.setVisibility(View.INVISIBLE);
+                            noData.setVisibility(View.VISIBLE);
+                            new MyToast(context).show(context.getString(R.string.err_no_data_found), Toast.LENGTH_SHORT, false);
+                        }
+                    }
+                    else if(getEventsResponse.getResStatus().equalsIgnoreCase("401"))
+                    {
+                        lv_event_list.setVisibility(View.INVISIBLE);
+                        noData.setVisibility(View.VISIBLE);
+                        new MyToast(context).show(context.getString(R.string.err_no_data_found), Toast.LENGTH_SHORT, false);
+                    }
                 }
+                else
+                {
+                    new MyToast(context).show(context.getString(R.string.err_server), Toast.LENGTH_SHORT, false);
+                }
+
             });
         }
         else

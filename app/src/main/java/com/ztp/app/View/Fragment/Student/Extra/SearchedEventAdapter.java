@@ -65,7 +65,7 @@ public class SearchedEventAdapter extends BaseAdapter {
         }
         holder.title.setText(searchedEvent.getEventHeading());
         holder.description.setText(searchedEvent.getEventDetails());
-        Date date = Utility.convertStringToDate(searchedEvent.getEventAddDate());
+        Date date = Utility.convertStringToDateWithoutTime(searchedEvent.getEventAddDate());
 
         String dayOfTheWeek = (String) DateFormat.format("EE", date); // Thursday
         String day          = (String) DateFormat.format("dd",   date); // 20

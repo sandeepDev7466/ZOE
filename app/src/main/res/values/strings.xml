@@ -84,7 +84,7 @@
     <string name="resend_otp">RESEND OTP</string>
     <string name="enter_otp">Enter OTP</string>
     <string name="otp_validation_failed">OTP validation failed</string>
-    <string name="something_went_wrong">Something went wrong</string>
+    <string name="something_went_wrong">No Data Found</string>
     <string name="OTP_verified_successfully_please_login_to_continue">OTP verified successfully please login to continue</string>
     <string name="student_name">Student Name</string>
     <string name="grad_date">Grad Date</string>
@@ -206,7 +206,7 @@
     <string name="VOLUNTEER">VOLUNTEER</string>
     <string name="err_first_name">First name should only contain alphabets</string>
     <string name="err_last_name">Last name should only contain alphabets</string>
-    <string name="err_password"><![CDATA[Password should contain 8 characters,1 digit,1 upppercase & 1 special character]]></string>
+    <string name="err_password"><![CDATA[Password should contain 8 characters,1 digit,1 uppercase & 1 special character]]></string>
     <string name="err_invalid_data">Invalid data found</string>
     <string name="err_password_confirmpassword_not_match"><![CDATA[Password & Confirm Password don’t match]]></string>
     <string name="err_enter_confirm_password">Enter Confirm Password</string>
@@ -370,7 +370,11 @@
     <string name="close">CLOSE</string>
     <string name="hrs_small">Hrs</string>
     <string name="attended_hrs">Attended Hrs</string>
-
+    <string name="err_shift_not_added">Shift not added</string>
+    <string name="hours_update_failed">Hours update failed</string>
+    <string name="err_shift_update_failed">Shift update failed</string>
+    <string name="err_rank_not_updated">Rank not updated</string>
+    <string name="upcoming_events">Upcoming events</string>
 
 
     <string-array name="gender">
@@ -405,6 +409,8 @@
         <item>CSO</item>
     </string-array>
 
+    <string name="current_status">Current Status</string>
+    <string name="err_camera_permission">CAMERA permission denied</string>
 
 
 </resources>

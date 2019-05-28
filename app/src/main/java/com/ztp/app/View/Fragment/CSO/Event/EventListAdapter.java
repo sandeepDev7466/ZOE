@@ -9,6 +9,7 @@ import android.os.Bundle;
 import android.support.v4.app.FragmentActivity;
 import android.support.v7.app.AppCompatActivity;
 import android.text.format.DateFormat;
+import android.util.Log;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
@@ -17,6 +18,7 @@ import android.widget.ImageView;
 import android.widget.LinearLayout;
 import android.widget.Toast;
 
+import com.google.gson.Gson;
 import com.ztp.app.Data.Local.SharedPrefrence.SharedPref;
 import com.ztp.app.Data.Remote.Model.Request.ChangeStatusByCSORequest;
 import com.ztp.app.Data.Remote.Model.Request.DeleteEventRequest;
@@ -45,10 +47,8 @@ import java.util.Locale;
 public class EventListAdapter extends BaseAdapter {
     private Context context;
     private List<GetEventsResponse.EventData> eventDataList;
-    String[] month = {"JAN", "FEB", "MAR", "APR", "MAY", "JUN", "JUL", "AUG", "SEP", "OCT", "NOV", "DEC"};
     private MyProgressDialog myProgressDialog;
     private EventDeleteViewModel eventDeleteViewModel;
-    MyToast myToast;
     SharedPref sharedPref;
     PublishViewModel publishViewModel;
 
@@ -133,7 +133,12 @@ public class EventListAdapter extends BaseAdapter {
             holder.time.setText(String.valueOf(cal.get(Calendar.HOUR) + ":" + cal.get(Calendar.MINUTE)));*/
 
 
+           view.setTag(eventData.getEventAddDate());
             view.setOnClickListener(v -> {
+
+
+                Date d = Utility.convertStringToDateWithoutTime(String.valueOf(v.getTag()));
+
 
 
                 Dialog dialog = new Dialog(context);
@@ -157,12 +162,7 @@ public class EventListAdapter extends BaseAdapter {
                 edit_event.setOnClickListener(vs -> {
                     dialog.dismiss();
 
-                     /*UpdateEventFragment updateEventFragment = new UpdateEventFragment();
-                    Bundle bundle = new Bundle();
-                    bundle.putSerializable("model", eventData);
-                    bundle.putString("action","update");
-                    updateEventFragment.setArguments(bundle);
-                    Utility.replaceFragment(context, updateEventFragment, "updateEventFragment");*/
+                    //Date current = Utility.convertStringToDateWithoutTime(Utility.getCurrentDate());
 
                     TabNewEventFragment tabNewEventFragment = new TabNewEventFragment();
                     Bundle bundle = new Bundle();
@@ -170,11 +170,48 @@ public class EventListAdapter extends BaseAdapter {
                     bundle.putString("action", "update");
                     tabNewEventFragment.setArguments(bundle);
                     Utility.replaceFragment(context, tabNewEventFragment, "TabNewEventFragment");
+
+                   /* if(current.before(d) || current.equals(d))
+                    {
+                        TabNewEventFragment tabNewEventFragment = new TabNewEventFragment();
+                        Bundle bundle = new Bundle();
+                        bundle.putSerializable("model", eventData);
+                        bundle.putString("action", "update");
+                        tabNewEventFragment.setArguments(bundle);
+                        Utility.replaceFragment(context, tabNewEventFragment, "TabNewEventFragment");
+                    }
+                    else
+                    {
+                        new MyToast(context).show("Past events/shifts can't be changed",Toast.LENGTH_SHORT,false);
+                    }*/
+
+                    /*if(current.compareTo(d) == 0)
+                    {
+                        TabNewEventFragment tabNewEventFragment = new TabNewEventFragment();
+                        Bundle bundle = new Bundle();
+                        bundle.putSerializable("model", eventData);
+                        bundle.putString("action", "update");
+                        tabNewEventFragment.setArguments(bundle);
+                        Utility.replaceFragment(context, tabNewEventFragment, "TabNewEventFragment");
+                    }
+                    else if(current.compareTo(d) == 1)
+                    {
+                        new MyToast(context).show("Past events/shifts can't be changed",Toast.LENGTH_SHORT,false);
+                    }
+                    else if(current.compareTo(d) == -1)
+                    {
+                        TabNewEventFragment tabNewEventFragment = new TabNewEventFragment();
+                        Bundle bundle = new Bundle();
+                        bundle.putSerializable("model", eventData);
+                        bundle.putString("action", "update");
+                        tabNewEventFragment.setArguments(bundle);
+                        Utility.replaceFragment(context, tabNewEventFragment, "TabNewEventFragment");
+                    }*/
+
                 });
 
                 delete_event.setOnClickListener(vs -> {
                     dialog.dismiss();
-
 
                     Dialog dialog1 = new Dialog(context);
                     View vw = LayoutInflater.from(context).inflate(R.layout.delete_dialog, null);
@@ -203,7 +240,7 @@ public class EventListAdapter extends BaseAdapter {
 
                                         notifyDataSetChanged();
 
-                                    } else {
+                                    } else if(deleteEventResponse.getResStatus().equalsIgnoreCase("401")){
 
                                         new MyToast(context).show(context.getString(R.string.failed), Toast.LENGTH_SHORT, false);
 
@@ -233,6 +270,8 @@ public class EventListAdapter extends BaseAdapter {
                     AddNewShiftFragment addNewShiftFragment = new AddNewShiftFragment();
                     Bundle bundle = new Bundle();
                     bundle.putString("event_id", eventData.getEventId());
+                    bundle.putString("event_start_date",eventData.getEventRegisterStartDate());
+                    bundle.putString("event_end_date",eventData.getEventRegisterEndDate());
                     bundle.putString("status", "add");
                     addNewShiftFragment.setArguments(bundle);
                     Utility.replaceFragment(context, addNewShiftFragment, "AddNewShiftFragment");
@@ -243,6 +282,8 @@ public class EventListAdapter extends BaseAdapter {
                     CSOShiftListFragment shiftListFragment = new CSOShiftListFragment();
                     Bundle bundle = new Bundle();
                     bundle.putString("event_id", eventData.getEventId());
+                    bundle.putString("event_start_date",eventData.getEventRegisterStartDate());
+                    bundle.putString("event_end_date",eventData.getEventRegisterEndDate());
                     shiftListFragment.setArguments(bundle);
                     Utility.replaceFragment(context, shiftListFragment, "ShiftListFragment");
                 });
@@ -282,11 +323,14 @@ public class EventListAdapter extends BaseAdapter {
         publishRequest.setUser_device(Utility.getDeviceId(context));
         publishRequest.setAction_type(status);
         publishRequest.setEvent_id(event_id);
+        Log.i("REQUEST", "" + new Gson().toJson(publishRequest));
+
 
         if (Utility.isNetworkAvailable(context)) {
             myProgressDialog.show(context.getString(R.string.please_wait));
             publishViewModel.getResponse(publishRequest).observe((FragmentActivity) context, publishResponse -> {
                 if (publishResponse != null) {
+                    Log.i("RESPONSE", "" + new Gson().toJson(publishResponse));
                     if (publishResponse.getResStatus().equalsIgnoreCase("200")) {
                         if (status.equalsIgnoreCase("p")) {
                             new MyToast(context).show(context.getString(R.string.toast_publish_success), Toast.LENGTH_SHORT, true);
@@ -295,7 +339,7 @@ public class EventListAdapter extends BaseAdapter {
                             new MyToast(context).show(context.getString(R.string.toast_unpublish_success), Toast.LENGTH_SHORT, true);
                             refresh(position, "20");
                         }
-                    } else {
+                    } else if(publishResponse.getResStatus().equalsIgnoreCase("401")){
                         if (status.equalsIgnoreCase("p"))
                             new MyToast(context).show(context.getString(R.string.toast_publish_failed), Toast.LENGTH_SHORT, false);
                         else

@@ -134,7 +134,7 @@ public class ValidateOTPActivity extends AppCompatActivity implements View.OnCli
                         startActivity(intent1);
                         overridePendingTransition(R.anim.fade_in, R.anim.fade_out);
                         myToast.show(getString(R.string.OTP_verified_successfully_please_login_to_continue), Toast.LENGTH_SHORT, true);
-                    } else {
+                    } else if(validateOtpResponse.getResStatus().equalsIgnoreCase("401")){
                         myToast.show(getString(R.string.otp_validation_failed), Toast.LENGTH_SHORT, false);
                     }
                 } else {

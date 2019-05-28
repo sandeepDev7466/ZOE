@@ -60,12 +60,42 @@
 
         </FrameLayout>
 
+
+
+
         <LinearLayout
             android:layout_width="match_parent"
             android:layout_height="match_parent"
             android:paddingLeft="@dimen/_20sdp"
             android:paddingRight="@dimen/_20sdp"
             android:orientation="vertical">
+
+            <LinearLayout
+                android:id="@+id/upcoming_event"
+                android:layout_width="match_parent"
+                android:layout_height="@dimen/_45sdp"
+                android:orientation="horizontal"
+                android:gravity="center_vertical">
+
+                <ImageView
+                    android:layout_width="@dimen/_20sdp"
+                    android:layout_height="@dimen/_20sdp"
+                    app:srcCompat="@drawable/ic_calendar"
+                    android:layout_marginStart="@dimen/_20sdp" />
+
+                <com.ztp.app.Helper.MyTextView
+                    android:layout_width="wrap_content"
+                    android:layout_height="wrap_content"
+                    android:text="@string/upcoming_events"
+                    android:textSize="@dimen/_12ssp"
+                    android:layout_marginLeft="@dimen/_20sdp"/>
+
+            </LinearLayout>
+
+            <View
+                android:layout_width="match_parent"
+                android:layout_height="0.4dp"
+                android:background="@color/background_3"/>
 
             <LinearLayout
                 android:id="@+id/volunter"

@@ -116,12 +116,26 @@ public class EventDetailFragment extends Fragment {
         if (Utility.isNetworkAvailable(context)) {
             myProgressDialog.show(getString(R.string.please_wait));
             getEventsViewModel.getEventDetailResponseLiveData(new GetEventDetailRequest(event_id)).observe(this, getEventDetailResponse -> {
-                if (getEventDetailResponse != null && getEventDetailResponse.getResData() != null) {
-                    resData = getEventDetailResponse.getResData();
-                    setData();
-                } else {
-                    new MyToast(context).show(context.getString(R.string.err_server), Toast.LENGTH_SHORT, false);
-                }
+
+               if(getEventDetailResponse!=null)
+               {
+                   if(getEventDetailResponse.getResStatus().equalsIgnoreCase("200"))
+                   {
+                       if (getEventDetailResponse.getResData() != null) {
+                           resData = getEventDetailResponse.getResData();
+                           setData();
+                       }
+                   }
+                   else if(getEventDetailResponse.getResStatus().equalsIgnoreCase("401"))
+                   {
+                       new MyToast(context).show(context.getString(R.string.err_no_data_found), Toast.LENGTH_SHORT, false);
+                   }
+               }
+               else
+               {
+                   new MyToast(context).show(context.getString(R.string.err_server), Toast.LENGTH_SHORT, false);
+               }
+
                 myProgressDialog.dismiss();
             });
         } else {

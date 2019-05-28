@@ -232,6 +232,23 @@
             android:layout_gravity="left"
             android:layout_weight="0.2"
            />
+
+        <com.ztp.app.Helper.MyTextView
+            android:id="@+id/tv_chat"
+            android:layout_width="0dp"
+            android:layout_height="match_parent"
+            android:layout_weight="0.65"
+            android:textSize="@dimen/_13ssp"
+           android:clickable="false"/>
+        <ImageView
+            android:id="@+id/imv_chat"
+            android:layout_width="0dp"
+            android:layout_height="@dimen/_25sdp"
+            android:layout_gravity="center"
+            android:layout_weight="0.15"
+            android:src="@drawable/ic_message"
+            android:tint="@color/tab_hangout"
+            android:visibility="gone"/>
     </LinearLayout>
 
     <Space

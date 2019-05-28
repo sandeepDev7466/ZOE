@@ -34,6 +34,7 @@ public class CSOShiftListFragment extends Fragment {
     MyToast myToast;
     MyTextView noData;
     SharedPref sharedPref;
+    String startDate,endDate;
 
     @Override
     public View onCreateView(LayoutInflater inflater, ViewGroup container,
@@ -48,6 +49,8 @@ public class CSOShiftListFragment extends Fragment {
         if (getArguments() != null) {
             Bundle b = getArguments();
             event_id = b.getString("event_id");
+            startDate = getArguments().getString("event_start_date");
+            endDate = getArguments().getString("event_end_date");
         }
 
         init(v);
@@ -59,15 +62,31 @@ public class CSOShiftListFragment extends Fragment {
         lv_shift_list = v.findViewById(R.id.lv_shift_list);
         if (Utility.isNetworkAvailable(context)) {
             getShiftListViewModel.getCSOShiftLiveData(new GetCSOShiftRequest(event_id)).observe(this, getCSOShiftResponse -> {
-                if (getCSOShiftResponse != null && getCSOShiftResponse.getResData() != null) {
+                if(getCSOShiftResponse != null) {
+                    if(getCSOShiftResponse.getResStatus().equalsIgnoreCase("200")) {
+                        if (getCSOShiftResponse.getResData() != null && getCSOShiftResponse.getResData().size()>0) {
 
-                    noData.setVisibility(View.INVISIBLE);
-                    lv_shift_list.setVisibility(View.VISIBLE);
-                    CSOShiftListAdapter adapter = new CSOShiftListAdapter(context, getCSOShiftResponse.getResData(), event_id);
-                    lv_shift_list.setAdapter(adapter);
-                } else {
+                            noData.setVisibility(View.INVISIBLE);
+                            lv_shift_list.setVisibility(View.VISIBLE);
+                            CSOShiftListAdapter adapter = new CSOShiftListAdapter(context, getCSOShiftResponse.getResData(), event_id,startDate,endDate);
+                            lv_shift_list.setAdapter(adapter);
+                        } else {
+                            noData.setVisibility(View.VISIBLE);
+                            lv_shift_list.setVisibility(View.INVISIBLE);
+                        }
+                    }
+                    else if(getCSOShiftResponse.getResStatus().equalsIgnoreCase("401"))
+                    {
+                        noData.setVisibility(View.VISIBLE);
+                        lv_shift_list.setVisibility(View.INVISIBLE);
+                        myToast.show(getString(R.string.err_no_data_found), Toast.LENGTH_SHORT, false);
+                    }
+                }
+                else
+                {
                     noData.setVisibility(View.VISIBLE);
                     lv_shift_list.setVisibility(View.INVISIBLE);
+                    myToast.show(getString(R.string.err_server), Toast.LENGTH_SHORT, false);
                 }
                 myProgressDialog.dismiss();
 

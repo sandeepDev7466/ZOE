@@ -59,18 +59,14 @@ public class CsoDashboardCombinedResponse {
         @SerializedName("event_data")
         @Expose
         private List<EventData> eventData = null;
-        @SerializedName("count_down_data")
-        @Expose
-        private List<CountDownData> countDownData = null;
 
         public ResData() {
         }
 
-        public ResData(List<CalendarData> calendarData, List<EventData> eventData, List<CountDownData> countDownData) {
+        public ResData(List<CalendarData> calendarData, List<EventData> eventData) {
             super();
             this.calendarData = calendarData;
             this.eventData = eventData;
-            this.countDownData = countDownData;
         }
 
         public List<CalendarData> getCalendarData() {
@@ -89,182 +85,6 @@ public class CsoDashboardCombinedResponse {
             this.eventData = eventData;
         }
 
-        public List<CountDownData> getCountDownData() {
-            return countDownData;
-        }
-
-        public void setCountDownData(List<CountDownData> countDownData) {
-            this.countDownData = countDownData;
-        }
-
-    }
-
-    public class EventData {
-
-        @SerializedName("event_id")
-        @Expose
-        private String eventId;
-        @SerializedName("event_heading")
-        @Expose
-        private String eventHeading;
-        @SerializedName("event_status")
-        @Expose
-        private String eventStatus;
-        @SerializedName("event_add_date")
-        @Expose
-        private String eventAddDate;
-        @SerializedName("event_register_start_date")
-        @Expose
-        private String eventRegisterStartDate;
-        @SerializedName("event_register_end_date")
-        @Expose
-        private String eventRegisterEndDate;
-        @SerializedName("shift_day")
-        @Expose
-        private String shiftDay;
-        @SerializedName("shift_month")
-        @Expose
-        private String shiftMonth;
-        @SerializedName("shift_day_num")
-        @Expose
-        private String shiftDayNum;
-
-        public EventData() {
-        }
-
-        public EventData(String eventId, String eventHeading, String eventStatus, String eventAddDate, String eventRegisterStartDate, String eventRegisterEndDate, String shiftDay, String shiftMonth, String shiftDayNum) {
-            super();
-            this.eventId = eventId;
-            this.eventHeading = eventHeading;
-            this.eventStatus = eventStatus;
-            this.eventAddDate = eventAddDate;
-            this.eventRegisterStartDate = eventRegisterStartDate;
-            this.eventRegisterEndDate = eventRegisterEndDate;
-            this.shiftDay = shiftDay;
-            this.shiftMonth = shiftMonth;
-            this.shiftDayNum = shiftDayNum;
-        }
-
-        public String getEventId() {
-            return eventId;
-        }
-
-        public void setEventId(String eventId) {
-            this.eventId = eventId;
-        }
-
-        public String getEventHeading() {
-            return eventHeading;
-        }
-
-        public void setEventHeading(String eventHeading) {
-            this.eventHeading = eventHeading;
-        }
-
-        public String getEventStatus() {
-            return eventStatus;
-        }
-
-        public void setEventStatus(String eventStatus) {
-            this.eventStatus = eventStatus;
-        }
-
-        public String getEventAddDate() {
-            return eventAddDate;
-        }
-
-        public void setEventAddDate(String eventAddDate) {
-            this.eventAddDate = eventAddDate;
-        }
-
-        public String getEventRegisterStartDate() {
-            return eventRegisterStartDate;
-        }
-
-        public void setEventRegisterStartDate(String eventRegisterStartDate) {
-            this.eventRegisterStartDate = eventRegisterStartDate;
-        }
-
-        public String getEventRegisterEndDate() {
-            return eventRegisterEndDate;
-        }
-
-        public void setEventRegisterEndDate(String eventRegisterEndDate) {
-            this.eventRegisterEndDate = eventRegisterEndDate;
-        }
-
-        public String getShiftDay() {
-            return shiftDay;
-        }
-
-        public void setShiftDay(String shiftDay) {
-            this.shiftDay = shiftDay;
-        }
-
-        public String getShiftMonth() {
-            return shiftMonth;
-        }
-
-        public void setShiftMonth(String shiftMonth) {
-            this.shiftMonth = shiftMonth;
-        }
-
-        public String getShiftDayNum() {
-            return shiftDayNum;
-        }
-
-        public void setShiftDayNum(String shiftDayNum) {
-            this.shiftDayNum = shiftDayNum;
-        }
-
-    }
-
-    public class CountDownData {
-
-        @SerializedName("event_id")
-        @Expose
-        private String eventId;
-        @SerializedName("shift_date")
-        @Expose
-        private String shiftDate;
-        @SerializedName("shift_start_time")
-        @Expose
-        private String shiftStartTime;
-
-        public CountDownData() {
-        }
-
-        public CountDownData(String eventId, String shiftDate, String shiftStartTime) {
-            super();
-            this.eventId = eventId;
-            this.shiftDate = shiftDate;
-            this.shiftStartTime = shiftStartTime;
-        }
-
-        public String getEventId() {
-            return eventId;
-        }
-
-        public void setEventId(String eventId) {
-            this.eventId = eventId;
-        }
-
-        public String getShiftDate() {
-            return shiftDate;
-        }
-
-        public void setShiftDate(String shiftDate) {
-            this.shiftDate = shiftDate;
-        }
-
-        public String getShiftStartTime() {
-            return shiftStartTime;
-        }
-
-        public void setShiftStartTime(String shiftStartTime) {
-            this.shiftStartTime = shiftStartTime;
-        }
-
     }
 
     public class CalendarData {
@@ -272,6 +92,9 @@ public class CsoDashboardCombinedResponse {
         @SerializedName("event_id")
         @Expose
         private String eventId;
+        @SerializedName("shift_id")
+        @Expose
+        private String shiftId;
         @SerializedName("shift_date")
         @Expose
         private String shiftDate;
@@ -297,28 +120,13 @@ public class CsoDashboardCombinedResponse {
         @Expose
         private String eventHeading;
 
-        /**
-         * No args constructor for use in serialization
-         *
-         */
         public CalendarData() {
         }
 
-        /**
-         *
-         * @param eventHeading
-         * @param dt
-         * @param mn
-         * @param shiftDate
-         * @param shiftEndTime
-         * @param eventId
-         * @param yr
-         * @param shiftStartTime
-         * @param shiftTask
-         */
-        public CalendarData(String eventId, String shiftDate, String yr, String mn, String dt, String shiftTask, String shiftStartTime, String shiftEndTime, String eventHeading) {
+        public CalendarData(String eventId, String shiftId, String shiftDate, String yr, String mn, String dt, String shiftTask, String shiftStartTime, String shiftEndTime, String eventHeading) {
             super();
             this.eventId = eventId;
+            this.shiftId = shiftId;
             this.shiftDate = shiftDate;
             this.yr = yr;
             this.mn = mn;
@@ -335,6 +143,14 @@ public class CsoDashboardCombinedResponse {
 
         public void setEventId(String eventId) {
             this.eventId = eventId;
+        }
+
+        public String getShiftId() {
+            return shiftId;
+        }
+
+        public void setShiftId(String shiftId) {
+            this.shiftId = shiftId;
         }
 
         public String getShiftDate() {
@@ -399,6 +215,148 @@ public class CsoDashboardCombinedResponse {
 
         public void setEventHeading(String eventHeading) {
             this.eventHeading = eventHeading;
+        }
+    }
+    public class EventData {
+
+        @SerializedName("event_id")
+        @Expose
+        private String eventId;
+        @SerializedName("event_heading")
+        @Expose
+        private String eventHeading;
+        @SerializedName("event_status")
+        @Expose
+        private String eventStatus;
+        @SerializedName("event_add_date")
+        @Expose
+        private String eventAddDate;
+        @SerializedName("event_register_start_date")
+        @Expose
+        private String eventRegisterStartDate;
+        @SerializedName("event_register_end_date")
+        @Expose
+        private String eventRegisterEndDate;
+        @SerializedName("shift_id")
+        @Expose
+        private String shiftId;
+        @SerializedName("shift_task")
+        @Expose
+        private String shiftTask;
+        @SerializedName("shift_date")
+        @Expose
+        private String shiftDate;
+        @SerializedName("shift_start_time")
+        @Expose
+        private String shiftStartTime;
+        @SerializedName("shift_end_time")
+        @Expose
+        private String shiftEndTime;
+
+        public EventData() {
+        }
+
+        public EventData(String eventId, String eventHeading, String eventStatus, String eventAddDate, String eventRegisterStartDate, String eventRegisterEndDate, String shiftId, String shiftTask, String shiftDate, String shiftStartTime, String shiftEndTime) {
+            super();
+            this.eventId = eventId;
+            this.eventHeading = eventHeading;
+            this.eventStatus = eventStatus;
+            this.eventAddDate = eventAddDate;
+            this.eventRegisterStartDate = eventRegisterStartDate;
+            this.eventRegisterEndDate = eventRegisterEndDate;
+            this.shiftId = shiftId;
+            this.shiftTask = shiftTask;
+            this.shiftDate = shiftDate;
+            this.shiftStartTime = shiftStartTime;
+            this.shiftEndTime = shiftEndTime;
+        }
+
+        public String getEventId() {
+            return eventId;
+        }
+
+        public void setEventId(String eventId) {
+            this.eventId = eventId;
+        }
+
+        public String getEventHeading() {
+            return eventHeading;
+        }
+
+        public void setEventHeading(String eventHeading) {
+            this.eventHeading = eventHeading;
+        }
+
+        public String getEventStatus() {
+            return eventStatus;
+        }
+
+        public void setEventStatus(String eventStatus) {
+            this.eventStatus = eventStatus;
+        }
+
+        public String getEventAddDate() {
+            return eventAddDate;
+        }
+
+        public void setEventAddDate(String eventAddDate) {
+            this.eventAddDate = eventAddDate;
+        }
+
+        public String getEventRegisterStartDate() {
+            return eventRegisterStartDate;
+        }
+
+        public void setEventRegisterStartDate(String eventRegisterStartDate) {
+            this.eventRegisterStartDate = eventRegisterStartDate;
+        }
+
+        public String getEventRegisterEndDate() {
+            return eventRegisterEndDate;
+        }
+
+        public void setEventRegisterEndDate(String eventRegisterEndDate) {
+            this.eventRegisterEndDate = eventRegisterEndDate;
+        }
+
+        public String getShiftId() {
+            return shiftId;
+        }
+
+        public void setShiftId(String shiftId) {
+            this.shiftId = shiftId;
+        }
+
+        public String getShiftTask() {
+            return shiftTask;
+        }
+
+        public void setShiftTask(String shiftTask) {
+            this.shiftTask = shiftTask;
+        }
+
+        public String getShiftDate() {
+            return shiftDate;
+        }
+
+        public void setShiftDate(String shiftDate) {
+            this.shiftDate = shiftDate;
+        }
+
+        public String getShiftStartTime() {
+            return shiftStartTime;
+        }
+
+        public void setShiftStartTime(String shiftStartTime) {
+            this.shiftStartTime = shiftStartTime;
+        }
+
+        public String getShiftEndTime() {
+            return shiftEndTime;
+        }
+
+        public void setShiftEndTime(String shiftEndTime) {
+            this.shiftEndTime = shiftEndTime;
         }
 
     }

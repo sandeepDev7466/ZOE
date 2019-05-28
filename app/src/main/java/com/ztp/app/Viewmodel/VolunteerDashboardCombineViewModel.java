@@ -37,6 +37,7 @@ public class VolunteerDashboardCombineViewModel extends ViewModel {
             @Override
             public void onFailure(Call<VolunteerDashboardCombineResponse> call, Throwable t) {
                 t.printStackTrace();
+                t.getCause();
                 volunteerDashboardCombineResponseMutableLiveData.postValue(null);
             }
         });

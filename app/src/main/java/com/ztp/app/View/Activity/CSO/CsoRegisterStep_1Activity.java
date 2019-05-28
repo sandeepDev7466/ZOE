@@ -409,16 +409,19 @@ public class CsoRegisterStep_1Activity extends AppCompatActivity implements View
             countryModel.getCountryResponse(context).observe((LifecycleOwner) context, countryResponse -> {
 
                 if (countryResponse != null) {
-                    if (countryResponse.getResStatus().equalsIgnoreCase("200")) {
+
+
+                    if (countryResponse.getResStatus().equalsIgnoreCase("200") && countryResponse.getResData()!= null) {
                         countryListData = countryResponse.getResData();
                         for (int i = 0; i < countryListData.size(); i++) {
                             countryList.add(countryListData.get(i).getCountryName());
                         }
 
                         setCountrySpinner(countryList);
-                    } else {
-                        myToast.show(getString(R.string.something_went_wrong), Toast.LENGTH_SHORT, false);
+                    } else if(countryResponse.getResStatus().equalsIgnoreCase("401")){
+                        myToast.show(getString(R.string.err_no_country_found), Toast.LENGTH_SHORT, false);
                     }
+
                 } else {
                     myToast.show(getString(R.string.err_server), Toast.LENGTH_SHORT, false);
                 }
@@ -444,8 +447,9 @@ public class CsoRegisterStep_1Activity extends AppCompatActivity implements View
                         }
 
                         setStateSpinner(stateList);
-                    } else {
-                        myToast.show(getString(R.string.something_went_wrong), Toast.LENGTH_SHORT, false);
+                    } else if(stateResponse.getResStatus().equalsIgnoreCase("401"))
+                    {
+                        myToast.show(getString(R.string.err_no_state_found), Toast.LENGTH_SHORT, false);
                     }
                 } else {
                     myToast.show(getString(R.string.err_server), Toast.LENGTH_SHORT, false);
@@ -592,7 +596,7 @@ public class CsoRegisterStep_1Activity extends AppCompatActivity implements View
                 csoRegisterStep_1ViewModel.getCSORegisterResponse(csoRegisterRequest_1).observe((LifecycleOwner) context, registerResponse -> {
 
                     if (registerResponse != null) {
-                        if (registerResponse.getResStatus().equalsIgnoreCase("200")) {
+                        if (registerResponse.getResStatus().equalsIgnoreCase("200") && registerResponse.getResData()!=null) {
                             sharedPref.setUserId(registerResponse.getResData().getUserId());
 
                             Intent intent1 = new Intent(context, CsoRegisterStep_2Activity.class);
@@ -601,7 +605,7 @@ public class CsoRegisterStep_1Activity extends AppCompatActivity implements View
                             startActivity(intent1);
                             overridePendingTransition(R.anim.fade_in, R.anim.fade_out);
 
-                        } else {
+                        } else if(registerResponse.getResStatus().equalsIgnoreCase("401")){
                             myToast.show(registerResponse.getResMessage(), Toast.LENGTH_SHORT, false);
                         }
                     } else {

@@ -23,6 +23,7 @@ import android.support.v7.app.AppCompatActivity;
 import android.telephony.PhoneNumberFormattingTextWatcher;
 import android.text.Editable;
 import android.text.TextWatcher;
+import android.util.Log;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
@@ -44,6 +45,7 @@ import com.google.android.gms.maps.SupportMapFragment;
 import com.google.android.gms.maps.model.LatLng;
 import com.google.android.gms.maps.model.Marker;
 import com.google.android.gms.maps.model.MarkerOptions;
+import com.google.gson.Gson;
 import com.raywenderlich.android.validatetor.ValidateTor;
 import com.squareup.picasso.Picasso;
 import com.ztp.app.Data.Local.SharedPrefrence.SharedPref;
@@ -162,6 +164,7 @@ public class TabNewEventFragment extends Fragment implements OnMapReadyCallback,
     //ImageView edit;
     ImageView image;
     boolean location;
+    SupportMapFragment mapFragment;
 
     @SuppressLint("ClickableViewAccessibility")
     @Override
@@ -211,6 +214,8 @@ public class TabNewEventFragment extends Fragment implements OnMapReadyCallback,
         addEventViewModel = ViewModelProviders.of(this).get(AddEventViewModel.class);
         updateEventViewModel = ViewModelProviders.of(this).get(UpdateEventViewModel.class);
         image = v.findViewById(R.id.image);
+        mapFragment = (SupportMapFragment) getChildFragmentManager()
+                .findFragmentById(R.id.fragment_map);
 
 
         Bundle b = getArguments();
@@ -464,10 +469,6 @@ public class TabNewEventFragment extends Fragment implements OnMapReadyCallback,
         });
 
 
-        SupportMapFragment mapFragment = (SupportMapFragment) getChildFragmentManager()
-                .findFragmentById(R.id.fragment_map);
-        mapFragment.getMapAsync(this);
-
         final ScrollView mScrollView = (ScrollView) v.findViewById(R.id.sv_container);
 
         ((WorkaroundMapFragment) getChildFragmentManager().findFragmentById(R.id.fragment_map)).setListener(new WorkaroundMapFragment.OnTouchListener() {
@@ -600,11 +601,12 @@ public class TabNewEventFragment extends Fragment implements OnMapReadyCallback,
             image.setImageBitmap(bitmap);
         }
 
-        if (sharedPref.getLocation()) {
-            location = true;
-        } else {
-            location = false;
-        }
+        location = sharedPref.getLocation();
+
+
+        if (mapFragment != null)
+            mapFragment.getMapAsync(this);
+
     }
 
     public void populateData(GetEventsResponse.EventData eventData) {
@@ -741,33 +743,35 @@ public class TabNewEventFragment extends Fragment implements OnMapReadyCallback,
 
     @Override
     public void onMapReady(GoogleMap googleMap) {
+        mMap = googleMap;
         googleMap.getUiSettings().setZoomControlsEnabled(true);
         googleMap.getUiSettings().setRotateGesturesEnabled(true);
         googleMap.getUiSettings().setScrollGesturesEnabled(true);
         googleMap.getUiSettings().setTiltGesturesEnabled(true);
-        mMap = googleMap;
-        //mMap.getUiSettings().setScrollGesturesEnabled(false);
-        mMap.setOnMarkerClickListener(this);
-        mMap.setOnMarkerDragListener(this);
-        mMap.setOnMapLongClickListener(this);
-        mMap.setOnMarkerClickListener(this);
-        mMap.setOnMarkerClickListener(this);
-        mMap.setOnInfoWindowClickListener(this);
-        mMap.setMinZoomPreference(10.0f);
-        mMap.setMaxZoomPreference(50.0f);
+        googleMap.setOnMarkerClickListener(this);
+        googleMap.setOnMarkerDragListener(this);
+        googleMap.setOnMapLongClickListener(this);
+        googleMap.setOnMarkerClickListener(this);
+        googleMap.setOnMarkerClickListener(this);
+        googleMap.setOnInfoWindowClickListener(this);
+        googleMap.setMinZoomPreference(10.0f);
+        googleMap.setMaxZoomPreference(50.0f);
 
         try {
             LatLng latlong = new LatLng(latitude, longitude);
-            mMap.moveCamera(CameraUpdateFactory.newLatLng(latlong));
+            googleMap.moveCamera(CameraUpdateFactory.newLatLng(latlong));
+
             if (location) {
-                mMap.addMarker(new MarkerOptions().position(latlong).title(getString(R.string.here)).snippet(latitude + "," + longitude));
+                googleMap.addMarker(new MarkerOptions().position(latlong).title(sharedPref.getFirstName()+" "+sharedPref.getLastName()).snippet(latitude + "," + longitude));
+            } else {
+                googleMap.clear();
             }
         } catch (Exception e) {
-            System.out.print(e);
+            e.printStackTrace();
         }
 
 
-        mMap.setOnMapClickListener(new GoogleMap.OnMapClickListener() {
+        googleMap.setOnMapClickListener(new GoogleMap.OnMapClickListener() {
 
             @Override
             public void onMapClick(LatLng arg0) {
@@ -792,15 +796,20 @@ public class TabNewEventFragment extends Fragment implements OnMapReadyCallback,
             countryModel.getCountryResponse(context).observe((LifecycleOwner) context, countryResponse -> {
 
                 if (countryResponse != null) {
-                    countryListData = countryResponse.getResData();
-                    if (countryListData.size() > 0) {
-                        for (int i = 0; i < countryListData.size(); i++) {
-                            countryList.add(countryListData.get(i).getCountryName());
-                        }
+                    if(countryResponse.getResStatus().equalsIgnoreCase("200"))
+                    {
+                        countryListData = countryResponse.getResData();
+                        if (countryListData.size() > 0) {
+                            for (int i = 0; i < countryListData.size(); i++) {
+                                countryList.add(countryListData.get(i).getCountryName());
+                            }
 
-                        setCountrySpinner(countryList);
-                    } else {
-                        myToast.show(getString(R.string.something_went_wrong), Toast.LENGTH_SHORT, false);
+                            setCountrySpinner(countryList);
+                        }
+                    }
+                    else if(countryResponse.getResStatus().equalsIgnoreCase("401"))
+                    {
+                        myToast.show(getString(R.string.err_no_country_found), Toast.LENGTH_SHORT, false);
                     }
                 } else {
                     myToast.show(getString(R.string.err_server), Toast.LENGTH_SHORT, false);
@@ -831,23 +840,27 @@ public class TabNewEventFragment extends Fragment implements OnMapReadyCallback,
         if (Utility.isNetworkAvailable(context)) {
             myProgressDialog.show(getString(R.string.please_wait));
             stateModel.getStateResponse(context, new StateRequest(country_id)).observe((LifecycleOwner) context, stateResponse -> {
-                if (stateResponse != null && stateResponse.getResStatus().equalsIgnoreCase("200")) {
-                    stateListData = stateResponse.getStateList();
-                    if (stateListData.size() > 0) {
-                        for (int i = 0; i < stateListData.size(); i++) {
-                            stateList.add(stateListData.get(i).getStateName());
+
+                if (stateResponse != null) {
+                    if(stateResponse.getResStatus().equalsIgnoreCase("200"))
+                    {
+                        stateListData = stateResponse.getStateList();
+                        if (stateListData.size() > 0) {
+                            for (int i = 0; i < stateListData.size(); i++) {
+                                stateList.add(stateListData.get(i).getStateName());
+                            }
+                            setStateSpinner(stateList);
                         }
-                        setStateSpinner(stateList);
-                        myProgressDialog.dismiss();
-                    } else {
-                        myProgressDialog.dismiss();
+                    }
+                    else if(stateResponse.getResStatus().equalsIgnoreCase("401"))
+                    {
                         myToast.show(getString(R.string.err_no_state_found), Toast.LENGTH_SHORT, false);
                     }
+
                 } else {
-                    myProgressDialog.dismiss();
                     myToast.show(getString(R.string.err_server), Toast.LENGTH_SHORT, false);
                 }
-
+                myProgressDialog.dismiss();
             });
         } else {
             myToast.show(getString(R.string.no_internet_connection), Toast.LENGTH_SHORT, false);
@@ -901,28 +914,21 @@ public class TabNewEventFragment extends Fragment implements OnMapReadyCallback,
                                 }
 
                                 setTimezoneSpinner(timezoneList);
-
-                                myProgressDialog.dismiss();
-                            } else {
-                                myProgressDialog.dismiss();
-                                myToast.show(getString(R.string.err_no_timezone_found), Toast.LENGTH_SHORT, false);
                             }
-                        } else {
-                            myProgressDialog.dismiss();
-                            myToast.show(getString(R.string.something_went_wrong), Toast.LENGTH_SHORT, false);
+                        } else if(timeZoneResponse.getResStatus().equalsIgnoreCase("401")){
+                            myToast.show(getString(R.string.err_no_timezone_found), Toast.LENGTH_SHORT, false);
                         }
                     } else {
-                        myProgressDialog.dismiss();
+
                         myToast.show(getString(R.string.err_server), Toast.LENGTH_SHORT, false);
                     }
+                    myProgressDialog.dismiss();
                 }
-            });
 
+            });
 
         } else {
             myToast.show(getString(R.string.no_internet_connection), Toast.LENGTH_SHORT, false);
-            /*timezoneList.add(0, "Select Timezone");
-            setTimezoneSpinner(timezoneList);*/
         }
 
         timezoneList.add(getString(R.string.select_time_zone));
@@ -937,24 +943,26 @@ public class TabNewEventFragment extends Fragment implements OnMapReadyCallback,
             myProgressDialog.show(getString(R.string.please_wait));
             eventTypeViewModel.getEventTypeResponse(context).observe((LifecycleOwner) context, eventTypeResponse -> {
 
-                if (eventTypeResponse != null && eventTypeResponse.getResStatus().equalsIgnoreCase("200")) {
-                    eventTypeListData = eventTypeResponse.getResData();
-                    if (eventTypeListData.size() > 0) {
-                        for (int i = 0; i < eventTypeListData.size(); i++) {
-                            eventTypeList.add(eventTypeListData.get(i).getEventTypeName());
+                if (eventTypeResponse != null) {
+                    if(eventTypeResponse.getResStatus().equalsIgnoreCase("200"))
+                    {
+                        eventTypeListData = eventTypeResponse.getResData();
+                        if (eventTypeListData.size() > 0) {
+                            for (int i = 0; i < eventTypeListData.size(); i++) {
+                                eventTypeList.add(eventTypeListData.get(i).getEventTypeName());
+                            }
+                            eventTypeList.add(0, getString(R.string.select_event_type));
+                            setEventTypeSpinner(eventTypeList);
                         }
-                        eventTypeList.add(0, getString(R.string.select_event_type));
-                        setEventTypeSpinner(eventTypeList);
-                        myProgressDialog.dismiss();
-                    } else {
-                        myProgressDialog.dismiss();
+                    }
+                    else if(eventTypeResponse.getResStatus().equalsIgnoreCase("401"))
+                    {
                         myToast.show(getString(R.string.err_no_event_type_found), Toast.LENGTH_SHORT, false);
                     }
                 } else {
-                    myProgressDialog.dismiss();
                     myToast.show(getString(R.string.err_server), Toast.LENGTH_SHORT, false);
                 }
-
+                myProgressDialog.dismiss();
             });
         } else {
             myToast.show(getString(R.string.no_internet_connection), Toast.LENGTH_SHORT, false);
@@ -1034,7 +1042,7 @@ public class TabNewEventFragment extends Fragment implements OnMapReadyCallback,
                                 ((CsoDashboardActivity) context).setEventFragment();
                                 myProgressDialog.dismiss();
                             }
-                        } else {
+                        } else if(registerResponse.getResStatus().equalsIgnoreCase("401")){
                             myProgressDialog.dismiss();
                             myToast.show(getString(R.string.toast_event_added_failed), Toast.LENGTH_SHORT, false);
                         }
@@ -1074,10 +1082,13 @@ public class TabNewEventFragment extends Fragment implements OnMapReadyCallback,
             eventUpdateRequest.setEvent_image(""/*UpdateImageActivity.uploadFile != null ? UpdateImageActivity.uploadFile.getName() : */);
             eventUpdateRequest.setEvent_register_start_date(str_start_date);
             eventUpdateRequest.setEvent_register_end_date(str_end_date);
+            Log.i("REQUEST", "" + new Gson().toJson(eventUpdateRequest));
+
             if (Utility.isNetworkAvailable(context)) {
                 updateEventViewModel.getUpdateEventResponse(eventUpdateRequest).observe((LifecycleOwner) context, updateResponse -> {
 
                     if (updateResponse != null) {
+                        Log.i("RESPONSE", "" + new Gson().toJson(updateResponse));
                         if (updateResponse.getResStatus().equalsIgnoreCase("200")) {
 
                             clear();
@@ -1090,7 +1101,7 @@ public class TabNewEventFragment extends Fragment implements OnMapReadyCallback,
                                 myProgressDialog.dismiss();
                             }
 
-                        } else {
+                        } else if(updateResponse.getResStatus().equalsIgnoreCase("401")){
                             myProgressDialog.dismiss();
                             myToast.show(getString(R.string.err_event_not_updated), Toast.LENGTH_SHORT, false);
 

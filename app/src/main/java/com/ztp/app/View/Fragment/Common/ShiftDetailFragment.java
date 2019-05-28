@@ -63,7 +63,7 @@ public class ShiftDetailFragment extends Fragment {
                     if (getShiftDetailResponse != null) {
                         if (getShiftDetailResponse.getResStatus().equalsIgnoreCase("200")) {
                             setData(getShiftDetailResponse);
-                        } else {
+                        } else if(getShiftDetailResponse.getResStatus().equalsIgnoreCase("401")){
                             myToast.show(getString(R.string.err_no_data_found), Toast.LENGTH_SHORT, false);
                         }
                     } else {
@@ -103,22 +103,23 @@ public class ShiftDetailFragment extends Fragment {
     }
     private void setData(GetShiftDetailResponse getShiftDetailResponse)
     {
+        if(getShiftDetailResponse.getResData() != null) {
+            shift_task.setText(getShiftDetailResponse.getResData().getShiftTask());
+            if (getShiftDetailResponse.getResData().getShiftRank().equalsIgnoreCase("1"))
+                Picasso.with(context).load(R.drawable.rank_baby).fit().into(rankImage);
+            else if (getShiftDetailResponse.getResData().getShiftRank().equalsIgnoreCase("2"))
+                Picasso.with(context).load(R.drawable.rank_grownup).fit().into(rankImage);
+            else if (getShiftDetailResponse.getResData().getShiftRank().equalsIgnoreCase("3"))
+                Picasso.with(context).load(R.drawable.rank_knight).fit().into(rankImage);
+            else if (getShiftDetailResponse.getResData().getShiftRank().equalsIgnoreCase("4"))
+                Picasso.with(context).load(R.drawable.rank_royalty).fit().into(rankImage);
+            else if (getShiftDetailResponse.getResData().getShiftRank().equalsIgnoreCase("5"))
+                Picasso.with(context).load(R.drawable.rank_warrior).fit().into(rankImage);
 
-        shift_task.setText(getShiftDetailResponse.getResData().getShiftTask());
-        if(getShiftDetailResponse.getResData().getShiftRank().equalsIgnoreCase("1"))
-            Picasso.with(context).load(R.drawable.rank_baby).fit().into(rankImage);
-        else if(getShiftDetailResponse.getResData().getShiftRank().equalsIgnoreCase("2"))
-            Picasso.with(context).load(R.drawable.rank_grownup).fit().into(rankImage);
-        else if(getShiftDetailResponse.getResData().getShiftRank().equalsIgnoreCase("3"))
-            Picasso.with(context).load(R.drawable.rank_knight).fit().into(rankImage);
-        else if(getShiftDetailResponse.getResData().getShiftRank().equalsIgnoreCase("4"))
-            Picasso.with(context).load(R.drawable.rank_royalty).fit().into(rankImage);
-        else if(getShiftDetailResponse.getResData().getShiftRank().equalsIgnoreCase("5"))
-            Picasso.with(context).load(R.drawable.rank_warrior).fit().into(rankImage);
-
-        date.setText(getShiftDetailResponse.getResData().getShiftDate());
-        time.setText(getShiftDetailResponse.getResData().getShiftStartTime()+" - "+getShiftDetailResponse.getResData().getShiftEndTime());
-        vol_req.setText(getShiftDetailResponse.getResData().getShiftVolReq());
+            date.setText(getShiftDetailResponse.getResData().getShiftDate());
+            time.setText(getShiftDetailResponse.getResData().getShiftStartTime() + " - " + getShiftDetailResponse.getResData().getShiftEndTime());
+            vol_req.setText(getShiftDetailResponse.getResData().getShiftVolReq());
+        }
 
     }
 }

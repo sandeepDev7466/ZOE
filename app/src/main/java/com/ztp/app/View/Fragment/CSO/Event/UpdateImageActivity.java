@@ -21,6 +21,7 @@ import android.util.Base64;
 import android.view.View;
 import android.widget.Button;
 import android.widget.ImageView;
+import android.widget.LinearLayout;
 import android.widget.Toast;
 
 import com.karumi.dexter.Dexter;
@@ -74,7 +75,7 @@ public class UpdateImageActivity extends AppCompatActivity implements View.OnCli
     String imgPath;
     Button upload,cancel;
     MyProgressDialog myProgressDialog;
-
+    LinearLayout mainLayout;
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
@@ -90,10 +91,15 @@ public class UpdateImageActivity extends AppCompatActivity implements View.OnCli
         fileName = findViewById(R.id.fileName);
         file = findViewById(R.id.file);
         title = findViewById(R.id.title);
+        mainLayout = findViewById(R.id.mainLayout);
 
         browse.setOnClickListener(this);
         cancel.setOnClickListener(this);
         upload.setOnClickListener(this);
+
+        if (Build.VERSION.SDK_INT >= 23) {
+            requestCameraPermission();
+        }
 
         if (getIntent() != null) {
             type = getIntent().getStringExtra("action");
@@ -112,15 +118,6 @@ public class UpdateImageActivity extends AppCompatActivity implements View.OnCli
         }
     }
 
-    @Override
-    protected void onResume() {
-        super.onResume();
-
-        if (Build.VERSION.SDK_INT >= 23) {
-            requestCameraPermission();
-        }
-    }
-
     private void requestCameraPermission() {
         Dexter.withActivity((Activity) context)
                 .withPermission(Manifest.permission.CAMERA)
@@ -132,7 +129,9 @@ public class UpdateImageActivity extends AppCompatActivity implements View.OnCli
                     @Override
                     public void onPermissionDenied(PermissionDeniedResponse response) {
                         if (response.isPermanentlyDenied()) {
-                            myToast.show("CAMERA permission denied", Toast.LENGTH_SHORT, false);
+                            myToast.show(getString(R.string.err_camera_permission), Toast.LENGTH_SHORT, false);
+                            browse.setEnabled(false);
+                            upload.setEnabled(false);
                         }
                     }
 

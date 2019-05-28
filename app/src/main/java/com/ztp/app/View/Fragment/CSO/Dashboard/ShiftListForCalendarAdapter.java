@@ -130,6 +130,8 @@ public class ShiftListForCalendarAdapter extends BaseAdapter {
                         EventDetailFragment eventDetailFragment = new EventDetailFragment();
                         Bundle bundle = new Bundle();
                         bundle.putString("event_id", map.get("event_id"));
+                        bundle.putString("shift_id",map.get("shift_id"));
+                        bundle.putBoolean("booking", true);
                         eventDetailFragment.setArguments(bundle);
                         Utility.replaceFragment(context, eventDetailFragment, "EventDetailFragment");
                     }
@@ -264,7 +266,7 @@ public class ShiftListForCalendarAdapter extends BaseAdapter {
                         myProgressDialog.dismiss();
                         if(type.equalsIgnoreCase("MyBooking"))
                         fragment.getBooking(false);
-                    } else {
+                    } else if(changeVolunteerStatusResponse.getResStatus().equalsIgnoreCase("401")){
                         myProgressDialog.dismiss();
                         new MyToast(context).show(context.getString(R.string.toast_volunteer_failed), Toast.LENGTH_SHORT, false);
                     }

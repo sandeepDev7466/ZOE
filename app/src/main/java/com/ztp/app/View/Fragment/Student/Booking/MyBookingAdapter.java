@@ -238,7 +238,7 @@ class MyBookingAdapter extends BaseAdapter {
                                 break;
                         }
                         refreshStatus(position, map_status);
-                    } else {
+                    } else if(changeVolunteerStatusResponse.getResStatus().equalsIgnoreCase("401")){
                         new MyToast(context).show(context.getString(R.string.toast_volunteer_failed), Toast.LENGTH_SHORT, false);
                     }
                 } else {
