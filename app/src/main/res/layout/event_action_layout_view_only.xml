@@ -1,117 +1,111 @@
 <?xml version="1.0" encoding="utf-8"?>
-    <LinearLayout
-        xmlns:android="http://schemas.android.com/apk/res/android"
-        android:layout_width="match_parent"
-        android:layout_height="match_parent"
-        android:gravity="center"
-        android:orientation="vertical">
+<LinearLayout xmlns:android="http://schemas.android.com/apk/res/android"
+    android:layout_width="match_parent"
+    android:layout_height="match_parent"
+    android:gravity="center"
+    android:orientation="vertical">
 
-        <RelativeLayout
-            android:layout_width="@dimen/_300sdp"
-            android:layout_height="@dimen/_75sdp"
+    <RelativeLayout
+        android:layout_width="@dimen/_300sdp"
+        android:layout_height="@dimen/_75sdp"
+        android:background="@android:color/transparent">
 
-            android:background="@android:color/transparent">
 
+        <LinearLayout
+            android:layout_width="match_parent"
+            android:layout_height="match_parent"
+            android:layout_alignParentBottom="true"
+            android:orientation="vertical">
+
+            <com.ztp.app.Helper.MyHeadingTextView
+                android:id="@+id/tv_heading"
+                style="@style/MediumTextView"
+                android:layout_width="match_parent"
+                android:layout_height="@dimen/_35sdp"
+                android:layout_gravity="center"
+                android:background="@color/blue_light"
+                android:gravity="center"
+                android:text="@string/view_shift"
+                android:textAllCaps="true"
+                android:textColor="@color/white" />
 
             <LinearLayout
                 android:layout_width="match_parent"
-                android:layout_height="match_parent"
-                android:orientation="vertical"
-                android:layout_alignParentBottom="true">
-
-                <com.ztp.app.Helper.MyHeadingTextView
-                    android:layout_width="match_parent"
-                    android:layout_height="@dimen/_30sdp"
-                    android:text="@string/view_shift"
-                    android:layout_gravity="center"
-                    android:textSize="@dimen/_15ssp"
-                    android:background="@color/blue_light"
-                    android:textColor="@color/white"
-                    android:gravity="center"
-                    android:textAllCaps="true"
-                    android:id="@+id/tv_heading"/>
+                android:layout_height="0dp"
+                android:layout_weight="1"
+                android:orientation="horizontal"
+                android:weightSum="2.01">
 
                 <LinearLayout
-                    android:layout_width="match_parent"
-                    android:layout_height="0dp"
+                    android:id="@+id/view_event"
+                    android:layout_width="0dp"
+                    android:layout_height="match_parent"
                     android:layout_weight="1"
-                  android:weightSum="2.01"
+                    android:gravity="center"
                     android:orientation="horizontal">
 
-                    <LinearLayout
-                        android:id="@+id/view_event"
-                        android:layout_width="0dp"
-                        android:layout_height="match_parent"
-                        android:layout_weight="1"
-                        android:orientation="horizontal"
-                        android:gravity="center">
-
-                        <ImageView
-                            android:layout_width="@dimen/_15sdp"
-                            android:layout_height="@dimen/_15sdp"
-                            android:layout_gravity="center"
-                            android:src="@drawable/ic_view" />
+                    <ImageView
+                        android:layout_width="@dimen/_15sdp"
+                        android:layout_height="@dimen/_15sdp"
+                        android:layout_gravity="center"
+                        android:src="@drawable/ic_view" />
 
 
-                        <com.ztp.app.Helper.MyTextView
-                            android:layout_width="wrap_content"
-                            android:layout_height="wrap_content"
-                            android:layout_gravity="center"
-                            android:layout_marginLeft="@dimen/_10sdp"
-                            android:text="@string/event"
-                            android:textAllCaps="false"
-                            android:textColor="@color/black" />
+                    <com.ztp.app.Helper.MyTextView
+                        android:layout_width="wrap_content"
+                        android:layout_height="wrap_content"
+                        android:layout_gravity="center"
+                        android:layout_marginLeft="@dimen/_10sdp"
+                        android:text="@string/event"
+                        android:textAllCaps="false"
+                        style="@style/RegularTextView"/>
 
 
-                    </LinearLayout>
+                </LinearLayout>
 
-                    <View
-                        android:layout_width="0dp"
-                        android:layout_weight="0.01"
-                        android:layout_height="match_parent"
-                        android:background="@color/background_3"/>
+                <View
+                    android:layout_width="0dp"
+                    android:layout_height="match_parent"
+                    android:layout_weight="0.01"
+                    android:background="@color/background_3" />
 
-                    <LinearLayout
-                        android:id="@+id/view_shift"
-                        android:layout_width="0dp"
-                        android:layout_height="match_parent"
-                        android:layout_weight="1"
-                        android:gravity="center">
+                <LinearLayout
+                    android:id="@+id/view_shift"
+                    android:layout_width="0dp"
+                    android:layout_height="match_parent"
+                    android:layout_weight="1"
+                    android:gravity="center">
 
-                        <ImageView
-                            android:layout_width="@dimen/_15sdp"
-                            android:layout_height="@dimen/_15sdp"
-                            android:src="@drawable/ic_view"
-                            />
-
-
-                        <com.ztp.app.Helper.MyTextView
-                            android:layout_width="wrap_content"
-                            android:layout_height="wrap_content"
-                            android:text="@string/shift"
-                            android:textColor="@color/black"
-                            android:layout_marginStart="@dimen/_10sdp"
-                            android:id="@+id/tv_title"/>
+                    <ImageView
+                        android:layout_width="@dimen/_15sdp"
+                        android:layout_height="@dimen/_15sdp"
+                        android:src="@drawable/ic_view" />
 
 
+                    <com.ztp.app.Helper.MyTextView
+                        android:layout_width="wrap_content"
+                        android:layout_height="wrap_content"
+                        android:layout_marginStart="@dimen/_10sdp"
+                        android:text="@string/shift"
+                        style="@style/RegularTextView"/>
 
-                    </LinearLayout>
 
                 </LinearLayout>
 
             </LinearLayout>
 
-           <!-- <ImageView
-                android:id="@+id/img_close"
-                android:layout_width="@dimen/_15sdp"
-                android:layout_height="@dimen/_15sdp"
-                android:src="@drawable/cancel"
-                android:layout_alignParentEnd="true"
-                android:layout_marginEnd="@dimen/_20sdp"
-                />
+        </LinearLayout>
+
+        <!-- <ImageView
+             android:id="@+id/img_close"
+             android:layout_width="@dimen/_15sdp"
+             android:layout_height="@dimen/_15sdp"
+             android:src="@drawable/cancel"
+             android:layout_alignParentEnd="true"
+             android:layout_marginEnd="@dimen/_20sdp"
+             />
 -->
-        </RelativeLayout>
+    </RelativeLayout>
 
 
-
-    </LinearLayout>
+</LinearLayout>

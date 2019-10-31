@@ -66,11 +66,8 @@ public class TimeZoneResponse {
     @Entity(tableName = "timezone")
     public static class Timezone {
 
-        @PrimaryKey(autoGenerate = true)
+        @PrimaryKey
         @NonNull
-        @ColumnInfo(name = "id")
-        private int id;
-
         @SerializedName("timezone_id")
         @Expose
         @ColumnInfo(name = "timezone_id")
@@ -92,25 +89,11 @@ public class TimeZoneResponse {
         @ColumnInfo(name = "timezone_hours")
         private String timezone_hours;
 
-
-//        public Timezone() {
-//        }
-
-        public Timezone(int id, String timezoneId, String timezoneCode, String timezoneName, String timezone_hours) {
-            this.id = id;
+        public Timezone(String timezoneId, String timezoneCode, String timezoneName, String timezone_hours) {
             this.timezoneId = timezoneId;
             this.timezoneCode = timezoneCode;
             this.timezoneName = timezoneName;
             this.timezone_hours = timezone_hours;
-        }
-
-
-        public int getId() {
-            return id;
-        }
-
-        public void setId(int id) {
-            this.id = id;
         }
 
         public String getTimezoneId() {

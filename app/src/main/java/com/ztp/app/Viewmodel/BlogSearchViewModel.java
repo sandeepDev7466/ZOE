@@ -33,8 +33,14 @@ public class BlogSearchViewModel extends ViewModel {
         call.enqueue(new Callback<BlogSearchResponse>() {
             @Override
             public void onResponse(Call<BlogSearchResponse> call, Response<BlogSearchResponse> response) {
-                if (response.body() != null) {
-                    blogSearchResponseMutableLiveData.postValue(response.body());
+                if(response.isSuccessful()) {
+                    if (response.body() != null) {
+                        blogSearchResponseMutableLiveData.postValue(response.body());
+                    }
+                }
+                else
+                {
+                    blogSearchResponseMutableLiveData.postValue(null);
                 }
             }
 

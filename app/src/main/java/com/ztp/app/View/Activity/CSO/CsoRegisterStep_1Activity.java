@@ -25,10 +25,13 @@ import android.widget.Spinner;
 import android.widget.Toast;
 
 import com.raywenderlich.android.validatetor.ValidateTor;
+import com.ztp.app.Data.Local.Room.Async.Get.DBGetCountry;
+import com.ztp.app.Data.Local.Room.Async.Get.DBGetState;
 import com.ztp.app.Data.Local.SharedPrefrence.SharedPref;
 import com.ztp.app.Data.Remote.Model.Request.CsoRegisterRequestStep_1;
 import com.ztp.app.Data.Remote.Model.Request.StateRequest;
 import com.ztp.app.Data.Remote.Model.Response.CountryResponse;
+import com.ztp.app.Data.Remote.Model.Response.GetProfileResponse;
 import com.ztp.app.Data.Remote.Model.Response.StateResponse;
 import com.ztp.app.Helper.MyButton;
 import com.ztp.app.Helper.MyProgressDialog;
@@ -73,6 +76,8 @@ public class CsoRegisterStep_1Activity extends AppCompatActivity implements View
     ImageView back;
     ScrollView scrollView;
     ValidateTor validate;
+    DBGetCountry dbGetCountry;
+    DBGetState dbGetState;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -90,6 +95,8 @@ public class CsoRegisterStep_1Activity extends AppCompatActivity implements View
         context = this;
         validate = new ValidateTor();
         myCalendar = Calendar.getInstance();
+        dbGetCountry = new DBGetCountry(context);
+        dbGetState = new DBGetState(context);
         myProgressDialog = new MyProgressDialog(context);
         countryModel = ViewModelProviders.of(this).get(CountryViewModel.class);
         stateModel = ViewModelProviders.of(this).get(StateViewModel.class);
@@ -173,9 +180,10 @@ public class CsoRegisterStep_1Activity extends AppCompatActivity implements View
         state.setOnItemSelectedListener(new AdapterView.OnItemSelectedListener() {
             @Override
             public void onItemSelected(AdapterView<?> parentView, View selectedItemView, int position, long id) {
-
-                state_id = stateListData.get(position).getStateId();
-
+                if (position > 0)
+                    state_id = stateListData.get(position-1).getStateId();
+                else
+                    state_id = "";
             }
 
             @Override
@@ -200,7 +208,7 @@ public class CsoRegisterStep_1Activity extends AppCompatActivity implements View
             public void afterTextChanged(Editable s) {
 
                 if (s != null && s.length() > 0) {
-                    if (!validate.isAlpha(s.toString())) {
+                    if (!Utility.isValidName(s.toString())) {
                         etFirstNameLayout.setError(getString(R.string.err_first_name));
                     } else {
                         etFirstNameLayout.setError(null);
@@ -226,7 +234,7 @@ public class CsoRegisterStep_1Activity extends AppCompatActivity implements View
             public void afterTextChanged(Editable s) {
 
                 if (s != null && s.length() > 0) {
-                    if (!validate.isAlpha(s.toString())) {
+                    if (!Utility.isValidName(s.toString())) {
                         etLastNameLayout.setError(getString(R.string.err_last_name));
                     } else {
                         etLastNameLayout.setError(null);
@@ -347,7 +355,7 @@ public class CsoRegisterStep_1Activity extends AppCompatActivity implements View
 
                     } else {
                         etPasswordLayout.setError(getString(R.string.err_password));
-                }
+                    }
                 } else {
                     etPasswordLayout.setError(null);
                 }
@@ -411,44 +419,52 @@ public class CsoRegisterStep_1Activity extends AppCompatActivity implements View
                 if (countryResponse != null) {
 
 
-                    if (countryResponse.getResStatus().equalsIgnoreCase("200") && countryResponse.getResData()!= null) {
+                    if (countryResponse.getResStatus().equalsIgnoreCase("200") && countryResponse.getResData() != null) {
                         countryListData = countryResponse.getResData();
                         for (int i = 0; i < countryListData.size(); i++) {
                             countryList.add(countryListData.get(i).getCountryName());
                         }
 
                         setCountrySpinner(countryList);
-                    } else if(countryResponse.getResStatus().equalsIgnoreCase("401")){
+                    } else if (countryResponse.getResStatus().equalsIgnoreCase("401")) {
                         myToast.show(getString(R.string.err_no_country_found), Toast.LENGTH_SHORT, false);
+                        myProgressDialog.dismiss();
                     }
 
                 } else {
                     myToast.show(getString(R.string.err_server), Toast.LENGTH_SHORT, false);
+                    myProgressDialog.dismiss();
                 }
-                myProgressDialog.dismiss();
+                // myProgressDialog.dismiss();
 
             });
         } else {
-            myToast.show(getString(R.string.no_internet_connection), Toast.LENGTH_SHORT, false);
-
+            countryListData = dbGetCountry.getCountryList();
+            if (countryListData.size() > 0) {
+                for (int i = 0; i < countryListData.size(); i++) {
+                    countryList.add(countryListData.get(i).getCountryName());
+                }
+                setCountrySpinner(countryList);
+            }
         }
     }
 
     private void getStateList(String country_id) {
         stateList = new ArrayList<>();
         if (Utility.isNetworkAvailable(context)) {
-            myProgressDialog.show(getString(R.string.please_wait));
+            // myProgressDialog.show(getString(R.string.please_wait));
             stateModel.getStateResponse(context, new StateRequest(country_id)).observe((LifecycleOwner) context, stateResponse -> {
                 if (stateResponse != null) {
+
                     if (stateResponse.getResStatus().equalsIgnoreCase("200")) {
                         stateListData = stateResponse.getStateList();
+                        stateList.add(0, getString(R.string.select_state));
                         for (int i = 0; i < stateListData.size(); i++) {
-                            stateList.add(stateListData.get(i).getStateName());
+                            stateList.add(i + 1, stateListData.get(i).getStateName());
                         }
 
                         setStateSpinner(stateList);
-                    } else if(stateResponse.getResStatus().equalsIgnoreCase("401"))
-                    {
+                    } else if (stateResponse.getResStatus().equalsIgnoreCase("401")) {
                         myToast.show(getString(R.string.err_no_state_found), Toast.LENGTH_SHORT, false);
                     }
                 } else {
@@ -457,7 +473,14 @@ public class CsoRegisterStep_1Activity extends AppCompatActivity implements View
                 myProgressDialog.dismiss();
             });
         } else {
-            myToast.show(getString(R.string.no_internet_connection), Toast.LENGTH_SHORT, false);
+            stateListData = dbGetState.getStateList();
+            stateList.add(0, getString(R.string.select_state));
+            if (stateListData.size() > 0) {
+                for (int i = 0; i < stateListData.size(); i++) {
+                    stateList.add(i+1,stateListData.get(i).getStateName());
+                }
+                setStateSpinner(stateList);
+            }
         }
     }
 
@@ -477,24 +500,6 @@ public class CsoRegisterStep_1Activity extends AppCompatActivity implements View
     }
 
     public void checkValidation() {
-        if (etFirstName.getText() == null || etFirstName.getText().toString().isEmpty()) {
-            myToast.show(getString(R.string.err_enter_first_name), Toast.LENGTH_SHORT, false);
-            return;
-        } else if (!etFirstName.getText().toString().isEmpty()) {
-            if (!validate.isAlpha(etFirstName.getText().toString())) {
-                myToast.show(getString(R.string.err_enter_valid_first_name), Toast.LENGTH_SHORT, false);
-                return;
-            }
-        }
-        if (etLastName.getText() == null || etLastName.getText().toString().isEmpty()) {
-            myToast.show(getString(R.string.err_enter_last_name), Toast.LENGTH_SHORT, false);
-            return;
-        } else if (!etLastName.getText().toString().isEmpty()) {
-            if (!validate.isAlpha(etLastName.getText().toString())) {
-                myToast.show(getString(R.string.err_enter_valid_last_name), Toast.LENGTH_SHORT, false);
-                return;
-            }
-        }
         if (etEmail.getText() == null || etEmail.getText().toString().isEmpty()) {
             myToast.show(getString(R.string.err_enter_email), Toast.LENGTH_SHORT, false);
             return;
@@ -504,6 +509,25 @@ public class CsoRegisterStep_1Activity extends AppCompatActivity implements View
                 return;
             }
         }
+        if (etFirstName.getText() == null || etFirstName.getText().toString().isEmpty()) {
+            myToast.show(getString(R.string.err_enter_first_name), Toast.LENGTH_SHORT, false);
+            return;
+        } else if (!etFirstName.getText().toString().isEmpty()) {
+            if (!Utility.isValidName(etFirstName.getText().toString())) {
+                myToast.show(getString(R.string.err_enter_valid_first_name), Toast.LENGTH_SHORT, false);
+                return;
+            }
+        }
+        if (etLastName.getText() == null || etLastName.getText().toString().isEmpty()) {
+            myToast.show(getString(R.string.err_enter_last_name), Toast.LENGTH_SHORT, false);
+            return;
+        } else if (!etLastName.getText().toString().isEmpty()) {
+            if (!Utility.isValidName(etLastName.getText().toString())) {
+                myToast.show(getString(R.string.err_enter_valid_last_name), Toast.LENGTH_SHORT, false);
+                return;
+            }
+        }
+
 
         if (etPhone.getText() == null || etPhone.getText().toString().isEmpty()) {
             myToast.show(getString(R.string.err_enter_phone_number), Toast.LENGTH_SHORT, false);
@@ -514,7 +538,7 @@ public class CsoRegisterStep_1Activity extends AppCompatActivity implements View
                 return;
             }
         }
-        if (country_id == null || country_id.isEmpty()) {
+       /* if (country_id == null || country_id.isEmpty()) {
             myToast.show(getString(R.string.err_select_country), Toast.LENGTH_SHORT, false);
         }
         if (state_id == null || state_id.isEmpty()) {
@@ -537,15 +561,15 @@ public class CsoRegisterStep_1Activity extends AppCompatActivity implements View
         if (etAddress.getText() == null || etAddress.getText().toString().isEmpty()) {
             myToast.show(getString(R.string.err_enter_address), Toast.LENGTH_SHORT, false);
             return;
-        }
-        if (etDob.getText() == null || etDob.getText().toString().isEmpty()) {
+        }*/
+       /* if (etDob.getText() == null || etDob.getText().toString().isEmpty()) {
             myToast.show(getString(R.string.err_enter_dob), Toast.LENGTH_SHORT, false);
             return;
-        }
-        if (gender_id == null || gender_id.isEmpty()) {
+        }*/
+        /*if (gender_id == null || gender_id.isEmpty()) {
             myToast.show(getString(R.string.err_select_gender), Toast.LENGTH_SHORT, false);
             return;
-        }
+        }*/
         if (etPassword.getText() == null || etPassword.getText().toString().isEmpty()) {
             myToast.show(getString(R.string.err_enter_password), Toast.LENGTH_SHORT, false);
             return;
@@ -572,7 +596,6 @@ public class CsoRegisterStep_1Activity extends AppCompatActivity implements View
         }
         if (etPassword.getText().toString().equalsIgnoreCase(etConfirmPassword.getText().toString())) {
 
-            myProgressDialog.show(getString(R.string.please_wait));
             sharedPref.setUserType(sharedPref.getUserType().toUpperCase());
 
             CsoRegisterRequestStep_1 csoRegisterRequest_1 = new CsoRegisterRequestStep_1();
@@ -589,15 +612,20 @@ public class CsoRegisterStep_1Activity extends AppCompatActivity implements View
             csoRegisterRequest_1.setUserZipcode(etPostalCode.getText().toString());
             csoRegisterRequest_1.setUserAddress(etAddress.getText().toString());
             csoRegisterRequest_1.setUserDob(etDob.getText().toString());
-            csoRegisterRequest_1.setUserGender(String.valueOf(gender_id.charAt(0)));
+            if (gender_id.isEmpty())
+                csoRegisterRequest_1.setUserGender("");
+            else
+                csoRegisterRequest_1.setUserGender(String.valueOf(gender_id.charAt(0)));
             csoRegisterRequest_1.setUserPass(etPassword.getText().toString());
 
             if (Utility.isNetworkAvailable(context)) {
+                myProgressDialog.show(getString(R.string.please_wait));
                 csoRegisterStep_1ViewModel.getCSORegisterResponse(csoRegisterRequest_1).observe((LifecycleOwner) context, registerResponse -> {
 
                     if (registerResponse != null) {
-                        if (registerResponse.getResStatus().equalsIgnoreCase("200") && registerResponse.getResData()!=null) {
+                        if (registerResponse.getResStatus().equalsIgnoreCase("200") && registerResponse.getResData() != null) {
                             sharedPref.setUserId(registerResponse.getResData().getUserId());
+                            sharedPref.setEmail(etEmail.getText().toString());
 
                             Intent intent1 = new Intent(context, CsoRegisterStep_2Activity.class);
                             intent1.addFlags(Intent.FLAG_ACTIVITY_NEW_TASK | Intent.FLAG_ACTIVITY_CLEAR_TASK);
@@ -605,7 +633,7 @@ public class CsoRegisterStep_1Activity extends AppCompatActivity implements View
                             startActivity(intent1);
                             overridePendingTransition(R.anim.fade_in, R.anim.fade_out);
 
-                        } else if(registerResponse.getResStatus().equalsIgnoreCase("401")){
+                        } else if (registerResponse.getResStatus().equalsIgnoreCase("401")) {
                             myToast.show(registerResponse.getResMessage(), Toast.LENGTH_SHORT, false);
                         }
                     } else {
@@ -641,7 +669,6 @@ public class CsoRegisterStep_1Activity extends AppCompatActivity implements View
                 etFirstName.setText("");
                 etLastName.setText("");
                 etEmail.setText("");
-                etPhone.setText("");
                 etPhone.setText("");
                 country.setSelection(0, true);
                 state.setSelection(0, true);
@@ -689,16 +716,16 @@ public class CsoRegisterStep_1Activity extends AppCompatActivity implements View
                     DatePickerDialog datePickerDialog = new DatePickerDialog(context, date, myCalendar
                             .get(Calendar.YEAR), myCalendar.get(Calendar.MONTH),
                             myCalendar.get(Calendar.DAY_OF_MONTH));
-                    int year = myCalendar.get(Calendar.YEAR) - 18;
-                    String string_date = myCalendar.get(Calendar.MONTH) + "-" + myCalendar.get(Calendar.DAY_OF_MONTH) + "-" + year;
-                    try {
-                        Date d = Constants.ff.parse(string_date);
-                        long milliseconds = d.getTime();
-                        datePickerDialog.getDatePicker().setMaxDate(milliseconds);
-                    } catch (ParseException e) {
-                        e.printStackTrace();
-                    }
-
+                    int month = myCalendar.get(Calendar.DAY_OF_MONTH) + 1;
+                    String string_date = myCalendar.get(Calendar.MONTH) + "-" + month + "-" + myCalendar.get(Calendar.YEAR);
+//                    try {
+//                        Date d = Constants.ff.parse(string_date);
+//                        long milliseconds = d.getTime();
+//                        datePickerDialog.getDatePicker().setMaxDate(milliseconds);
+//                    } catch (ParseException e) {
+//                        e.printStackTrace();
+//                    }
+                    datePickerDialog.getDatePicker().setMaxDate(System.currentTimeMillis());
                     datePickerDialog.show();
                     break;
             }

@@ -1,125 +1,143 @@
 <?xml version="1.0" encoding="utf-8"?>
 <LinearLayout xmlns:android="http://schemas.android.com/apk/res/android"
+    xmlns:app="http://schemas.android.com/apk/res-auto"
     android:layout_width="match_parent"
     android:layout_height="match_parent"
-    xmlns:app="http://schemas.android.com/apk/res-auto"
     android:orientation="vertical"
     android:padding="@dimen/_10sdp">
 
-    <LinearLayout
+    <ScrollView
         android:layout_width="match_parent"
-        android:layout_height="0dp"
-        android:layout_weight=".5"
-        android:gravity="center"
-        android:orientation="vertical">
+        android:layout_height="match_parent"
+        android:fillViewport="true"
+        android:scrollbars="none">
 
-        <RelativeLayout
-            android:layout_width="@dimen/_80sdp"
-            android:layout_height="@dimen/_80sdp">
-
-            <com.ztp.app.Helper.CircleProgressBar
-                android:layout_width="match_parent"
-                android:layout_height="match_parent"
-                app:progress="87"
-                app:progressBarThickness="@dimen/_5sdp"
-                app:progressbarColor="@color/dark_green" />
+        <LinearLayout
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:orientation="vertical"
+            android:weightSum="1">
 
             <LinearLayout
-                android:layout_width="@dimen/_50sdp"
-                android:layout_height="@dimen/_50sdp"
-                android:layout_centerInParent="true"
-                android:orientation="vertical"
-                android:gravity="center">
+                android:id="@+id/gpaLayout"
+                android:layout_width="match_parent"
+                android:layout_height="0dp"
+                android:layout_weight=".5"
+                android:gravity="center"
+                android:orientation="vertical">
+
+                <RelativeLayout
+                    android:layout_width="@dimen/_100sdp"
+                    android:layout_height="@dimen/_100sdp">
+
+                    <com.ztp.app.Helper.CircleProgressBar
+                        android:layout_width="match_parent"
+                        android:layout_height="match_parent"
+                        app:progress="0"
+                        app:progressBarThickness="@dimen/_10sdp"
+                        app:progressbarColor="@color/colorGold" />
+
+                    <LinearLayout
+                        android:layout_width="@dimen/_50sdp"
+                        android:layout_height="@dimen/_50sdp"
+                        android:layout_centerInParent="true"
+                        android:gravity="center"
+                        android:orientation="vertical">
+
+                        <com.ztp.app.Helper.MyTextView
+                            android:layout_width="wrap_content"
+                            android:layout_height="wrap_content"
+                            android:text="@string/gpa"
+                            android:textColor="@color/colorGold"
+                            style="@style/RegularTextView" />
+
+                        <com.ztp.app.Helper.MyTextView
+                            android:id="@+id/tv_gpa"
+                            android:layout_width="wrap_content"
+                            android:layout_height="wrap_content"
+                            android:text="0%"
+                            android:textColor="@color/colorGold"
+                            style="@style/RegularTextView" />
+
+
+                    </LinearLayout>
+
+
+                </RelativeLayout>
 
                 <com.ztp.app.Helper.MyTextView
+                    android:id="@+id/tv_gpaTarget"
                     android:layout_width="wrap_content"
                     android:layout_height="wrap_content"
-                    android:text="@string/gpa"
-                    android:textColor="@color/dark_green"
-                    android:textSize="@dimen/_12ssp"/>
-
-                <com.ztp.app.Helper.MyTextView
-                    android:layout_width="wrap_content"
-                    android:layout_height="wrap_content"
-                    android:text="87%"
-                    android:textColor="@color/dark_green"
-                    android:textSize="@dimen/_12ssp"/>
-
+                    android:layout_marginTop="@dimen/_10sdp"
+                    style="@style/RegularTextView" />
 
             </LinearLayout>
 
-
-        </RelativeLayout>
-
-        <com.ztp.app.Helper.MyTextView
-            android:layout_width="wrap_content"
-            android:layout_height="wrap_content"
-            android:textSize="@dimen/_10ssp"
-            android:layout_marginTop="@dimen/_10sdp"
-            android:text="GPA Current 3.4 | Target 3.7"/>
-
-    </LinearLayout>
-
-    <View
-        android:layout_width="match_parent"
-        android:layout_height="0.4dp"
-        android:background="@color/background_3"
-        android:layout_marginStart="@dimen/_20sdp"
-        android:layout_marginEnd="@dimen/_20sdp"/>
-
-    <LinearLayout
-        android:layout_width="match_parent"
-        android:layout_height="0dp"
-        android:layout_weight=".5"
-        android:gravity="center"
-        android:orientation="vertical">
-
-        <RelativeLayout
-            android:layout_width="@dimen/_80sdp"
-            android:layout_height="@dimen/_80sdp">
-
-            <com.ztp.app.Helper.CircleProgressBar
+            <View
                 android:layout_width="match_parent"
-                android:layout_height="match_parent"
-                app:progress="65"
-                app:progressBarThickness="@dimen/_5sdp"
-                app:progressbarColor="@color/dark_green" />
+                android:layout_height="0.4dp"
+                android:layout_marginStart="@dimen/_20sdp"
+                android:layout_marginEnd="@dimen/_20sdp"
+                android:layout_margin="@dimen/_10sdp"
+                android:background="@color/background_3" />
 
             <LinearLayout
-                android:layout_width="@dimen/_50sdp"
-                android:layout_height="@dimen/_50sdp"
-                android:layout_centerInParent="true"
-                android:orientation="vertical"
-                android:gravity="center">
+                android:layout_width="match_parent"
+                android:layout_height="0dp"
+                android:layout_weight=".5"
+                android:gravity="center"
+                android:orientation="vertical">
+
+                <RelativeLayout
+                    android:layout_width="@dimen/_100sdp"
+                    android:layout_height="@dimen/_100sdp">
+
+                    <com.ztp.app.Helper.CircleProgressBar
+                        android:id="@+id/hrs_progress"
+                        android:layout_width="match_parent"
+                        android:layout_height="match_parent"
+                        app:progress="0"
+                        app:progressBarThickness="@dimen/_10sdp"
+                        app:progressbarColor="@color/colorRed" />
+
+                    <LinearLayout
+                        android:layout_width="@dimen/_50sdp"
+                        android:layout_height="@dimen/_50sdp"
+                        android:layout_centerInParent="true"
+                        android:gravity="center"
+                        android:orientation="vertical">
+
+                        <com.ztp.app.Helper.MyTextView
+                            android:layout_width="wrap_content"
+                            android:layout_height="wrap_content"
+                            android:text="@string/hrs"
+                            android:textColor="@color/colorRed"
+                            style="@style/RegularTextView"/>
+
+                        <com.ztp.app.Helper.MyTextView
+                            android:id="@+id/tv_hrs"
+                            android:layout_width="wrap_content"
+                            android:layout_height="wrap_content"
+                            android:text="0%"
+                            android:textColor="@color/colorRed"
+                            style="@style/RegularTextView" />
+
+
+                    </LinearLayout>
+
+
+                </RelativeLayout>
 
                 <com.ztp.app.Helper.MyTextView
+                    android:id="@+id/tv_csoHrs"
                     android:layout_width="wrap_content"
                     android:layout_height="wrap_content"
-                    android:text="@string/hrs"
-                    android:textColor="@color/dark_green"
-                    android:textSize="@dimen/_12ssp"/>
-
-                <com.ztp.app.Helper.MyTextView
-                    android:layout_width="wrap_content"
-                    android:layout_height="wrap_content"
-                    android:text="65%"
-                    android:textColor="@color/dark_green"
-                    android:textSize="@dimen/_12ssp"/>
-
+                    android:layout_marginTop="@dimen/_10sdp"
+                    style="@style/RegularTextView" />
 
             </LinearLayout>
-
-
-        </RelativeLayout>
-
-        <com.ztp.app.Helper.MyTextView
-            android:layout_width="wrap_content"
-            android:layout_height="wrap_content"
-            android:textSize="@dimen/_10ssp"
-            android:layout_marginTop="@dimen/_10sdp"
-            android:text="CSO HRS Current 55 | Target 85"/>
-
-    </LinearLayout>
-
+        </LinearLayout>
+    </ScrollView>
 
 </LinearLayout>

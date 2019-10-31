@@ -1,36 +1,33 @@
-<FrameLayout
-    xmlns:android="http://schemas.android.com/apk/res/android"
-    xmlns:tools="http://schemas.android.com/tools"
+<FrameLayout xmlns:android="http://schemas.android.com/apk/res/android"
     android:layout_width="match_parent"
-    android:layout_height="match_parent"
-    tools:context="com.ztp.app.View.Fragment.CSO.Event.ShiftListFragment">
-
-    <com.ztp.app.Helper.MyTextView
-        android:layout_width="wrap_content"
-        android:layout_height="wrap_content"
-        android:layout_gravity="center_horizontal"
-        android:text="@string/shifts"
-        android:layout_marginTop="@dimen/_10sdp"
-        android:textSize="@dimen/_15ssp"/>
+    android:layout_height="match_parent">
 
     <ListView
         android:id="@+id/lv_shift_list"
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
-        android:layout_marginTop="@dimen/_30sdp"
         android:layout_marginStart="@dimen/_20sdp"
+        android:layout_marginTop="@dimen/_30sdp"
         android:layout_marginEnd="@dimen/_20sdp"
+        android:overScrollMode="never"
         android:scrollbars="none"
-        android:visibility="invisible"
-        android:overScrollMode="never"/>
+        android:visibility="invisible" />
+
+    <com.ztp.app.Helper.MyTextView
+        style="@style/MediumTextView"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:layout_gravity="center_horizontal"
+        android:layout_marginTop="@dimen/_10sdp"
+        android:text="@string/shifts" />
 
     <com.ztp.app.Helper.MyTextView
         android:id="@+id/noData"
+        style="@style/RegularTextView"
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
-        android:text="@string/err_no_data_found"
-        android:textSize="@dimen/_10ssp"
         android:layout_gravity="center"
-        android:visibility="invisible"/>
+        android:text="@string/err_no_data_found"
+        android:visibility="invisible" />
 
 </FrameLayout>

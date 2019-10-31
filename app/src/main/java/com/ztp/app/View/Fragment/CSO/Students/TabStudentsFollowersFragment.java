@@ -8,15 +8,20 @@ import android.os.Bundle;
 import android.support.annotation.Nullable;
 import android.support.v4.app.Fragment;
 import android.support.v4.app.FragmentActivity;
+import android.text.Editable;
+import android.text.TextWatcher;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
+import android.view.inputmethod.InputMethodManager;
 import android.widget.ListView;
 import android.widget.Toast;
 
+import com.ztp.app.Data.Local.Room.Async.Get.DBGetAllFollower;
 import com.ztp.app.Data.Local.SharedPrefrence.SharedPref;
 import com.ztp.app.Data.Remote.Model.Request.CsoMyVolunteerRequest;
-import com.ztp.app.Data.Remote.Model.Response.CsoMyVolunteerResponse;
+import com.ztp.app.Data.Remote.Model.Response.CsoMyFollowerResponse;
+import com.ztp.app.Helper.MyEditText;
 import com.ztp.app.Helper.MyProgressDialog;
 import com.ztp.app.Helper.MyTextView;
 import com.ztp.app.Helper.MyToast;
@@ -26,7 +31,6 @@ import com.ztp.app.Viewmodel.CsoMyVolunteerViewModel;
 
 import java.util.ArrayList;
 import java.util.List;
-import java.util.Map;
 
 public class TabStudentsFollowersFragment extends Fragment {
 
@@ -37,10 +41,16 @@ public class TabStudentsFollowersFragment extends Fragment {
     MyProgressDialog myProgressDialog;
     MyToast myToast;
     SharedPref sharedPref;
+    DBGetAllFollower dbGetAllFollower;
+    MyEditText searchView;
+    InputMethodManager im;
+    List<CsoMyFollowerResponse.SeeFollower> seeFollowerList = new ArrayList<>();
+    List<CsoMyFollowerResponse.SeeFollower> seeFollowerListSeached = new ArrayList<>();
+
     @Override
     public View onCreateView(LayoutInflater inflater, ViewGroup container,
                              Bundle savedInstanceState) {
-
+        dbGetAllFollower = new DBGetAllFollower(context);
         View view = inflater.inflate(R.layout.fragment_student, container, false);
         listView = view.findViewById(R.id.lv_student);
         noData = view.findViewById(R.id.noData);
@@ -48,24 +58,26 @@ public class TabStudentsFollowersFragment extends Fragment {
         myProgressDialog = new MyProgressDialog(context);
         myToast = new MyToast(context);
         sharedPref = SharedPref.getInstance(context);
+        searchView = view.findViewById(R.id.searchView);
+
 
         if(Utility.isNetworkAvailable(context))
         {
             myProgressDialog.show(getString(R.string.please_wait));
-            csoMyVolunteerViewModel.getCsoMyVolunteerResponse(new CsoMyVolunteerRequest(sharedPref.getUserId())).observe((LifecycleOwner) context, new Observer<CsoMyVolunteerResponse>() {
+            csoMyVolunteerViewModel.getCsoMyVolunteerResponse(context,new CsoMyVolunteerRequest(sharedPref.getUserId())).observe((LifecycleOwner) context, new Observer<CsoMyFollowerResponse>() {
                 @Override
-                public void onChanged(@Nullable CsoMyVolunteerResponse csoMyVolunteerResponse) {
+                public void onChanged(@Nullable CsoMyFollowerResponse csoMyFollowerResponse) {
 
-                    if(csoMyVolunteerResponse!=null)
+                    if(csoMyFollowerResponse !=null)
                     {
-                        if(csoMyVolunteerResponse.getResStatus().equalsIgnoreCase("200"))
+                        if(csoMyFollowerResponse.getResStatus().equalsIgnoreCase("200"))
                         {
-                            if(csoMyVolunteerResponse.getResData()!=null && csoMyVolunteerResponse.getResData().size()>0)
+                            if(csoMyFollowerResponse.getResData()!=null && csoMyFollowerResponse.getResData().size()>0)
                             {
                                 listView.setVisibility(View.VISIBLE);
                                 noData.setVisibility(View.INVISIBLE);
-
-                                FollowerAdapter adapter = new FollowerAdapter(context,csoMyVolunteerResponse.getResData());
+                                seeFollowerList = csoMyFollowerResponse.getResData();
+                                FollowerAdapter adapter = new FollowerAdapter(context, seeFollowerList);
                                 listView.setAdapter(adapter);
                             }
                             else
@@ -74,11 +86,11 @@ public class TabStudentsFollowersFragment extends Fragment {
                                 noData.setVisibility(View.VISIBLE);
                             }
                         }
-                        else if(csoMyVolunteerResponse.getResStatus().equalsIgnoreCase("401"))
+                        else if(csoMyFollowerResponse.getResStatus().equalsIgnoreCase("401"))
                         {
                             listView.setVisibility(View.INVISIBLE);
                             noData.setVisibility(View.VISIBLE);
-                            myToast.show(getString(R.string.something_went_wrong), Toast.LENGTH_SHORT,false);
+//                            myToast.show(getString(R.string.something_went_wrong), Toast.LENGTH_SHORT,false);
                         }
                     }
                     else
@@ -93,10 +105,133 @@ public class TabStudentsFollowersFragment extends Fragment {
         }
         else
         {
-            listView.setVisibility(View.INVISIBLE);
-            noData.setVisibility(View.VISIBLE);
-            myToast.show(getString(R.string.no_internet_connection), Toast.LENGTH_SHORT,false);
+
+           //myToast.show(getString(R.string.no_internet_connection), Toast.LENGTH_SHORT,false);
+
+
+            if(dbGetAllFollower!=null && dbGetAllFollower.getFollowerList().size()>0)
+            {
+                listView.setVisibility(View.VISIBLE);
+                noData.setVisibility(View.INVISIBLE);
+
+                FollowerAdapter adapter = new FollowerAdapter(context, dbGetAllFollower.getFollowerList());
+                listView.setAdapter(adapter);
+            }
+            else
+            {
+                listView.setVisibility(View.INVISIBLE);
+                noData.setVisibility(View.VISIBLE);
+            }
         }
+
+
+        im = (InputMethodManager) context.getSystemService(Context.INPUT_METHOD_SERVICE);
+
+
+        searchView.addTextChangedListener(new TextWatcher() {
+            @Override
+            public void beforeTextChanged(CharSequence s, int start, int count, int after) {
+
+            }
+
+            @Override
+            public void onTextChanged(CharSequence s, int start, int before, int count) {
+
+            }
+
+            @Override
+            public void afterTextChanged(Editable s) {
+
+                seeFollowerListSeached = new ArrayList<>();
+
+                if(s!=null && s.length()>0)
+                {
+                    for(int i=0;i<seeFollowerList.size();i++)
+                    {
+                        if(seeFollowerList.get(i).getUserFName().toLowerCase().contains(s.toString().toLowerCase()))
+                        {
+                            seeFollowerListSeached.add(seeFollowerList.get(i));
+                        }
+                    }
+                    if(seeFollowerListSeached != null && seeFollowerListSeached.size()>0) {
+
+                        listView.setVisibility(View.VISIBLE);
+                        noData.setVisibility(View.INVISIBLE);
+                        FollowerAdapter adapter = new FollowerAdapter(context, seeFollowerListSeached);
+                        listView.setAdapter(adapter);
+
+                    }
+                    else
+                    {
+                        listView.setVisibility(View.INVISIBLE);
+                        noData.setVisibility(View.VISIBLE);
+                    }
+                }
+                else
+                {
+
+                    listView.setVisibility(View.VISIBLE);
+                    noData.setVisibility(View.INVISIBLE);
+                    FollowerAdapter adapter = new FollowerAdapter(context, seeFollowerList);
+                    listView.setAdapter(adapter);
+
+                }
+            }
+        });
+
+
+
+       /* searchView.setOnQueryTextListener(new SearchView.OnQueryTextListener() {
+            @Override
+            public boolean onQueryTextSubmit(String query) {
+                im.hideSoftInputFromWindow(searchView.getWindowToken(), 0);
+                seeFollowerListSeached = new ArrayList<>();
+                if(Utility.isNetworkAvailable(context))
+                {
+                    for(int i=0;i<seeFollowerList.size();i++)
+                    {
+                        if(seeFollowerList.get(i).getUserFName().toLowerCase().startsWith(query.toLowerCase()) || seeFollowerList.get(i).getUserLName().toLowerCase().startsWith(query.toLowerCase()))
+                        {
+                            seeFollowerListSeached.add(seeFollowerList.get(i));
+                        }
+                    }
+
+                    listView.setVisibility(View.VISIBLE);
+                    noData.setVisibility(View.INVISIBLE);
+                    FollowerAdapter adapter = new FollowerAdapter(context, seeFollowerListSeached);
+                    listView.setAdapter(adapter);
+
+                }
+                else
+                {
+                    for(int i=0;i<dbGetAllFollower.getFollowerList().size();i++)
+                    {
+                        if(dbGetAllFollower.getFollowerList().get(i).getUserFName().toLowerCase().startsWith(query.toLowerCase()) || dbGetAllFollower.getFollowerList().get(i).getUserLName().toLowerCase().startsWith(query.toLowerCase()))
+                        {
+                            seeFollowerListSeached.add(dbGetAllFollower.getFollowerList().get(i));
+                        }
+                    }
+                    listView.setVisibility(View.VISIBLE);
+                    noData.setVisibility(View.INVISIBLE);
+
+                    FollowerAdapter adapter = new FollowerAdapter(context, seeFollowerListSeached);
+                    listView.setAdapter(adapter);
+                }
+                return true;
+            }
+
+            @Override
+            public boolean onQueryTextChange(String newText) {
+                if(newText.isEmpty()) {
+                    listView.setVisibility(View.VISIBLE);
+                    noData.setVisibility(View.INVISIBLE);
+
+                    FollowerAdapter adapter = new FollowerAdapter(context, dbGetAllFollower.getFollowerList());
+                    listView.setAdapter(adapter);
+                }
+                return true;
+            }
+        });*/
 
         return view;
     }

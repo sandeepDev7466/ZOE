@@ -1,5 +1,10 @@
 package com.ztp.app.Data.Remote.Model.Response;
 
+import android.arch.persistence.room.ColumnInfo;
+import android.arch.persistence.room.Entity;
+import android.arch.persistence.room.PrimaryKey;
+import android.support.annotation.NonNull;
+
 import com.google.gson.annotations.Expose;
 import com.google.gson.annotations.SerializedName;
 
@@ -17,8 +22,6 @@ public class SchoolResponse {
     @Expose
     private List<School> schoolData = null;
 
-    public SchoolResponse() {
-    }
 
     public SchoolResponse(String apiResKey, String resStatus, List<School> schoolData) {
         super();
@@ -51,20 +54,27 @@ public class SchoolResponse {
         this.schoolData = schoolData;
     }
 
-    public class School {
+    @Entity(tableName = "school")
+    public static class School {
 
+        @PrimaryKey
+        @NonNull
         @SerializedName("school_id")
         @Expose
+        @ColumnInfo(name = "school_id")
         private String schoolId;
+
         @SerializedName("school_name")
         @Expose
+        @ColumnInfo(name = "school_name")
         private String schoolName;
 
-        public School() {
-        }
+        @SerializedName("user_id")
+        @Expose
+        @ColumnInfo(name = "user_id")
+        private String userId;
 
         public School(String schoolId, String schoolName) {
-            super();
             this.schoolId = schoolId;
             this.schoolName = schoolName;
         }
@@ -85,5 +95,17 @@ public class SchoolResponse {
             this.schoolName = schoolName;
         }
 
+        @Override
+        public String toString() {
+            return schoolName;
+        }
+
+        public String getUserId() {
+            return userId;
+        }
+
+        public void setUserId(String userId) {
+            this.userId = userId;
+        }
     }
 }

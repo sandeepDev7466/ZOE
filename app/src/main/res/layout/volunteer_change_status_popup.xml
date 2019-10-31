@@ -3,59 +3,96 @@
     android:layout_width="match_parent"
     android:layout_height="wrap_content"
     android:gravity="center"
-    android:orientation="vertical">
+    android:orientation="vertical"
+    android:minWidth="@dimen/_300sdp">
+
     <com.ztp.app.Helper.MyHeadingTextView
+        style="@style/MediumTextView"
         android:layout_width="match_parent"
         android:layout_height="@dimen/_50sdp"
-        android:text="@string/change_status"
         android:layout_gravity="center"
-        android:textSize="@dimen/_15ssp"
         android:background="@color/blue_light"
-        android:textColor="@color/white"
         android:gravity="center"
-        android:textAllCaps="true"/>
+        android:text="Current status"
+        android:textAllCaps="true"
+        android:textColor="@color/white" />
+
+    <!--<com.ztp.app.Helper.MyHeadingTextView
+        android:layout_width="match_parent"
+        android:layout_height="@dimen/_20sdp"
+        android:text="Current status"
+        android:textAllCaps="true"
+        android:textColor="@color/background_3"
+        style="@style/RegularTextView"
+        android:gravity="center"
+        />-->
+
     <LinearLayout
         android:layout_width="match_parent"
         android:layout_height="@dimen/_40sdp"
         android:orientation="horizontal"
-        android:weightSum="2">
-
-        <com.ztp.app.Helper.MyTextView
-            android:layout_width="0dp"
-            android:layout_height="match_parent"
-
-            android:gravity="center|right"
-            android:layout_weight="1"
-            android:text="@string/current_status"
-            android:textColor="@color/blue_light"
-            android:textSize="@dimen/_13ssp" />
+        android:weightSum="3"
+        android:layout_margin="@dimen/_10sdp">
 
         <ImageView
             android:id="@+id/imv_status"
             android:layout_width="0dp"
-            android:layout_height="@dimen/_25sdp"
-         android:src="@drawable/not_available"
-            android:layout_weight="0.5"
-            android:layout_gravity="center"/>
+            android:layout_height="@dimen/_30sdp"
+            android:layout_gravity="center"
+            android:layout_weight="1"
+            android:src="@drawable/not_available" />
 
+        <!--<com.ztp.app.Helper.MyTextView
+            style="@style/RegularTextView"
+            android:layout_width="0dp"
+            android:layout_height="match_parent"
+            android:layout_weight="1.5"
+            android:gravity="center_vertical"
+            android:text="@string/current_status"
+            android:textColor="@color/blue_light" />-->
+
+        <com.ztp.app.Helper.MyTextView
+            android:id="@+id/status_txt"
+            android:layout_width="0dp"
+            android:layout_height="match_parent"
+            android:layout_weight="1"
+            android:gravity="center_vertical"
+            android:text="@string/status_withdraw"
+            style="@style/RegularTextView"/>
 
         <ImageView
             android:id="@+id/imv_chat"
             android:layout_width="0dp"
-            android:layout_height="@dimen/_25sdp"
-            android:layout_gravity="center"
-            android:layout_weight="0.5"
+            android:layout_height="@dimen/_20sdp"
+            android:layout_gravity="center|end"
+            android:layout_weight="1"
             android:src="@drawable/ic_message"
             android:tint="@color/tab_hangout"
-            android:visibility="gone"/>
+            android:visibility="gone" />
     </LinearLayout>
-    <View
-    android:layout_width="match_parent"
-    android:layout_height="0.7dp"
-    android:background="@color/background_3"
-    android:layout_marginTop="@dimen/_10sdp"
-    android:layout_marginStart="@dimen/_20sdp"
-    android:layout_marginEnd="@dimen/_20sdp"/>
+
+
+    <com.ztp.app.Helper.MyHeadingTextView
+        android:id="@+id/change_status"
+        style="@style/MediumTextView"
+        android:layout_width="match_parent"
+        android:layout_height="@dimen/_50sdp"
+        android:layout_gravity="center"
+        android:background="@color/blue_light"
+        android:gravity="center"
+        android:text="Change status to"
+        android:textAllCaps="true"
+        android:textColor="@color/white" />
+
+    <!--<com.ztp.app.Helper.MyHeadingTextView
+        android:layout_width="match_parent"
+        android:layout_height="@dimen/_20sdp"
+        android:text="Change status to"
+        android:textAllCaps="true"
+        android:textColor="@color/background_3"
+        style="@style/RegularTextView"
+        android:gravity="center"
+        />-->
 
     <LinearLayout
         android:id="@+id/volunteer_layout"
@@ -71,14 +108,15 @@
             android:layout_width="0dp"
             android:layout_height="@dimen/_30sdp"
             android:layout_weight="1"
-            android:src="@drawable/vol_request" />
+            android:src="@drawable/ic_available" />
 
         <com.ztp.app.Helper.MyTextView
             android:layout_width="0dp"
             android:layout_height="match_parent"
             android:layout_weight="2"
             android:gravity="center_vertical"
-            android:text="@string/status_volunteer" />
+            android:text="@string/status_volunteer"
+            style="@style/RegularTextView"/>
     </LinearLayout>
 
     <View
@@ -104,14 +142,15 @@
             android:layout_width="0dp"
             android:layout_height="@dimen/_30sdp"
             android:layout_weight="1"
-            android:src="@drawable/vol_pending" />
+            android:src="@drawable/ic_withdrawn_volunteer" />
 
         <com.ztp.app.Helper.MyTextView
             android:layout_width="0dp"
             android:layout_height="match_parent"
             android:layout_weight="2"
             android:gravity="center_vertical"
-            android:text="@string/status_withdraw" />
+            android:text="@string/status_withdraw"
+            style="@style/RegularTextView"/>
     </LinearLayout>
 
     <View
@@ -137,14 +176,15 @@
             android:layout_width="0dp"
             android:layout_height="@dimen/_30sdp"
             android:layout_weight="1"
-            android:src="@drawable/cso_declined" />
+            android:src="@drawable/ic_declined_cso" />
 
         <com.ztp.app.Helper.MyTextView
             android:layout_width="0dp"
             android:layout_height="match_parent"
             android:layout_weight="2"
             android:gravity="center_vertical"
-            android:text="@string/status_initiate_DM" />
+            android:text="@string/status_initiate_DM"
+            style="@style/RegularTextView"/>
     </LinearLayout>
 
     <View
@@ -170,14 +210,15 @@
             android:layout_width="0dp"
             android:layout_height="@dimen/_30sdp"
             android:layout_weight="1"
-            android:src="@drawable/vol_completed" />
+            android:src="@drawable/ic_completed_volunteer" />
 
         <com.ztp.app.Helper.MyTextView
             android:layout_width="0dp"
             android:layout_height="match_parent"
             android:layout_weight="2"
             android:gravity="center_vertical"
-            android:text="@string/status_complete" />
+            android:text="@string/status_complete"
+            style="@style/RegularTextView"/>
     </LinearLayout>
 
 </LinearLayout>

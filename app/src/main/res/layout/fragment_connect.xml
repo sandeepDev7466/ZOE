@@ -4,7 +4,16 @@
     android:layout_height="match_parent"
     xmlns:app="http://schemas.android.com/apk/res-auto"
     android:orientation="vertical">
+    <com.ztp.app.Helper.MyHeadingTextView
+        android:id="@+id/heading"
+        android:layout_width="match_parent"
+        android:layout_height="@dimen/_50sdp"
+        android:background="@color/tab_hangout"
+        android:gravity="center"
+        android:text="@string/CONNECT"
+        style="@style/MediumTextView">
 
+    </com.ztp.app.Helper.MyHeadingTextView>
     <LinearLayout
         android:layout_width="match_parent"
         android:layout_height="@dimen/_40sdp"
@@ -15,7 +24,7 @@
             android:id="@+id/typeFriend"
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
-            android:textSize="@dimen/_15ssp"/>
+            style="@style/RegularTextView"/>
 
     </LinearLayout>
 

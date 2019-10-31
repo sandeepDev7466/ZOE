@@ -31,8 +31,14 @@ public class UpdateEventViewModel extends ViewModel {
         call.enqueue(new Callback<UpdateEventResponse>() {
             @Override
             public void onResponse(Call<UpdateEventResponse> call, Response<UpdateEventResponse> response) {
-                if (response.body() != null) {
-                    eventUpdateResponseMutableLiveData.postValue(response.body());
+                if(response.isSuccessful()) {
+                    if (response.body() != null) {
+                        eventUpdateResponseMutableLiveData.postValue(response.body());
+                    }
+                }
+                else
+                {
+                    eventUpdateResponseMutableLiveData.postValue(null);
                 }
             }
 

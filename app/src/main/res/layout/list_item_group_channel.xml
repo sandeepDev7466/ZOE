@@ -1,0 +1,109 @@
+<?xml version="1.0" encoding="utf-8"?>
+<RelativeLayout
+    xmlns:android="http://schemas.android.com/apk/res/android"
+    android:layout_width="match_parent"
+    android:layout_height="@dimen/_65sdp"
+    android:paddingLeft="@dimen/_14sdp"
+    android:paddingRight="@dimen/_14sdp"
+    android:background="?attr/selectableItemBackground">
+
+    <de.hdodenhof.circleimageview.CircleImageView
+        xmlns:app="http://schemas.android.com/apk/res-auto"
+        android:id="@+id/image_group_channel_list_cover"
+        android:layout_width="@dimen/_30sdp"
+        android:layout_height="@dimen/_30sdp"
+        android:scaleType="centerCrop"
+        android:layout_centerVertical="true"
+        android:src="@drawable/user"
+        app:civ_border_width="@dimen/_1sdp"
+        app:civ_border_color="@color/chat_border"/>
+
+    <LinearLayout
+        android:id="@+id/container_group_channel_list_topic"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:layout_toRightOf="@id/image_group_channel_list_cover"
+        android:layout_alignTop="@id/image_group_channel_list_cover"
+        android:layout_marginLeft="@dimen/_16sdp"
+        android:orientation="horizontal"
+        android:gravity="center_vertical">
+
+        <com.ztp.app.Helper.MyBoldTextView
+            android:id="@+id/text_group_channel_list_topic"
+            style="@style/RegularTextView"
+            android:maxWidth="@dimen/_200sdp"
+            android:layout_height="wrap_content"
+            android:layout_width="wrap_content"
+            android:ellipsize="end"
+            android:maxLines="1"
+            android:text="" />
+
+        <com.ztp.app.Helper.MyTextView
+            android:id="@+id/text_group_channel_list_member_count"
+            android:layout_width="wrap_content"
+            android:minWidth="@dimen/_16sdp"
+            android:layout_height="wrap_content"
+            style="@style/SmallTextView"
+            android:layout_marginStart="8dp"
+            android:background="@drawable/group_channel_list_member_background"
+            android:padding="@dimen/_3sdp"
+            android:gravity="center"
+            android:maxLines="1"
+            android:textColor="@color/background_3"/>
+
+    </LinearLayout>
+
+    <LinearLayout
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:layout_below="@id/container_group_channel_list_topic"
+        android:layout_alignLeft="@id/container_group_channel_list_topic"
+        android:orientation="horizontal">
+
+
+        <include layout="@layout/layout_typing_indicator"
+            android:id="@+id/container_group_channel_list_typing_indicator"
+            android:layout_width="@dimen/_32sdp"
+            android:layout_marginTop="@dimen/_4sdp"
+            android:layout_height="@dimen/_16sdp"/>
+
+        <com.ztp.app.Helper.MyTextView
+            android:id="@+id/text_group_channel_list_message"
+            android:layout_width="@dimen/_223sdp"
+            android:layout_height="@dimen/_32sdp"
+            android:layout_marginTop="@dimen/_2sdp"
+            style="@style/RegularTextView"
+            android:textColor="@color/background_3"
+            android:ellipsize="end"
+            android:maxLines="2"
+            android:text="" />
+
+    </LinearLayout>
+
+    <com.ztp.app.Helper.MyBoldTextView
+        android:id="@+id/text_group_channel_list_date"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        style="@style/VerySmallTextView"
+        android:layout_alignParentEnd="true"
+        android:layout_alignTop="@id/container_group_channel_list_topic"
+        android:maxLines="1"
+        android:textColor="@color/background_3"/>
+
+    <com.ztp.app.Helper.MyTextView
+        android:id="@+id/text_group_channel_list_unread_count"
+        android:layout_width="@dimen/_18sdp"
+        android:layout_height="@dimen/_18sdp"
+        android:layout_alignParentEnd="true"
+        android:layout_alignParentBottom="true"
+        android:layout_marginBottom="@dimen/_8sdp"
+        android:textColor="@color/chat_background"
+        android:background="@drawable/group_channel_list_unread_background"
+        android:gravity="center"
+        android:maxLines="1"
+        android:text=""
+        style="@style/SmallTextView" />
+
+
+
+</RelativeLayout>

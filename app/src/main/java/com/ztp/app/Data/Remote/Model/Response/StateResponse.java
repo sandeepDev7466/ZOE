@@ -22,8 +22,6 @@ public class StateResponse {
     @Expose
     private List<State> stateList = null;
 
-    public StateResponse() {
-    }
 
     public StateResponse(String apiResKey, String resStatus, List<State> stateList) {
         super();
@@ -59,42 +57,27 @@ public class StateResponse {
     @Entity(tableName = "state")
     public static class State {
 
-        @PrimaryKey(autoGenerate = true)
+        @PrimaryKey
         @NonNull
-        @ColumnInfo(name = "id")
-        private int id;
-
-        @SerializedName("state_id")
         @Expose
         @ColumnInfo(name = "state_id")
+        @SerializedName("state_id")
         private String stateId;
 
-        @SerializedName("state_code")
         @Expose
         @ColumnInfo(name = "state_code")
+        @SerializedName("state_code")
         private String stateCode;
 
-        @SerializedName("state_name")
         @Expose
         @ColumnInfo(name = "state_name")
+        @SerializedName("state_name")
         private String stateName;
 
-//        public State() {
-//        }
-
-        public State(int id, String stateId, String stateCode, String stateName) {
-            this.id = id;
+        public State(String stateId, String stateCode, String stateName) {
             this.stateId = stateId;
             this.stateCode = stateCode;
             this.stateName = stateName;
-        }
-
-        public int getId() {
-            return id;
-        }
-
-        public void setId(int id) {
-            this.id = id;
         }
 
         public String getStateId() {
@@ -121,12 +104,10 @@ public class StateResponse {
             this.stateName = stateName;
         }
 
-
         @Override
         public String toString() {
             return stateName;
         }
-
 
     }
 

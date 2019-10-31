@@ -18,15 +18,19 @@ public class SearchEventRequest {
     @SerializedName("search_page_size")
     @Expose
     private String searchPageSize;
+    @SerializedName("current_date")
+    @Expose
+    private String currentDate;
 
     public SearchEventRequest() {
     }
 
-    public SearchEventRequest(String userId, String searchKeyword, String seachRowNumber, String searchPageSize) {
+    public SearchEventRequest(String userId, String searchKeyword, String seachRowNumber, String searchPageSize, String currentDate) {
         this.userId = userId;
         this.searchKeyword = searchKeyword;
         this.seachRowNumber = seachRowNumber;
         this.searchPageSize = searchPageSize;
+        this.currentDate = currentDate;
     }
 
     public String getUserId() {
@@ -59,5 +63,13 @@ public class SearchEventRequest {
 
     public void setSearchPageSize(String searchPageSize) {
         this.searchPageSize = searchPageSize;
+    }
+
+    public String getCurrentDate() {
+        return currentDate;
+    }
+
+    public void setCurrentDate(String currentDate) {
+        this.currentDate = currentDate;
     }
 }

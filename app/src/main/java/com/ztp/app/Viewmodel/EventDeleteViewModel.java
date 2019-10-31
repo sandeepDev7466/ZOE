@@ -39,9 +39,15 @@ public class EventDeleteViewModel extends ViewModel {
         call.enqueue(new Callback<DeleteEventResponse>() {
             @Override
             public void onResponse(Call<DeleteEventResponse> call, Response<DeleteEventResponse> response) {
-                if (response.body() != null) {
-                    deleteEventResponseMutableLiveData.postValue(response.body());
+                if(response.isSuccessful()) {
+                    if (response.body() != null) {
+                        deleteEventResponseMutableLiveData.postValue(response.body());
 
+                    }
+                }
+                else
+                {
+                    deleteEventResponseMutableLiveData.postValue(null);
                 }
             }
 

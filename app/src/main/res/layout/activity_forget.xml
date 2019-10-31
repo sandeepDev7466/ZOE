@@ -44,7 +44,7 @@
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
             android:text="@string/zoe_thumbprint"
-            android:textSize="@dimen/_15ssp"
+            style="@style/RegularTextView"
             android:layout_marginTop="@dimen/_5sdp"/>
 
         <com.ztp.app.Helper.MyTextView
@@ -53,7 +53,7 @@
             android:text="@string/forgot_password"
             android:background="@color/blue_light"
             android:textColor="@color/white"
-            android:textSize="@dimen/_15ssp"
+            style="@style/MediumTextView"
             android:gravity="center"
             android:layout_marginTop="@dimen/_10sdp"
             />
@@ -75,7 +75,7 @@
             <com.ztp.app.Helper.MyTextView
                 android:layout_width="match_parent"
                 android:layout_height="wrap_content"
-                android:textSize="@dimen/_12ssp"
+                style="@style/RegularTextView"
                 android:text="@string/please_enter_you_registered_email_id_to_receive_reset_password_link"
                 android:textAlignment="center"
                 />
@@ -97,7 +97,7 @@
                     android:layout_height="wrap_content"
                     android:hint="@string/email"
                     android:inputType="textEmailAddress"
-                    android:textSize="@dimen/_12ssp" />
+                    style="@style/RegularTextView" />
             </com.ztp.app.Helper.MyTextInputLayout>
 
             <Space
@@ -109,12 +109,12 @@
                 style="@style/MyButton"
                 android:layout_width="match_parent"
                 android:layout_height="@dimen/_40sdp"
-                android:paddingLeft="@dimen/_15sdp"
-                android:paddingRight="@dimen/_15sdp"
+                android:layout_marginStart="@dimen/_40sdp"
+                android:layout_marginEnd="@dimen/_40sdp"
+                android:layout_gravity="center_horizontal"
                 android:gravity="center"
                 android:textAllCaps="false"
-                android:text="@string/submit"
-                android:textSize="@dimen/_12ssp"/>
+                android:text="@string/submit" />
 
 
         </LinearLayout>

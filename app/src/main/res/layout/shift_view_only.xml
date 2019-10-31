@@ -9,7 +9,6 @@
         <RelativeLayout
             android:layout_width="@dimen/_300sdp"
             android:layout_height="@dimen/_75sdp"
-
             android:background="@android:color/transparent">
 
 
@@ -21,16 +20,15 @@
 
                 <com.ztp.app.Helper.MyHeadingTextView
                     android:layout_width="match_parent"
-                    android:layout_height="@dimen/_30sdp"
+                    android:layout_height="@dimen/_35sdp"
                     android:text="@string/shift"
                     android:layout_gravity="center"
-                    android:textSize="@dimen/_15ssp"
+                    style="@style/MediumTextView"
                     android:background="@color/blue_light"
                     android:textColor="@color/white"
                     android:gravity="center"
                     android:textAllCaps="true"
                     android:id="@+id/tv_heading"/>
-
 
 
                     <LinearLayout
@@ -51,9 +49,8 @@
                             android:layout_width="wrap_content"
                             android:layout_height="wrap_content"
                             android:text="@string/view_shift"
-                            android:textColor="@color/black"
-                            android:layout_marginStart="@dimen/_10sdp"
-                            android:id="@+id/tv_title"/>
+                            style="@style/RegularTextView"
+                            android:layout_marginStart="@dimen/_10sdp" />
 
 
 

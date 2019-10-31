@@ -32,10 +32,15 @@ public class GetCsoDashoardCombinedViewModel extends ViewModel {
         call.enqueue(new Callback<CsoDashboardCombinedResponse>() {
             @Override
             public void onResponse(Call<CsoDashboardCombinedResponse> call, Response<CsoDashboardCombinedResponse> response) {
-                if (response.body() != null) {
-                    csoDashboardCombinedResponseMutableLiveData.postValue(response.body());
+                if (response.isSuccessful()) {
+                    if (response.body() != null) {
+                        csoDashboardCombinedResponseMutableLiveData.postValue(response.body());
 
+                    }
+                } else {
+                    csoDashboardCombinedResponseMutableLiveData.postValue(null);
                 }
+
             }
 
             @Override

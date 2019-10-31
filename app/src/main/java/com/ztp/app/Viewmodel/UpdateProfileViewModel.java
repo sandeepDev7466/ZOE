@@ -31,9 +31,14 @@ public class UpdateProfileViewModel extends ViewModel {
         call.enqueue(new Callback<UpdateProfileResponse>() {
             @Override
             public void onResponse(Call<UpdateProfileResponse> call, Response<UpdateProfileResponse> response) {
-                if (response.body() != null) {
-                    updateProfileMutableLiveData.postValue(response.body());
-
+                if(response.isSuccessful()) {
+                    if (response.body() != null) {
+                        updateProfileMutableLiveData.postValue(response.body());
+                    }
+                }
+                else
+                {
+                    updateProfileMutableLiveData.postValue(null);
                 }
             }
 

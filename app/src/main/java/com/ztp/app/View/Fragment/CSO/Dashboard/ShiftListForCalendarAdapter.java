@@ -4,9 +4,7 @@ import android.app.Dialog;
 import android.arch.lifecycle.ViewModelProviders;
 import android.content.Context;
 import android.os.Bundle;
-import android.support.v4.app.Fragment;
 import android.support.v4.app.FragmentActivity;
-import android.support.v7.app.AppCompatActivity;
 import android.text.format.DateFormat;
 import android.view.LayoutInflater;
 import android.view.View;
@@ -24,9 +22,8 @@ import com.ztp.app.Helper.MyToast;
 import com.ztp.app.R;
 import com.ztp.app.Utils.Constants;
 import com.ztp.app.Utils.Utility;
-import com.ztp.app.View.Activity.Student.StudentDashboardActivity;
 import com.ztp.app.View.Fragment.Common.EventDetailFragment;
-import com.ztp.app.View.Fragment.Student.Booking.TabMyBookingFragment;
+import com.ztp.app.View.Fragment.Volunteer.Event.TabMyBookingFragment;
 import com.ztp.app.Viewmodel.ChangeVolunteerStatusViewModel;
 
 import java.util.Date;
@@ -57,19 +54,6 @@ public class ShiftListForCalendarAdapter extends BaseAdapter {
         changeVolunteerStatusViewModel = ViewModelProviders.of((FragmentActivity) context).get(ChangeVolunteerStatusViewModel.class);
     }
 
-    public ShiftListForCalendarAdapter(Context context, List<HashMap<String, String>> shiftDataList, String type, Dialog dialog,TabMyBookingFragment fragment) //type = MyBooking,Dashboard
-    {
-        this.context = context;
-        this.shiftDataList = shiftDataList;
-        this.type = type;
-        this.dialog = dialog;
-        this.fragment = fragment;
-        myProgressDialog = new MyProgressDialog(context);
-        myToast = new MyToast(context);
-        sharedPref = SharedPref.getInstance(context);
-        changeVolunteerStatusViewModel = ViewModelProviders.of((FragmentActivity) context).get(ChangeVolunteerStatusViewModel.class);
-    }
-
     @Override
     public int getCount() {
         return shiftDataList.size();
@@ -90,12 +74,13 @@ public class ShiftListForCalendarAdapter extends BaseAdapter {
         Holder holder = new Holder();
         HashMap<String, String> map = getItem(position);
         if (view == null) {
-            view = LayoutInflater.from(context).inflate(R.layout.shift_data_list_item, null);
+            view = LayoutInflater.from(context).inflate(R.layout.dashboard_cal_item, null);
             holder.date = view.findViewById(R.id.date);
             holder.shiftTask = view.findViewById(R.id.shiftTask);
             holder.month = view.findViewById(R.id.month);
             holder.day = view.findViewById(R.id.day);
             holder.shiftTime = view.findViewById(R.id.shiftTime);
+            holder.shiftTaskName = view.findViewById(R.id.shiftTaskName);
             view.setTag(holder);
         } else {
             holder = (Holder) view.getTag();
@@ -115,28 +100,28 @@ public class ShiftListForCalendarAdapter extends BaseAdapter {
 
         holder.shiftTask.setText(map.get("event_heading"));
         holder.shiftTime.setText("Time : " + map.get("shift_start_time") + " - " + map.get("shift_end_time"));
+        if(map.get("shift_task_name") != null && !map.get("shift_task_name").isEmpty())
+        holder.shiftTaskName.setText(map.get("shift_task_name"));
 
-            view.setOnClickListener(new View.OnClickListener() {
-                @Override
-                public void onClick(View v) {
+        view.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View v) {
 
-                        dialog.dismiss();
+                dialog.dismiss();
 
-                    if (type.equalsIgnoreCase("MyBooking")) {
-                        openDialog(map.get("event_id"), position);
-                    }
-                    else
-                    {
-                        EventDetailFragment eventDetailFragment = new EventDetailFragment();
-                        Bundle bundle = new Bundle();
-                        bundle.putString("event_id", map.get("event_id"));
-                        bundle.putString("shift_id",map.get("shift_id"));
-                        bundle.putBoolean("booking", true);
-                        eventDetailFragment.setArguments(bundle);
-                        Utility.replaceFragment(context, eventDetailFragment, "EventDetailFragment");
-                    }
+                if (type.equalsIgnoreCase("MyBooking")) {
+                    openDialog(map.get("event_id"), position);
+                } else {
+                    EventDetailFragment eventDetailFragment = new EventDetailFragment();
+                    Bundle bundle = new Bundle();
+                    bundle.putString("event_id", map.get("event_id"));
+                    bundle.putString("shift_id", map.get("shift_id"));
+                    bundle.putBoolean("booking", true);
+                    eventDetailFragment.setArguments(bundle);
+                    Utility.replaceFragment(context, eventDetailFragment, "EventDetailFragment");
                 }
-            });
+            }
+        });
 
         return view;
     }
@@ -153,10 +138,11 @@ public class ShiftListForCalendarAdapter extends BaseAdapter {
 
         HashMap<String, String> map = shiftDataList.get(pos);
 
-        //VolunteerAllResponse.ResData data = resDataList.get(pos);
+        //VolunteerAllResponse.Event data = resDataList.get(pos);
         view_event.setOnClickListener(vs -> {
             dialog.dismiss();
             //String id = map.get(eventDay);
+
             EventDetailFragment eventDetailFragment = new EventDetailFragment();
             Bundle bundle = new Bundle();
             bundle.putString("event_id", event_id);
@@ -264,9 +250,9 @@ public class ShiftListForCalendarAdapter extends BaseAdapter {
                         }
                         //getBooking(false);
                         myProgressDialog.dismiss();
-                        if(type.equalsIgnoreCase("MyBooking"))
-                        fragment.getBooking(false);
-                    } else if(changeVolunteerStatusResponse.getResStatus().equalsIgnoreCase("401")){
+                        if (type.equalsIgnoreCase("MyBooking"))
+                            fragment.getBooking(false);
+                    } else if (changeVolunteerStatusResponse.getResStatus().equalsIgnoreCase("401")) {
                         myProgressDialog.dismiss();
                         new MyToast(context).show(context.getString(R.string.toast_volunteer_failed), Toast.LENGTH_SHORT, false);
                     }
@@ -283,6 +269,6 @@ public class ShiftListForCalendarAdapter extends BaseAdapter {
 
     private class Holder {
         MyBoldTextView date, shiftTask;
-        MyTextView month, day, shiftTime;
+        MyTextView month, day, shiftTime,shiftTaskName;
     }
 }

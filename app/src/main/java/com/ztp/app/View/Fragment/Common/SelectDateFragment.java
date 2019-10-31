@@ -1,5 +1,6 @@
 package com.ztp.app.View.Fragment.Common;
 
+import android.annotation.SuppressLint;
 import android.app.DatePickerDialog;
 import android.app.Dialog;
 import android.os.Bundle;
@@ -9,13 +10,28 @@ import android.widget.DatePicker;
 import com.ztp.app.Utils.Constants;
 import com.ztp.app.View.Fragment.CSO.Event.TabNewEventFragment;
 
+import java.text.ParseException;
+import java.text.SimpleDateFormat;
 import java.util.Calendar;
+import java.util.Date;
+import java.util.Locale;
 
 /**
  * Created by hash on 30-04-2018.
  */
 
+@SuppressLint("ValidFragment")
 public class SelectDateFragment extends DialogFragment implements DatePickerDialog.OnDateSetListener {
+    String text, startDate;
+
+    public SelectDateFragment() {
+    }
+
+    public SelectDateFragment(String text, String startDate) {
+        this.text = text;
+        this.startDate = startDate;
+    }
+
     @Override
     public void onDateSet(DatePicker view, int year, int month, int dayOfMonth) {
         String mm = "";
@@ -50,7 +66,10 @@ public class SelectDateFragment extends DialogFragment implements DatePickerDial
                 if (month + 1 >= 10) {
                     date = (month + 1) + "-" + dayOfMonth + "-" + year;
                 } else {
-                    date = (month + 1) + "-" + dayOfMonth + "-" + year;
+                    if (dayOfMonth < 10)
+                        date = "0" + (month + 1) + "-0" + dayOfMonth + "-" + year;
+                    else
+                        date = "0" + (month + 1) + "-" + dayOfMonth + "-" + year;
                 }
                 TabNewEventFragment.setDate(date);
             } else
@@ -66,7 +85,18 @@ public class SelectDateFragment extends DialogFragment implements DatePickerDial
         int mm = cal.get(Calendar.MONTH);
         int dd = cal.get(Calendar.DAY_OF_MONTH);
         DatePickerDialog datePickerDialog = new DatePickerDialog(getActivity(), this, yy, mm, dd);
-        datePickerDialog.getDatePicker().setMinDate(System.currentTimeMillis());
+        if (text.equalsIgnoreCase("EndDate") && !startDate.isEmpty()) {
+            SimpleDateFormat sdf = new SimpleDateFormat("MM-dd-yyy", Locale.ENGLISH);
+            try {
+                Date mDate = sdf.parse(startDate);
+                long timeInMilliseconds = mDate.getTime();
+                datePickerDialog.getDatePicker().setMinDate(timeInMilliseconds);
+            } catch (ParseException e) {
+                e.printStackTrace();
+            }
+        }
+//        else
+//            datePickerDialog.getDatePicker().setMaxDate(System.currentTimeMillis());
         return datePickerDialog;
     }
 }

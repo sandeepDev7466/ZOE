@@ -15,7 +15,7 @@
         android:text="@string/change_hours"
         android:textAllCaps="true"
         android:textColor="@color/white"
-        android:textSize="@dimen/_20ssp" />
+        style="@style/MediumTextView" />
 
     <LinearLayout
         android:layout_width="match_parent"
@@ -27,16 +27,16 @@
             android:layout_height="wrap_content"
             android:layout_marginTop="@dimen/_10sdp"
             android:gravity="center"
-            android:text="@string/current_hours"
+            android:text="@string/volunteer_hours"
             android:textColor="@color/blue_light"
-            android:textSize="@dimen/_13ssp" />
+            style="@style/RegularTextView" />
 
         <com.ztp.app.Helper.MyTextView
             android:id="@+id/currentHours"
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
             android:layout_gravity="center"
-            android:textSize="@dimen/_15ssp"
+            style="@style/RegularTextView"
             android:layout_marginTop="@dimen/_10sdp"/>
 
        <!-- <LinearLayout
@@ -93,7 +93,7 @@
             android:gravity="center"
             android:text="@string/enter_actual_hours"
             android:textColor="@color/blue_light"
-            android:textSize="@dimen/_13ssp" />
+            style="@style/RegularTextView"/>
 
         <com.ztp.app.Helper.MyTextInputLayout
             android:layout_width="match_parent"
@@ -108,7 +108,7 @@
                 android:layout_height="wrap_content"
                 android:hint="@string/enter_hours"
                 android:inputType="number"
-                android:textSize="@dimen/_12ssp" />
+                style="@style/RegularTextView" />
         </com.ztp.app.Helper.MyTextInputLayout>
 
     </LinearLayout>
@@ -126,8 +126,7 @@
             android:layout_height="@dimen/_40sdp"
             style="@style/MyGrayButton"
             android:text="@string/cancel"
-            android:layout_marginEnd="@dimen/_10sdp"
-            android:textSize="@dimen/_10ssp"/>
+            android:layout_marginEnd="@dimen/_10sdp" />
 
         <Button
             android:id="@+id/done"
@@ -135,8 +134,7 @@
             android:layout_height="@dimen/_40sdp"
             style="@style/MyGreenButton"
             android:text="@string/done"
-            android:layout_marginStart="@dimen/_10sdp"
-            android:textSize="@dimen/_10ssp"/>
+            android:layout_marginStart="@dimen/_10sdp" />
 
     </LinearLayout>
 

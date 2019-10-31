@@ -1,0 +1,66 @@
+<?xml version="1.0" encoding="utf-8"?>
+<resources>
+    <color name="colorPrimary">#231F20</color>
+    <color name="colorPrimaryDark">#A2A2A2</color>
+    <color name="colorAccent">#000000</color>
+    <color name="textColor">#000000</color>
+
+
+    <color name="background">#2A282A</color>
+    <color name="background_2">#e4e4e4</color>
+    <color name="background_3">#848484</color>
+    <color name="white">#ffffff</color>
+    <color name="black">#000000</color>
+    <color name="transparent">#E6000000</color>
+
+    <color name="green">#1B918A</color>
+    <color name="red">#CE2358</color>
+
+    <color name="blue_dark">#1919ff</color>
+    <color name="blue_light">#21274E</color>
+    <color name="dark_green">#33C874</color>
+    <color name="tab_unselected">#696969</color>
+    <!-- <color name="mtrl_textinput_default_box_stroke_color" tools:override="true">@color/white</color>-->
+
+    <color name="yellow">#FFFF00</color>
+
+    <color name="tab_locker">#3fddd0</color>
+    <color name="tab_hangout">#21e680</color>
+    <color name="tab_booking">#5485fa</color>
+
+    //chat
+    <color name="chat_background">#ffffff</color>
+    <color name="chat_border">#556080</color>
+    <!-- Group Chat -->
+    <color name="groupChatTextMe">#ffffff</color>
+    <color name="groupChatBubbleOther">#eef1f6</color>
+    <color name="groupChatTextOther">#000000</color>
+
+    <color name="groupChatDateText">#ffffff</color>
+    <color name="groupChatDateBackground">#C0C0C0</color>
+    <color name="edited">#828282</color>
+
+    <!-- Group Channel List -->
+    <color name="groupChannelUnreadCountBackground">#7d62df</color>
+
+    <!-- Selector -->
+    <color name="btn_send_disabled">#8e8e8e</color>
+
+    <color name="transparentMap">#B3000000</color>
+
+
+    <color name="btn1">#1B918A</color>
+    <color name="btn2">#707070</color>
+    <color name="btn3">#7f7fbf</color>
+    <color name="tabIndicatorColor">#1B918A</color>
+    <color name="colorIcon">#1D928B</color>
+    <color name="colorGold">#D9923E</color>
+    <color name="colorRed">#D02359</color>
+
+    <color name="iconOrange">#f78e1e</color>
+    <color name="iconGray">#808080</color>
+    <color name="iconGreen">#27ae60</color>
+    <color name="iconRed">#c0392b</color>
+
+
+</resources>

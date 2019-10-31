@@ -1,0 +1,64 @@
+<?xml version="1.0" encoding="utf-8"?>
+<LinearLayout
+    xmlns:android="http://schemas.android.com/apk/res/android"
+    android:layout_width="match_parent"
+    android:layout_height="wrap_content"
+    android:gravity="center"
+    android:minWidth="@dimen/_240sdp"
+    android:orientation="vertical">
+
+    <com.ztp.app.Helper.MyHeadingTextView
+        android:layout_width="match_parent"
+        android:layout_height="@dimen/_50sdp"
+        android:layout_gravity="center"
+        style="@style/MediumTextView"
+        android:background="@color/blue_light"
+        android:textColor="@color/white"
+        android:gravity="center"
+        android:textAllCaps="true"
+        android:text="CREATE CHANNEL"/>
+
+    <com.ztp.app.Helper.MyEditText
+        android:id="@+id/et_channel_name"
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:layout_marginStart="@dimen/_20sdp"
+        android:layout_marginEnd="@dimen/_20sdp"
+        android:layout_marginTop="@dimen/_20sdp"
+        android:background="@drawable/rounded_corners_chat"
+        android:hint="@string/channel_name"
+        android:textColorHint="@color/background_3"
+        android:padding="@dimen/_10sdp"
+        style="@style/RegularTextView"
+        android:focusable="true"/>
+
+    <LinearLayout
+        android:layout_width="match_parent"
+        android:layout_height="match_parent"
+        android:layout_marginTop="@dimen/_20sdp"
+        android:gravity="center|bottom"
+        android:orientation="horizontal">
+
+        <com.ztp.app.Helper.MyButton
+            android:id="@+id/cancelBtn"
+            style="@style/MyGrayButton"
+            android:layout_width="@dimen/_80sdp"
+            android:layout_height="@dimen/_35sdp"
+            android:layout_marginEnd="@dimen/_5sdp"
+            android:text="@string/cancel" />
+
+        <com.ztp.app.Helper.MyButton
+            android:id="@+id/doneBtn"
+            style="@style/MyGreenButton"
+            android:layout_width="@dimen/_80sdp"
+            android:layout_height="@dimen/_35sdp"
+            android:layout_marginStart="@dimen/_5sdp"
+            android:text="@string/done" />
+
+    </LinearLayout>
+
+    <Space
+        android:layout_width="match_parent"
+        android:layout_height="@dimen/_20sdp"/>
+
+</LinearLayout>

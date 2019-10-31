@@ -1,0 +1,29 @@
+<?xml version="1.0" encoding="utf-8"?>
+<resources>
+    <color name="colorPrimary">#FFFFFF</color>
+    <color name="colorPrimaryDark">#FFFFFF</color>
+    <color name="colorAccent">#FFFFFF</color>
+
+    <color name="textColor">#FFFFFF</color>
+
+    <color name="background">#2A282A</color>
+    <color name="background_2">#e4e4e4</color>
+    <color name="background_3">#848484</color>
+    <color name="white">#ffffff</color>
+    <color name="black">#000000</color>
+    <color name="transparent">#E6000000</color>
+    <color name="green">#00b200</color>
+    <color name="red">#cc0000</color>
+    <color name="blue_dark">#1919ff</color>
+    <color name="blue_light">#4c4cff</color>
+    <color name="dark_green">#33C874</color>
+    <color name="tab_unselected">#696969</color>
+    <!-- <color name="mtrl_textinput_default_box_stroke_color" tools:override="true">@color/white</color>-->
+
+    <color name="yellow">#FFFF00</color>
+    <color name="tab_locker">#3fddd0</color>
+    <color name="tab_hangout">#21e680</color>
+    <color name="tab_booking">#0b51f8</color>
+
+    <color name="chat_background">#000000</color>
+</resources>

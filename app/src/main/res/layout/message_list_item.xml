@@ -41,7 +41,7 @@
             android:id="@+id/textView_name"
             android:layout_width="match_parent"
             android:layout_height="wrap_content"
-            android:textSize="@dimen/_12ssp"
+            style="@style/RegularTextView"
             android:maxLines="2"
             android:ellipsize="end"
             android:textColor="@color/blue_light"
@@ -51,7 +51,7 @@
             android:id="@+id/textView_descrip"
             android:layout_width="match_parent"
             android:layout_height="wrap_content"
-            android:textSize="@dimen/_10ssp"
+            style="@style/RegularTextView"
             />
 
 <ImageView

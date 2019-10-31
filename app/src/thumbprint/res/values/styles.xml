@@ -1,0 +1,124 @@
+<resources xmlns:tools="http://schemas.android.com/tools">
+
+    <!-- Base application theme. -->
+    <style name="AppTheme" parent="Theme.AppCompat.Light.NoActionBar">
+        <!-- Customize your theme here. -->
+        <item name="colorPrimary">@color/colorPrimary</item>
+        <item name="colorPrimaryDark">@color/colorPrimaryDark</item>
+        <item name="colorAccent">@color/colorAccent</item>
+    </style>
+
+    <style name="NewTheme" parent="Theme.AppCompat.Light.NoActionBar">
+        <!-- Customize your theme here. -->
+        <item name="colorPrimary">@color/colorPrimary</item>
+        <item name="colorPrimaryDark">@color/colorPrimaryDark</item>
+        <item name="colorAccent">@color/colorAccent</item>
+        <item name="android:windowNoTitle">true</item>
+        <item name="android:windowActionBar">true</item>
+        <item name="android:windowFullscreen">true</item>
+
+    </style>
+
+    <style name="MyTheme" parent="Theme.AppCompat.DayNight">
+        <item name="colorPrimary">@color/colorPrimary</item>
+        <item name="colorPrimaryDark">@color/colorPrimaryDark</item>
+        <item name="colorAccent">@color/colorAccent</item>
+        <item name="android:textColor">@color/textColor</item>
+        <item name="android:windowActionBar">false</item>
+        <item name="android:windowNoTitle">true</item>
+        <item name="android:windowDisablePreview">true</item>
+
+    </style>
+
+    <style name="MyThemeFullScreen" parent="Theme.AppCompat.DayNight">
+        <item name="colorPrimary">@color/colorPrimary</item>
+        <item name="colorPrimaryDark">@color/colorPrimaryDark</item>
+        <item name="colorAccent">@color/colorAccent</item>
+        <item name="android:textColor">@color/textColor</item>
+        <item name="android:windowNoTitle">true</item>
+        <item name="android:windowActionBar">false</item>
+        <item name="android:windowFullscreen">true</item>
+        <item name="android:windowDisablePreview">true</item>
+
+    </style>
+
+
+    <style name="MyButton">
+        <item name="android:textSize">@dimen/_10ssp</item>
+        <item name="android:textColor">@color/btn1</item>
+        <item name="android:padding">0dp</item>
+        <item name="android:elevation" tools:targetApi="lollipop">@dimen/_5sdp</item>
+        <item name="android:background">@drawable/blue_rectangle</item>
+
+    </style>
+
+    <style name="MyGrayButton">
+
+        <item name="android:textColor">@color/btn2</item>
+        <item name="android:textSize">@dimen/_10ssp</item>
+        <item name="android:padding">0dp</item>
+        <item name="android:elevation" tools:targetApi="lollipop">@dimen/_5sdp</item>
+        <item name="android:background">@drawable/gray_rectangle</item>
+
+    </style>
+    <style name="MyGreenButton">
+
+        <item name="android:textColor">@color/btn1</item>
+        <item name="android:textSize">@dimen/_10ssp</item>
+        <item name="android:padding">0dp</item>
+        <item name="android:elevation" tools:targetApi="lollipop">@dimen/_5sdp</item>
+        <item name="android:background">@drawable/blue_rectangle</item>
+
+    </style>
+
+    <style name="MyBlueButton">
+
+        <item name="android:textColor">@color/btn3</item>
+        <item name="android:textSize">@dimen/_10ssp</item>
+        <item name="android:padding">0dp</item>
+        <item name="android:elevation" tools:targetApi="lollipop">@dimen/_5sdp</item>
+        <item name="android:background">@drawable/dark_blue_rectangle</item>
+
+    </style>
+
+    <style name="AppSearchView" parent="Widget.AppCompat.SearchView" >
+        <item name="android:textSize">@dimen/_12ssp</item>
+    </style>
+
+    <style name="AppTheme.Dialog" parent="Base.Theme.AppCompat.Light.Dialog.FixedSize">
+        <!-- removing the dialog's action bar -->
+        <item name="windowActionBar">false</item>
+        <item name="windowNoTitle">true</item>
+    </style>
+
+    <style name="AppTheme.NoActionBar">
+        <item name="windowActionBar">false</item>
+        <item name="windowNoTitle">true</item>
+
+    </style>
+
+    <style name="VerySmallTextView">
+        <item name="android:textSize">@dimen/_7ssp</item>
+    </style>
+
+    <style name="SmallTextView">
+        <item name="android:textSize">@dimen/_8ssp</item>
+    </style>
+
+   <style name="RegularTextView">
+       <item name="android:textSize">@dimen/_11sdp</item>
+   </style>
+
+    <style name="MediumTextView">
+        <item name="android:textSize">@dimen/_15ssp</item>
+    </style>
+
+    <style name="HeadingTextView">
+        <item name="android:textSize">@dimen/_20ssp</item>
+    </style>
+
+    <style name="ToolbarTheme" parent="@style/ThemeOverlay.AppCompat.ActionBar">
+        <item name="colorControlNormal">@color/white</item>
+    </style>
+
+</resources>

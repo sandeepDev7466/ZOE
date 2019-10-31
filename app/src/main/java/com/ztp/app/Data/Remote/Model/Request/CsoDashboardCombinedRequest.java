@@ -21,7 +21,6 @@ public class CsoDashboardCombinedRequest {
     }
 
     public CsoDashboardCombinedRequest(String userId, String eventMonth, String eventYear, String countdownDate) {
-        super();
         this.userId = userId;
         this.eventMonth = eventMonth;
         this.eventYear = eventYear;
@@ -59,4 +58,5 @@ public class CsoDashboardCombinedRequest {
     public void setCountdownDate(String countdownDate) {
         this.countdownDate = countdownDate;
     }
+
 }

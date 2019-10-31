@@ -1,10 +1,14 @@
 package com.ztp.app.Data.Remote.Model.Response;
 
-import com.google.gson.annotations.Expose;
-import com.google.gson.annotations.SerializedName;
+import android.arch.persistence.room.ColumnInfo;
+import android.arch.persistence.room.Entity;
+import android.arch.persistence.room.PrimaryKey;
+import android.support.annotation.NonNull;
 
 import java.io.Serializable;
 import java.util.List;
+import com.google.gson.annotations.Expose;
+import com.google.gson.annotations.SerializedName;
 
 public class GetCSOShiftResponse {
 
@@ -13,23 +17,11 @@ public class GetCSOShiftResponse {
     private String apiResKey;
     @SerializedName("res_data")
     @Expose
-    private List<ResData> resData;
+    private List<ResDatum> resData = null;
     @SerializedName("res_status")
     @Expose
     private String resStatus;
 
-    public GetCSOShiftResponse() {
-    }
-
-    public GetCSOShiftResponse(String apiResKey, List<ResData> resData, String resStatus) {
-        super();
-        this.apiResKey = apiResKey;
-        this.resData = resData;
-        this.resStatus = resStatus;
-    }
-    public List<ResData> getResData() {
-        return resData;
-    }
     public String getApiResKey() {
         return apiResKey;
     }
@@ -38,7 +30,11 @@ public class GetCSOShiftResponse {
         this.apiResKey = apiResKey;
     }
 
-    public void setResData(List<ResData> resData) {
+    public List<ResDatum> getResData() {
+        return resData;
+    }
+
+    public void setResData(List<ResDatum> resData) {
         this.resData = resData;
     }
 
@@ -50,75 +46,94 @@ public class GetCSOShiftResponse {
         this.resStatus = resStatus;
     }
 
-    public class ResData implements Serializable {
+    @Entity(tableName = "shift_list")
+    public static class ResDatum implements Serializable {
 
+        @NonNull
+        @PrimaryKey
         @SerializedName("shift_id")
         @Expose
+        @ColumnInfo(name = "shift_id")
         private String shiftId;
+
+        @ColumnInfo(name = "event_id")
+        private String eventId;
+
         @SerializedName("shift_date")
         @Expose
+        @ColumnInfo(name = "shift_date")
         private String shiftDate;
+
         @SerializedName("shift_vol_req")
         @Expose
+        @ColumnInfo(name = "shift_vol_req")
         private String shiftVolReq;
+
         @SerializedName("shift_start_time")
         @Expose
+        @ColumnInfo(name = "shift_start_time")
         private String shiftStartTime;
+
         @SerializedName("shift_end_time")
         @Expose
+        @ColumnInfo(name = "shift_end_time")
         private String shiftEndTime;
+
         @SerializedName("shift_rank")
         @Expose
+        @ColumnInfo(name = "shift_rank")
         private String shiftRank;
+
         @SerializedName("shift_task")
         @Expose
+        @ColumnInfo(name = "shift_task")
         private String shiftTask;
+
+        @SerializedName("shift_task_name")
+        @Expose
+        @ColumnInfo(name = "shift_task_name")
+        private String shiftTaskName;
+
         @SerializedName("shift_status")
         @Expose
+        @ColumnInfo(name = "shift_status")
         private String shiftStatus;
+
         @SerializedName("shift_add_date")
         @Expose
+        @ColumnInfo(name = "shift_add_date")
         private String shiftAddDate;
+
         @SerializedName("shift_update_date")
         @Expose
+        @ColumnInfo(name = "shift_update_date")
         private String shiftUpdateDate;
+
         @SerializedName("shift_day")
         @Expose
-        private String shift_day;
+        @ColumnInfo(name = "shift_day")
+        private String shiftDay;
+
         @SerializedName("shift_month")
         @Expose
-        private String shift_month;
+        @ColumnInfo(name = "shift_month")
+        private String shiftMonth;
+
         @SerializedName("shift_day_num")
         @Expose
-        private String shift_day_num;
+        @ColumnInfo(name = "shift_day_num")
+        private String shiftDayNum;
+
         @SerializedName("shift_start_time_s")
         @Expose
-        private String shift_start_time_s;
+        @ColumnInfo(name = "shift_start_time_s")
+        private String shiftStartTimeS;
+
         @SerializedName("shift_end_time_s")
         @Expose
-        private String shift_end_time_s;
+        @ColumnInfo(name = "shift_end_time_s")
+        private String shiftEndTimeS;
 
-        public ResData() {
-        }
-
-        public ResData(String shiftId, String shiftDate, String shiftVolReq, String shiftStartTime, String shiftEndTime, String shiftRank, String shiftTask, String shiftStatus, String shiftAddDate, String shiftUpdateDate, String day, String month, String num, String start_time, String end_time) {
-            super();
-            this.shiftId = shiftId;
-            this.shiftDate = shiftDate;
-            this.shiftVolReq = shiftVolReq;
-            this.shiftStartTime = shiftStartTime;
-            this.shiftEndTime = shiftEndTime;
-            this.shiftRank = shiftRank;
-            this.shiftTask = shiftTask;
-            this.shiftStatus = shiftStatus;
-            this.shiftAddDate = shiftAddDate;
-            this.shiftUpdateDate = shiftUpdateDate;
-            this.shift_day = day;
-            this.shift_day_num = num;
-            this.shift_month = month;
-            this.shift_end_time_s = end_time;
-            this.shift_start_time_s = start_time;
-        }
 
         public String getShiftId() {
             return shiftId;
@@ -176,6 +191,14 @@ public class GetCSOShiftResponse {
             this.shiftTask = shiftTask;
         }
 
+        public String getShiftTaskName() {
+            return shiftTaskName;
+        }
+
+        public void setShiftTaskName(String shiftTaskName) {
+            this.shiftTaskName = shiftTaskName;
+        }
+
         public String getShiftStatus() {
             return shiftStatus;
         }
@@ -200,44 +223,52 @@ public class GetCSOShiftResponse {
             this.shiftUpdateDate = shiftUpdateDate;
         }
 
-        public String getShift_day() {
-            return shift_day;
+        public String getShiftDay() {
+            return shiftDay;
         }
 
-        public void setShift_day(String shift_day) {
-            this.shift_day = shift_day;
+        public void setShiftDay(String shiftDay) {
+            this.shiftDay = shiftDay;
         }
 
-        public String getShift_month() {
-            return shift_month;
+        public String getShiftMonth() {
+            return shiftMonth;
         }
 
-        public void setShift_month(String shift_month) {
-            this.shift_month = shift_month;
+        public void setShiftMonth(String shiftMonth) {
+            this.shiftMonth = shiftMonth;
         }
 
-        public String getShift_day_num() {
-            return shift_day_num;
+        public String getShiftDayNum() {
+            return shiftDayNum;
         }
 
-        public void setShift_day_num(String shift_day_num) {
-            this.shift_day_num = shift_day_num;
+        public void setShiftDayNum(String shiftDayNum) {
+            this.shiftDayNum = shiftDayNum;
         }
 
-        public String getShift_start_time_s() {
-            return shift_start_time_s;
+        public String getShiftStartTimeS() {
+            return shiftStartTimeS;
         }
 
-        public void setShift_start_time_s(String shift_start_time_s) {
-            this.shift_start_time_s = shift_start_time_s;
+        public void setShiftStartTimeS(String shiftStartTimeS) {
+            this.shiftStartTimeS = shiftStartTimeS;
         }
 
-        public String getShift_end_time_s() {
-            return shift_end_time_s;
+        public String getShiftEndTimeS() {
+            return shiftEndTimeS;
         }
 
-        public void setShift_end_time_s(String shift_end_time_s) {
-            this.shift_end_time_s = shift_end_time_s;
+        public void setShiftEndTimeS(String shiftEndTimeS) {
+            this.shiftEndTimeS = shiftEndTimeS;
+        }
+
+        public String getEventId() {
+            return eventId;
+        }
+
+        public void setEventId(String eventId) {
+            this.eventId = eventId;
         }
     }
 }

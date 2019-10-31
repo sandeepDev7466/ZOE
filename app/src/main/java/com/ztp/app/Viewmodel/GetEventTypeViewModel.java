@@ -1,11 +1,14 @@
 package com.ztp.app.Viewmodel;
 
+import android.annotation.SuppressLint;
 import android.arch.lifecycle.LiveData;
 import android.arch.lifecycle.MutableLiveData;
 import android.arch.lifecycle.ViewModel;
 import android.content.Context;
 import android.os.AsyncTask;
 
+import com.ztp.app.Data.Local.Room.Async.Save.DBSaveEventType;
+import com.ztp.app.Data.Local.Room.Async.Save.DBSaveTimeZone;
 import com.ztp.app.Data.Local.Room.Database.RoomDB;
 import com.ztp.app.Data.Remote.Model.Response.CountryResponse;
 import com.ztp.app.Data.Remote.Model.Response.EventTypeResponse;
@@ -25,12 +28,13 @@ import retrofit2.Response;
 public class GetEventTypeViewModel extends ViewModel {
     private MutableLiveData<EventTypeResponse> eventResponseMutableLiveData;
     private ApiInterface apiInterface = Api.getClient();
-    private RoomDB roomDB;
+    @SuppressLint("StaticFieldLeak")
+    Context context;
 
     public LiveData<EventTypeResponse> getEventTypeResponse(Context context) {
 
         eventResponseMutableLiveData = new MutableLiveData<>();
-        roomDB = RoomDB.getInstance(context);
+        this.context = context;
         eventTypeResponse();
         return eventResponseMutableLiveData;
     }
@@ -42,9 +46,16 @@ public class GetEventTypeViewModel extends ViewModel {
         call.enqueue(new Callback<EventTypeResponse>() {
             @Override
             public void onResponse(Call<EventTypeResponse> call, Response<EventTypeResponse> response) {
-                if (response.body() != null) {
-                    eventResponseMutableLiveData.postValue(response.body());
-                   // new AsyncEventType(response.body().getResData()).execute();
+                if(response.isSuccessful()) {
+                    if (response.body() != null) {
+                        eventResponseMutableLiveData.postValue(response.body());
+                        if (response.body().getResData() != null && response.body().getResData().size() > 0)
+                            new DBSaveEventType(context, response.body().getResData()).execute();
+                    }
+                }
+                else
+                {
+                    eventResponseMutableLiveData.postValue(null);
                 }
             }
 
@@ -55,34 +66,4 @@ public class GetEventTypeViewModel extends ViewModel {
             }
         });
     }
-
-
-    private class AsyncEventType extends AsyncTask<Void, Void, Void> {
-        List<EventTypeResponse.EventType> eventTypesList;
-
-        public AsyncEventType(List<EventTypeResponse.EventType> eventTypesList) {
-            this.eventTypesList = eventTypesList;
-        }
-
-        @Override
-        protected void onPostExecute(Void aVoid) {
-            super.onPostExecute(aVoid);
-        }
-
-        @Override
-        protected Void doInBackground(Void... voids) {
-            if (roomDB.getEventTypeDao().getAllEventType().size() == 0) {
-                roomDB.getEventTypeDao().insertAll(eventTypesList);
-            }
-            else
-            {
-                roomDB.getEventTypeDao().deleteAll();
-                roomDB.getEventTypeDao().insertAll(eventTypesList);
-            }
-
-            return null;
-        }
-    }
-
-
 }

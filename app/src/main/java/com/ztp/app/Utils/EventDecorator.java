@@ -27,4 +27,5 @@ public class EventDecorator implements DayViewDecorator {
 
         view.addSpan(new DotSpan(10, color));
     }
+
 }

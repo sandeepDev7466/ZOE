@@ -17,9 +17,6 @@ import java.util.List;
 public interface EventTypeDao {
 
     @Query("SELECT * FROM event_type")
-    LiveData<List<EventTypeResponse.EventType>> getAll();
-
-    @Query("SELECT * FROM event_type")
     List<EventTypeResponse.EventType> getAllEventType();
 
     @Insert

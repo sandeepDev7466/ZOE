@@ -31,9 +31,15 @@ public class MarkRankViewModel extends ViewModel {
         call.enqueue(new Callback<MarkRankResponse>() {
             @Override
             public void onResponse(Call<MarkRankResponse> call, Response<MarkRankResponse> response) {
-                if (response.body() != null) {
-                    markRankResponseMutableLiveData.postValue(response.body());
+                if(response.isSuccessful()) {
+                    if (response.body() != null) {
+                        markRankResponseMutableLiveData.postValue(response.body());
 
+                    }
+                }
+                else
+                {
+                    markRankResponseMutableLiveData.postValue(null);
                 }
             }
 

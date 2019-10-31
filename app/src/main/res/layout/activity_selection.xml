@@ -21,10 +21,10 @@
             android:src="@drawable/im_student_selection"/>
 
         <com.ztp.app.Helper.MyBoldTextView
+            android:id="@+id/text"
             android:layout_width="match_parent"
             android:layout_height="wrap_content"
-            android:text="@string/i_m_a_student"
-            android:textSize="@dimen/_15ssp"
+            style="@style/MediumTextView"
             android:gravity="center"
             android:layout_marginTop="@dimen/_20sdp"/>
 
@@ -55,7 +55,7 @@
             android:layout_width="match_parent"
             android:layout_height="wrap_content"
             android:text="@string/i_m_a_cso"
-            android:textSize="@dimen/_15ssp"
+            style="@style/MediumTextView"
             android:gravity="center"
             android:layout_marginTop="@dimen/_20sdp"/>
 

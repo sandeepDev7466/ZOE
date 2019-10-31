@@ -35,9 +35,15 @@ public class ChangeVolunteerStatusViewModel extends ViewModel {
         call.enqueue(new Callback<ChangeVolunteerStatusResponse>() {
             @Override
             public void onResponse(Call<ChangeVolunteerStatusResponse> call, Response<ChangeVolunteerStatusResponse> response) {
-                if (response.body() != null) {
-                    changeVolunteerStatusResponseMutableLiveData.postValue(response.body());
+                if(response.isSuccessful()) {
+                    if (response.body() != null) {
+                        changeVolunteerStatusResponseMutableLiveData.postValue(response.body());
 
+                    }
+                }
+                else
+                {
+                    changeVolunteerStatusResponseMutableLiveData.postValue(null);
                 }
             }
             @Override

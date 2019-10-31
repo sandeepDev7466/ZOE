@@ -1,0 +1,55 @@
+<?xml version="1.0" encoding="utf-8"?>
+<RelativeLayout xmlns:android="http://schemas.android.com/apk/res/android"
+    android:layout_width="match_parent"
+    android:layout_height="match_parent"
+    android:gravity="center"
+    android:orientation="vertical">
+
+    <LinearLayout
+        android:layout_width="@dimen/_300sdp"
+        android:layout_height="wrap_content">
+
+        <LinearLayout
+            android:layout_width="match_parent"
+            android:layout_height="match_parent"
+            android:orientation="vertical">
+
+            <com.ztp.app.Helper.MyHeadingTextView
+                android:id="@+id/title"
+                android:layout_width="match_parent"
+                android:layout_height="@dimen/_50sdp"
+                android:layout_gravity="center"
+                style="@style/MediumTextView"
+                android:textColor="@color/white"
+                android:gravity="center"
+                android:textAllCaps="true"
+                android:background="@color/blue_light"/>
+
+
+                <com.ztp.app.Helper.MyTextView
+                    android:id="@+id/leaveChannel"
+                    android:layout_width="match_parent"
+                    android:layout_height="@dimen/_40sdp"
+                    android:gravity="center"
+                    style="@style/RegularTextView"
+                    android:text="@string/leave_channel"/>
+
+                <View
+                    android:id="@+id/view"
+                    android:layout_width="match_parent"
+                    android:layout_height="0.7dp"
+                    android:background="@color/background_3"/>
+
+                <com.ztp.app.Helper.MyTextView
+                    android:id="@+id/deleteChannel"
+                    android:layout_width="match_parent"
+                    android:layout_height="@dimen/_40sdp"
+                    android:gravity="center"
+                    style="@style/RegularTextView"
+                    android:text="@string/del_channel"/>
+
+        </LinearLayout>
+
+    </LinearLayout>
+
+</RelativeLayout>

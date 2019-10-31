@@ -50,12 +50,15 @@ public class EventListFragment extends Fragment {
                     View v = tab.getCustomView();
                     ImageView image = v.findViewById(R.id.image);
                     MyHeadingTextView text = v.findViewById(R.id.text);
-                    if (theme) {
-                        text.setTextColor(getResources().getColor(R.color.black));
-                        image.setColorFilter(getResources().getColor(R.color.black));
-                    } else {
+                    if(theme)
+                    {
                         text.setTextColor(getResources().getColor(R.color.white));
                         image.setColorFilter(getResources().getColor(R.color.white));
+                    }
+                    else
+                    {
+                        text.setTextColor(getResources().getColor(R.color.black));
+                        image.setColorFilter(getResources().getColor(R.color.black));
                     }
                 } catch (Exception e) {
                     e.printStackTrace();
@@ -70,13 +73,18 @@ public class EventListFragment extends Fragment {
                     ImageView image = v.findViewById(R.id.image);
                     MyHeadingTextView text = v.findViewById(R.id.text);
 
-                    if (theme) {
+
+                    text.setTextColor(getResources().getColor(R.color.background_3));
+                    image.setColorFilter(getResources().getColor(R.color.background_3));
+
+
+                   /* if (theme) {
                         text.setTextColor(getResources().getColor(R.color.background_3));
                         image.setColorFilter(getResources().getColor(R.color.background_3));
                     } else {
                         text.setTextColor(getResources().getColor(R.color.tab_unselected));
                         image.setColorFilter(getResources().getColor(R.color.tab_unselected));
-                    }
+                    }*/
 
                 } catch (Exception e) {
                     e.printStackTrace();
@@ -148,24 +156,13 @@ public class EventListFragment extends Fragment {
         if (position == 0) {
             text.setText(R.string.tab_myevent);
             image.setImageResource(R.drawable.ic_calendar);
-            if (theme) {
-                text.setTextColor(getResources().getColor(R.color.black));
-                image.setColorFilter(getResources().getColor(R.color.black));
-            } else {
-                text.setTextColor(getResources().getColor(R.color.white));
-                image.setColorFilter(getResources().getColor(R.color.white));
-            }
+
         } else if (position == 1) {
             text.setText(R.string.tab_newevent);
             image.setImageResource(R.drawable.ic_add);
 
-            if (theme) {
-                text.setTextColor(getResources().getColor(R.color.background_3));
-                image.setColorFilter(getResources().getColor(R.color.background_3));
-            } else {
-                text.setTextColor(getResources().getColor(R.color.tab_unselected));
-                image.setColorFilter(getResources().getColor(R.color.tab_unselected));
-            }
+            text.setTextColor(getResources().getColor(R.color.background_3));
+            image.setColorFilter(getResources().getColor(R.color.background_3));
         }
 
         return view;

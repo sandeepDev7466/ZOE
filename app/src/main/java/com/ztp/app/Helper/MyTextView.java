@@ -12,19 +12,19 @@ public class MyTextView extends TextView {
 
     public MyTextView(Context context) {
         super(context);
-        Typeface face=Typeface.createFromAsset(context.getAssets(), "fonts/Amaranth-Regular.otf");
+        Typeface face=Typeface.createFromAsset(context.getAssets(), "fonts/Roboto_Regular.ttf");
         this.setTypeface(face);
     }
 
     public MyTextView(Context context, AttributeSet attrs) {
         super(context, attrs);
-        Typeface face=Typeface.createFromAsset(context.getAssets(), "fonts/Amaranth-Regular.otf");
+        Typeface face=Typeface.createFromAsset(context.getAssets(), "fonts/Roboto_Regular.ttf");
         this.setTypeface(face);
     }
 
     public MyTextView(Context context, AttributeSet attrs, int defStyle) {
         super(context, attrs, defStyle);
-        Typeface face=Typeface.createFromAsset(context.getAssets(), "fonts/Amaranth-Regular.otf");
+        Typeface face=Typeface.createFromAsset(context.getAssets(), "fonts/Roboto_Regular.ttf");
         this.setTypeface(face);
     }
 

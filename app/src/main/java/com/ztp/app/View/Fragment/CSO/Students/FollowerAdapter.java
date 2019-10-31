@@ -1,42 +1,49 @@
 package com.ztp.app.View.Fragment.CSO.Students;
 
-import android.app.Dialog;
-import android.arch.lifecycle.LifecycleOwner;
 import android.arch.lifecycle.ViewModelProviders;
 import android.content.Context;
+import android.os.Bundle;
 import android.support.v4.app.FragmentActivity;
+import android.support.v4.app.FragmentManager;
+import android.support.v4.app.FragmentTransaction;
+import android.support.v7.app.AppCompatActivity;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
 import android.widget.BaseAdapter;
-import android.widget.Button;
 import android.widget.ImageView;
-import android.widget.Toast;
 
+import com.sendbird.android.GroupChannel;
+import com.sendbird.android.SendBirdException;
 import com.squareup.picasso.Picasso;
 import com.ztp.app.Data.Local.SharedPrefrence.SharedPref;
-import com.ztp.app.Data.Remote.Model.Request.CsoMarkHoursRequest;
-import com.ztp.app.Data.Remote.Model.Response.CsoMyVolunteerResponse;
+import com.ztp.app.Data.Remote.Model.Response.CsoMyFollowerResponse;
 import com.ztp.app.Helper.MyProgressDialog;
-import com.ztp.app.Helper.MyTextInputEditText;
 import com.ztp.app.Helper.MyTextView;
 import com.ztp.app.Helper.MyToast;
 import com.ztp.app.R;
+import com.ztp.app.SendBird.groupchannel.GroupChannelListFragment;
+import com.ztp.app.Utils.Constants;
 import com.ztp.app.Utils.Utility;
+import com.ztp.app.View.Activity.CSO.CsoDashboardActivity;
+import com.ztp.app.View.Fragment.Volunteer.Event.TabMyBookingFragment;
 import com.ztp.app.Viewmodel.CsoMarkHoursViewModel;
 
+import java.util.ArrayList;
 import java.util.Date;
 import java.util.List;
 
 class FollowerAdapter extends BaseAdapter implements View.OnClickListener {
     private Context context;
-    private List<CsoMyVolunteerResponse.ResData> dataList;
+    private List<CsoMyFollowerResponse.SeeFollower> dataList;
     MyToast myToast;
     MyProgressDialog myProgressDialog;
     CsoMarkHoursViewModel csoMarkHoursViewModel;
     SharedPref sharedPref;
+    private List<String> mSelectedIds;
+    public static final String EXTRA_NEW_CHANNEL_URL = "EXTRA_NEW_CHANNEL_URL";
 
-    public FollowerAdapter(Context context, List<CsoMyVolunteerResponse.ResData> dataList) {
+    public FollowerAdapter(Context context, List<CsoMyFollowerResponse.SeeFollower> dataList) {
         this.context = context;
         this.dataList = dataList;
         myToast = new MyToast(context);
@@ -51,7 +58,7 @@ class FollowerAdapter extends BaseAdapter implements View.OnClickListener {
     }
 
     @Override
-    public CsoMyVolunteerResponse.ResData getItem(int position) {
+    public CsoMyFollowerResponse.SeeFollower getItem(int position) {
         return dataList.get(position);
     }
 
@@ -62,7 +69,7 @@ class FollowerAdapter extends BaseAdapter implements View.OnClickListener {
 
     @Override
     public View getView(int position, View view, ViewGroup parent) {
-        CsoMyVolunteerResponse.ResData dataModel = getItem(position);
+        CsoMyFollowerResponse.SeeFollower dataModel = getItem(position);
 
         Holder holder = new Holder();
         if (view == null) {
@@ -82,8 +89,8 @@ class FollowerAdapter extends BaseAdapter implements View.OnClickListener {
         holder.tv_name.setText(dataModel.getUserFName() + " " + dataModel.getUserLName());
 
 
-        if (!dataModel.getUserGradDate().isEmpty()) {
-            Date d = Utility.convertStringToDateWithoutTime(dataModel.getUserGradDate());
+        if (!dataModel.getUserGradDateFormat().isEmpty()) {
+            Date d = Utility.convertStringToDateWithoutTime(dataModel.getUserGradDateFormat());
             holder.tv_date.setText(Utility.formatDateFull(d));
         }
 
@@ -91,19 +98,20 @@ class FollowerAdapter extends BaseAdapter implements View.OnClickListener {
         holder.tv_hrs.setText(dataModel.getUserHours()+" "+context.getString(R.string.hrs_small));
 
         if (dataModel.getUserRank().equalsIgnoreCase("1"))
-            Picasso.with(context).load(R.drawable.rank_baby).fit().into(holder.rank);
+            Picasso.with(context).load(R.drawable.rank_one_vol).fit().into(holder.rank);
         else if (dataModel.getUserRank().equalsIgnoreCase("2"))
-            Picasso.with(context).load(R.drawable.rank_grownup).fit().into(holder.rank);
+            Picasso.with(context).load(R.drawable.rank_two_vol).fit().into(holder.rank);
         else if (dataModel.getUserRank().equalsIgnoreCase("3"))
-            Picasso.with(context).load(R.drawable.rank_knight).fit().into(holder.rank);
+            Picasso.with(context).load(R.drawable.rank_three_vol).fit().into(holder.rank);
         else if (dataModel.getUserRank().equalsIgnoreCase("4"))
-            Picasso.with(context).load(R.drawable.rank_royalty).fit().into(holder.rank);
+            Picasso.with(context).load(R.drawable.rank_four_vol).fit().into(holder.rank);
         else if (dataModel.getUserRank().equalsIgnoreCase("5"))
-            Picasso.with(context).load(R.drawable.rank_warrior).fit().into(holder.rank);
-        else if (dataModel.getUserRank().equalsIgnoreCase(""))
-            Picasso.with(context).load(R.drawable.not_available).fit().into(holder.rank);
+            Picasso.with(context).load(R.drawable.rank_five_vol).fit().into(holder.rank);
+        else if (dataModel.getUserRank().equalsIgnoreCase("") || dataModel.getUserRank().equalsIgnoreCase("0"))
+            Picasso.with(context).load(R.drawable.rank_five_vol).fit().into(holder.rank);
 
 
+        holder.imv_chat.setTag(dataModel);
         holder.imv_chat.setOnClickListener(this);
 
        /* view.setOnClickListener(new View.OnClickListener() {
@@ -123,6 +131,12 @@ class FollowerAdapter extends BaseAdapter implements View.OnClickListener {
         switch (v.getId()) {
             case R.id.imv_chat:
 
+                CsoMyFollowerResponse.SeeFollower dataModel= (CsoMyFollowerResponse.SeeFollower) v.getTag();
+                mSelectedIds = new ArrayList<>();
+                mSelectedIds.add(dataModel.getUserEmail());
+                createGroupChannel(dataModel.getUserFName()+ " "+dataModel.getUserLName(),mSelectedIds, true);
+                ((CsoDashboardActivity) context).setHangoutProps();
+
                 break;
 
         }
@@ -134,7 +148,32 @@ class FollowerAdapter extends BaseAdapter implements View.OnClickListener {
         ImageView imv_chat, rank;
     }
 
-  /*  private void openHoursChangeDialog(CsoMyVolunteerResponse.ResData dataModel) {
+    private void createGroupChannel(String nick_name,List<String> userIds, boolean distinct) {
+        GroupChannel.createChannelWithUserIds(userIds, distinct, new GroupChannel.GroupChannelCreateHandler() {
+            @Override
+            public void onResult(GroupChannel groupChannel, SendBirdException e) {
+                if (e != null) {
+                    // Error!
+                    return;
+                }
+
+                Constants.backFromChat = false;
+                GroupChannelListFragment fragment = new GroupChannelListFragment();
+                Bundle bundle = new Bundle();
+                bundle.putString(EXTRA_NEW_CHANNEL_URL, groupChannel.getUrl());
+                bundle.putString(TabMyBookingFragment.EXTRA_Name, nick_name);
+                fragment.setArguments(bundle);
+                FragmentManager fragmentManager = ((AppCompatActivity) context).getSupportFragmentManager();
+                FragmentTransaction fragmentTransaction = fragmentManager.beginTransaction();
+                fragmentTransaction.replace(R.id.body, fragment, "GroupChannelListFragment");
+                fragmentTransaction.addToBackStack(null);
+                fragmentTransaction.commit();
+
+            }
+        });
+    }
+
+  /*  private void openHoursChangeDialog(CsoMyFollowerResponse.Event dataModel) {
 
         String userHours, reqiredHours;
         userHours = dataModel.getUserHours();
@@ -185,7 +224,7 @@ class FollowerAdapter extends BaseAdapter implements View.OnClickListener {
         });
     }
 
-    private void hitUpdateHoursApi(String userHours, CsoMyVolunteerResponse.ResData dataModel) {
+    private void hitUpdateHoursApi(String userHours, CsoMyFollowerResponse.Event dataModel) {
         myProgressDialog.show(context.getString(R.string.please_wait));
         csoMarkHoursViewModel.getCsoMarkHoursResponse(new CsoMarkHoursRequest(sharedPref.getUserId(), sharedPref.getUserType(), Utility.getDeviceId(context), "", userHours, dataModel.getUserId())).observe((LifecycleOwner) context, csoMarkHoursResponse -> {
 

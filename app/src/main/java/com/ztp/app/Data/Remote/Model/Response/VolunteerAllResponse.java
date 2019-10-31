@@ -1,7 +1,13 @@
 package com.ztp.app.Data.Remote.Model.Response;
 
+import android.arch.persistence.room.ColumnInfo;
+import android.arch.persistence.room.Entity;
+import android.arch.persistence.room.PrimaryKey;
+import android.support.annotation.NonNull;
+
 import java.io.Serializable;
 import java.util.List;
+
 import com.google.gson.annotations.Expose;
 import com.google.gson.annotations.SerializedName;
 
@@ -12,20 +18,10 @@ public class VolunteerAllResponse {
     private String apiResKey;
     @SerializedName("res_data")
     @Expose
-    private List<ResData> resData = null;
+    private List<VolunteerResponse> resData = null;
     @SerializedName("res_status")
     @Expose
     private String resStatus;
-
-    public VolunteerAllResponse() {
-    }
-
-    public VolunteerAllResponse(String apiResKey, List<ResData> resData, String resStatus) {
-        super();
-        this.apiResKey = apiResKey;
-        this.resData = resData;
-        this.resStatus = resStatus;
-    }
 
     public String getApiResKey() {
         return apiResKey;
@@ -35,11 +31,11 @@ public class VolunteerAllResponse {
         this.apiResKey = apiResKey;
     }
 
-    public List<ResData> getResData() {
+    public List<VolunteerResponse> getResData() {
         return resData;
     }
 
-    public void setResData(List<ResData> resData) {
+    public void setResData(List<VolunteerResponse> resData) {
         this.resData = resData;
     }
 
@@ -50,115 +46,172 @@ public class VolunteerAllResponse {
     public void setResStatus(String resStatus) {
         this.resStatus = resStatus;
     }
-    public class ResData implements Serializable {
+
+    @Entity(tableName = "all_volunteer_response")
+    public static class VolunteerResponse implements Serializable {
+
+        @NonNull
+        @PrimaryKey(autoGenerate = true)
+        @ColumnInfo(name = "id")
+        private int id;
 
         @SerializedName("map_id")
         @Expose
+        @ColumnInfo(name = "map_id")
         private String mapId;
+
         @SerializedName("user_id")
         @Expose
+        @ColumnInfo(name = "user_id")
         private String userId;
+
         @SerializedName("event_id")
         @Expose
+        @ColumnInfo(name = "event_id")
         private String eventId;
+
         @SerializedName("cso_id")
         @Expose
+        @ColumnInfo(name = "cso_id")
         private String csoId;
+
         @SerializedName("shift_id")
         @Expose
+        @ColumnInfo(name = "shift_id")
         private String shiftId;
+
         @SerializedName("attend_present")
         @Expose
+        @ColumnInfo(name = "attend_present")
         private String attendPresent;
+
         @SerializedName("attend_in_time")
         @Expose
+        @ColumnInfo(name = "attend_in_time")
         private String attendInTime;
+
         @SerializedName("attend_out_time")
         @Expose
+        @ColumnInfo(name = "attend_out_time")
         private String attendOutTime;
+
         @SerializedName("attend_hours")
         @Expose
+        @ColumnInfo(name = "attend_hours")
         private String attendHours;
+
         @SerializedName("attend_cso_grade")
         @Expose
+        @ColumnInfo(name = "attend_cso_grade")
         private String attendCsoGrade;
+
         @SerializedName("attend_grade_date")
         @Expose
+        @ColumnInfo(name = "attend_grade_date")
         private String attendGradeDate;
+
         @SerializedName("attend_cso_remarks")
         @Expose
+        @ColumnInfo(name = "attend_cso_remarks")
         private String attendCsoRemarks;
+
         @SerializedName("attend_remarks_date")
         @Expose
+        @ColumnInfo(name = "attend_remarks_date")
         private String attendRemarksDate;
+
         @SerializedName("attend_rate")
         @Expose
+        @ColumnInfo(name = "attend_rate")
         private String attendRate;
+
         @SerializedName("attend_rate_remarks")
         @Expose
+        @ColumnInfo(name = "attend_rate_remarks")
         private String attendRateRemarks;
+
         @SerializedName("attend_rate_date")
         @Expose
+        @ColumnInfo(name = "attend_rate_date")
         private String attendRateDate;
+
         @SerializedName("map_status")
         @Expose
+        @ColumnInfo(name = "map_status")
         private String mapStatus;
+
         @SerializedName("map_add_date")
         @Expose
+        @ColumnInfo(name = "map_add_date")
         private String mapAddDate;
+
         @SerializedName("map_update_date")
         @Expose
+        @ColumnInfo(name = "map_update_date")
         private String mapUpdateDate;
+
         @SerializedName("event_heading")
         @Expose
+        @ColumnInfo(name = "event_heading")
         private String eventHeading;
+
         @SerializedName("shift_date_format")
         @Expose
+        @ColumnInfo(name = "shift_date_format")
         private String shiftDate;
+
         @SerializedName("shift_start_time")
         @Expose
+        @ColumnInfo(name = "shift_start_time")
         private String shiftStartTime;
+
         @SerializedName("shift_end_time")
         @Expose
+        @ColumnInfo(name = "shift_end_time")
         private String shiftEndTime;
+
         @SerializedName("shift_rank")
         @Expose
+        @ColumnInfo(name = "shift_rank")
         private String shiftRank;
+
         @SerializedName("shift_task")
         @Expose
+        @ColumnInfo(name = "shift_task")
         private String shiftTask;
 
-        public ResData() {
+        @SerializedName("cso_email")
+        @Expose
+        @ColumnInfo(name = "cso_email")
+        private String cso_email;
+
+        @SerializedName("cso_f_name")
+        @Expose
+        @ColumnInfo(name = "cso_f_name")
+        private String cso_f_name;
+
+        @SerializedName("cso_l_name")
+        @Expose
+        @ColumnInfo(name = "cso_l_name")
+        private String cso_l_name;
+
+        @SerializedName("map_status_comment")
+        @Expose
+        @ColumnInfo(name = "map_status_comment")
+        private String mapStatusComment;
+
+        @SerializedName("map_rank_comment")
+        @Expose
+        @ColumnInfo(name = "map_rank_comment")
+        private String mapRankComment;
+
+
+        public int getId() {
+            return id;
         }
 
-
-        public ResData(String mapId, String userId, String eventId, String csoId, String shiftId, String attendPresent, String attendInTime, String attendOutTime, String attendHours, String attendCsoGrade, String attendGradeDate, String attendCsoRemarks, String attendRemarksDate, String attendRate, String attendRateRemarks, String attendRateDate, String mapStatus, String mapAddDate, String mapUpdateDate, String eventHeading, String shiftDate, String shiftStartTime, String shiftEndTime, String shiftRank, String shiftTask) {
-            super();
-            this.mapId = mapId;
-            this.userId = userId;
-            this.eventId = eventId;
-            this.csoId = csoId;
-            this.shiftId = shiftId;
-            this.attendPresent = attendPresent;
-            this.attendInTime = attendInTime;
-            this.attendOutTime = attendOutTime;
-            this.attendHours = attendHours;
-            this.attendCsoGrade = attendCsoGrade;
-            this.attendGradeDate = attendGradeDate;
-            this.attendCsoRemarks = attendCsoRemarks;
-            this.attendRemarksDate = attendRemarksDate;
-            this.attendRate = attendRate;
-            this.attendRateRemarks = attendRateRemarks;
-            this.attendRateDate = attendRateDate;
-            this.mapStatus = mapStatus;
-            this.mapAddDate = mapAddDate;
-            this.mapUpdateDate = mapUpdateDate;
-            this.eventHeading = eventHeading;
-            this.shiftDate = shiftDate;
-            this.shiftStartTime = shiftStartTime;
-            this.shiftEndTime = shiftEndTime;
-            this.shiftRank = shiftRank;
-            this.shiftTask = shiftTask;
+        public void setId(int id) {
+            this.id = id;
         }
 
         public String getMapId() {
@@ -361,5 +414,44 @@ public class VolunteerAllResponse {
             this.shiftTask = shiftTask;
         }
 
+        public String getCso_email() {
+            return cso_email;
+        }
+
+        public void setCso_email(String cso_email) {
+            this.cso_email = cso_email;
+        }
+
+        public String getCso_f_name() {
+            return cso_f_name;
+        }
+
+        public void setCso_f_name(String cso_f_name) {
+            this.cso_f_name = cso_f_name;
+        }
+
+        public String getCso_l_name() {
+            return cso_l_name;
+        }
+
+        public void setCso_l_name(String cso_l_name) {
+            this.cso_l_name = cso_l_name;
+        }
+
+        public String getMapStatusComment() {
+            return mapStatusComment;
+        }
+
+        public void setMapStatusComment(String mapStatusComment) {
+            this.mapStatusComment = mapStatusComment;
+        }
+
+        public String getMapRankComment() {
+            return mapRankComment;
+        }
+
+        public void setMapRankComment(String mapRankComment) {
+            this.mapRankComment = mapRankComment;
+        }
     }
 }

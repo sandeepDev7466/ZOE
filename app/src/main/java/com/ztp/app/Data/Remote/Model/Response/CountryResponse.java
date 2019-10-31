@@ -58,42 +58,29 @@ public class CountryResponse {
     @Entity(tableName = "country")
     public static class Country {
 
-        @PrimaryKey(autoGenerate = true)
+        @PrimaryKey
         @NonNull
-        @ColumnInfo(name = "id")
-        private int id;
-
-        @SerializedName("country_id")
-        @Expose
         @ColumnInfo(name = "country_id")
+        @Expose
+        @SerializedName("country_id")
         private String countryId;
 
-        @SerializedName("country_code")
-        @Expose
         @ColumnInfo(name = "country_code")
+        @Expose
+        @SerializedName("country_code")
         private String countryCode;
 
-        @SerializedName("country_name")
-        @Expose
         @ColumnInfo(name = "country_name")
+        @Expose
+        @SerializedName("country_name")
         private String countryName;
 
-//        public Country() {
-//        }
 
-        public Country(int id, String countryId, String countryCode, String countryName) {
-            this.id = id;
+
+        public Country(String countryId, String countryCode, String countryName) {
             this.countryId = countryId;
             this.countryCode = countryCode;
             this.countryName = countryName;
-        }
-
-        public int getId() {
-            return id;
-        }
-
-        public void setId(int id) {
-            this.id = id;
         }
 
         public String getCountryId() {

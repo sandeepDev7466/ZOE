@@ -1,13 +1,15 @@
 package com.ztp.app.Data.Remote.Model.Response;
 
-import android.os.Parcel;
-import android.os.Parcelable;
-
-import com.google.gson.annotations.Expose;
-import com.google.gson.annotations.SerializedName;
+import android.arch.persistence.room.ColumnInfo;
+import android.arch.persistence.room.Entity;
+import android.arch.persistence.room.PrimaryKey;
+import android.support.annotation.NonNull;
 
 import java.io.Serializable;
 import java.util.List;
+
+import com.google.gson.annotations.Expose;
+import com.google.gson.annotations.SerializedName;
 
 public class GetEventsResponse {
 
@@ -16,7 +18,7 @@ public class GetEventsResponse {
     private String apiResKey;
     @SerializedName("res_data")
     @Expose
-    private List<EventData> eventData = null;
+    private List<Event> resData = null;
     @SerializedName("res_status")
     @Expose
     private String resStatus;
@@ -24,10 +26,10 @@ public class GetEventsResponse {
     public GetEventsResponse() {
     }
 
-    public GetEventsResponse(String apiResKey, List<EventData> eventData, String resStatus) {
+    public GetEventsResponse(String apiResKey, List<Event> resData, String resStatus) {
         super();
         this.apiResKey = apiResKey;
-        this.eventData = eventData;
+        this.resData = resData;
         this.resStatus = resStatus;
     }
 
@@ -39,12 +41,12 @@ public class GetEventsResponse {
         this.apiResKey = apiResKey;
     }
 
-    public List<EventData> getEventData() {
-        return eventData;
+    public List<Event> getResData() {
+        return resData;
     }
 
-    public void setEventData(List<EventData> eventData) {
-        this.eventData = eventData;
+    public void setResData(List<Event> resData) {
+        this.resData = resData;
     }
 
     public String getResStatus() {
@@ -55,77 +57,162 @@ public class GetEventsResponse {
         this.resStatus = resStatus;
     }
 
-    public class EventData implements Serializable {
+    @Entity(tableName = "event")
+    public static class Event implements Serializable {
 
+        @NonNull
+        @PrimaryKey
         @SerializedName("event_id")
         @Expose
+        @ColumnInfo(name = "event_id")
         private String eventId;
+
         @SerializedName("user_id")
         @Expose
+        @ColumnInfo(name = "user_id")
         private String userId;
+
         @SerializedName("event_type_id")
         @Expose
+        @ColumnInfo(name = "event_type_id")
         private String eventTypeId;
+
         @SerializedName("event_heading")
         @Expose
+        @ColumnInfo(name = "event_heading")
         private String eventHeading;
+
         @SerializedName("event_details")
         @Expose
+        @ColumnInfo(name = "event_details")
         private String eventDetails;
+
         @SerializedName("event_address")
         @Expose
+        @ColumnInfo(name = "event_address")
         private String eventAddress;
+
         @SerializedName("event_country")
         @Expose
+        @ColumnInfo(name = "event_country")
         private String eventCountry;
+
+        @SerializedName("event_country_name")
+        @Expose
+        @ColumnInfo(name = "event_country_name")
+        private String eventCountryName;
+
         @SerializedName("event_state")
         @Expose
+        @ColumnInfo(name = "event_state")
         private String eventState;
+
+        @SerializedName("event_state_name")
+        @Expose
+        @ColumnInfo(name = "event_state_name")
+        private String eventStateName;
+
         @SerializedName("event_city")
         @Expose
+        @ColumnInfo(name = "event_city")
         private String eventCity;
+
         @SerializedName("event_postcode")
         @Expose
+        @ColumnInfo(name = "event_postcode")
         private String eventPostcode;
+
         @SerializedName("event_timezone")
         @Expose
+        @ColumnInfo(name = "event_timezone")
         private String eventTimezone;
+
         @SerializedName("event_latitude")
         @Expose
+        @ColumnInfo(name = "event_latitude")
         private String eventLatitude;
+
         @SerializedName("event_longitude")
         @Expose
+        @ColumnInfo(name = "event_longitude")
         private String eventLongitude;
+
         @SerializedName("event_email")
         @Expose
+        @ColumnInfo(name = "event_email")
         private String eventEmail;
+
         @SerializedName("event_phone")
         @Expose
+        @ColumnInfo(name = "event_phone")
         private String eventPhone;
+
         @SerializedName("event_image")
         @Expose
+        @ColumnInfo(name = "event_image")
         private String eventImage;
+
         @SerializedName("event_register_start_date")
         @Expose
+        @ColumnInfo(name = "event_register_start_date")
         private String eventRegisterStartDate;
+
         @SerializedName("event_register_end_date")
         @Expose
+        @ColumnInfo(name = "event_register_end_date")
         private String eventRegisterEndDate;
+
         @SerializedName("event_add_date")
         @Expose
+        @ColumnInfo(name = "event_add_date")
         private String eventAddDate;
+
         @SerializedName("event_update_date")
         @Expose
+        @ColumnInfo(name = "event_update_date")
         private String eventUpdateDate;
+
         @SerializedName("event_status")
         @Expose
+        @ColumnInfo(name = "event_status")
         private String eventStatus;
 
-        public EventData() {
-        }
+        @SerializedName("event_image_name")
+        @Expose
+        @ColumnInfo(name = "event_image_name")
+        private String eventImageName;
 
-        public EventData(String eventId, String userId, String eventTypeId, String eventHeading, String eventDetails, String eventAddress, String eventCountry, String eventState, String eventCity, String eventPostcode, String eventTimezone, String eventLatitude, String eventLongitude, String eventEmail, String eventPhone, String eventImage, String eventRegisterStartDate, String eventRegisterEndDate, String eventAddDate, String eventUpdateDate, String eventStatus) {
-            super();
+        @SerializedName("shift_count")
+        @Expose
+        @ColumnInfo(name = "shift_count")
+        private String shiftCount;
+
+        @SerializedName("total_vol_req")
+        @Expose
+        @ColumnInfo(name = "total_vol_req")
+        private String totalVolReq;
+
+        @SerializedName("event_waiver_req")
+        @Expose
+        @ColumnInfo(name = "event_waiver_req")
+        private String eventWaiverRequired;
+
+        @SerializedName("event_waiver_doc")
+        @Expose
+        @ColumnInfo(name = "event_waiver_doc")
+        private String eventWaiverDocument;
+
+        @SerializedName("event_start_time")
+        @Expose
+        @ColumnInfo(name = "event_start_time")
+        private String eventStartTime;
+
+        @SerializedName("event_end_time")
+        @Expose
+        @ColumnInfo(name = "event_end_time")
+        private String eventEndTime;
+
+        public Event(@NonNull String eventId, String userId, String eventTypeId, String eventHeading, String eventDetails, String eventAddress, String eventCountry, String eventCountryName, String eventState, String eventStateName, String eventCity, String eventPostcode, String eventTimezone, String eventLatitude, String eventLongitude, String eventEmail, String eventPhone, String eventImage, String eventRegisterStartDate, String eventRegisterEndDate, String eventAddDate, String eventUpdateDate, String eventStatus, String eventImageName, String shiftCount, String totalVolReq, String eventWaiverRequired, String eventWaiverDocument, String eventStartTime, String eventEndTime) {
             this.eventId = eventId;
             this.userId = userId;
             this.eventTypeId = eventTypeId;
@@ -133,7 +220,9 @@ public class GetEventsResponse {
             this.eventDetails = eventDetails;
             this.eventAddress = eventAddress;
             this.eventCountry = eventCountry;
+            this.eventCountryName = eventCountryName;
             this.eventState = eventState;
+            this.eventStateName = eventStateName;
             this.eventCity = eventCity;
             this.eventPostcode = eventPostcode;
             this.eventTimezone = eventTimezone;
@@ -147,13 +236,21 @@ public class GetEventsResponse {
             this.eventAddDate = eventAddDate;
             this.eventUpdateDate = eventUpdateDate;
             this.eventStatus = eventStatus;
+            this.eventImageName = eventImageName;
+            this.shiftCount = shiftCount;
+            this.totalVolReq = totalVolReq;
+            this.eventWaiverRequired = eventWaiverRequired;
+            this.eventWaiverDocument = eventWaiverDocument;
+            this.eventStartTime = eventStartTime;
+            this.eventEndTime = eventEndTime;
         }
 
+        @NonNull
         public String getEventId() {
             return eventId;
         }
 
-        public void setEventId(String eventId) {
+        public void setEventId(@NonNull String eventId) {
             this.eventId = eventId;
         }
 
@@ -205,12 +302,28 @@ public class GetEventsResponse {
             this.eventCountry = eventCountry;
         }
 
+        public String getEventCountryName() {
+            return eventCountryName;
+        }
+
+        public void setEventCountryName(String eventCountryName) {
+            this.eventCountryName = eventCountryName;
+        }
+
         public String getEventState() {
             return eventState;
         }
 
         public void setEventState(String eventState) {
             this.eventState = eventState;
+        }
+
+        public String getEventStateName() {
+            return eventStateName;
+        }
+
+        public void setEventStateName(String eventStateName) {
+            this.eventStateName = eventStateName;
         }
 
         public String getEventCity() {
@@ -317,5 +430,60 @@ public class GetEventsResponse {
             this.eventStatus = eventStatus;
         }
 
+        public String getEventImageName() {
+            return eventImageName;
+        }
+
+        public void setEventImageName(String eventImageName) {
+            this.eventImageName = eventImageName;
+        }
+
+        public String getShiftCount() {
+            return shiftCount;
+        }
+
+        public void setShiftCount(String shiftCount) {
+            this.shiftCount = shiftCount;
+        }
+
+        public String getTotalVolReq() {
+            return totalVolReq;
+        }
+
+        public void setTotalVolReq(String totalVolReq) {
+            this.totalVolReq = totalVolReq;
+        }
+
+        public String getEventWaiverRequired() {
+            return eventWaiverRequired;
+        }
+
+        public void setEventWaiverRequired(String eventWaiverRequired) {
+            this.eventWaiverRequired = eventWaiverRequired;
+        }
+
+        public String getEventWaiverDocument() {
+            return eventWaiverDocument;
+        }
+
+        public void setEventWaiverDocument(String eventWaiverDocument) {
+            this.eventWaiverDocument = eventWaiverDocument;
+        }
+
+        public String getEventStartTime() {
+            return eventStartTime;
+        }
+
+        public void setEventStartTime(String eventStartTime) {
+            this.eventStartTime = eventStartTime;
+        }
+
+        public String getEventEndTime() {
+            return eventEndTime;
+        }
+
+        public void setEventEndTime(String eventEndTime) {
+            this.eventEndTime = eventEndTime;
+        }
     }
 }

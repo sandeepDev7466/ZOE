@@ -14,5 +14,13 @@
         android:layout_marginStart="@dimen/_20sdp"
         android:layout_marginEnd="@dimen/_20sdp"
         android:overScrollMode="never"/>
-
+    <com.ztp.app.Helper.MyTextView
+        android:id="@+id/noData"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:text="@string/err_no_data_found"
+        style="@style/RegularTextView"
+        android:layout_gravity="center"
+        android:layout_centerInParent="true"
+        android:visibility="invisible"/>
 </FrameLayout>

@@ -12,7 +12,6 @@ import android.support.v7.app.AppCompatActivity;
 import android.telephony.PhoneNumberFormattingTextWatcher;
 import android.text.Editable;
 import android.text.TextWatcher;
-import android.util.Log;
 import android.view.MotionEvent;
 import android.view.View;
 import android.widget.AdapterView;
@@ -24,13 +23,16 @@ import android.widget.ScrollView;
 import android.widget.Spinner;
 import android.widget.Toast;
 
-import com.google.gson.Gson;
 import com.raywenderlich.android.validatetor.ValidateTor;
+import com.ztp.app.Data.Local.Room.Async.Get.DBGetCountry;
+import com.ztp.app.Data.Local.Room.Async.Get.DBGetProfile;
+import com.ztp.app.Data.Local.Room.Async.Get.DBGetSchool;
+import com.ztp.app.Data.Local.Room.Async.Get.DBGetState;
+import com.ztp.app.Data.Local.Room.Async.Save.DBSaveProfile;
 import com.ztp.app.Data.Local.Room.Database.RoomDB;
 import com.ztp.app.Data.Local.SharedPrefrence.SharedPref;
 import com.ztp.app.Data.Remote.Model.Request.GetProfileRequest;
 import com.ztp.app.Data.Remote.Model.Request.StateRequest;
-import com.ztp.app.Data.Remote.Model.Request.StudentRegisterRequest;
 import com.ztp.app.Data.Remote.Model.Request.UpdateProfileRequest;
 import com.ztp.app.Data.Remote.Model.Response.CountryResponse;
 import com.ztp.app.Data.Remote.Model.Response.GetProfileResponse;
@@ -40,22 +42,22 @@ import com.ztp.app.Helper.MyButton;
 import com.ztp.app.Helper.MyProgressDialog;
 import com.ztp.app.Helper.MyTextInputEditText;
 import com.ztp.app.Helper.MyTextInputLayout;
+import com.ztp.app.Helper.MyTextView;
 import com.ztp.app.Helper.MyToast;
 import com.ztp.app.R;
 import com.ztp.app.Utils.Constants;
 import com.ztp.app.Utils.Utility;
+import com.ztp.app.View.Activity.CSO.CsoDashboardActivity;
 import com.ztp.app.View.Activity.CSO.CsoRegisterStep_2Activity;
-import com.ztp.app.View.Activity.Student.StudentDashboardActivity;
+import com.ztp.app.View.Activity.Volunteer.VolunteerDashboardActivity;
 import com.ztp.app.Viewmodel.CountryViewModel;
 import com.ztp.app.Viewmodel.GetProfileViewModel;
 import com.ztp.app.Viewmodel.SchoolViewModel;
 import com.ztp.app.Viewmodel.StateViewModel;
 import com.ztp.app.Viewmodel.UpdateProfileViewModel;
 
-import java.text.ParseException;
 import java.util.ArrayList;
 import java.util.Calendar;
-import java.util.Date;
 import java.util.List;
 
 public class EditProfileActivity extends AppCompatActivity implements View.OnClickListener, View.OnTouchListener {
@@ -64,7 +66,7 @@ public class EditProfileActivity extends AppCompatActivity implements View.OnCli
     String type;
     Context context;
     Spinner sp_school, sp_country, sp_state, sp_gender;
-    MyTextInputLayout etFirstNameLayout, etLastNameLayout, etPostalCodeLayout,etEmailLayout,etPhoneLayout;
+    MyTextInputLayout etFirstNameLayout, etLastNameLayout, etPostalCodeLayout, etEmailLayout, etPhoneLayout;
     MyTextInputEditText etFirstName, etLastName, etEmail, etPhone, etCity, etPostalCode, etDob, etPassword, etConfirmPassword, etAddress;
     MyToast myToast;
     SharedPref sharedPref;
@@ -91,6 +93,11 @@ public class EditProfileActivity extends AppCompatActivity implements View.OnCli
     boolean flag = false;
     ValidateTor validate;
     boolean error = false;
+    DBGetCountry dbGetCountry;
+    DBGetState dbGetState;
+    DBGetSchool dbGetSchool;
+    DBGetProfile dbGetProfile;
+    MyTextView school_spinner_heading;
 
 
     @Override
@@ -103,11 +110,13 @@ public class EditProfileActivity extends AppCompatActivity implements View.OnCli
     @SuppressLint("ClickableViewAccessibility")
     private void init() {
         context = this;
+        sharedPref = SharedPref.getInstance(context);
         if (getSupportActionBar() != null)
             getSupportActionBar().hide();
-        if (getIntent() != null)
-            type = getIntent().getStringExtra("type");
-
+        dbGetCountry = new DBGetCountry(context);
+        dbGetState = new DBGetState(context);
+        dbGetSchool = new DBGetSchool(context);
+        dbGetProfile = new DBGetProfile(context, sharedPref.getUserId());
         validate = new ValidateTor();
         roomDB = RoomDB.getInstance(context);
         myCalendar = Calendar.getInstance();
@@ -117,13 +126,13 @@ public class EditProfileActivity extends AppCompatActivity implements View.OnCli
         schoolModel = ViewModelProviders.of(this).get(SchoolViewModel.class);
         getProfileViewModel = ViewModelProviders.of(this).get(GetProfileViewModel.class);
         updateProfileViewModel = ViewModelProviders.of(this).get(UpdateProfileViewModel.class);
-        sharedPref = SharedPref.getInstance(context);
         theme = sharedPref.getTheme();
         myToast = new MyToast(context);
         scrollView = findViewById(R.id.scrollView);
         update = findViewById(R.id.update);
         clear = findViewById(R.id.clear);
         back = findViewById(R.id.back);
+        school_spinner_heading = findViewById(R.id.school_spinner_heading);
 
         sp_school = findViewById(R.id.school);
         sp_country = findViewById(R.id.country);
@@ -163,19 +172,53 @@ public class EditProfileActivity extends AppCompatActivity implements View.OnCli
         back.setOnClickListener(this);
         etDob.setOnTouchListener(this);
 
-        setGenderSpinner();
-        getSchoolList();
-//        getCountryList();
-//        getProfileData();
-
         etPhone.setEnabled(false);
         etEmail.setEnabled(false);
         sp_school.setEnabled(false);
 
-        if (type.equalsIgnoreCase("cso")) {
+        if (Utility.isNetworkAvailable(context)) {
+            update.setText(getString(R.string.update));
+        } else {
+            if (sharedPref.getUserType().equalsIgnoreCase(Constants.user_type_cso)) {
+                update.setText(getString(R.string.next_cso));
+                etDob.setHint(getString(R.string.date_of_birth_cso));
+            } else {
+                update.setText(getString(R.string.done));
+                etDob.setHint(getString(R.string.date_of_birth));
+            }
+        }
+
+       /* if (type.equalsIgnoreCase("cso")) {
             nav_layout.setVisibility(View.VISIBLE);
             schoolLayout.setVisibility(View.GONE);
+            school_spinner_heading.setVisibility(View.GONE);
+        } else if (type.equalsIgnoreCase("stu")) {
+//            nav_layout.setVisibility(View.GONE);
+//            schoolLayout.setVisibility(View.VISIBLE);
+            nav_layout.setVisibility(View.VISIBLE);
+            schoolLayout.setVisibility(View.GONE);
+            school_spinner_heading.setVisibility(View.GONE);
+        } else if (type.equalsIgnoreCase("vol")) {
+            nav_layout.setVisibility(View.VISIBLE);
+            schoolLayout.setVisibility(View.GONE);
+            school_spinner_heading.setVisibility(View.GONE);
+        }*/
+
+        if (sharedPref.getUserType().equalsIgnoreCase(Constants.user_type_cso)) {
+            nav_layout.setVisibility(View.VISIBLE);
+            schoolLayout.setVisibility(View.GONE);
+            school_spinner_heading.setVisibility(View.GONE);
+        } else if (sharedPref.getUserType().equalsIgnoreCase(Constants.user_type_student)) {
+            nav_layout.setVisibility(View.GONE);
+            schoolLayout.setVisibility(View.VISIBLE);
+            school_spinner_heading.setVisibility(View.VISIBLE);
+
+        } else if (sharedPref.getUserType().equalsIgnoreCase(Constants.user_type_volunteer) || sharedPref.getUserType().equalsIgnoreCase(Constants.user_type_csa)) {
+            nav_layout.setVisibility(View.GONE);
+            schoolLayout.setVisibility(View.GONE);
+            school_spinner_heading.setVisibility(View.GONE);
         }
+
 
         sp_school.setOnItemSelectedListener(new AdapterView.OnItemSelectedListener() {
             @Override
@@ -194,7 +237,7 @@ public class EditProfileActivity extends AppCompatActivity implements View.OnCli
         sp_gender.setOnItemSelectedListener(new AdapterView.OnItemSelectedListener() {
             @Override
             public void onItemSelected(AdapterView<?> parentView, View selectedItemView, int position, long id) {
-                if(position>0)
+                if (position > 0)
                     gender_id = getResources().getStringArray(R.array.gender)[position];
                 else
                     gender_id = "";
@@ -206,7 +249,6 @@ public class EditProfileActivity extends AppCompatActivity implements View.OnCli
 
 
             }
-
         });
 
         sp_country.setOnItemSelectedListener(new AdapterView.OnItemSelectedListener() {
@@ -215,13 +257,17 @@ public class EditProfileActivity extends AppCompatActivity implements View.OnCli
                 country_id = countryListData.get(position).getCountryId();
                 if (stateListData.size() == 0)
                     getStateList(country_id);
+                else
+                {
+                    if(myProgressDialog.isShowing())
+                        myProgressDialog.dismiss();
+                }
             }
 
             @Override
             public void onNothingSelected(AdapterView<?> parentView) {
 
             }
-
         });
 
         sp_state.setOnItemSelectedListener(new AdapterView.OnItemSelectedListener() {
@@ -234,7 +280,6 @@ public class EditProfileActivity extends AppCompatActivity implements View.OnCli
             public void onNothingSelected(AdapterView<?> parentView) {
 
             }
-
         });
 
         etFirstName.addTextChangedListener(new TextWatcher() {
@@ -252,7 +297,7 @@ public class EditProfileActivity extends AppCompatActivity implements View.OnCli
             public void afterTextChanged(Editable s) {
 
                 if (s != null && s.length() > 0) {
-                    if (!validate.isAlpha(s.toString())) {
+                    if (!Utility.isValidName(s.toString())) {
                         etFirstNameLayout.setError("First name should only contain alphabets");
                     } else {
                         etFirstNameLayout.setError(null);
@@ -278,7 +323,7 @@ public class EditProfileActivity extends AppCompatActivity implements View.OnCli
             public void afterTextChanged(Editable s) {
 
                 if (s != null && s.length() > 0) {
-                    if (!validate.isAlpha(s.toString())) {
+                    if (!Utility.isValidName(s.toString())) {
                         etLastNameLayout.setError("Last name should only contain alphabets");
                     } else {
                         etLastNameLayout.setError(null);
@@ -342,12 +387,24 @@ public class EditProfileActivity extends AppCompatActivity implements View.OnCli
 */
     }
 
+    @Override
+    protected void onResume() {
+        super.onResume();
+        setGenderSpinner();
+        myProgressDialog.show(getString(R.string.please_wait));
+        if (sharedPref.getUserType().equalsIgnoreCase(Constants.user_type_student))
+            getSchoolList();
+        else
+            getCountryList();
+    }
+
     private void getSchoolList() {
 
         schoolList = new ArrayList<>();
         if (Utility.isNetworkAvailable(context)) {
-            myProgressDialog.show(getString(R.string.please_wait));
-            schoolModel.getSchoolResponse().observe((LifecycleOwner) context, schoolResponse -> {
+            // myProgressDialog.show(getString(R.string.please_wait));
+
+            schoolModel.getSchoolResponse(context).observe((LifecycleOwner) context, schoolResponse -> {
 
                 if (schoolResponse != null && schoolResponse.getResStatus().equalsIgnoreCase("200")) {
                     schoolListData = schoolResponse.getSchoolData();
@@ -357,33 +414,41 @@ public class EditProfileActivity extends AppCompatActivity implements View.OnCli
                         }
                         setSchoolSpinner(schoolList);
                     }
-                }
-                else if(schoolResponse != null && schoolResponse.getResStatus().equalsIgnoreCase("401"))
-                {
+                } else if (schoolResponse != null && schoolResponse.getResStatus().equalsIgnoreCase("401")) {
                     myToast.show(getString(R.string.err_no_school), Toast.LENGTH_SHORT, false);
-                }
-                else {
+                    myProgressDialog.dismiss();
+                } else {
                     myToast.show(getString(R.string.err_server), Toast.LENGTH_SHORT, false);
+                    myProgressDialog.dismiss();
                 }
-                myProgressDialog.dismiss();
+                //myProgressDialog.dismiss();
             });
+
         } else {
-            myToast.show(getString(R.string.no_internet_connection), Toast.LENGTH_SHORT, false);
-            schoolList.add("Select School");
+            schoolListData = dbGetSchool.getSchoolList();
+            if (schoolListData.size() > 0) {
+                for (int i = 0; i < schoolListData.size(); i++) {
+                    schoolList.add(schoolListData.get(i).getSchoolName());
+                }
+                schoolList.add("Select School");
+                setSchoolSpinner(schoolList);
+            }
         }
 
-        getProfileData();
+        //getProfileData();
+
+        getCountryList();
     }
 
     private void getCountryList() {
 
         countryList = new ArrayList<>();
         if (Utility.isNetworkAvailable(context)) {
+            //myProgressDialog.show(getString(R.string.please_wait));
             countryModel.getCountryResponse(context).observe((LifecycleOwner) context, countryResponse -> {
                 if (countryResponse != null) {
 
-                    if(countryResponse.getResStatus().equalsIgnoreCase("200") && countryResponse.getResData()!=null)
-                    {
+                    if (countryResponse.getResStatus().equalsIgnoreCase("200") && countryResponse.getResData() != null) {
                         countryListData = countryResponse.getResData();
                         if (countryListData.size() > 0) {
                             for (int i = 0; i < countryListData.size(); i++) {
@@ -391,33 +456,36 @@ public class EditProfileActivity extends AppCompatActivity implements View.OnCli
                             }
                             setCountrySpinner(countryListData);
                         }
-                    }
-                    else if(countryResponse.getResStatus().equalsIgnoreCase("401")){
-
+                    } else if (countryResponse.getResStatus().equalsIgnoreCase("401")) {
                         myToast.show(getString(R.string.err_no_country_found), Toast.LENGTH_SHORT, false);
+                        myProgressDialog.dismiss();
                     }
                 } else {
                     myToast.show(getString(R.string.err_server), Toast.LENGTH_SHORT, false);
+                    myProgressDialog.dismiss();
                 }
-                myProgressDialog.dismiss();
+                //myProgressDialog.dismiss();
             });
         } else {
-
-            myToast.show(getString(R.string.no_internet_connection), Toast.LENGTH_SHORT, false);
+            countryListData = dbGetCountry.getCountryList();
+            if (countryListData.size() > 0) {
+                for (int i = 0; i < countryListData.size(); i++) {
+                    countryList.add(countryListData.get(i).getCountryName());
+                }
+                setCountrySpinner(countryListData);
+            }
         }
-
     }
 
     private void getStateList(String country_id) {
 
         stateList = new ArrayList<>();
         if (Utility.isNetworkAvailable(context)) {
-            if (!myProgressDialog.isShowing())
-                myProgressDialog.show(getString(R.string.please_wait));
+            /*if (!myProgressDialog.isShowing())
+                myProgressDialog.show(getString(R.string.please_wait));*/
             stateModel.getStateResponse(context, new StateRequest(country_id)).observe((LifecycleOwner) context, stateResponse -> {
                 if (stateResponse != null) {
-                    if(stateResponse.getResStatus().equalsIgnoreCase("200"))
-                    {
+                    if (stateResponse.getResStatus().equalsIgnoreCase("200")) {
                         stateListData = stateResponse.getStateList();
                         if (stateListData.size() > 0) {
                             for (int i = 0; i < stateListData.size(); i++) {
@@ -425,19 +493,25 @@ public class EditProfileActivity extends AppCompatActivity implements View.OnCli
                             }
                             setStateSpinner(stateListData);
                         }
-                    }
-                    else if(stateResponse.getResStatus().equalsIgnoreCase("401"))
-                    {
+                    } else if (stateResponse.getResStatus().equalsIgnoreCase("401")) {
                         myToast.show(getString(R.string.err_no_state_found), Toast.LENGTH_SHORT, false);
+                        myProgressDialog.dismiss();
                     }
 
                 } else {
                     myToast.show(getString(R.string.err_server), Toast.LENGTH_SHORT, false);
+                    myProgressDialog.dismiss();
                 }
-                myProgressDialog.dismiss();
+                //myProgressDialog.dismiss();
             });
         } else {
-            myToast.show(getString(R.string.no_internet_connection), Toast.LENGTH_SHORT, false);
+            stateListData = dbGetState.getStateList();
+            if (stateListData.size() > 0) {
+                for (int i = 0; i < stateListData.size(); i++) {
+                    stateList.add(stateListData.get(i).getStateName());
+                }
+                setStateSpinner(stateListData);
+            }
         }
     }
 
@@ -459,17 +533,19 @@ public class EditProfileActivity extends AppCompatActivity implements View.OnCli
     private void setStateSpinner(List<StateResponse.State> stateList) {
         ArrayAdapter<StateResponse.State> adapter = new ArrayAdapter<>(this, R.layout.spinner_dropdown_item, R.id.text, stateList);
         sp_state.setAdapter(adapter);
+        getProfileData();
         if (flag) {
             flag = false;
             sp_state.setSelection(getStatePosition(), true);
         }
     }
+
     public void checkValidation() {
         if (etFirstName.getText() == null || etFirstName.getText().toString().isEmpty()) {
             myToast.show(getString(R.string.err_enter_first_name), Toast.LENGTH_SHORT, false);
             return;
         } else if (!etFirstName.getText().toString().isEmpty()) {
-            if (!validate.isAlpha(etFirstName.getText().toString())) {
+            if (!Utility.isValidName(etFirstName.getText().toString())) {
                 myToast.show(getString(R.string.err_enter_first_name), Toast.LENGTH_SHORT, false);
                 return;
             }
@@ -478,30 +554,30 @@ public class EditProfileActivity extends AppCompatActivity implements View.OnCli
             myToast.show(getString(R.string.err_enter_last_name), Toast.LENGTH_SHORT, false);
             return;
         } else if (!etLastName.getText().toString().isEmpty()) {
-            if (!validate.isAlpha(etLastName.getText().toString())) {
+            if (!Utility.isValidName(etLastName.getText().toString())) {
                 myToast.show(getString(R.string.err_enter_last_name), Toast.LENGTH_SHORT, false);
                 return;
             }
         }
-        if (etEmail.getText() == null || etEmail.getText().toString().isEmpty()) {
+       /* if (etEmail.getText() == null || etEmail.getText().toString().isEmpty()) {
             myToast.show(getString(R.string.err_enter_email), Toast.LENGTH_SHORT, false);
             return;
-        } /*else if (!etEmail.getText().toString().isEmpty()) {
+        } *//*else if (!etEmail.getText().toString().isEmpty()) {
             if (!Utility.isValidEmail(etEmail.getText().toString())) {
                 myToast.show(getString(R.string.err_enter_valid_email), Toast.LENGTH_SHORT, false);
                 return;
             }
         }
-*/
+*//*
         if (etPhone.getText() == null || etPhone.getText().toString().isEmpty()) {
             myToast.show(getString(R.string.err_enter_phone_number), Toast.LENGTH_SHORT, false);
             return;
-        } /*else if (!etPhone.getText().toString().isEmpty()) {
+        } *//*else if (!etPhone.getText().toString().isEmpty()) {
             if (!Utility.isValidPhoneNumber(etPhone.getText().toString())) {
                 myToast.show(getString(R.string.err_enter_valid_phone), Toast.LENGTH_SHORT, false);
                 return;
             }
-        }*/
+        }*//*
         if (country_id == null || country_id.isEmpty()) {
             myToast.show(getString(R.string.err_select_country), Toast.LENGTH_SHORT, false);
         }
@@ -525,15 +601,16 @@ public class EditProfileActivity extends AppCompatActivity implements View.OnCli
         if (etAddress.getText() == null || etAddress.getText().toString().isEmpty()) {
             myToast.show(getString(R.string.err_enter_address), Toast.LENGTH_SHORT, false);
             return;
-        }
-        if (etDob.getText() == null || etDob.getText().toString().isEmpty()) {
-            myToast.show(getString(R.string.err_enter_dob), Toast.LENGTH_SHORT, false);
-            return;
-        }
-        if (gender_id == null || gender_id.isEmpty()) {
-            myToast.show(getString(R.string.err_select_gender), Toast.LENGTH_SHORT, false);
-            return;
-        }
+        }*/
+        if (!sharedPref.getUserType().equalsIgnoreCase(Constants.user_type_cso))
+            if (etDob.getText() == null || etDob.getText().toString().isEmpty()) {
+                myToast.show(getString(R.string.err_enter_dob), Toast.LENGTH_SHORT, false);
+                return;
+            }
+//        if (gender_id == null || gender_id.isEmpty()) {
+//            myToast.show(getString(R.string.err_select_gender), Toast.LENGTH_SHORT, false);
+//            return;
+//        }
 
         if (!error) {
 
@@ -551,64 +628,136 @@ public class EditProfileActivity extends AppCompatActivity implements View.OnCli
             updateProfileRequest.setUserZipcode(etPostalCode.getText().toString());
             updateProfileRequest.setUserAddress(etAddress.getText().toString());
             updateProfileRequest.setUserDob(etDob.getText().toString().trim());
-            updateProfileRequest.setUserGender(String.valueOf(gender_id.charAt(0)));
 
-            if(Utility.isNetworkAvailable(context)) {
+            if (gender_id.isEmpty())
+                updateProfileRequest.setUserGender("");
+            else
+                updateProfileRequest.setUserGender(String.valueOf(gender_id.charAt(0)));
+
+
+            if (Utility.isNetworkAvailable(context)) {
                 updateProfileViewModel.updateProfileResponse(updateProfileRequest).observe((LifecycleOwner) context, updateProfileResponse ->
                 {
-                    if(updateProfileResponse != null) {
+                    if (updateProfileResponse != null) {
                         if (updateProfileResponse.getResStatus().equalsIgnoreCase("200")) {
+
+                            /* GetProfileResponse.TargetData profile = new GetProfileResponse.TargetData();  *//*new GetProfileResponse.TargetData();*//**//*dbGetProfile.getProfile().get(0)*//*;  // Save Offline
+                            profile.setUserType(sharedPref.getUserType());
+                            profile.setUserDevice(Utility.getDeviceId(context));
+                            profile.setUserId(sharedPref.getUserId());
+                            profile.setUserFName(etFirstName.getText().toString());
+                            profile.setUserLName(etLastName.getText().toString());
+                            profile.setUserCountry(country_id);
+                            profile.setUserCountryName(countryListData.get(getCountryPosition()).getCountryName());
+                            profile.setUserState(state_id);
+                            profile.setUserStateName(stateListData.get(getStatePosition()).getStateName());
+                            profile.setUserCity(etCity.getText().toString());
+                            profile.setUserZipcode(etPostalCode.getText().toString());
+                            profile.setUserAddress(etAddress.getText().toString());
+                            profile.setUserDob(etDob.getText().toString().trim());
+                            profile.setUserGender(String.valueOf(gender_id.charAt(0)));
+                            profile.setUserEmail(etEmail.getText().toString());
+                            profile.setUserPhone(etPhone.getText().toString());
+                            profile.setSynced(true);
+                            new DBSaveProfile(context, profile).execute();*/
 
                             sharedPref.setFirstName(etFirstName.getText().toString());
                             sharedPref.setLastName(etLastName.getText().toString());
-                            if (type.equalsIgnoreCase("stu")) {
+
+                            if (sharedPref.getUserType().equalsIgnoreCase(Constants.user_type_student) || sharedPref.getUserType().equalsIgnoreCase(Constants.user_type_volunteer)) {
                                 myToast.show(getString(R.string.profile_updated), Toast.LENGTH_SHORT, true);
 
-                                Intent intent1 = new Intent(context, StudentDashboardActivity.class);
+                                Intent intent1 = new Intent(context, VolunteerDashboardActivity.class);
                                 intent1.addFlags(Intent.FLAG_ACTIVITY_NEW_TASK | Intent.FLAG_ACTIVITY_CLEAR_TASK);
                                 startActivity(intent1);
                                 overridePendingTransition(R.anim.fade_in, R.anim.fade_out);
 
-                            } else {
-                                try {
+                            } else if (sharedPref.getUserType().equalsIgnoreCase(Constants.user_type_cso)) {
 
-                                    Intent intent1 = new Intent(context, CsoRegisterStep_2Activity.class);
-                                    //intent1.addFlags(Intent.FLAG_ACTIVITY_NEW_TASK | Intent.FLAG_ACTIVITY_CLEAR_TASK);
-                                    intent1.putExtra("model", getProfileResponse);
-                                    intent1.putExtra("action", "update");
-                                    startActivity(intent1);
-                                    overridePendingTransition(R.anim.fade_in, R.anim.fade_out);
-                                } catch (Exception e) {
-                                    e.printStackTrace();
-                                }
+                                Intent intent1 = new Intent(context, CsoRegisterStep_2Activity.class);
+                                //intent1.addFlags(Intent.FLAG_ACTIVITY_NEW_TASK | Intent.FLAG_ACTIVITY_CLEAR_TASK);
+                                intent1.putExtra("model", getProfileResponse);
+                                intent1.putExtra("action", "update");
+                                startActivity(intent1);
+                                overridePendingTransition(R.anim.fade_in, R.anim.fade_out);
+                            } else {
+                                myToast.show(getString(R.string.profile_updated), Toast.LENGTH_SHORT, true);
+                                Intent intent1 = new Intent(context, CsoDashboardActivity.class);
+                                intent1.addFlags(Intent.FLAG_ACTIVITY_NEW_TASK | Intent.FLAG_ACTIVITY_CLEAR_TASK);
+                                startActivity(intent1);
+                                overridePendingTransition(R.anim.fade_in, R.anim.fade_out);
                             }
 
-                        } else if(updateProfileResponse.getResStatus().equalsIgnoreCase("401")){
+                        } else if (updateProfileResponse.getResStatus().equalsIgnoreCase("401")) {
                             myToast.show(getString(R.string.something_went_wrong), Toast.LENGTH_SHORT, false);
                         }
-                    }
-                    else
-                    {
+                    } else {
                         myToast.show(getString(R.string.err_server), Toast.LENGTH_SHORT, false);
                     }
 
                     myProgressDialog.dismiss();
                 });
-            }
-            else
-            {
+            } else {
                 myToast.show(getString(R.string.no_internet_connection), Toast.LENGTH_SHORT, false);
+
+                //myToast.show(getString(R.string.no_internet_connection), Toast.LENGTH_SHORT, false);
+
+             /*   GetProfileResponse.TargetData profile = dbGetProfile.getProfile().get(0);
+                profile.setUserType(sharedPref.getUserType());
+                profile.setUserDevice(Utility.getDeviceId(context));
+                profile.setUserId(sharedPref.getUserId());
+                profile.setUserFName(etFirstName.getText().toString());
+                profile.setUserLName(etLastName.getText().toString());
+                profile.setUserCountry(country_id);
+                profile.setUserCountryName(countryListData.get(getCountryPosition()).getCountryName());
+                profile.setUserState(state_id);
+                profile.setUserStateName(stateListData.get(getStatePosition()).getStateName());
+                profile.setUserCity(etCity.getText().toString());
+                profile.setUserZipcode(etPostalCode.getText().toString());
+                profile.setUserAddress(etAddress.getText().toString());
+                profile.setUserDob(etDob.getText().toString().trim());
+                profile.setUserGender(String.valueOf(gender_id.charAt(0)));
+                profile.setSynced(false);
+                new DBSaveProfile(context,profile).execute();
+                myToast.show(getString(R.string.profile_updated), Toast.LENGTH_SHORT, true);*/
+
+
+              /*  Intent intent1 = new Intent(context, VolunteerDashboardActivity.class);
+                intent1.addFlags(Intent.FLAG_ACTIVITY_NEW_TASK | Intent.FLAG_ACTIVITY_CLEAR_TASK);
+                startActivity(intent1);
+                overridePendingTransition(R.anim.fade_in, R.anim.fade_out);*/
+
             }
         } else {
             myToast.show(getString(R.string.err_invalid_data), Toast.LENGTH_SHORT, false);
         }
     }
+
     @Override
     public void onClick(View v) {
         switch (v.getId()) {
             case R.id.update:
 
-                checkValidation();
+                if (Utility.isNetworkAvailable(context))
+                    checkValidation();
+                else {
+
+                    myToast.show(getString(R.string.no_internet_connection), Toast.LENGTH_SHORT, false);
+
+                  /*  if (sharedPref.getUserType().equalsIgnoreCase(Constants.user_type_cso)) {
+                        Intent intent1 = new Intent(context, CsoRegisterStep_2Activity.class);
+                        intent1.putExtra("model", getProfileResponse);
+                        intent1.putExtra("action", "update");
+                        startActivity(intent1);
+                        overridePendingTransition(R.anim.fade_in, R.anim.fade_out);
+                    } else {
+                        Intent intent1 = new Intent(context, VolunteerDashboardActivity.class);
+                        intent1.addFlags(Intent.FLAG_ACTIVITY_NEW_TASK | Intent.FLAG_ACTIVITY_CLEAR_TASK);
+                        startActivity(intent1);
+                        overridePendingTransition(R.anim.fade_in, R.anim.fade_out);
+                    }*/
+                }
+
                 break;
 
             case R.id.back:
@@ -617,30 +766,57 @@ public class EditProfileActivity extends AppCompatActivity implements View.OnCli
 
             case R.id.clear:
 
-                if(getProfileResponse.getResData() != null) {
+                if (Utility.isNetworkAvailable(context)) {
+                    if (getProfileResponse.getResData() != null) {
 
-                    sharedPref.setUserType(getProfileResponse.getResData().getUserType().toUpperCase());
+                        sharedPref.setUserType(getProfileResponse.getResData().getUserType().toUpperCase());
 
-                    setSchoolSpinnerValue(getProfileResponse.getResData().getSchoolId());
+                        setSchoolSpinnerValue();
 
-                    etFirstName.setText(getProfileResponse.getResData().getUserFName());
-                    etLastName.setText(getProfileResponse.getResData().getUserLName());
-                    //etEmail.setText(getProfileResponse.getResData().getUserEmail());
-                    //etPhone.setText(getProfileResponse.getResData().getUserPhone());
-                    sp_country.setSelection(getCountryPosition(), true);
-                    sp_state.setSelection(getStatePosition(), true);
-                    etCity.setText(getProfileResponse.getResData().getUserCity());
-                    etPostalCode.setText(getProfileResponse.getResData().getUserZipcode());
-                    etAddress.setText(getProfileResponse.getResData().getUserAddress());
-                    etDob.setText(getProfileResponse.getResData().getUserDob());
-                    if (getProfileResponse.getResData().getUserGender().equalsIgnoreCase("m"))
-                        sp_gender.setSelection(1, true);
-                    else if (getProfileResponse.getResData().getUserGender().equalsIgnoreCase("f"))
-                        sp_gender.setSelection(2, true);
-                    else
-                        sp_gender.setSelection(3, true);
+                        etFirstName.setText(getProfileResponse.getResData().getUserFName());
+                        etLastName.setText(getProfileResponse.getResData().getUserLName());
+                        //etEmail.setText(getProfileResponse.getShiftDetail().getUserEmail());
+                        //etPhone.setText(getProfileResponse.getShiftDetail().getUserPhone());
+                        sp_country.setSelection(getCountryPosition(), true);
+                        sp_state.setSelection(getStatePosition(), true);
+                        etCity.setText(getProfileResponse.getResData().getUserCity());
+                        etPostalCode.setText(getProfileResponse.getResData().getUserZipcode());
+                        etAddress.setText(getProfileResponse.getResData().getUserAddress());
+                        etDob.setText(getProfileResponse.getResData().getUserDob());
+                        if (getProfileResponse.getResData().getUserGender().equalsIgnoreCase("m"))
+                            sp_gender.setSelection(1, true);
+                        else if (getProfileResponse.getResData().getUserGender().equalsIgnoreCase("f"))
+                            sp_gender.setSelection(2, true);
+                        else
+                            sp_gender.setSelection(3, true);
 
-                    scrollView.fullScroll(ScrollView.FOCUS_UP);
+                        scrollView.fullScroll(ScrollView.FOCUS_UP);
+                    }
+                } else {
+                    if (dbGetProfile.getProfile().get(0) != null) {
+                        sharedPref.setUserType(dbGetProfile.getProfile().get(0).getUserType().toUpperCase());
+
+                        setSchoolSpinnerValue();
+
+                        etFirstName.setText(dbGetProfile.getProfile().get(0).getUserFName());
+                        etLastName.setText(dbGetProfile.getProfile().get(0).getUserLName());
+                        //etEmail.setText(getProfileResponse.getShiftDetail().getUserEmail());
+                        //etPhone.setText(getProfileResponse.getShiftDetail().getUserPhone());
+                        sp_country.setSelection(getCountryPosition(), true);
+                        sp_state.setSelection(getStatePosition(), true);
+                        etCity.setText(dbGetProfile.getProfile().get(0).getUserCity());
+                        etPostalCode.setText(dbGetProfile.getProfile().get(0).getUserZipcode());
+                        etAddress.setText(dbGetProfile.getProfile().get(0).getUserAddress());
+                        etDob.setText(dbGetProfile.getProfile().get(0).getUserDob());
+                        if (dbGetProfile.getProfile().get(0).getUserGender().equalsIgnoreCase("m"))
+                            sp_gender.setSelection(1, true);
+                        else if (dbGetProfile.getProfile().get(0).getUserGender().equalsIgnoreCase("f"))
+                            sp_gender.setSelection(2, true);
+                        else
+                            sp_gender.setSelection(3, true);
+
+                        scrollView.fullScroll(ScrollView.FOCUS_UP);
+                    }
                 }
                 break;
         }
@@ -663,8 +839,6 @@ public class EditProfileActivity extends AppCompatActivity implements View.OnCli
         etDob.setText(Utility.formatDateFull(myCalendar.getTime()));
     }
 
-    @SuppressLint("ClickableViewAccessibility")
-    @Override
     public boolean onTouch(View v, MotionEvent event) {
         if (event.getAction() == MotionEvent.ACTION_UP)
             switch (v.getId()) {
@@ -673,23 +847,22 @@ public class EditProfileActivity extends AppCompatActivity implements View.OnCli
                     DatePickerDialog datePickerDialog = new DatePickerDialog(context, date, myCalendar
                             .get(Calendar.YEAR), myCalendar.get(Calendar.MONTH),
                             myCalendar.get(Calendar.DAY_OF_MONTH));
-                    int year = myCalendar.get(Calendar.YEAR) - 18;
-                    String string_date = myCalendar.get(Calendar.MONTH) + "-" + myCalendar.get(Calendar.DAY_OF_MONTH) + "-" + year;
+                    int month = myCalendar.get(Calendar.DAY_OF_MONTH) + 1;
+                    String string_date = myCalendar.get(Calendar.MONTH) + "-" + month + "-" + myCalendar.get(Calendar.YEAR);
 
-                    try {
-                        Date d = Constants.ff.parse(string_date);
-                        long milliseconds = d.getTime();
-                        datePickerDialog.getDatePicker().setMaxDate(milliseconds);
-                    } catch (ParseException e) {
-                        e.printStackTrace();
-                    }
-
+//                    try {
+//                        Date d = Constants.ff.parse(string_date);
+//                        long milliseconds = d.getTime();
+//                        datePickerDialog.getDatePicker().setMaxDate(milliseconds);
+//                    } catch (ParseException e) {
+//                        e.printStackTrace();
+//                    }
+                    datePickerDialog.getDatePicker().setMaxDate(System.currentTimeMillis());
                     datePickerDialog.show();
                     break;
             }
         return true;
     }
-
     @Override
     public void onBackPressed() {
         super.onBackPressed();
@@ -697,57 +870,100 @@ public class EditProfileActivity extends AppCompatActivity implements View.OnCli
     }
 
     private void getProfileData() {
-       //myProgressDialog.show(getString(R.string.please_wait));
-        getProfileViewModel.getProfileResponse(new GetProfileRequest(sharedPref.getUserId()/*"S789123"*//*"C20190409Q9l4hzL3916"*//*sharedPref.getUserId()*/)).observe((LifecycleOwner) context, getProfileResponse ->
-        {
-            flag = true;
-            try {
-                if(getProfileResponse != null) {
-                    if (getProfileResponse.getResStatus().equalsIgnoreCase("200") && getProfileResponse.getResData()!=null) {
+        if (Utility.isNetworkAvailable(context)) {
+            // myProgressDialog.show(getString(R.string.please_wait));
+            getProfileViewModel.getProfileResponse(new GetProfileRequest(sharedPref.getUserId()/*"S789123"*//*"C20190409Q9l4hzL3916"*//*sharedPref.getUserId()*/)).observe((LifecycleOwner) context, getProfileResponse ->
+            {
+                flag = true;
+                try {
+                    if (getProfileResponse != null) {
+                        if (getProfileResponse.getResStatus().equalsIgnoreCase("200") && getProfileResponse.getResData() != null) {
 
-                        this.getProfileResponse = getProfileResponse;
+                            this.getProfileResponse = getProfileResponse;
 
-                        sharedPref.setUserType(getProfileResponse.getResData().getUserType().toUpperCase());
+                            if (getProfileResponse.getResData() != null)
+                                new DBSaveProfile(context, getProfileResponse.getResData()).execute();
 
-                        setSchoolSpinnerValue(getProfileResponse.getResData().getSchoolId());
+                            sharedPref.setUserType(getProfileResponse.getResData().getUserType().toUpperCase());
 
-                        etFirstName.setText(getProfileResponse.getResData().getUserFName());
-                        etLastName.setText(getProfileResponse.getResData().getUserLName());
-                        etEmail.setText(getProfileResponse.getResData().getUserEmail());
-                        etPhone.setText(getProfileResponse.getResData().getUserPhone());
-                        sp_country.setSelection(getCountryPosition(), true);
-                        etCity.setText(getProfileResponse.getResData().getUserCity());
-                        etPostalCode.setText(getProfileResponse.getResData().getUserZipcode());
-                        etAddress.setText(getProfileResponse.getResData().getUserAddress());
-                        etDob.setText(getProfileResponse.getResData().getUserDob());
-                        if (getProfileResponse.getResData().getUserGender().equalsIgnoreCase("m"))
-                            sp_gender.setSelection(1, true);
-                        else if (getProfileResponse.getResData().getUserGender().equalsIgnoreCase("f"))
-                            sp_gender.setSelection(2, true);
-                        else
-                            sp_gender.setSelection(3, true);
-                        getCountryList();
-                    } else if(getProfileResponse.getResStatus().equalsIgnoreCase("401")){
-                        myToast.show(getString(R.string.err_no_profile_found), Toast.LENGTH_SHORT, false);
-                        myProgressDialog.dismiss();
+                            setSchoolSpinnerValue();
 
+                            etFirstName.setText(getProfileResponse.getResData().getUserFName());
+                            etLastName.setText(getProfileResponse.getResData().getUserLName());
+                            etEmail.setText(getProfileResponse.getResData().getUserEmail());
+                            //etPhone.setText(getProfileResponse.getResData().getUserPhone());
+                            etPhone.setText(Utility.getFormattedPhoneNumber(getProfileResponse.getResData().getUserPhone()));
+                            sp_country.setSelection(getCountryPosition(), true);
+                            etCity.setText(getProfileResponse.getResData().getUserCity());
+                            etPostalCode.setText(getProfileResponse.getResData().getUserZipcode());
+                            etAddress.setText(getProfileResponse.getResData().getUserAddress());
+                            etDob.setText(getProfileResponse.getResData().getUserDob());
+
+                            sp_country.setSelection(getCountryPosition(), true);
+                            sp_state.setSelection(getStatePosition(), true);
+
+                            if (getProfileResponse.getResData().getUserGender().equalsIgnoreCase("m"))
+                                sp_gender.setSelection(1, true);
+                            else if (getProfileResponse.getResData().getUserGender().equalsIgnoreCase("f"))
+                                sp_gender.setSelection(2, true);
+                            else
+                                sp_gender.setSelection(0, true);
+                            //getCountryList();
+                        } else if (getProfileResponse.getResStatus().equalsIgnoreCase("401")) {
+                            myToast.show(getString(R.string.err_no_profile_found), Toast.LENGTH_SHORT, false);
+
+                        }
+                    } else {
+                        myToast.show(getString(R.string.err_server), Toast.LENGTH_SHORT, false);
                     }
+                } catch (Exception e) {
+                    e.printStackTrace();
                 }
+
+            });
+
+
+        } else {
+            if (dbGetProfile.getProfile() != null && dbGetProfile.getProfile().size() > 0) {
+                sharedPref.setUserType(dbGetProfile.getProfile().get(0).getUserType().toUpperCase());
+
+                setSchoolSpinnerValue();
+
+                etFirstName.setText(dbGetProfile.getProfile().get(0).getUserFName());
+                etLastName.setText(dbGetProfile.getProfile().get(0).getUserLName());
+                etEmail.setText(dbGetProfile.getProfile().get(0).getUserEmail());
+                etPhone.setText(dbGetProfile.getProfile().get(0).getUserPhone());
+                sp_country.setSelection(getCountryPosition(), true);
+                sp_state.setSelection(getStatePosition(), true);
+                etCity.setText(dbGetProfile.getProfile().get(0).getUserCity());
+                etPostalCode.setText(dbGetProfile.getProfile().get(0).getUserZipcode());
+                etAddress.setText(dbGetProfile.getProfile().get(0).getUserAddress());
+                etDob.setText(dbGetProfile.getProfile().get(0).getUserDob());
+                if (dbGetProfile.getProfile().get(0).getUserGender().equalsIgnoreCase("m"))
+                    sp_gender.setSelection(1, true);
+                else if (dbGetProfile.getProfile().get(0).getUserGender().equalsIgnoreCase("f"))
+                    sp_gender.setSelection(2, true);
                 else
-                {
-                    myToast.show(getString(R.string.err_server), Toast.LENGTH_SHORT, false);
-                    myProgressDialog.dismiss();
-                }
-            } catch (Exception e) {
-                e.printStackTrace();
-                myProgressDialog.dismiss();
+                    sp_gender.setSelection(3, true);
             }
+        }
 
-        });
 
+        new Thread() {
+            @Override
+            public void run() {
+                super.run();
+                try {
+                    sleep(3000);
+                    myProgressDialog.dismiss();
+                } catch (InterruptedException e) {
+                    e.printStackTrace();
+                }
+            }
+        }.start();
     }
 
-    private void setSchoolSpinnerValue(String school_id) {
+    private void setSchoolSpinnerValue() {
 
         if (getSchoolPosition() != -1)
             sp_school.setSelection(getSchoolPosition());
@@ -756,10 +972,19 @@ public class EditProfileActivity extends AppCompatActivity implements View.OnCli
     public int getSchoolPosition() {
 
         int position = -1;
-        for (int i = 0; i < schoolListData.size(); i++) {
-            if (schoolListData.get(i).getSchoolId().equalsIgnoreCase(getProfileResponse.getResData().getSchoolId()) || schoolListData.get(i).getSchoolName().equalsIgnoreCase(getProfileResponse.getResData().getSchoolId())) {
-                position = i;
-                // break;  // uncomment to get the first instance
+        if (Utility.isNetworkAvailable(context)) {
+            for (int i = 0; i < schoolListData.size(); i++) {
+                if (schoolListData.get(i).getSchoolId().equalsIgnoreCase(getProfileResponse.getResData().getSchoolId()) || schoolListData.get(i).getSchoolName().equalsIgnoreCase(getProfileResponse.getResData().getSchoolId())) {
+                    position = i;
+
+                }
+            }
+        } else {
+            for (int i = 0; i < schoolListData.size(); i++) {
+                if (schoolListData.get(i).getSchoolId().equalsIgnoreCase(dbGetProfile.getProfile().get(0).getSchoolId()) || schoolListData.get(i).getSchoolName().equalsIgnoreCase(dbGetProfile.getProfile().get(0).getSchoolId())) {
+                    position = i;
+
+                }
             }
         }
         return position;
@@ -767,10 +992,17 @@ public class EditProfileActivity extends AppCompatActivity implements View.OnCli
 
     public int getCountryPosition() {
         int position = -1;
-        for (int i = 0; i < countryListData.size(); i++) {
-            if (countryListData.get(i).getCountryName().equalsIgnoreCase(getProfileResponse.getResData().getUserCountry()) || countryListData.get(i).getCountryId().equalsIgnoreCase(getProfileResponse.getResData().getUserCountry())) {
-                position = i;
-                // break;  // uncomment to get the first instance
+        if (Utility.isNetworkAvailable(context)) {
+            for (int i = 0; i < countryListData.size(); i++) {
+                if (countryListData.get(i).getCountryName().equalsIgnoreCase(getProfileResponse.getResData().getUserCountry()) || countryListData.get(i).getCountryId().equalsIgnoreCase(getProfileResponse.getResData().getUserCountry())) {
+                    position = i;
+                }
+            }
+        } else {
+            for (int i = 0; i < countryListData.size(); i++) {
+                if (countryListData.get(i).getCountryName().equalsIgnoreCase(dbGetProfile.getProfile().get(0).getUserCountry()) || countryListData.get(i).getCountryId().equalsIgnoreCase(dbGetProfile.getProfile().get(0).getUserCountry())) {
+                    position = i;
+                }
             }
         }
         return position;
@@ -778,10 +1010,17 @@ public class EditProfileActivity extends AppCompatActivity implements View.OnCli
 
     public int getStatePosition() {
         int position = -1;
-        for (int i = 0; i < stateListData.size(); i++) {
-            if (stateListData.get(i).getStateName().equalsIgnoreCase(getProfileResponse.getResData().getUserState()) || stateListData.get(i).getStateId().equalsIgnoreCase(getProfileResponse.getResData().getUserState())) {
-                position = i;
-                // break;  // uncomment to get the first instance
+        if (Utility.isNetworkAvailable(context)) {
+            for (int i = 0; i < stateListData.size(); i++) {
+                if (stateListData.get(i).getStateName().equalsIgnoreCase(getProfileResponse.getResData().getUserState()) || stateListData.get(i).getStateId().equalsIgnoreCase(getProfileResponse.getResData().getUserState())) {
+                    position = i;
+                }
+            }
+        } else {
+            for (int i = 0; i < stateListData.size(); i++) {
+                if (stateListData.get(i).getStateName().equalsIgnoreCase(dbGetProfile.getProfile().get(0).getUserState()) || stateListData.get(i).getStateId().equalsIgnoreCase(dbGetProfile.getProfile().get(0).getUserState())) {
+                    position = i;
+                }
             }
         }
         return position;

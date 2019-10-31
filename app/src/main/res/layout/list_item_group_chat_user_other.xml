@@ -1,0 +1,176 @@
+<?xml version="1.0" encoding="utf-8"?>
+<RelativeLayout xmlns:android="http://schemas.android.com/apk/res/android"
+    xmlns:app="http://schemas.android.com/apk/res-auto"
+    android:layout_width="match_parent"
+    android:layout_height="wrap_content"
+    android:paddingLeft="8dp">
+
+    <com.ztp.app.Helper.MyTextView
+        android:id="@+id/text_group_chat_date"
+        style="@style/SmallTextView"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:layout_alignParentTop="true"
+        android:layout_centerHorizontal="true"
+        android:layout_marginTop="24dp"
+        android:layout_marginBottom="0dp"
+        android:background="@drawable/group_chat_date_background"
+        android:gravity="center"
+        android:paddingLeft="8dp"
+        android:paddingTop="4dp"
+        android:paddingRight="8dp"
+        android:paddingBottom="4dp"
+        android:text=""
+        android:textColor="@color/groupChatDateText" />
+
+    <ImageView
+        android:id="@+id/image_group_chat_profile"
+        android:layout_width="32dp"
+        android:layout_height="32dp"
+        android:layout_alignWithParentIfMissing="true"
+        android:layout_below="@id/text_group_chat_date"
+        android:layout_alignParentLeft="true"
+        android:layout_marginTop="8dp"
+        android:layout_marginRight="8dp"
+        android:src="@drawable/user"
+        android:visibility="gone" />
+
+    <com.ztp.app.Helper.MyTextView
+        android:id="@+id/text_group_chat_nickname"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:layout_below="@id/text_group_chat_date"
+        android:layout_alignTop="@id/image_group_chat_profile"
+        android:layout_marginBottom="0dp"
+        android:layout_toRightOf="@id/image_group_chat_profile"
+        android:paddingLeft="@dimen/_5sdp"
+        android:text=""
+        android:textColor="@color/background_3"
+        style="@style/RegularTextView"
+        android:visibility="visible" />
+
+    <android.support.v7.widget.CardView
+        android:id="@+id/card_group_chat_message"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:layout_alignWithParentIfMissing="true"
+        android:layout_below="@id/text_group_chat_nickname"
+        android:layout_toRightOf="@id/image_group_chat_profile"
+        app:cardBackgroundColor="@color/groupChatBubbleOther"
+        app:cardCornerRadius="@dimen/_8sdp"
+        app:cardElevation="0dp"
+        app:cardPreventCornerOverlap="false"
+        app:cardUseCompatPadding="true">
+
+        <LinearLayout
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:orientation="vertical">
+
+            <com.ztp.app.Helper.MyTextView
+                android:id="@+id/text_group_chat_message"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:maxWidth="@dimen/_260sdp"
+                android:paddingLeft="@dimen/_8sdp"
+                android:paddingTop="@dimen/_4sdp"
+                android:paddingRight="@dimen/_8sdp"
+                android:text=""
+                android:textColor="@color/groupChatTextOther"
+                style="@style/RegularTextView"/>
+
+            <com.ztp.app.Helper.MyTextView
+                android:id="@+id/text_group_chat_edited"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:layout_gravity="right"
+                android:paddingLeft="@dimen/_12sdp"
+                android:paddingRight="@dimen/_12sdp"
+                android:text="@string/edited"
+                android:textColor="@color/edited"
+                style="@style/RegularTextView"
+                android:visibility="gone" />
+
+            <View
+                android:layout_width="match_parent"
+                android:layout_height="8dp" />
+
+            <LinearLayout
+                android:id="@+id/url_preview_container"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:orientation="vertical">
+
+                <View
+                    android:layout_width="match_parent"
+                    android:layout_height="1dp"
+                    android:layout_marginLeft="12dp"
+                    android:layout_marginRight="12dp"
+                    android:layout_marginBottom="8dp"
+                    android:background="@android:color/darker_gray"
+                    android:maxWidth="260dp" />
+
+                <com.ztp.app.Helper.MyTextView
+                    android:id="@+id/text_url_preview_site_name"
+                    android:layout_width="wrap_content"
+                    android:layout_height="wrap_content"
+                    android:ellipsize="end"
+                    android:maxWidth="260dp"
+                    android:maxLines="1"
+                    android:paddingLeft="12dp"
+                    android:paddingRight="12dp"
+                    android:text=""
+                    android:textColor="@color/groupChatTextOther"
+                    style="@style/RegularTextView" />
+
+                <com.ztp.app.Helper.MyTextView
+                    android:id="@+id/text_url_preview_title"
+                    android:layout_width="wrap_content"
+                    android:layout_height="wrap_content"
+                    android:ellipsize="end"
+                    android:maxWidth="260dp"
+                    android:maxLines="1"
+                    android:paddingLeft="12dp"
+                    android:paddingRight="12dp"
+                    android:text=""
+                    android:textColor="@color/groupChatTextOther"
+                    style="@style/RegularTextView"/>
+
+                <com.ztp.app.Helper.MyTextView
+                    android:id="@+id/text_url_preview_description"
+                    android:layout_width="wrap_content"
+                    android:layout_height="wrap_content"
+                    android:ellipsize="end"
+                    android:maxWidth="260dp"
+                    android:maxLines="3"
+                    android:paddingLeft="12dp"
+                    android:paddingRight="12dp"
+                    android:paddingBottom="4dp"
+                    android:text=""
+                    android:textColor="@color/groupChatTextOther"
+                    style="@style/RegularTextView"/>
+
+                <ImageView
+                    android:id="@+id/image_url_preview_main"
+                    android:layout_width="match_parent"
+                    android:layout_height="148dp"
+                    android:adjustViewBounds="true"
+                    android:scaleType="centerCrop" />
+
+            </LinearLayout>
+        </LinearLayout>
+
+    </android.support.v7.widget.CardView>
+
+    <com.ztp.app.Helper.MyTextView
+        android:id="@+id/text_group_chat_time"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:layout_alignBottom="@id/card_group_chat_message"
+        android:layout_marginBottom="4dp"
+        android:layout_toRightOf="@id/card_group_chat_message"
+        android:text=""
+        android:textColor="@color/btn_send_disabled"
+        style="@style/SmallTextView" />
+
+</RelativeLayout>

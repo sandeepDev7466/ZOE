@@ -17,10 +17,9 @@
         android:id="@id/text"
         android:layout_height="wrap_content"
         android:layout_width="wrap_content"
-        android:textSize="@dimen/_18ssp"
+        style="@style/MediumTextView"
         android:gravity="center"
-        android:layout_marginStart="@dimen/_10sdp"
-        android:layout_marginEnd="@dimen/_20sdp"/>
+        android:layout_marginStart="@dimen/_10sdp" />
 
     <ImageView
         android:id="@+id/threeDots"

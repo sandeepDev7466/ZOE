@@ -11,10 +11,11 @@
         android:layout_height="@dimen/_150sdp">
 
         <ImageView
+            android:id="@+id/coverNav"
             android:layout_width="match_parent"
             android:layout_height="match_parent"
             android:scaleType="fitXY"
-            android:src="@drawable/scene" />
+            android:src="@drawable/back" />
 
         <ImageView
             android:id="@+id/tint_nav"
@@ -30,17 +31,18 @@
             android:paddingStart="@dimen/_10sdp">
 
             <de.hdodenhof.circleimageview.CircleImageView
-                android:layout_width="@dimen/_50sdp"
-                android:layout_height="@dimen/_50sdp"
-                android:src="@drawable/user" />
+                android:id="@+id/userNav"
+                android:layout_width="@dimen/_35sdp"
+                android:layout_height="@dimen/_35sdp"
+                android:src="@drawable/user_png" />
 
             <com.ztp.app.Helper.MyHeadingTextView
                 android:id="@+id/nav_title"
                 android:layout_width="wrap_content"
-                android:layout_height="wrap_content"
+                android:layout_height="@dimen/_50sdp"
                 android:layout_marginStart="@dimen/_10sdp"
-                android:layout_marginTop="@dimen/_10sdp"
-                android:textSize="@dimen/_20ssp" />
+                android:gravity="center_vertical"
+                style="@style/MediumTextView" />
 
         </LinearLayout>
 
@@ -56,8 +58,8 @@
             android:id="@+id/edit_profile"
             android:layout_width="match_parent"
             android:layout_height="@dimen/_25sdp"
-            android:orientation="horizontal"
-            android:layout_marginTop="@dimen/_15sdp">
+            android:layout_marginTop="@dimen/_15sdp"
+            android:orientation="horizontal">
 
             <LinearLayout
                 android:layout_width="0dp"
@@ -82,7 +84,62 @@
                     android:layout_width="match_parent"
                     android:layout_height="wrap_content"
                     android:text="@string/edit_profile"
-                    android:textSize="@dimen/_12ssp" />
+                    style="@style/RegularTextView" />
+
+            </LinearLayout>
+
+
+        </LinearLayout>
+
+        <LinearLayout
+            android:id="@+id/timezone"
+            android:layout_width="match_parent"
+            android:layout_height="@dimen/_25sdp"
+            android:layout_marginTop="@dimen/_10sdp"
+            android:orientation="horizontal">
+
+            <LinearLayout
+                android:layout_width="0dp"
+                android:layout_height="match_parent"
+                android:layout_weight=".2"
+                android:gravity="center">
+
+                <ImageView
+                    android:layout_width="@dimen/_18sdp"
+                    android:layout_height="@dimen/_18sdp"
+                    app:srcCompat="@drawable/ic_clock" />
+
+            </LinearLayout>
+
+            <LinearLayout
+                android:layout_width="0dp"
+                android:layout_height="match_parent"
+                android:layout_weight=".8"
+                android:gravity="center_vertical"
+                android:orientation="horizontal">
+
+                <com.ztp.app.Helper.MyTextView
+                    android:layout_width="wrap_content"
+                    android:layout_height="wrap_content"
+                    android:text="@string/timezone"
+                    style="@style/RegularTextView" />
+
+                <LinearLayout
+                    android:layout_width="match_parent"
+                    android:layout_height="match_parent"
+                    android:gravity="center_vertical|end"
+                    android:layout_marginEnd="@dimen/_20sdp">
+
+                    <com.ztp.app.Helper.MyTextView
+                        android:id="@+id/timezoneCode"
+                        android:layout_width="wrap_content"
+                        android:layout_height="wrap_content"
+                        android:text="@string/timezone"
+                        style="@style/SmallTextView"
+                        android:textColor="@color/dark_green"
+                        />
+
+                </LinearLayout>
 
             </LinearLayout>
 
@@ -93,8 +150,8 @@
             android:id="@+id/settings"
             android:layout_width="match_parent"
             android:layout_height="@dimen/_25sdp"
-            android:orientation="horizontal"
-            android:layout_marginTop="@dimen/_10sdp">
+            android:layout_marginTop="@dimen/_10sdp"
+            android:orientation="horizontal">
 
             <LinearLayout
                 android:layout_width="0dp"
@@ -119,7 +176,44 @@
                     android:layout_width="match_parent"
                     android:layout_height="wrap_content"
                     android:text="@string/settings"
-                    android:textSize="@dimen/_12ssp" />
+                    style="@style/RegularTextView" />
+
+            </LinearLayout>
+
+
+        </LinearLayout>
+
+        <LinearLayout
+            android:id="@+id/changePass"
+            android:layout_width="match_parent"
+            android:layout_height="@dimen/_25sdp"
+            android:layout_marginTop="@dimen/_10sdp"
+            android:orientation="horizontal">
+
+            <LinearLayout
+                android:layout_width="0dp"
+                android:layout_height="match_parent"
+                android:layout_weight=".2"
+                android:gravity="center">
+
+                <ImageView
+                    android:layout_width="@dimen/_18sdp"
+                    android:layout_height="@dimen/_18sdp"
+                    app:srcCompat="@drawable/ic_change_password" />
+
+            </LinearLayout>
+
+            <LinearLayout
+                android:layout_width="0dp"
+                android:layout_height="match_parent"
+                android:layout_weight=".8"
+                android:gravity="center_vertical">
+
+                <com.ztp.app.Helper.MyTextView
+                    android:layout_width="match_parent"
+                    android:layout_height="wrap_content"
+                    android:text="@string/changePass"
+                    style="@style/RegularTextView"/>
 
             </LinearLayout>
 
@@ -130,8 +224,8 @@
             android:id="@+id/logout"
             android:layout_width="match_parent"
             android:layout_height="@dimen/_25sdp"
-            android:orientation="horizontal"
-            android:layout_marginTop="@dimen/_10sdp">
+            android:layout_marginTop="@dimen/_10sdp"
+            android:orientation="horizontal">
 
             <LinearLayout
                 android:layout_width="0dp"
@@ -156,15 +250,12 @@
                     android:layout_width="match_parent"
                     android:layout_height="wrap_content"
                     android:text="@string/logout"
-                    android:textSize="@dimen/_12ssp" />
+                    style="@style/RegularTextView"/>
 
             </LinearLayout>
 
 
         </LinearLayout>
-
-
-
     </LinearLayout>
 
 </LinearLayout>

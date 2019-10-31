@@ -1,12 +1,11 @@
 package com.ztp.app.View.Fragment.Common;
 
+import android.annotation.SuppressLint;
 import android.arch.lifecycle.LifecycleOwner;
-import android.arch.lifecycle.Observer;
 import android.arch.lifecycle.ViewModelProviders;
 import android.content.Context;
-import android.net.Uri;
+import android.os.AsyncTask;
 import android.os.Bundle;
-import android.support.annotation.Nullable;
 import android.support.v4.app.Fragment;
 import android.support.v4.app.FragmentActivity;
 import android.view.LayoutInflater;
@@ -16,10 +15,9 @@ import android.widget.ImageView;
 import android.widget.Toast;
 
 import com.squareup.picasso.Picasso;
+import com.ztp.app.Data.Local.Room.Database.RoomDB;
 import com.ztp.app.Data.Remote.Model.Request.GetShiftDetailRequest;
-import com.ztp.app.Data.Remote.Model.Response.GetEventDetailResponse;
 import com.ztp.app.Data.Remote.Model.Response.GetShiftDetailResponse;
-import com.ztp.app.Data.Remote.Model.Response.VolunteerAllResponse;
 import com.ztp.app.Helper.MyProgressDialog;
 import com.ztp.app.Helper.MyTextView;
 import com.ztp.app.Helper.MyToast;
@@ -33,19 +31,22 @@ public class ShiftDetailFragment extends Fragment {
     ImageView rankImage;
     MyTextView shift_task, vol_req, date, time;
     GetShiftDetailViewModel getShiftDetailViewModel;
-    String shift_id = null;
+    String shift_id = null, endTimeAmPm, startTimeAmPm;
     MyToast myToast;
     MyProgressDialog myProgressDialog;
+    RoomDB roomDB;
 
     public ShiftDetailFragment() {
         // Required empty public constructor
     }
 
+    @SuppressLint("StaticFieldLeak")
     @Override
     public View onCreateView(LayoutInflater inflater, ViewGroup container,
                              Bundle savedInstanceState) {
 
         View view = inflater.inflate(R.layout.fragment_shift_detail, container, false);
+        roomDB = RoomDB.getInstance(context);
         init(view);
 
         Bundle bundle = getArguments();
@@ -57,13 +58,13 @@ public class ShiftDetailFragment extends Fragment {
         }
 
         if (shift_id != null) {
-            if(Utility.isNetworkAvailable(context)) {
+            if (Utility.isNetworkAvailable(context)) {
                 myProgressDialog.show(getString(R.string.please_wait));
-                getShiftDetailViewModel.getShiftDetailResponseLiveData(new GetShiftDetailRequest(shift_id)).observe((LifecycleOwner) context, getShiftDetailResponse -> {
+                getShiftDetailViewModel.getShiftDetailResponseLiveData(context, new GetShiftDetailRequest(shift_id)).observe((LifecycleOwner) context, getShiftDetailResponse -> {
                     if (getShiftDetailResponse != null) {
                         if (getShiftDetailResponse.getResStatus().equalsIgnoreCase("200")) {
-                            setData(getShiftDetailResponse);
-                        } else if(getShiftDetailResponse.getResStatus().equalsIgnoreCase("401")){
+                            setData(getShiftDetailResponse.getShiftDetail());
+                        } else if (getShiftDetailResponse.getResStatus().equalsIgnoreCase("401")) {
                             myToast.show(getString(R.string.err_no_data_found), Toast.LENGTH_SHORT, false);
                         }
                     } else {
@@ -73,14 +74,25 @@ public class ShiftDetailFragment extends Fragment {
                     myProgressDialog.dismiss();
 
                 });
-            }
-            else
-            {
-                myToast.show(getString(R.string.no_internet_connection), Toast.LENGTH_SHORT, false);
+            } else {
+                //myToast.show(getString(R.string.no_internet_connection), Toast.LENGTH_SHORT, false);
+
+                new AsyncTask<Void, Void, GetShiftDetailResponse.ShiftDetail>() {
+                    @Override
+                    protected void onPostExecute(GetShiftDetailResponse.ShiftDetail shiftDetail) {
+                        if (shiftDetail != null)
+                            setData(shiftDetail);
+                    }
+
+                    @Override
+                    protected GetShiftDetailResponse.ShiftDetail doInBackground(Void... voids) {
+                        return roomDB.getShiftDetailResponseDao().getShiftDetailFromId(shift_id);
+                    }
+                }.execute();
             }
         }
 
-            return view;
+        return view;
     }
 
     private void init(View view) {
@@ -101,25 +113,28 @@ public class ShiftDetailFragment extends Fragment {
         super.onAttach(context);
         this.context = context;
     }
-    private void setData(GetShiftDetailResponse getShiftDetailResponse)
-    {
-        if(getShiftDetailResponse.getResData() != null) {
-            shift_task.setText(getShiftDetailResponse.getResData().getShiftTask());
-            if (getShiftDetailResponse.getResData().getShiftRank().equalsIgnoreCase("1"))
-                Picasso.with(context).load(R.drawable.rank_baby).fit().into(rankImage);
-            else if (getShiftDetailResponse.getResData().getShiftRank().equalsIgnoreCase("2"))
-                Picasso.with(context).load(R.drawable.rank_grownup).fit().into(rankImage);
-            else if (getShiftDetailResponse.getResData().getShiftRank().equalsIgnoreCase("3"))
-                Picasso.with(context).load(R.drawable.rank_knight).fit().into(rankImage);
-            else if (getShiftDetailResponse.getResData().getShiftRank().equalsIgnoreCase("4"))
-                Picasso.with(context).load(R.drawable.rank_royalty).fit().into(rankImage);
-            else if (getShiftDetailResponse.getResData().getShiftRank().equalsIgnoreCase("5"))
-                Picasso.with(context).load(R.drawable.rank_warrior).fit().into(rankImage);
 
-            date.setText(getShiftDetailResponse.getResData().getShiftDate());
-            time.setText(getShiftDetailResponse.getResData().getShiftStartTime() + " - " + getShiftDetailResponse.getResData().getShiftEndTime());
-            vol_req.setText(getShiftDetailResponse.getResData().getShiftVolReq());
+    private void setData(GetShiftDetailResponse.ShiftDetail shiftDetail) {
+        if (shiftDetail != null) {
+            shift_task.setText(shiftDetail.getShiftTaskName());
+
+            if (shiftDetail.getShiftRank().equalsIgnoreCase("1"))
+                Picasso.with(context).load(R.drawable.rank_one_vol).into(rankImage);
+            else if (shiftDetail.getShiftRank().equalsIgnoreCase("2"))
+                Picasso.with(context).load(R.drawable.rank_two_vol).into(rankImage);
+            else if (shiftDetail.getShiftRank().equalsIgnoreCase("3"))
+                Picasso.with(context).load(R.drawable.rank_three_vol).into(rankImage);
+            else if (shiftDetail.getShiftRank().equalsIgnoreCase("4"))
+                Picasso.with(context).load(R.drawable.rank_four_vol).into(rankImage);
+            else if (shiftDetail.getShiftRank().equalsIgnoreCase("5"))
+                Picasso.with(context).load(R.drawable.rank_five_vol).into(rankImage);
+            else if(shiftDetail.getShiftRank().equalsIgnoreCase(""))
+                Picasso.with(context).load(R.drawable.rank_five_vol).into(rankImage);
+
+            date.setText(shiftDetail.getShiftDate());
+            time.setText(shiftDetail.getShiftStartTimeFormat() + " - " + shiftDetail.getShiftEndTimeFormat());
+           // time.setText(Utility.getTimeAmPm(shiftDetail.getShiftStartTime()) + " - " + Utility.getTimeAmPm(shiftDetail.getShiftEndTime()));
+            vol_req.setText(shiftDetail.getShiftVolReq());
         }
-
     }
 }

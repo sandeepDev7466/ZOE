@@ -19,7 +19,8 @@
             android:layout_height="match_parent"
             android:gravity="center"
             android:text="@string/skip"
-            android:textColor="@color/black"/>
+            android:textColor="@color/black"
+            style="@style/SmallTextView"/>
 
     </LinearLayout>
 
@@ -41,7 +42,7 @@
             android:layout_height="wrap_content"
             android:layout_marginTop="@dimen/_10sdp"
             android:textColor="@color/white"
-            android:textSize="@dimen/_30ssp" />
+            style="@style/HeadingTextView"/>
 
         <com.ztp.app.Helper.MyTextView
             android:id="@+id/description"
@@ -52,7 +53,7 @@
             android:layout_marginRight="@dimen/_30sdp"
             android:textAlignment="center"
             android:textColor="@color/white"
-            android:textSize="@dimen/_10ssp" />
+            style="@style/RegularTextView" />
 
         <com.ztp.app.Helper.MyHeadingTextView
             android:id="@+id/next"
@@ -60,7 +61,7 @@
             android:layout_height="wrap_content"
             android:layout_marginTop="@dimen/_10sdp"
             android:textColor="@color/black"
-            android:textSize="@dimen/_25ssp"
+            style="@style/HeadingTextView"
             android:textStyle="bold" />
 
     </LinearLayout>

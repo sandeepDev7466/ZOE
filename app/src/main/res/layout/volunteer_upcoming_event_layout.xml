@@ -1,37 +1,38 @@
 <?xml version="1.0" encoding="utf-8"?>
 <LinearLayout xmlns:android="http://schemas.android.com/apk/res/android"
+    xmlns:app="http://schemas.android.com/apk/res-auto"
     android:id="@+id/mainLayout"
     android:layout_width="match_parent"
     android:layout_height="wrap_content"
-    android:minHeight="@dimen/_60sdp"
+    android:minHeight="@dimen/_70sdp"
     android:orientation="horizontal"
     android:padding="@dimen/_5sdp">
 
     <LinearLayout
         android:layout_width="0dp"
         android:layout_height="match_parent"
-        android:layout_weight=".3"
+        android:layout_weight=".2"
         android:gravity="center"
         android:orientation="vertical">
 
-        <com.ztp.app.Helper.MyBoldTextView
+        <com.ztp.app.Helper.MyHeadingTextView
             android:id="@+id/date"
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
             android:layout_marginTop="@dimen/_5sdp"
-            android:textSize="@dimen/_19ssp" />
+            style="@style/HeadingTextView" />
 
-        <com.ztp.app.Helper.MyBoldTextView
+        <com.ztp.app.Helper.MyHeadingTextView
             android:id="@+id/month"
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
-            android:textSize="@dimen/_10ssp" />
+            style="@style/RegularTextView" />
 
         <com.ztp.app.Helper.MyTextView
             android:id="@+id/day"
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
-            android:textSize="@dimen/_7ssp"
+            style="@style/SmallTextView"
             android:visibility="gone" />
 
 
@@ -41,7 +42,7 @@
         android:layout_width="0dp"
         android:layout_height="match_parent"
         android:layout_gravity="center"
-        android:layout_weight=".8"
+        android:layout_weight=".7"
         android:gravity="center"
         android:orientation="vertical">
 
@@ -51,14 +52,36 @@
             android:layout_height="wrap_content"
             android:ellipsize="end"
             android:maxLines="2"
-            android:textSize="@dimen/_13ssp" />
+            style="@style/RegularTextView" />
 
         <com.ztp.app.Helper.MyTextView
             android:id="@+id/time"
             android:layout_width="match_parent"
             android:layout_height="wrap_content"
             android:layout_marginTop="@dimen/_3sdp"
-            android:textSize="@dimen/_10ssp" />
+            style="@style/SmallTextView" />
+
+        <com.ztp.app.Helper.MyTextView
+            android:id="@+id/shift"
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:layout_marginTop="@dimen/_3sdp"
+            style="@style/SmallTextView" />
+
+    </LinearLayout>
+
+    <LinearLayout
+        android:layout_width="0dp"
+        android:layout_height="match_parent"
+        android:layout_gravity="center"
+        android:layout_weight=".1"
+        android:gravity="center"
+        android:orientation="vertical">
+
+        <ImageView
+            android:layout_width="@dimen/_12sdp"
+            android:layout_height="@dimen/_12sdp"
+            app:srcCompat="@drawable/ic_fwrd_arrow"/>
 
     </LinearLayout>
 

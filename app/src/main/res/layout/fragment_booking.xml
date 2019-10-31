@@ -10,10 +10,12 @@
         android:layout_width="match_parent"
         android:layout_height="@dimen/_50sdp"
         app:tabIndicatorHeight="2dp"
+        app:tabIndicatorColor="@color/tabIndicatorColor"
         app:tabMaxWidth="0dp"
         app:tabGravity="fill"
-        app:tabMode="fixed"
-        app:tabBackground="@color/tab_booking"/>
+        app:tabMode="fixed" />
+
+    <!--app:tabBackground="@color/tab_booking"-->
 
     <android.support.v4.view.ViewPager
         android:id="@+id/viewPager"

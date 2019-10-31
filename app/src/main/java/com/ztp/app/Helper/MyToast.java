@@ -52,7 +52,4 @@ public class MyToast {
         toast.setView(view);
         toast.show();
     }
-
-    public void show(String trim, boolean b) {
-    }
 }

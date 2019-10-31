@@ -6,7 +6,8 @@
     android:layout_width="match_parent"
     android:layout_height="match_parent"
     app:layout_behavior="@string/appbar_scrolling_view_behavior"
-    tools:showIn="@layout/app_bar_dashboard_cso">
+    tools:showIn="@layout/app_bar_dashboard_student"
+    android:orientation="vertical">
 
 
     <LinearLayout
@@ -14,7 +15,8 @@
         android:layout_width="match_parent"
         android:layout_height="match_parent"
         android:layout_marginBottom="@dimen/_45sdp"
-        android:orientation="horizontal">
+        android:orientation="horizontal"
+        android:focusableInTouchMode="true">
 
     </LinearLayout>
 
@@ -28,14 +30,14 @@
         />
 
     <LinearLayout
-        android:id="@+id/bottom_nav"
         android:layout_width="match_parent"
         android:layout_height="@dimen/_45sdp"
         android:layout_alignParentBottom="true"
-        android:padding="@dimen/_2sdp">
+        android:padding="@dimen/_2sdp"
+        android:orientation="horizontal">
 
         <LinearLayout
-            android:id="@+id/hangout"
+            android:id="@+id/dashboard"
             android:layout_width="0dp"
             android:layout_height="match_parent"
             android:layout_weight=".2"
@@ -46,35 +48,39 @@
             <ImageView
                 android:layout_width="@dimen/_18sdp"
                 android:layout_height="@dimen/_18sdp"
-                app:srcCompat="@drawable/ic_hangout" /><!--hangout_black-->
+                app:srcCompat="@drawable/ic_menu"
+                /><!--setting-->
+
             <com.ztp.app.Helper.MyTextView
                 android:layout_width="wrap_content"
                 android:layout_height="wrap_content"
-                android:text="@string/hangout"
-                android:textSize="@dimen/_8ssp"
+                android:text="@string/dashboard"
+                style="@style/SmallTextView"
                 android:layout_marginTop="@dimen/_5sdp"/>
 
         </LinearLayout>
+
+
         <LinearLayout
-            android:id="@+id/message"
+            android:id="@+id/locker"
             android:layout_width="0dp"
             android:layout_height="match_parent"
             android:layout_weight=".2"
+            android:alpha="0.3"
             android:gravity="center"
-            android:orientation="vertical"
-            android:alpha="0.3">
+            android:orientation="vertical">
 
             <ImageView
-                android:layout_width="@dimen/_18sdp"
-                android:layout_height="@dimen/_18sdp"
-                app:srcCompat="@drawable/ic_message" /><!--locker-->
+                android:layout_width="@dimen/_20sdp"
+                android:layout_height="@dimen/_20sdp"
+                app:srcCompat="@drawable/ic_locker" /><!--locker-->
 
             <com.ztp.app.Helper.MyTextView
                 android:layout_width="wrap_content"
                 android:layout_height="wrap_content"
-                android:text="@string/message"
-                android:textSize="@dimen/_8ssp"
-                android:layout_marginTop="@dimen/_5sdp"/>
+                android:layout_marginTop="@dimen/_5sdp"
+                android:text="@string/locker"
+                style="@style/SmallTextView" />
 
         </LinearLayout>
         <LinearLayout
@@ -89,13 +95,14 @@
             <ImageView
                 android:layout_width="@dimen/_18sdp"
                 android:layout_height="@dimen/_18sdp"
-                app:srcCompat="@drawable/ic_user" /><!--target-->
+                app:srcCompat="@drawable/ic_user_1"
+                /><!--target-->
 
             <com.ztp.app.Helper.MyTextView
                 android:layout_width="wrap_content"
                 android:layout_height="wrap_content"
-                android:text="@string/students"
-                android:textSize="@dimen/_8ssp"
+                android:text="@string/volunteer_small"
+                style="@style/SmallTextView"
                 android:layout_marginTop="@dimen/_5sdp"/>
 
         </LinearLayout>
@@ -111,18 +118,21 @@
             <ImageView
                 android:layout_width="@dimen/_18sdp"
                 android:layout_height="@dimen/_18sdp"
-                app:srcCompat="@drawable/ic_calendar" /><!--booking-->
+                app:srcCompat="@drawable/ic_booking"
+                /><!--booking-->
 
             <com.ztp.app.Helper.MyTextView
                 android:layout_width="wrap_content"
                 android:layout_height="wrap_content"
                 android:text="@string/events"
-                android:textSize="@dimen/_8ssp"
+                style="@style/SmallTextView"
                 android:layout_marginTop="@dimen/_5sdp"/>
 
         </LinearLayout>
+
+
         <LinearLayout
-            android:id="@+id/dashboard"
+            android:id="@+id/hangout"
             android:layout_width="0dp"
             android:layout_height="match_parent"
             android:layout_weight=".2"
@@ -133,13 +143,13 @@
             <ImageView
                 android:layout_width="@dimen/_18sdp"
                 android:layout_height="@dimen/_18sdp"
-                app:srcCompat="@drawable/ic_menu" /><!--setting-->
-
+                app:srcCompat="@drawable/ic_message"
+                /><!--hangout_black-->
             <com.ztp.app.Helper.MyTextView
                 android:layout_width="wrap_content"
                 android:layout_height="wrap_content"
-                android:text="@string/dashboard"
-                android:textSize="@dimen/_8ssp"
+                android:text="@string/message"
+                style="@style/SmallTextView"
                 android:layout_marginTop="@dimen/_5sdp"/>
 
         </LinearLayout>

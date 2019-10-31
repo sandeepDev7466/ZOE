@@ -5,7 +5,7 @@
     android:orientation="horizontal"
     android:layout_width="match_parent"
     android:layout_height="wrap_content"
-    android:minHeight="@dimen/_60sdp"
+    android:minHeight="@dimen/_80sdp"
     android:padding="@dimen/_5sdp">
 
     <LinearLayout
@@ -19,7 +19,7 @@
             android:id="@+id/date"
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
-            android:textSize="@dimen/_15ssp" />
+            style="@style/RegularTextView" />
 
 
 
@@ -27,13 +27,13 @@
             android:id="@+id/month"
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
-            android:textSize="@dimen/_10ssp"
+            style="@style/SmallTextView"
             />
         <com.ztp.app.Helper.MyBoldTextView
             android:id="@+id/day"
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
-            android:textSize="@dimen/_10ssp" />
+            style="@style/SmallTextView"/>
 
     </LinearLayout>
 
@@ -49,7 +49,7 @@
             android:id="@+id/title"
             android:layout_width="match_parent"
             android:layout_height="wrap_content"
-            android:textSize="@dimen/_13ssp"
+            style="@style/RegularTextView"
             android:maxLines="2"
             android:ellipsize="end"/>
 
@@ -57,7 +57,16 @@
             android:id="@+id/description"
             android:layout_width="match_parent"
             android:layout_height="wrap_content"
-            android:textSize="@dimen/_10ssp"
+            style="@style/SmallTextView"
+            android:layout_marginTop="@dimen/_5sdp"
+            />
+
+        <com.ztp.app.Helper.MyTextView
+            android:id="@+id/time"
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            style="@style/SmallTextView"
+            android:layout_marginTop="@dimen/_5sdp"
             />
 
     </LinearLayout>
@@ -70,10 +79,10 @@
         android:orientation="horizontal">
 
         <ImageView
-            android:layout_width="@dimen/_20sdp"
-            android:layout_height="@dimen/_20sdp"
-            app:srcCompat="@drawable/ic_calendar"
-            android:id="@+id/imv_view"/>
+            android:layout_width="@dimen/_15sdp"
+            android:layout_height="@dimen/_15sdp"
+            app:srcCompat="@drawable/ic_fwrd_arrow"
+            android:id="@+id/imv_view" />
 
     </LinearLayout>
 

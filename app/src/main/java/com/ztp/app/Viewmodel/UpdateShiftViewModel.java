@@ -36,8 +36,14 @@ public class UpdateShiftViewModel extends ViewModel {
         call.enqueue(new Callback<ShiftUpdateResponse>() {
             @Override
             public void onResponse(Call<ShiftUpdateResponse> call, Response<ShiftUpdateResponse> response) {
-                if (response.body() != null) {
-                    shiftUpdateResponseMutableLiveData.postValue(response.body());
+                if(response.isSuccessful()) {
+                    if (response.body() != null) {
+                        shiftUpdateResponseMutableLiveData.postValue(response.body());
+                    }
+                }
+                else
+                {
+                    shiftUpdateResponseMutableLiveData.postValue(null);
                 }
             }
 

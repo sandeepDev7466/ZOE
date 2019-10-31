@@ -23,6 +23,10 @@ public class EventAddRequest {
     String event_image="cricket.jpg";
     String event_register_start_date="";
     String event_register_end_date="";
+    String event_waiver_req = "";
+    String event_waiver_doc = "";
+    String event_start_time = "";
+    String event_end_time = "";
 
     public String getUser_id() {
         return user_id;
@@ -160,6 +164,35 @@ public class EventAddRequest {
         this.event_register_end_date = event_register_end_date;
     }
 
+    public String getEvent_waiver_req() {
+        return event_waiver_req;
+    }
 
+    public void setEvent_waiver_req(String event_waiver_req) {
+        this.event_waiver_req = event_waiver_req;
+    }
 
+    public String getEvent_waiver_doc() {
+        return event_waiver_doc;
+    }
+
+    public void setEvent_waiver_doc(String event_waiver_doc) {
+        this.event_waiver_doc = event_waiver_doc;
+    }
+
+    public String getEvent_start_time() {
+        return event_start_time;
+    }
+
+    public void setEvent_start_time(String event_start_time) {
+        this.event_start_time = event_start_time;
+    }
+
+    public String getEvent_end_time() {
+        return event_end_time;
+    }
+
+    public void setEvent_end_time(String event_end_time) {
+        this.event_end_time = event_end_time;
+    }
 }

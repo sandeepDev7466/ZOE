@@ -18,13 +18,13 @@
             android:id="@+id/day"
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
-            android:textSize="@dimen/_25ssp" />
+            style="@style/MediumTextView" />
 
         <com.ztp.app.Helper.MyBoldTextView
             android:id="@+id/month"
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
-            android:textSize="@dimen/_10ssp"
+            style="@style/RegularTextView"
             android:layout_marginTop="@dimen/_5sdp"/>
 
     </LinearLayout>
@@ -40,7 +40,7 @@
             android:id="@+id/title"
             android:layout_width="match_parent"
             android:layout_height="wrap_content"
-            android:textSize="@dimen/_15ssp"
+            style="@style/RegularTextView"
             android:maxLines="2"
             android:ellipsize="end"/>
 
@@ -48,7 +48,7 @@
             android:id="@+id/description"
             android:layout_width="match_parent"
             android:layout_height="wrap_content"
-            android:textSize="@dimen/_12ssp"
+            style="@style/RegularTextView"
             android:maxLines="2"
             android:ellipsize="end"
             android:layout_marginTop="@dimen/_5sdp"/>
@@ -57,7 +57,7 @@
             android:id="@+id/time"
             android:layout_width="match_parent"
             android:layout_height="wrap_content"
-            android:textSize="@dimen/_10ssp"
+            style="@style/RegularTextView"
             android:layout_marginTop="@dimen/_5sdp"/>
 
     </LinearLayout>

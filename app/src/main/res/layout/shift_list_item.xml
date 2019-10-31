@@ -1,6 +1,5 @@
 <?xml version="1.0" encoding="utf-8"?>
 <LinearLayout xmlns:android="http://schemas.android.com/apk/res/android"
-    xmlns:app="http://schemas.android.com/apk/res-auto"
     android:id="@+id/mainLayout"
     android:layout_width="match_parent"
     android:layout_height="wrap_content"
@@ -23,23 +22,21 @@
 
             <com.ztp.app.Helper.MyBoldTextView
                 android:id="@+id/shift_date"
+                style="@style/MediumTextView"
                 android:layout_width="wrap_content"
-                android:layout_height="wrap_content"
-                android:textSize="@dimen/_15ssp" />
-
-
+                android:layout_height="wrap_content" />
 
             <com.ztp.app.Helper.MyBoldTextView
                 android:id="@+id/shift_month"
+                style="@style/SmallTextView"
                 android:layout_width="wrap_content"
-                android:layout_height="wrap_content"
-                android:textSize="@dimen/_10ssp" />
+                android:layout_height="wrap_content" />
 
             <com.ztp.app.Helper.MyBoldTextView
                 android:id="@+id/shift_day"
+                style="@style/SmallTextView"
                 android:layout_width="wrap_content"
-                android:layout_height="wrap_content"
-                android:textSize="@dimen/_10ssp" />
+                android:layout_height="wrap_content" />
         </LinearLayout>
 
         <LinearLayout
@@ -52,17 +49,17 @@
 
             <com.ztp.app.Helper.MyBoldTextView
                 android:id="@+id/title"
+                style="@style/RegularTextView"
                 android:layout_width="match_parent"
                 android:layout_height="wrap_content"
                 android:ellipsize="end"
-                android:maxLines="2"
-                android:textSize="@dimen/_13ssp" />
+                android:maxLines="2" />
 
             <com.ztp.app.Helper.MyTextView
                 android:id="@+id/description"
+                style="@style/SmallTextView"
                 android:layout_width="match_parent"
-                android:layout_height="wrap_content"
-                android:textSize="@dimen/_10ssp" />
+                android:layout_height="wrap_content" />
 
         </LinearLayout>
 
@@ -71,22 +68,28 @@
             android:layout_height="match_parent"
             android:layout_weight=".2"
             android:gravity="center"
-            android:orientation="horizontal">
+            android:orientation="vertical">
 
 
             <ImageView
                 android:id="@+id/imv_volunteer"
                 android:layout_width="@dimen/_20sdp"
-                android:layout_height="@dimen/_20sdp"
-                android:layout_marginLeft="@dimen/_10sdp" />
+                android:layout_height="@dimen/_20sdp" />
+
+            <com.ztp.app.Helper.MyTextView
+                android:id="@+id/status"
+                style="@style/SmallTextView"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:layout_marginTop="@dimen/_2sdp"/>
 
         </LinearLayout>
     </LinearLayout>
 
     <!--<View-->
-        <!--android:layout_width="match_parent"-->
-        <!--android:layout_height="1dp"-->
-        <!--android:layout_marginTop="@dimen/_10sdp"-->
-        <!--android:background="@color/background_3" />-->
+    <!--android:layout_width="match_parent"-->
+    <!--android:layout_height="1dp"-->
+    <!--android:layout_marginTop="@dimen/_10sdp"-->
+    <!--android:background="@color/background_3" />-->
 
 </LinearLayout>

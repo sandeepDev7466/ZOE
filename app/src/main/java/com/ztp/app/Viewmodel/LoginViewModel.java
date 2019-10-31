@@ -8,7 +8,6 @@ import com.ztp.app.Data.Remote.Model.Request.LoginRequest;
 import com.ztp.app.Data.Remote.Model.Response.LoginResponse;
 import com.ztp.app.Data.Remote.Service.Api;
 import com.ztp.app.Data.Remote.Service.ApiInterface;
-import com.ztp.app.Helper.MyProgressDialog;
 
 import retrofit2.Call;
 import retrofit2.Callback;
@@ -34,7 +33,12 @@ public class LoginViewModel extends ViewModel {
         call.enqueue(new Callback<LoginResponse>() {
             @Override
             public void onResponse(Call<LoginResponse> call, Response<LoginResponse> response) {
-                loginResponseMutableLiveData.postValue(response.body());
+                if (response.isSuccessful()) {
+                    if (response.body() != null)
+                        loginResponseMutableLiveData.postValue(response.body());
+                } else {
+                    loginResponseMutableLiveData.postValue(null);
+                }
             }
 
             @Override

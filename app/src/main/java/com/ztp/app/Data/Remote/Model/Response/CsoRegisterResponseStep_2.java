@@ -11,15 +11,9 @@ public class CsoRegisterResponseStep_2 {
     @SerializedName("res_status")
     @Expose
     private String resStatus;
-
-    public CsoRegisterResponseStep_2() {
-    }
-
-    public CsoRegisterResponseStep_2(String apiResKey, String resStatus) {
-        super();
-        this.apiResKey = apiResKey;
-        this.resStatus = resStatus;
-    }
+    @SerializedName("res_message")
+    @Expose
+    private String resMessage;
 
     public String getApiResKey() {
         return apiResKey;
@@ -37,4 +31,11 @@ public class CsoRegisterResponseStep_2 {
         this.resStatus = resStatus;
     }
 
+    public String getResMessage() {
+        return resMessage;
+    }
+
+    public void setResMessage(String resMessage) {
+        this.resMessage = resMessage;
+    }
 }

@@ -8,12 +8,14 @@ import android.content.Intent;
 import android.os.Bundle;
 import android.os.CountDownTimer;
 import android.support.v7.app.AppCompatActivity;
+import android.util.Log;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.widget.ImageView;
 import android.widget.LinearLayout;
 import android.widget.Toast;
 
+import com.google.gson.Gson;
 import com.ztp.app.Data.Local.SharedPrefrence.SharedPref;
 import com.ztp.app.Data.Remote.Model.Request.ValidateOtpRequest;
 import com.ztp.app.Helper.MyButton;
@@ -41,6 +43,7 @@ public class ValidateOTPActivity extends AppCompatActivity implements View.OnCli
     ValidateOtpViewModel validateOtpViewModel;
     MyProgressDialog myProgressDialog;
 
+
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
@@ -61,12 +64,18 @@ public class ValidateOTPActivity extends AppCompatActivity implements View.OnCli
         resendOtp = findViewById(R.id.resendOtp);
         countdownLayout = findViewById(R.id.countdownLayout);
         submit = findViewById(R.id.submit);
-        change_phone = findViewById(R.id.change_phone);
+        //change_phone = findViewById(R.id.change_phone);
         back = findViewById(R.id.back);
         etOtp = findViewById(R.id.etOtp);
-        etOtp.setText(sharedPref.getOtp());
         etOtp.requestFocus();
         startTimer(5 * 60 * 1000);
+
+
+        if (getIntent().getStringExtra("otp") != null) {
+            etOtp.setText(getIntent().getStringExtra("otp"));
+        } else {
+            etOtp.setText(sharedPref.getOtp());
+        }
 
         resendOtp.setOnClickListener(this);
         submit.setOnClickListener(this);
@@ -125,7 +134,9 @@ public class ValidateOTPActivity extends AppCompatActivity implements View.OnCli
         validateOtpRequest.setUserType(sharedPref.getUserType());
         validateOtpRequest.setUserId(sharedPref.getUserId());
 
-        if(Utility.isNetworkAvailable(context)) {
+        Log.i("","" + new Gson().toJson(validateOtpRequest));
+
+        if (Utility.isNetworkAvailable(context)) {
             validateOtpViewModel.getValidateOtpResponse(validateOtpRequest).observe((LifecycleOwner) context, validateOtpResponse -> {
                 if (validateOtpResponse != null) {
                     if (validateOtpResponse.getResStatus().equalsIgnoreCase("200")) {
@@ -133,8 +144,9 @@ public class ValidateOTPActivity extends AppCompatActivity implements View.OnCli
                         intent1.addFlags(Intent.FLAG_ACTIVITY_NEW_TASK | Intent.FLAG_ACTIVITY_CLEAR_TASK);
                         startActivity(intent1);
                         overridePendingTransition(R.anim.fade_in, R.anim.fade_out);
-                        myToast.show(getString(R.string.OTP_verified_successfully_please_login_to_continue), Toast.LENGTH_SHORT, true);
-                    } else if(validateOtpResponse.getResStatus().equalsIgnoreCase("401")){
+                        //myToast.show(getString(R.string.OTP_verified_successfully_please_login_to_continue), Toast.LENGTH_SHORT, true);
+                        myToast.show(validateOtpResponse.getResMessage(), Toast.LENGTH_SHORT, true);
+                    } else if (validateOtpResponse.getResStatus().equalsIgnoreCase("401")) {
                         myToast.show(getString(R.string.otp_validation_failed), Toast.LENGTH_SHORT, false);
                     }
                 } else {
@@ -142,8 +154,7 @@ public class ValidateOTPActivity extends AppCompatActivity implements View.OnCli
                 }
                 myProgressDialog.dismiss();
             });
-        }else
-        {
+        } else {
             myToast.show(getString(R.string.no_internet_connection), Toast.LENGTH_SHORT, false);
         }
 

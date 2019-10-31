@@ -65,11 +65,8 @@ public class EventTypeResponse {
     @Entity(tableName = "event_type")
     public static class EventType {
 
-        @PrimaryKey(autoGenerate = true)
+        @PrimaryKey
         @NonNull
-        @ColumnInfo(name = "id")
-        private int id;
-
         @SerializedName("event_type_id")
         @Expose
         @ColumnInfo(name = "event_type_id")
@@ -85,23 +82,10 @@ public class EventTypeResponse {
         @ColumnInfo(name = "event_type")
         private String eventType;
 
-//        public EventType() {
-//        }
-
-        public EventType(int id, String eventTypeId, String eventTypeName, String eventType) {
-            this.id = id;
+        public EventType(String eventTypeId, String eventTypeName, String eventType) {
             this.eventTypeId = eventTypeId;
             this.eventTypeName = eventTypeName;
             this.eventType = eventType;
-        }
-
-        @NonNull
-        public int getId() {
-            return id;
-        }
-
-        public void setId(@NonNull int id) {
-            this.id = id;
         }
 
         public String getEventTypeId() {

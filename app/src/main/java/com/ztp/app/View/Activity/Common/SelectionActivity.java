@@ -7,11 +7,14 @@ import android.support.v7.app.AppCompatActivity;
 import android.view.View;
 import android.widget.LinearLayout;
 
+import com.ztp.app.BuildConfig;
 import com.ztp.app.Data.Local.SharedPrefrence.SharedPref;
+import com.ztp.app.Helper.MyBoldTextView;
 import com.ztp.app.Helper.MyToast;
 import com.ztp.app.R;
+import com.ztp.app.Utils.Constants;
 import com.ztp.app.View.Activity.CSO.CsoRegisterStep_1Activity;
-import com.ztp.app.View.Activity.Student.StudentRegisterActivity;
+import com.ztp.app.View.Activity.Volunteer.VolunteerRegisterActivity;
 
 public class SelectionActivity extends AppCompatActivity implements View.OnClickListener {
 
@@ -19,6 +22,7 @@ public class SelectionActivity extends AppCompatActivity implements View.OnClick
     Context context;
     MyToast myToast;
     SharedPref sharedPref;
+    MyBoldTextView text;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -31,20 +35,29 @@ public class SelectionActivity extends AppCompatActivity implements View.OnClick
         myToast = new MyToast(context);
         studentLayout = findViewById(R.id.studentLayout);
         csoLayout = findViewById(R.id.csoLayout);
+        text = findViewById(R.id.text);
         studentLayout.setOnClickListener(this);
         csoLayout.setOnClickListener(this);
+
+        if(BuildConfig.FLAVOR.equalsIgnoreCase(Constants.FLAVOUR_BLUEPRINT) || BuildConfig.FLAVOR.equalsIgnoreCase(Constants.FLAVOUR_PRODUCTION))
+        {
+            text.setText(R.string.i_m_a_student);
+        }
+        else if(BuildConfig.FLAVOR.equalsIgnoreCase(Constants.FLAVOUR_THUMBPRINT))
+        {
+            text.setText(R.string.i_m_a_student_volunteer);
+        }
     }
 
     @Override
     public void onClick(View v) {
         switch (v.getId()) {
             case R.id.studentLayout:
-                sharedPref.setUserType("stu");
-                startActivity(new Intent(context, StudentRegisterActivity.class));
+                startActivity(new Intent(context, VolunteerRegisterActivity.class));
                 overridePendingTransition(R.anim.fade_in, R.anim.fade_out);
                 break;
             case R.id.csoLayout:
-                sharedPref.setUserType("cso");
+                sharedPref.setUserType(Constants.user_type_cso);
                 startActivity(new Intent(context, CsoRegisterStep_1Activity.class));
                 overridePendingTransition(R.anim.fade_in, R.anim.fade_out);
                 break;

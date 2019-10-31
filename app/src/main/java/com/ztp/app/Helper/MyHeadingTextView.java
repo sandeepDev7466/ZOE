@@ -12,19 +12,19 @@ public class MyHeadingTextView extends TextView {
 
     public MyHeadingTextView(Context context) {
         super(context);
-        Typeface face=Typeface.createFromAsset(context.getAssets(), "fonts/LeagueGothic-Regular.otf");
+        Typeface face=Typeface.createFromAsset(context.getAssets(), "fonts/Trade_Gothic_Bold.ttf");
         this.setTypeface(face);
     }
 
     public MyHeadingTextView(Context context, AttributeSet attrs) {
         super(context, attrs);
-        Typeface face=Typeface.createFromAsset(context.getAssets(), "fonts/LeagueGothic-Regular.otf");
+        Typeface face=Typeface.createFromAsset(context.getAssets(), "fonts/Trade_Gothic_Bold.ttf");
         this.setTypeface(face);
     }
 
     public MyHeadingTextView(Context context, AttributeSet attrs, int defStyle) {
         super(context, attrs, defStyle);
-        Typeface face=Typeface.createFromAsset(context.getAssets(), "fonts/LeagueGothic-Regular.otf");
+        Typeface face=Typeface.createFromAsset(context.getAssets(), "fonts/Trade_Gothic_Bold.ttf");
         this.setTypeface(face);
     }
 

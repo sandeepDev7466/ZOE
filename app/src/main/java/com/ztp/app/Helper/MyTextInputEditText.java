@@ -9,19 +9,19 @@ import android.util.AttributeSet;
 public class MyTextInputEditText extends TextInputEditText {
     public MyTextInputEditText(Context context) {
         super(context);
-        Typeface face = Typeface.createFromAsset(context.getAssets(), "fonts/Amaranth-Regular.otf");
+        Typeface face = Typeface.createFromAsset(context.getAssets(), "fonts/Roboto_Regular.ttf");
         this.setTypeface(face);
     }
 
     public MyTextInputEditText(Context context, AttributeSet attrs) {
         super(context, attrs);
-        Typeface face = Typeface.createFromAsset(context.getAssets(), "fonts/Amaranth-Regular.otf");
+        Typeface face = Typeface.createFromAsset(context.getAssets(), "fonts/Roboto_Regular.ttf");
         this.setTypeface(face);
     }
 
     public MyTextInputEditText(Context context, AttributeSet attrs, int defStyle) {
         super(context, attrs, defStyle);
-        Typeface face = Typeface.createFromAsset(context.getAssets(), "fonts/Amaranth-Regular.otf");
+        Typeface face = Typeface.createFromAsset(context.getAssets(), "fonts/Roboto_Regular.ttf");
         this.setTypeface(face);
     }
 

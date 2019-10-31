@@ -27,7 +27,6 @@
         app:anotherMonthsDaysLabelsColor="@color/background_4" />-->
 
     <com.prolificinteractive.materialcalendarview.MaterialCalendarView
-        xmlns:app="http://schemas.android.com/apk/res-auto"
         android:id="@+id/calendarViews"
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
@@ -36,8 +35,8 @@
         android:layout_marginStart="@dimen/_20sdp"
         android:layout_marginEnd="@dimen/_20sdp"
         app:mcv_weekDayLabels="@color/white"
-        app:mcv_arrowColor="@color/white">
-
-    </com.prolificinteractive.materialcalendarview.MaterialCalendarView>
+        app:mcv_arrowColor="@color/white"
+        app:mcv_selectionColor="@color/red"
+        />
 
 </LinearLayout>

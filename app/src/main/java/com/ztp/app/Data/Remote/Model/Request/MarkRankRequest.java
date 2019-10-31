@@ -23,17 +23,21 @@ public class MarkRankRequest {
     @SerializedName("map_id")
     @Expose
     private String mapId;
+    @SerializedName("map_rank_comment")
+    @Expose
+    private String mapRankComment;
 
     public MarkRankRequest() {
     }
 
-    public MarkRankRequest(String userId, String userType, String userDevice, String volId, String attendRank, String mapId) {
+    public MarkRankRequest(String userId, String userType, String userDevice, String volId, String attendRank, String mapId,String mapRankComment) {
         this.userId = userId;
         this.userType = userType;
         this.userDevice = userDevice;
         this.volId = volId;
         this.attendRank = attendRank;
         this.mapId = mapId;
+        this.mapRankComment = mapRankComment;
     }
 
     public String getUserId() {
@@ -82,6 +86,14 @@ public class MarkRankRequest {
 
     public void setMapId(String mapId) {
         this.mapId = mapId;
+    }
+
+    public String getMapRankComment() {
+        return mapRankComment;
+    }
+
+    public void setMapRankComment(String mapRankComment) {
+        this.mapRankComment = mapRankComment;
     }
 }
 

@@ -6,7 +6,7 @@
     android:layout_height="match_parent"
     android:orientation="vertical">
 
-    <android.support.design.widget.AppBarLayout
+    <!--<android.support.design.widget.AppBarLayout
         android:layout_width="match_parent"
         android:layout_height="wrap_content">
 
@@ -19,9 +19,10 @@
                 android:layout_height="match_parent">
 
                 <ImageView
+                    android:id="@+id/cover"
                     android:layout_width="match_parent"
                     android:layout_height="match_parent"
-                    android:src="@drawable/scene"
+                    android:src="@drawable/back"
                     android:scaleType="fitXY" />
 
                 <ImageView
@@ -32,7 +33,7 @@
 
                 <LinearLayout
                     android:layout_width="match_parent"
-                    android:layout_height="@dimen/_70sdp"
+                    android:layout_height="@dimen/_50sdp"
                     android:layout_alignParentBottom="true"
                     android:orientation="horizontal"
                     android:padding="@dimen/_5sdp">
@@ -45,24 +46,60 @@
                         android:orientation="horizontal">
 
                         <de.hdodenhof.circleimageview.CircleImageView
-                            android:layout_width="@dimen/_50sdp"
-                            android:layout_height="@dimen/_50sdp"
-                            android:src="@drawable/user"/>
+                            android:id="@+id/user"
+                            android:layout_width="@dimen/_40sdp"
+                            android:layout_height="@dimen/_40sdp"
+                            android:src="@drawable/user_png"
+                            />
 
                         <com.ztp.app.Helper.MyHeadingTextView
                             android:id="@+id/title"
                             android:layout_width="wrap_content"
                             android:layout_height="wrap_content"
-                            android:textSize="@dimen/_20sdp"
+                            style="@style/MediumTextView"
                             android:layout_marginStart="@dimen/_10sdp"
-                            android:layout_marginBottom="@dimen/_3sdp"
-                            android:layout_gravity="bottom"/>
+                            android:layout_marginBottom="@dimen/_3sdp" />
 
                     </LinearLayout>
+
+                <LinearLayout
+                    android:layout_width="0dp"
+                    android:layout_height="match_parent"
+                    android:layout_weight=".12"
+                    android:gravity="center"
+                    android:orientation="horizontal">
+
+                    <RelativeLayout
+                        android:id="@+id/notifLayout"
+                        android:layout_width="@dimen/_25sdp"
+                        android:layout_height="@dimen/_25sdp">
+
+                        <ImageView
+                            android:layout_width="@dimen/_20sdp"
+                            android:layout_height="@dimen/_20sdp"
+                            android:src="@drawable/ic_bell"
+                            />
+
+                        <com.ztp.app.Helper.MyTextView
+                            android:id="@+id/notifCount"
+                            android:layout_width="@dimen/_13sdp"
+                            android:layout_height="@dimen/_13sdp"
+                            android:text="0"
+                            android:background="@drawable/circle_green"
+                            android:layout_alignParentRight="true"
+                            android:gravity="center"
+                            style="@style/SmallTextView"
+                            android:textColor="@color/white"
+                            android:visibility="gone"/>
+
+                    </RelativeLayout>
+
+                </LinearLayout>
+
                     <LinearLayout
                         android:layout_width="0dp"
                         android:layout_height="match_parent"
-                        android:layout_weight=".15"
+                        android:layout_weight=".12"
                         android:gravity="center">
 
                         <ImageView
@@ -70,7 +107,7 @@
                             android:layout_width="@dimen/_20sdp"
                             android:layout_height="@dimen/_25sdp"
                             app:srcCompat="@drawable/ic_list"
-                            android:layout_marginTop="@dimen/_7sdp"/>
+                            android:layout_marginBottom="@dimen/_3sdp"/>
 
                     </LinearLayout>
 
@@ -80,6 +117,70 @@
             </RelativeLayout>
 
         </LinearLayout>
+
+    </android.support.design.widget.AppBarLayout>-->
+
+    <android.support.design.widget.AppBarLayout
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:background="#21274E">
+
+        <FrameLayout
+            android:layout_width="match_parent"
+            android:layout_height="@dimen/_60sdp">
+
+            <de.hdodenhof.circleimageview.CircleImageView
+                android:id="@+id/user"
+                android:layout_width="@dimen/_30sdp"
+                android:layout_height="@dimen/_30sdp"
+                android:layout_gravity="center_vertical"
+                android:layout_marginStart="@dimen/_10sdp"
+                android:src="@drawable/user_png"
+                android:tint="@color/white"
+                android:layout_marginTop="@dimen/_10sdp"/>
+
+            <RelativeLayout
+                android:id="@+id/notifLayout"
+                android:layout_width="@dimen/_25sdp"
+                android:layout_height="@dimen/_25sdp"
+                android:layout_marginTop="@dimen/_10sdp"
+                android:layout_marginEnd="@dimen/_50sdp"
+                android:layout_gravity="center_vertical|end">
+
+                <ImageView
+                    android:layout_width="@dimen/_20sdp"
+                    android:layout_height="@dimen/_20sdp"
+                    android:src="@drawable/ic_bell"
+                    android:tint="@color/white"
+                    />
+
+                <com.ztp.app.Helper.MyTextView
+                    android:id="@+id/notifCount"
+                    android:layout_width="@dimen/_13sdp"
+                    android:layout_height="@dimen/_13sdp"
+                    android:text="0"
+                    android:background="@drawable/circle_green"
+                    android:layout_alignParentRight="true"
+                    android:gravity="center"
+                    style="@style/SmallTextView"
+                    android:textColor="@color/white"
+                    android:visibility="gone"/>
+
+            </RelativeLayout>
+
+
+            <ImageView
+                android:id="@+id/menu"
+                android:layout_width="@dimen/_20sdp"
+                android:layout_height="@dimen/_20sdp"
+                android:layout_gravity="center_vertical|end"
+                android:layout_marginEnd="@dimen/_10sdp"
+                android:src="@drawable/ic_list"
+                android:tint="@color/white"
+                android:layout_marginTop="@dimen/_8sdp"/>
+
+
+        </FrameLayout>
 
     </android.support.design.widget.AppBarLayout>
 

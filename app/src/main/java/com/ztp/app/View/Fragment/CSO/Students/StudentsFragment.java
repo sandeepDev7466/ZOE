@@ -51,13 +51,13 @@ public class StudentsFragment extends Fragment {
                     MyHeadingTextView text = v.findViewById(R.id.text);
                     if(theme)
                     {
-                        text.setTextColor(getResources().getColor(R.color.black));
-                        image.setColorFilter(getResources().getColor(R.color.black));
+                        text.setTextColor(getResources().getColor(R.color.white));
+                        image.setColorFilter(getResources().getColor(R.color.white));
                     }
                     else
                     {
-                        text.setTextColor(getResources().getColor(R.color.white));
-                        image.setColorFilter(getResources().getColor(R.color.white));
+                        text.setTextColor(getResources().getColor(R.color.black));
+                        image.setColorFilter(getResources().getColor(R.color.black));
                     }
                 } catch (Exception e) {
                     e.printStackTrace();
@@ -72,16 +72,8 @@ public class StudentsFragment extends Fragment {
                     ImageView image = v.findViewById(R.id.image);
                     MyHeadingTextView text = v.findViewById(R.id.text);
 
-                    if(theme)
-                    {
-                        text.setTextColor(getResources().getColor(R.color.background_3));
-                        image.setColorFilter(getResources().getColor(R.color.background_3));
-                    }
-                    else
-                    {
-                        text.setTextColor(getResources().getColor(R.color.tab_unselected));
-                        image.setColorFilter(getResources().getColor(R.color.tab_unselected));
-                    }
+                    text.setTextColor(getResources().getColor(R.color.background_3));
+                    image.setColorFilter(getResources().getColor(R.color.background_3));
 
                 } catch (Exception e) {
                     e.printStackTrace();
@@ -141,30 +133,13 @@ public class StudentsFragment extends Fragment {
         if (position == 0) {
             text.setText(getString(R.string.tab_students_followers));
             image.setImageResource(R.drawable.ic_user);
-            if(theme)
-            {
-                text.setTextColor(getResources().getColor(R.color.black));
-                image.setColorFilter(getResources().getColor(R.color.black));
-            }
-            else
-            {
-                text.setTextColor(getResources().getColor(R.color.white));
-                image.setColorFilter(getResources().getColor(R.color.white));
-            }
+
         } else if (position == 1) {
             text.setText(getString(R.string.tab_volunteers));
             image.setImageResource(R.drawable.ic_user);
 
-            if(theme)
-            {
-                text.setTextColor(getResources().getColor(R.color.background_3));
-                image.setColorFilter(getResources().getColor(R.color.background_3));
-            }
-            else
-            {
-                text.setTextColor(getResources().getColor(R.color.tab_unselected));
-                image.setColorFilter(getResources().getColor(R.color.tab_unselected));
-            }
+            text.setTextColor(getResources().getColor(R.color.background_3));
+            image.setColorFilter(getResources().getColor(R.color.background_3));
         }
 
         return view;

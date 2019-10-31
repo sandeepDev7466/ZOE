@@ -15,9 +15,14 @@ import android.os.Build;
 import android.os.Bundle;
 import android.os.Environment;
 import android.provider.MediaStore;
+import android.provider.OpenableColumns;
+import android.provider.Settings;
+import android.support.v4.content.ContextCompat;
 import android.support.v4.content.FileProvider;
+import android.support.v7.app.AlertDialog;
 import android.support.v7.app.AppCompatActivity;
 import android.util.Base64;
+import android.util.Log;
 import android.view.View;
 import android.widget.Button;
 import android.widget.ImageView;
@@ -35,6 +40,7 @@ import com.karumi.dexter.listener.single.PermissionListener;
 import com.squareup.picasso.Picasso;
 import com.theartofdev.edmodo.cropper.CropImage;
 import com.theartofdev.edmodo.cropper.CropImageView;
+import com.yalantis.ucrop.UCrop;
 import com.ztp.app.BuildConfig;
 import com.ztp.app.Data.Local.SharedPrefrence.SharedPref;
 import com.ztp.app.Data.Remote.Model.Response.UploadDocumentResponse;
@@ -61,6 +67,8 @@ import retrofit2.Call;
 import retrofit2.Callback;
 import retrofit2.Response;
 
+import static android.support.v4.content.FileProvider.getUriForFile;
+
 public class UpdateImageActivity extends AppCompatActivity implements View.OnClickListener {
 
     Context context;
@@ -69,20 +77,27 @@ public class UpdateImageActivity extends AppCompatActivity implements View.OnCli
     public static File uploadFile = null;
     public static boolean cameFrom = false;
     String type;
-    MyTextView browse,fileName,file,title;
+    MyTextView camera,gallery,fileName,file,title;
     ImageView image;
     SharedPref sharedPref;
     String imgPath;
     Button upload,cancel;
     MyProgressDialog myProgressDialog;
     LinearLayout mainLayout;
+    public String fileNameCam;
+    public static final int REQUEST_IMAGE_CAPTURE = 0;
+    public static final int REQUEST_GALLERY_IMAGE = 1;
+    private boolean lockAspectRatio = false, setBitmapMaxWidthHeight = false;
+    private int ASPECT_RATIO_X = 16, ASPECT_RATIO_Y = 9, bitmapMaxWidth = 1000, bitmapMaxHeight = 1000;
+    private int IMAGE_COMPRESSION = 80;
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_update_image);
         context = this;
         myToast = new MyToast(context);
-        browse = findViewById(R.id.browse);
+        camera = findViewById(R.id.camera);
+        gallery = findViewById(R.id.gallery);
         cancel = findViewById(R.id.cancel);
         upload = findViewById(R.id.upload);
         image = findViewById(R.id.image);
@@ -93,12 +108,15 @@ public class UpdateImageActivity extends AppCompatActivity implements View.OnCli
         title = findViewById(R.id.title);
         mainLayout = findViewById(R.id.mainLayout);
 
-        browse.setOnClickListener(this);
         cancel.setOnClickListener(this);
-        upload.setOnClickListener(this);
 
         if (Build.VERSION.SDK_INT >= 23) {
             requestCameraPermission();
+        }
+        else
+        {
+            camera.setOnClickListener(this);
+            upload.setOnClickListener(this);
         }
 
         if (getIntent() != null) {
@@ -124,20 +142,22 @@ public class UpdateImageActivity extends AppCompatActivity implements View.OnCli
                 .withListener(new PermissionListener() {
                     @Override
                     public void onPermissionGranted(PermissionGrantedResponse response) {
+                        camera.setOnClickListener(UpdateImageActivity.this);
+                        upload.setOnClickListener(UpdateImageActivity.this);
                     }
 
                     @Override
                     public void onPermissionDenied(PermissionDeniedResponse response) {
                         if (response.isPermanentlyDenied()) {
                             myToast.show(getString(R.string.err_camera_permission), Toast.LENGTH_SHORT, false);
-                            browse.setEnabled(false);
-                            upload.setEnabled(false);
+                            showSettingsDialog();
                         }
                     }
 
                     @Override
                     public void onPermissionRationaleShouldBeShown(PermissionRequest permission, PermissionToken token) {
                         token.continuePermissionRequest();
+
                     }
                 })
                 .withErrorListener(new PermissionRequestErrorListener() {
@@ -148,7 +168,7 @@ public class UpdateImageActivity extends AppCompatActivity implements View.OnCli
                 }).check();
     }
 
-    @SuppressLint("SetTextI18n")
+   /* @SuppressLint("SetTextI18n")
     @Override
     public void onActivityResult(int requestCode, int resultCode, Intent data) {
         super.onActivityResult(requestCode, resultCode, data);
@@ -176,15 +196,59 @@ public class UpdateImageActivity extends AppCompatActivity implements View.OnCli
         } catch (Exception e) {
             e.printStackTrace();
         }
+    }*/
+
+
+    protected void onActivityResult(int requestCode, int resultCode, Intent data) {
+        switch (requestCode) {
+            case REQUEST_IMAGE_CAPTURE:
+                if (resultCode == RESULT_OK) {
+                    cropImage(getCacheImagePath(fileNameCam));
+                } else {
+                    setResultCancelled();
+                }
+                break;
+            case REQUEST_GALLERY_IMAGE:
+                if (resultCode == RESULT_OK) {
+                    Uri imageUri = data.getData();
+                    cropImage(imageUri);
+                } else {
+                    setResultCancelled();
+                }
+                break;
+            case UCrop.REQUEST_CROP:
+                if (resultCode == RESULT_OK) {
+                    handleUCropResult(data);
+                } else {
+                    setResultCancelled();
+                }
+                break;
+            case UCrop.RESULT_ERROR:
+                final Throwable cropError = UCrop.getError(data);
+                Log.e("ERROR", "Crop error: " + cropError);
+                setResultCancelled();
+                break;
+
+            default:
+                setResultCancelled();
+        }
     }
+
 
     @Override
     public void onClick(View v) {
         switch (v.getId()) {
-            case R.id.browse:
-                CropImage.activity()
+            case R.id.camera:
+                /*CropImage.activity()
                         .setGuidelines(CropImageView.Guidelines.OFF)
-                        .start(this);
+                        .start(this);*/
+
+                takeCameraImage();
+
+                break;
+            case R.id.gallery:
+
+                chooseImageFromGallery();
                 break;
             case R.id.cancel:
                 uploadFile = null;
@@ -200,5 +264,111 @@ public class UpdateImageActivity extends AppCompatActivity implements View.OnCli
                    cameFrom = false;
                 break;
         }
+    }
+    private void showSettingsDialog() {
+        AlertDialog.Builder builder = new AlertDialog.Builder(context);
+        builder.setTitle(getString(R.string.grant_permission));
+        builder.setMessage(getString(R.string.zoeblueprint_need_permission));
+        builder.setPositiveButton(getString(R.string.go_to_settings), (dialog, which) -> {
+            dialog.cancel();
+            openSettings();
+        });
+        builder.setNegativeButton(getString(android.R.string.cancel), (dialog, which) -> dialog.cancel());
+        builder.show();
+
+    }
+
+    private void openSettings() {
+        Intent intent = new Intent(Settings.ACTION_APPLICATION_DETAILS_SETTINGS);
+        Uri uri = Uri.fromParts("package", getPackageName(), null);
+        intent.setData(uri);
+        startActivityForResult(intent, 101);
+    }
+
+    private void takeCameraImage() {
+        fileNameCam = System.currentTimeMillis() + ".jpg";
+        Intent takePictureIntent = new Intent(MediaStore.ACTION_IMAGE_CAPTURE);
+        takePictureIntent.putExtra(MediaStore.EXTRA_OUTPUT, getCacheImagePath(fileNameCam));
+        if (takePictureIntent.resolveActivity(getPackageManager()) != null) {
+            startActivityForResult(takePictureIntent, REQUEST_IMAGE_CAPTURE);
+        }
+    }
+
+    private void chooseImageFromGallery() {
+        Intent pickPhoto = new Intent(Intent.ACTION_PICK,
+                MediaStore.Images.Media.EXTERNAL_CONTENT_URI);
+        startActivityForResult(pickPhoto, REQUEST_GALLERY_IMAGE);
+    }
+    private Uri getCacheImagePath(String fileName) {
+        File path = new File(getExternalCacheDir(), "camera");
+        if (!path.exists()) path.mkdirs();
+        File image = new File(path, fileName);
+        return getUriForFile(context, getPackageName() + ".provider", image);
+    }
+    private void cropImage(Uri sourceUri) {
+        Uri destinationUri = Uri.fromFile(new File(getCacheDir(), queryName(getContentResolver(), sourceUri)));
+        UCrop.Options options = new UCrop.Options();
+        options.setCompressionQuality(IMAGE_COMPRESSION);
+
+        // applying UI theme
+        options.setToolbarColor(ContextCompat.getColor(this, R.color.colorPrimary));
+        options.setStatusBarColor(ContextCompat.getColor(this, R.color.colorPrimary));
+        options.setActiveWidgetColor(ContextCompat.getColor(this, R.color.colorPrimary));
+
+        if (lockAspectRatio)
+            options.withAspectRatio(ASPECT_RATIO_X, ASPECT_RATIO_Y);
+
+        if (setBitmapMaxWidthHeight)
+            options.withMaxResultSize(bitmapMaxWidth, bitmapMaxHeight);
+
+        UCrop.of(sourceUri, destinationUri)
+                .withOptions(options)
+                .start(this);
+    }
+
+    private void handleUCropResult(Intent data) {
+        if (data == null) {
+            setResultCancelled();
+            return;
+        }
+        final Uri resultUri = UCrop.getOutput(data);
+        setResultOk(resultUri);
+    }
+
+    private void setResultOk(Uri imagePath) {
+       /* Intent intent = new Intent();
+        intent.putExtra("path", imagePath);
+        setResult(Activity.RESULT_OK, intent);
+        finish();*/
+
+        try {
+        image.setImageURI(imagePath);
+        Bitmap bitmap = MediaStore.Images.Media.getBitmap(this.getContentResolver(), imagePath);
+        sharedPref.setEventImageBase64(Utility.encodeTobase64(bitmap));
+        path = imagePath.getPath();
+        uploadFile = new File(path);
+        fileName.setVisibility(View.VISIBLE);
+        file.setText(uploadFile.getName());
+        cameFrom = true;
+        } catch (IOException e) {
+            e.printStackTrace();
+        }
+
+    }
+
+    private void setResultCancelled() {
+        Intent intent = new Intent();
+        setResult(Activity.RESULT_CANCELED, intent);
+        finish();
+    }
+    private static String queryName(ContentResolver resolver, Uri uri) {
+        Cursor returnCursor =
+                resolver.query(uri, null, null, null, null);
+        assert returnCursor != null;
+        int nameIndex = returnCursor.getColumnIndex(OpenableColumns.DISPLAY_NAME);
+        returnCursor.moveToFirst();
+        String name = returnCursor.getString(nameIndex);
+        returnCursor.close();
+        return name;
     }
 }

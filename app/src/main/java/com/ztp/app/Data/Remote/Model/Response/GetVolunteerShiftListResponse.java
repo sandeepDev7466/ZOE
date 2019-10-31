@@ -1,5 +1,10 @@
 package com.ztp.app.Data.Remote.Model.Response;
 
+import android.arch.persistence.room.ColumnInfo;
+import android.arch.persistence.room.Entity;
+import android.arch.persistence.room.PrimaryKey;
+import android.support.annotation.NonNull;
+
 import com.google.gson.annotations.Expose;
 import com.google.gson.annotations.SerializedName;
 
@@ -56,44 +61,88 @@ public class GetVolunteerShiftListResponse {
     }
 
 
-    public class ShiftData implements Serializable
+    @Entity(tableName = "shift_data")
+    public static class ShiftData implements Serializable
     {
+        @NonNull
+        @PrimaryKey
         @SerializedName("shift_id")
         @Expose
+        @ColumnInfo(name = "shift_id")
         private String shift_id;
+
+        @ColumnInfo(name = "event_id")
+        private String event_id;
+
         @SerializedName("shift_date")
         @Expose
+        @ColumnInfo(name = "shift_date")
         private String shift_date;
+
         @SerializedName("shift_vol_req")
         @Expose
+        @ColumnInfo(name = "shift_vol_req")
         private String shift_vol_req;
+
         @SerializedName("shift_start_time")
         @Expose
+        @ColumnInfo(name = "shift_start_time")
         private String shift_start_time;
+
         @SerializedName("shift_end_time")
         @Expose
+        @ColumnInfo(name = "shift_end_time")
         private String shift_end_time;
+
         @SerializedName("shift_rank")
         @Expose
+        @ColumnInfo(name = "shift_rank")
         private String shift_rank;
+
         @SerializedName("shift_task")
         @Expose
+        @ColumnInfo(name = "shift_task")
         private String shift_task;
+
+        @SerializedName("shift_task_name")
+        @Expose
+        @ColumnInfo(name = "shift_task_name")
+        private String shift_task_name;
+
         @SerializedName("shift_status")
         @Expose
+        @ColumnInfo(name = "shift_status")
         private String shift_status;
+
         @SerializedName("shift_add_date")
         @Expose
+        @ColumnInfo(name = "shift_add_date")
         private String shift_add_date;
+
         @SerializedName("shift_update_date")
         @Expose
+        @ColumnInfo(name = "shift_update_date")
         private String shift_update_date;
+
+        @SerializedName("csoa_id")
+        @Expose
+        @ColumnInfo(name = "csoa_id")
+        private String csoa_id;
+
         @SerializedName("cso_id")
         @Expose
+        @ColumnInfo(name = "cso_id")
         private String cso_id;
+
         @SerializedName("volunteer_apply")
         @Expose
+        @ColumnInfo(name = "volunteer_apply")
         private String volunteer_apply;
+
+        @SerializedName("volunteer_req_accepted")
+        @Expose
+        @ColumnInfo(name = "volunteer_req_accepted")
+        private String volunteer_req_accepted;
 
         public String getShift_id() {
             return shift_id;
@@ -193,7 +242,37 @@ public class GetVolunteerShiftListResponse {
         public void setVolunteer_apply(String volunteer_apply) {
             this.volunteer_apply = volunteer_apply;
         }
+
+        public String getShift_task_name() {
+            return shift_task_name;
+        }
+
+        public void setShift_task_name(String shift_task_name) {
+            this.shift_task_name = shift_task_name;
+        }
+
+        public String getCsoa_id() {
+            return csoa_id;
+        }
+
+        public void setCsoa_id(String csoa_id) {
+            this.csoa_id = csoa_id;
+        }
+
+        public String getVolunteer_req_accepted() {
+            return volunteer_req_accepted;
+        }
+
+        public void setVolunteer_req_accepted(String volunteer_req_accepted) {
+            this.volunteer_req_accepted = volunteer_req_accepted;
+        }
+
+        public String getEvent_id() {
+            return event_id;
+        }
+
+        public void setEvent_id(String event_id) {
+            this.event_id = event_id;
+        }
     }
-
-
 }

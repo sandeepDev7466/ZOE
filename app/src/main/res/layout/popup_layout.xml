@@ -12,7 +12,7 @@
         android:layout_height="@dimen/_40sdp"
         android:gravity="center"
         android:text="@string/friends"
-        android:textSize="@dimen/_12ssp"
+        style="@style/RegularTextView"
         android:textColor="@color/black"/>
 
     <View
@@ -26,7 +26,7 @@
         android:layout_height="@dimen/_40sdp"
         android:gravity="center"
         android:text="@string/cso_s"
-        android:textSize="@dimen/_12ssp"
+        style="@style/RegularTextView"
         android:textColor="@color/black"/>
 
 </LinearLayout>

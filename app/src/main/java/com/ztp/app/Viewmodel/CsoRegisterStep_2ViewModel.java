@@ -31,9 +31,15 @@ public class CsoRegisterStep_2ViewModel extends ViewModel {
         call.enqueue(new Callback<CsoRegisterResponseStep_2>() {
             @Override
             public void onResponse(Call<CsoRegisterResponseStep_2> call, Response<CsoRegisterResponseStep_2> response) {
-                if (response.body() != null) {
-                    csoRegisterResponseMutableLiveData.postValue(response.body());
+                if(response.isSuccessful()) {
+                    if (response.body() != null) {
+                        csoRegisterResponseMutableLiveData.postValue(response.body());
 
+                    }
+                }
+                else
+                {
+                    csoRegisterResponseMutableLiveData.postValue(null);
                 }
             }
 

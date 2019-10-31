@@ -30,8 +30,14 @@ public class CsoMarkHoursViewModel extends ViewModel {
         call.enqueue(new Callback<CsoMarkHoursResponse>() {
             @Override
             public void onResponse(Call<CsoMarkHoursResponse> call, Response<CsoMarkHoursResponse> response) {
-                if (response.body() != null) {
-                    csoMarkHoursResponseMutableLiveData.postValue(response.body());
+                if(response.isSuccessful()) {
+                    if (response.body() != null) {
+                        csoMarkHoursResponseMutableLiveData.postValue(response.body());
+                    }
+                }
+                else
+                {
+                    csoMarkHoursResponseMutableLiveData.postValue(null);
                 }
             }
 

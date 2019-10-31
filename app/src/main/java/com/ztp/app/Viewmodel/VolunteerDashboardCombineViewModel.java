@@ -29,8 +29,14 @@ public class VolunteerDashboardCombineViewModel extends ViewModel {
         call.enqueue(new Callback<VolunteerDashboardCombineResponse>() {
             @Override
             public void onResponse(Call<VolunteerDashboardCombineResponse> call, Response<VolunteerDashboardCombineResponse> response) {
-                if (response.body() != null) {
-                    volunteerDashboardCombineResponseMutableLiveData.postValue(response.body());
+                if(response.isSuccessful()) {
+                    if (response.body() != null) {
+                        volunteerDashboardCombineResponseMutableLiveData.postValue(response.body());
+                    }
+                }
+                else
+                {
+                    volunteerDashboardCombineResponseMutableLiveData.postValue(null);
                 }
             }
 

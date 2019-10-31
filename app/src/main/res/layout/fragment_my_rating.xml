@@ -1,5 +1,5 @@
 <?xml version="1.0" encoding="utf-8"?>
-<LinearLayout
+<FrameLayout
     xmlns:android="http://schemas.android.com/apk/res/android"
     android:layout_width="match_parent"
     android:layout_height="match_parent"
@@ -7,37 +7,34 @@
 
     <LinearLayout
         android:layout_width="match_parent"
-        android:layout_height="wrap_content"
-        android:gravity="center_vertical|end"
+        android:layout_height="match_parent"
+        android:gravity="center"
         android:padding="@dimen/_20sdp"
         android:orientation="vertical">
 
-        <com.ztp.app.Helper.MyBoldTextView
-            android:layout_width="match_parent"
-            android:layout_height="wrap_content"
-            android:textSize="@dimen/_12ssp"
-            android:text="CURRENT RANK : 1"/>
+        <ImageView
+            android:id="@+id/rank"
+            android:layout_width="@dimen/_80sdp"
+            android:layout_height="@dimen/_80sdp" />
 
-        <com.ztp.app.Helper.MyTextView
+        <com.ztp.app.Helper.MyHeadingTextView
+            android:id="@+id/hours"
             android:layout_width="match_parent"
             android:layout_height="wrap_content"
-            android:layout_marginTop="@dimen/_5sdp"
-            android:textSize="@dimen/_12ssp"
-            android:text="105 hours completed."
-            />
+            android:layout_marginTop="@dimen/_20sdp"
+            style="@style/SmallTextView"
+            android:gravity="center"/>
 
     </LinearLayout>
 
-    <ListView
-        android:id="@+id/listView"
+    <com.ztp.app.Helper.MyTextView
+        android:id="@+id/noData"
         android:layout_width="match_parent"
         android:layout_height="match_parent"
-        android:scrollbars="none"
-        android:dividerHeight="0.4dp"
-        android:divider="@color/background_3"
-        android:layout_marginStart="@dimen/_20sdp"
-        android:layout_marginEnd="@dimen/_20sdp"
-        android:overScrollMode="never"/>
+        android:text="@string/err_no_data_found"
+        android:gravity="center"
+        style="@style/RegularTextView"
+        android:layout_gravity="center"
+        android:visibility="gone"/>
 
-
-</LinearLayout>
+</FrameLayout>

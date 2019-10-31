@@ -10,7 +10,7 @@
         android:layout_height="@dimen/_50sdp"
         android:text="@string/change_status"
         android:layout_gravity="center"
-        android:textSize="@dimen/_15ssp"
+        style="@style/MediumTextView"
         android:background="@color/blue_light"
         android:textColor="@color/white"
         android:gravity="center"
@@ -30,14 +30,15 @@
             android:layout_width="0dp"
             android:layout_height="@dimen/_30sdp"
             android:layout_weight="1"
-            android:src="@drawable/cso_declined" />
+            android:src="@drawable/ic_declined_cso" />
 
         <com.ztp.app.Helper.MyTextView
             android:layout_width="0dp"
             android:layout_height="match_parent"
             android:layout_weight="2"
             android:gravity="center_vertical"
-            android:text="@string/status_decline" />
+            android:text="@string/status_decline"
+            style="@style/RegularTextView"/>
     </LinearLayout>
 
     <View
@@ -63,15 +64,17 @@
             android:layout_width="0dp"
             android:layout_height="@dimen/_30sdp"
             android:layout_weight="1"
-            android:src="@drawable/cso_approved" />
+            android:src="@drawable/ic_accepted_cso" />
 
         <com.ztp.app.Helper.MyTextView
             android:layout_width="0dp"
             android:layout_height="match_parent"
             android:layout_weight="2"
             android:gravity="center_vertical"
-            android:text="@string/status_accept" />
+            android:text="@string/status_accept"
+            style="@style/RegularTextView"/>
     </LinearLayout>
+
     <View
     android:id="@+id/accept_view"
     android:layout_width="match_parent"
@@ -95,15 +98,17 @@
             android:layout_width="0dp"
             android:layout_height="@dimen/_30sdp"
             android:layout_weight="1"
-            android:src="@drawable/more_info" />
+            android:src="@drawable/ic_more_info" />
 
         <com.ztp.app.Helper.MyTextView
             android:layout_width="0dp"
             android:layout_height="match_parent"
             android:layout_weight="2"
             android:gravity="center_vertical"
-            android:text="@string/more_info" />
+            android:text="@string/more_info"
+            style="@style/RegularTextView"/>
     </LinearLayout>
+
     <View
         android:id="@+id/info_view"
         android:layout_width="match_parent"
@@ -127,15 +132,17 @@
             android:layout_width="0dp"
             android:layout_height="@dimen/_30sdp"
             android:layout_weight="1"
-            android:src="@drawable/cso_rejected" />
+            android:src="@drawable/ic_rejected_cso" />
 
         <com.ztp.app.Helper.MyTextView
             android:layout_width="0dp"
             android:layout_height="match_parent"
             android:layout_weight="2"
             android:gravity="center_vertical"
-            android:text="@string/status_reject" />
+            android:text="@string/status_reject"
+            style="@style/RegularTextView"/>
     </LinearLayout>
+
     <View
         android:id="@+id/reject_view"
         android:layout_width="match_parent"
@@ -159,13 +166,15 @@
             android:layout_width="0dp"
             android:layout_height="@dimen/_30sdp"
             android:layout_weight="1"
-            android:src="@drawable/cso_verified" />
+            android:src="@drawable/ic_complete_verified" />
 
         <com.ztp.app.Helper.MyTextView
             android:layout_width="0dp"
             android:layout_height="match_parent"
             android:layout_weight="2"
             android:gravity="center_vertical"
-            android:text="@string/status_verify" />
+            android:text="@string/status_verify"
+            style="@style/RegularTextView"/>
     </LinearLayout>
+
 </LinearLayout>

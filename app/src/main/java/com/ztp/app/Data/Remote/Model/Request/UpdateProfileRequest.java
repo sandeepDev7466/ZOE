@@ -41,25 +41,17 @@ public class UpdateProfileRequest {
     @SerializedName("user_gender")
     @Expose
     private String userGender;
+    @SerializedName("school_id")
+    @Expose
+    private String schoolId;
 
-    public UpdateProfileRequest() {
-    }
+    @SerializedName("user_ethnicity")
+    @Expose
+    private String userEthnicity;
 
-    public UpdateProfileRequest(String userId, String userType, String userDevice, String userFName, String userLName, String userCountry, String userState, String userCity, String userZipcode, String userAddress, String userDob, String userGender) {
-        super();
-        this.userId = userId;
-        this.userType = userType;
-        this.userDevice = userDevice;
-        this.userFName = userFName;
-        this.userLName = userLName;
-        this.userCountry = userCountry;
-        this.userState = userState;
-        this.userCity = userCity;
-        this.userZipcode = userZipcode;
-        this.userAddress = userAddress;
-        this.userDob = userDob;
-        this.userGender = userGender;
-    }
+    @SerializedName("user_grade")
+    @Expose
+    private String userGrade;
 
     public String getUserId() {
         return userId;
@@ -157,4 +149,27 @@ public class UpdateProfileRequest {
         this.userGender = userGender;
     }
 
+    public String getSchoolId() {
+        return schoolId;
+    }
+
+    public void setSchoolId(String schoolId) {
+        this.schoolId = schoolId;
+    }
+
+    public String getUserEthnicity() {
+        return userEthnicity;
+    }
+
+    public void setUserEthnicity(String userEthnicity) {
+        this.userEthnicity = userEthnicity;
+    }
+
+    public String getUserGrade() {
+        return userGrade;
+    }
+
+    public void setUserGrade(String userGrade) {
+        this.userGrade = userGrade;
+    }
 }

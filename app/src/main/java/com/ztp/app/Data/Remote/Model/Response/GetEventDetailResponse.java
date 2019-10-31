@@ -1,5 +1,10 @@
 package com.ztp.app.Data.Remote.Model.Response;
 
+import android.arch.persistence.room.ColumnInfo;
+import android.arch.persistence.room.Entity;
+import android.arch.persistence.room.PrimaryKey;
+import android.support.annotation.NonNull;
+
 import com.google.gson.annotations.Expose;
 import com.google.gson.annotations.SerializedName;
 
@@ -12,20 +17,10 @@ public class GetEventDetailResponse {
     private String apiResKey;
     @SerializedName("res_data")
     @Expose
-    private ResData resData;
+    private EventDetail resData;
     @SerializedName("res_status")
     @Expose
     private String resStatus;
-
-    public GetEventDetailResponse() {
-    }
-
-    public GetEventDetailResponse(String apiResKey, ResData resData, String resStatus) {
-        super();
-        this.apiResKey = apiResKey;
-        this.resData = resData;
-        this.resStatus = resStatus;
-    }
 
     public String getApiResKey() {
         return apiResKey;
@@ -35,11 +30,11 @@ public class GetEventDetailResponse {
         this.apiResKey = apiResKey;
     }
 
-    public ResData getResData() {
+    public EventDetail getResData() {
         return resData;
     }
 
-    public void setResData(ResData resData) {
+    public void setResData(EventDetail resData) {
         this.resData = resData;
     }
 
@@ -51,99 +46,140 @@ public class GetEventDetailResponse {
         this.resStatus = resStatus;
     }
 
-    public class ResData implements Serializable {
+    @Entity(tableName = "event_detail")
+    public static class EventDetail implements Serializable {
 
+        @PrimaryKey
+        @NonNull
         @SerializedName("event_id")
         @Expose
+        @ColumnInfo(name = "event_id")
         private String eventId;
+
         @SerializedName("user_id")
         @Expose
+        @ColumnInfo(name = "user_id")
         private String userId;
+
         @SerializedName("event_type_id")
         @Expose
+        @ColumnInfo(name = "event_type_id")
         private String eventTypeId;
+
         @SerializedName("event_heading")
         @Expose
+        @ColumnInfo(name = "event_heading")
         private String eventHeading;
+
         @SerializedName("event_details")
         @Expose
+        @ColumnInfo(name = "event_details")
         private String eventDetails;
+
         @SerializedName("event_address")
         @Expose
+        @ColumnInfo(name = "event_address")
         private String eventAddress;
+
         @SerializedName("event_country_name")
         @Expose
+        @ColumnInfo(name = "event_country_name")
         private String eventCountry;
+
         @SerializedName("event_state_name")
         @Expose
+        @ColumnInfo(name = "event_state_name")
         private String eventState;
+
         @SerializedName("event_city")
         @Expose
+        @ColumnInfo(name = "event_city")
         private String eventCity;
+
         @SerializedName("event_postcode")
         @Expose
+        @ColumnInfo(name = "event_postcode")
         private String eventPostcode;
+
         @SerializedName("event_timezone")
         @Expose
+        @ColumnInfo(name = "event_timezone")
         private String eventTimezone;
+
         @SerializedName("event_latitude")
         @Expose
+        @ColumnInfo(name = "event_latitude")
         private String eventLatitude;
+
         @SerializedName("event_longitude")
         @Expose
+        @ColumnInfo(name = "event_longitude")
         private String eventLongitude;
+
         @SerializedName("event_email")
         @Expose
+        @ColumnInfo(name = "event_email")
         private String eventEmail;
+
         @SerializedName("event_phone")
         @Expose
+        @ColumnInfo(name = "event_phone")
         private String eventPhone;
+
         @SerializedName("event_image")
         @Expose
+        @ColumnInfo(name = "event_image")
         private String eventImage;
+
         @SerializedName("event_register_start_date")
         @Expose
+        @ColumnInfo(name = "event_register_start_date")
         private String eventRegisterStartDate;
+
         @SerializedName("event_register_end_date")
         @Expose
+        @ColumnInfo(name = "event_register_end_date")
         private String eventRegisterEndDate;
+
         @SerializedName("event_add_date")
         @Expose
+        @ColumnInfo(name = "event_add_date")
         private String eventAddDate;
+
         @SerializedName("event_update_date")
-        @Expose
+        @Expose@ColumnInfo(name = "event_update_date")
         private String eventUpdateDate;
+
         @SerializedName("event_status")
         @Expose
+        @ColumnInfo(name = "event_status")
         private String eventStatus;
 
-        public ResData() {
-        }
+        @SerializedName("total_rating")
+        @Expose
+        @ColumnInfo(name = "total_rating")
+        private String totalRating;
 
-        public ResData(String eventId, String userId, String eventTypeId, String eventHeading, String eventDetails, String eventAddress, String eventCountry, String eventState, String eventCity, String eventPostcode, String eventTimezone, String eventLatitude, String eventLongitude, String eventEmail, String eventPhone, String eventImage, String eventRegisterStartDate, String eventRegisterEndDate, String eventAddDate, String eventUpdateDate, String eventStatus) {
-            super();
-            this.eventId = eventId;
-            this.userId = userId;
-            this.eventTypeId = eventTypeId;
-            this.eventHeading = eventHeading;
-            this.eventDetails = eventDetails;
-            this.eventAddress = eventAddress;
-            this.eventCountry = eventCountry;
-            this.eventState = eventState;
-            this.eventCity = eventCity;
-            this.eventPostcode = eventPostcode;
-            this.eventTimezone = eventTimezone;
-            this.eventLatitude = eventLatitude;
-            this.eventLongitude = eventLongitude;
-            this.eventEmail = eventEmail;
-            this.eventPhone = eventPhone;
-            this.eventImage = eventImage;
-            this.eventRegisterStartDate = eventRegisterStartDate;
-            this.eventRegisterEndDate = eventRegisterEndDate;
-            this.eventAddDate = eventAddDate;
-            this.eventUpdateDate = eventUpdateDate;
-            this.eventStatus = eventStatus;
-        }
+        @SerializedName("event_count_rating")
+        @Expose
+        @ColumnInfo(name = "event_count_rating")
+        private String eventCountRating;
+
+        @SerializedName("average_rating")
+        @Expose
+        @ColumnInfo(name = "average_rating")
+        private String averageRating;
+
+        @SerializedName("event_start_time")
+        @Expose
+        @ColumnInfo(name = "event_start_time")
+        private String eventStartTime;
+
+        @SerializedName("event_end_time")
+        @Expose
+        @ColumnInfo(name = "event_end_time")
+        private String eventEndTime;
+
 
         public String getEventId() {
             return eventId;
@@ -313,5 +349,44 @@ public class GetEventDetailResponse {
             this.eventStatus = eventStatus;
         }
 
+        public String getTotalRating() {
+            return totalRating;
+        }
+
+        public void setTotalRating(String totalRating) {
+            this.totalRating = totalRating;
+        }
+
+        public String getEventCountRating() {
+            return eventCountRating;
+        }
+
+        public void setEventCountRating(String eventCountRating) {
+            this.eventCountRating = eventCountRating;
+        }
+
+        public String getAverageRating() {
+            return averageRating;
+        }
+
+        public void setAverageRating(String averageRating) {
+            this.averageRating = averageRating;
+        }
+
+        public String getEventStartTime() {
+            return eventStartTime;
+        }
+
+        public void setEventStartTime(String eventStartTime) {
+            this.eventStartTime = eventStartTime;
+        }
+
+        public String getEventEndTime() {
+            return eventEndTime;
+        }
+
+        public void setEventEndTime(String eventEndTime) {
+            this.eventEndTime = eventEndTime;
+        }
     }
 }

@@ -1,5 +1,10 @@
 package com.ztp.app.Data.Remote.Model.Response;
 
+import android.arch.persistence.room.ColumnInfo;
+import android.arch.persistence.room.Entity;
+import android.arch.persistence.room.PrimaryKey;
+import android.support.annotation.NonNull;
+
 import com.google.gson.annotations.Expose;
 import com.google.gson.annotations.SerializedName;
 
@@ -60,14 +65,13 @@ public class CsoDashboardCombinedResponse {
         @Expose
         private List<EventData> eventData = null;
 
-        public ResData() {
-        }
+        @SerializedName("user_profile_pic")
+        @Expose
+        private String userProfilePic;
 
-        public ResData(List<CalendarData> calendarData, List<EventData> eventData) {
-            super();
-            this.calendarData = calendarData;
-            this.eventData = eventData;
-        }
+        @SerializedName("user_cover_pic")
+        @Expose
+        private String userCoverPic;
 
         public List<CalendarData> getCalendarData() {
             return calendarData;
@@ -85,43 +89,83 @@ public class CsoDashboardCombinedResponse {
             this.eventData = eventData;
         }
 
+        public String getUserProfilePic() {
+            return userProfilePic;
+        }
+
+        public void setUserProfilePic(String userProfilePic) {
+            this.userProfilePic = userProfilePic;
+        }
+
+        public String getUserCoverPic() {
+            return userCoverPic;
+        }
+
+        public void setUserCoverPic(String userCoverPic) {
+            this.userCoverPic = userCoverPic;
+        }
     }
 
-    public class CalendarData {
+    @Entity(tableName = "calendar_data")
+    public static class CalendarData {
+
 
         @SerializedName("event_id")
         @Expose
+        @ColumnInfo(name = "event_id")
         private String eventId;
+
+        @NonNull
+        @PrimaryKey
         @SerializedName("shift_id")
         @Expose
+        @ColumnInfo(name = "shift_id")
         private String shiftId;
+
         @SerializedName("shift_date")
         @Expose
+        @ColumnInfo(name = "shift_date")
         private String shiftDate;
+
         @SerializedName("yr")
         @Expose
+        @ColumnInfo(name = "yr")
         private String yr;
+
         @SerializedName("mn")
         @Expose
+        @ColumnInfo(name = "mn")
         private String mn;
+
         @SerializedName("dt")
         @Expose
+        @ColumnInfo(name = "dt")
         private String dt;
+
         @SerializedName("shift_task")
         @Expose
+        @ColumnInfo(name = "shift_task")
         private String shiftTask;
+
+        @SerializedName("shift_task_name")
+        @Expose
+        @ColumnInfo(name = "shift_task_name")
+        private String shiftTaskName;
+
         @SerializedName("shift_start_time")
         @Expose
+        @ColumnInfo(name = "shift_start_time")
         private String shiftStartTime;
+
         @SerializedName("shift_end_time")
         @Expose
+        @ColumnInfo(name = "shift_end_time")
         private String shiftEndTime;
+
         @SerializedName("event_heading")
         @Expose
+        @ColumnInfo(name = "event_heading")
         private String eventHeading;
-
-        public CalendarData() {
-        }
 
         public CalendarData(String eventId, String shiftId, String shiftDate, String yr, String mn, String dt, String shiftTask, String shiftStartTime, String shiftEndTime, String eventHeading) {
             super();
@@ -216,60 +260,85 @@ public class CsoDashboardCombinedResponse {
         public void setEventHeading(String eventHeading) {
             this.eventHeading = eventHeading;
         }
+
+        public String getShiftTaskName() {
+            return shiftTaskName;
+        }
+
+        public void setShiftTaskName(String shiftTaskName) {
+            this.shiftTaskName = shiftTaskName;
+        }
     }
-    public class EventData {
+
+    @Entity(tableName = "upcoming_event")
+    public static class EventData {
+
+        @NonNull
+        @PrimaryKey
+        @SerializedName("shift_id")
+        @Expose
+        @ColumnInfo(name = "shift_id")
+        private String shiftId;
 
         @SerializedName("event_id")
         @Expose
+        @ColumnInfo(name = "event_id")
         private String eventId;
+
         @SerializedName("event_heading")
         @Expose
+        @ColumnInfo(name = "event_heading")
         private String eventHeading;
+
         @SerializedName("event_status")
         @Expose
+        @ColumnInfo(name = "event_status")
         private String eventStatus;
+
         @SerializedName("event_add_date")
         @Expose
+        @ColumnInfo(name = "event_add_date")
         private String eventAddDate;
+
         @SerializedName("event_register_start_date")
         @Expose
+        @ColumnInfo(name = "event_register_start_date")
         private String eventRegisterStartDate;
+
         @SerializedName("event_register_end_date")
         @Expose
+        @ColumnInfo(name = "event_register_end_date")
         private String eventRegisterEndDate;
-        @SerializedName("shift_id")
-        @Expose
-        private String shiftId;
+
         @SerializedName("shift_task")
         @Expose
+        @ColumnInfo(name = "shift_task")
         private String shiftTask;
+
+        @SerializedName("shift_task_name")
+        @Expose
+        @ColumnInfo(name = "shift_task_name")
+        private String shiftTaskName;
+
         @SerializedName("shift_date")
         @Expose
+        @ColumnInfo(name = "shift_date")
         private String shiftDate;
+
         @SerializedName("shift_start_time")
         @Expose
+        @ColumnInfo(name = "shift_start_time")
         private String shiftStartTime;
+
         @SerializedName("shift_end_time")
         @Expose
+        @ColumnInfo(name = "shift_end_time")
         private String shiftEndTime;
 
-        public EventData() {
-        }
-
-        public EventData(String eventId, String eventHeading, String eventStatus, String eventAddDate, String eventRegisterStartDate, String eventRegisterEndDate, String shiftId, String shiftTask, String shiftDate, String shiftStartTime, String shiftEndTime) {
-            super();
-            this.eventId = eventId;
-            this.eventHeading = eventHeading;
-            this.eventStatus = eventStatus;
-            this.eventAddDate = eventAddDate;
-            this.eventRegisterStartDate = eventRegisterStartDate;
-            this.eventRegisterEndDate = eventRegisterEndDate;
-            this.shiftId = shiftId;
-            this.shiftTask = shiftTask;
-            this.shiftDate = shiftDate;
-            this.shiftStartTime = shiftStartTime;
-            this.shiftEndTime = shiftEndTime;
-        }
+        @SerializedName("shift_start_time_timer")
+        @Expose
+        @ColumnInfo(name = "shift_start_time_timer")
+        private String shiftStartTimeTimer;
 
         public String getEventId() {
             return eventId;
@@ -359,5 +428,20 @@ public class CsoDashboardCombinedResponse {
             this.shiftEndTime = shiftEndTime;
         }
 
+        public String getShiftTaskName() {
+            return shiftTaskName;
+        }
+
+        public void setShiftTaskName(String shiftTaskName) {
+            this.shiftTaskName = shiftTaskName;
+        }
+
+        public String getShiftStartTimeTimer() {
+            return shiftStartTimeTimer;
+        }
+
+        public void setShiftStartTimeTimer(String shiftStartTimeTimer) {
+            this.shiftStartTimeTimer = shiftStartTimeTimer;
+        }
     }
 }

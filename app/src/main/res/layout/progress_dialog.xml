@@ -41,7 +41,7 @@
             android:layout_height="wrap_content"
             android:text="@string/zoe_thumbprint"
             android:textColor="@color/background_3"
-            android:textSize="@dimen/_9ssp"
+            style="@style/SmallTextView"
             android:gravity="center"
             android:layout_below="@+id/thumb"
             android:layout_centerInParent="true"
@@ -54,7 +54,7 @@
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
         android:textColor="@color/background_3"
-        android:textSize="@dimen/_12sdp"
+        style="@style/RegularTextView"
         android:layout_gravity="bottom|center"
         android:layout_marginBottom="@dimen/_150sdp"/>
 

@@ -8,26 +8,18 @@ public class LoginResponse {
     @SerializedName("api_res_key")
     @Expose
     private String apiResKey;
-    @SerializedName("res_data")
-    @Expose
-    private ResData resData;
     @SerializedName("res_status")
     @Expose
     private String resStatus;
-
     @SerializedName("res_message")
     @Expose
     private String resMessage;
-
-    public LoginResponse() {
-    }
-
-    public LoginResponse(String apiResKey, ResData resData, String resStatus, String resMessage) {
-        this.apiResKey = apiResKey;
-        this.resData = resData;
-        this.resStatus = resStatus;
-        this.resMessage = resMessage;
-    }
+    @SerializedName("res_data")
+    @Expose
+    private ResData resData;
+    @SerializedName("res_query_string")
+    @Expose
+    private String resQueryString;
 
     public String getApiResKey() {
         return apiResKey;
@@ -35,14 +27,6 @@ public class LoginResponse {
 
     public void setApiResKey(String apiResKey) {
         this.apiResKey = apiResKey;
-    }
-
-    public ResData getResData() {
-        return resData;
-    }
-
-    public void setResData(ResData resData) {
-        this.resData = resData;
     }
 
     public String getResStatus() {
@@ -59,6 +43,22 @@ public class LoginResponse {
 
     public void setResMessage(String resMessage) {
         this.resMessage = resMessage;
+    }
+
+    public ResData getResData() {
+        return resData;
+    }
+
+    public void setResData(ResData resData) {
+        this.resData = resData;
+    }
+
+    public String getResQueryString() {
+        return resQueryString;
+    }
+
+    public void setResQueryString(String resQueryString) {
+        this.resQueryString = resQueryString;
     }
 
     public class ResData {
@@ -78,17 +78,39 @@ public class LoginResponse {
         @SerializedName("user_phone")
         @Expose
         private String userPhone;
+        @SerializedName("phone_valid")
+        @Expose
+        private String phoneValid;
+        @SerializedName("user_status")
+        @Expose
+        private String userStatus;
+        @SerializedName("user_profile_pic")
+        @Expose
+        private String userProfilePic;
+        @SerializedName("user_cover_pic")
+        @Expose
+        private String userCoverPic;
+        @SerializedName("user_timezone")
+        @Expose
+        private String userTimezone;
+        @SerializedName("user_daylight")
+        @Expose
+        private String userDayLight;
 
         public ResData() {
         }
 
-        public ResData(String userId, String userFName, String userLName, String userType, String userPhone) {
+        public ResData(String userId, String userFName, String userLName, String userType, String userPhone, String phoneValid, String userStatus, String userProfilePic, String userCoverPic) {
             super();
             this.userId = userId;
             this.userFName = userFName;
             this.userLName = userLName;
             this.userType = userType;
             this.userPhone = userPhone;
+            this.phoneValid = phoneValid;
+            this.userStatus = userStatus;
+            this.userProfilePic = userProfilePic;
+            this.userCoverPic = userCoverPic;
         }
 
         public String getUserId() {
@@ -131,6 +153,53 @@ public class LoginResponse {
             this.userPhone = userPhone;
         }
 
+        public String getPhoneValid() {
+            return phoneValid;
+        }
+
+        public void setPhoneValid(String phoneValid) {
+            this.phoneValid = phoneValid;
+        }
+
+        public String getUserStatus() {
+            return userStatus;
+        }
+
+        public void setUserStatus(String userStatus) {
+            this.userStatus = userStatus;
+        }
+
+        public String getUserProfilePic() {
+            return userProfilePic;
+        }
+
+        public void setUserProfilePic(String userProfilePic) {
+            this.userProfilePic = userProfilePic;
+        }
+
+        public String getUserCoverPic() {
+            return userCoverPic;
+        }
+
+        public void setUserCoverPic(String userCoverPic) {
+            this.userCoverPic = userCoverPic;
+        }
+
+        public String getUserTimezone() {
+            return userTimezone;
+        }
+
+        public void setUserTimezone(String userTimezone) {
+            this.userTimezone = userTimezone;
+        }
+
+        public String getUserDayLight() {
+            return userDayLight;
+        }
+
+        public void setUserDayLight(String userDayLight) {
+            this.userDayLight = userDayLight;
+        }
     }
 
 }

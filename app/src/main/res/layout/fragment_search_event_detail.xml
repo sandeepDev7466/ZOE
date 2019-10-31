@@ -4,7 +4,7 @@
     xmlns:tools="http://schemas.android.com/tools"
     android:layout_width="match_parent"
     android:layout_height="match_parent"
-    tools:context=".View.Fragment.Student.Extra.SearchEventDetailFragment"
+    tools:context=".View.Fragment.Volunteer.Extra.SearchEventDetailFragment"
     android:orientation="vertical">
 
     <LinearLayout
@@ -16,13 +16,13 @@
             android:id="@+id/title"
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
-            android:textSize="@dimen/_15ssp"/>
+            style="@style/MediumTextView"/>
 
         <com.ztp.app.Helper.MyTextView
             android:id="@+id/description"
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
-            android:textSize="@dimen/_15ssp"
+            style="@style/RegularTextView"
             android:layout_marginTop="@dimen/_5sdp"/>
 
 

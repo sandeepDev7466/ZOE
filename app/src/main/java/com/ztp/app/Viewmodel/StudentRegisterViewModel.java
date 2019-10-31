@@ -32,9 +32,14 @@ public class StudentRegisterViewModel extends ViewModel {
         call.enqueue(new Callback<StudentRegisterResponse>() {
             @Override
             public void onResponse(Call<StudentRegisterResponse> call, Response<StudentRegisterResponse> response) {
-                if (response.body() != null) {
-                    registerResponseMutableLiveData.postValue(response.body());
-
+                if(response.isSuccessful()) {
+                    if (response.body() != null) {
+                        registerResponseMutableLiveData.postValue(response.body());
+                    }
+                }
+                else
+                {
+                    registerResponseMutableLiveData.postValue(null);
                 }
             }
 

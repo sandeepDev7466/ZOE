@@ -33,13 +33,18 @@ public class PublishViewModel extends ViewModel {
     {
         Call<PublishResponse> call = apiInterface.publish(publishRequest);
 
-
         call.enqueue(new Callback<PublishResponse>() {
             @Override
             public void onResponse(Call<PublishResponse> call, Response<PublishResponse> response) {
-                if (response.body() != null) {
-                    publishResponseMutableLiveData.postValue(response.body());
+                if(response.isSuccessful()) {
+                    if (response.body() != null) {
+                        publishResponseMutableLiveData.postValue(response.body());
 
+                    }
+                }
+                else
+                {
+                    publishResponseMutableLiveData.postValue(null);
                 }
             }
             @Override

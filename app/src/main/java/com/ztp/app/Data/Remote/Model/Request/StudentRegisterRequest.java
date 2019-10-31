@@ -8,54 +8,68 @@ public class StudentRegisterRequest {
     @SerializedName("user_type")
     @Expose
     private String userType;
+
     @SerializedName("user_device")
     @Expose
     private String userDevice;
+
     @SerializedName("school_id")
     @Expose
     private String schoolId;
+
     @SerializedName("user_f_name")
     @Expose
     private String userFName;
+
     @SerializedName("user_l_name")
     @Expose
     private String userLName;
+
     @SerializedName("user_email")
     @Expose
     private String userEmail;
+
     @SerializedName("user_phone")
     @Expose
     private String userPhone;
+
     @SerializedName("user_country")
     @Expose
     private String userCountry;
+
     @SerializedName("user_state")
     @Expose
     private String userState;
+
     @SerializedName("user_city")
     @Expose
     private String userCity;
+
     @SerializedName("user_zipcode")
     @Expose
     private String userZipcode;
+
     @SerializedName("user_address")
     @Expose
     private String userAddress;
+
     @SerializedName("user_dob")
     @Expose
     private String userDob;
+
     @SerializedName("user_gender")
     @Expose
     private String userGender;
+
     @SerializedName("user_pass")
     @Expose
     private String userPass;
 
+
     public StudentRegisterRequest() {
     }
 
-    public StudentRegisterRequest(String userType, String userDevice, String schoolId, String userFName, String userLName, String userEmail, String userPhone, String userCountry, String userState, String userCity, String userZipcode, String userAddress, String userDob, String userGender, String userPass) {
-        super();
+    public StudentRegisterRequest(String userType, String userDevice, String schoolId, String userFName, String userLName, String userEmail, String userPhone, String userCountry, String userState, String userCity, String userZipcode, String userAddress, String userDob, String userGender, String userPass, boolean isSynced) {
         this.userType = userType;
         this.userDevice = userDevice;
         this.schoolId = schoolId;
@@ -192,5 +206,4 @@ public class StudentRegisterRequest {
     public void setUserPass(String userPass) {
         this.userPass = userPass;
     }
-
 }

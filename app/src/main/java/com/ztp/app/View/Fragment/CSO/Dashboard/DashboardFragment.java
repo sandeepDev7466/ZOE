@@ -12,6 +12,7 @@ import android.support.annotation.NonNull;
 import android.support.annotation.Nullable;
 import android.support.v4.app.Fragment;
 import android.support.v4.app.FragmentActivity;
+import android.support.v4.widget.SwipeRefreshLayout;
 import android.util.Log;
 import android.view.LayoutInflater;
 import android.view.View;
@@ -20,13 +21,24 @@ import android.widget.ImageView;
 import android.widget.LinearLayout;
 import android.widget.ListView;
 import android.widget.ScrollView;
+import android.widget.TextView;
 import android.widget.Toast;
+
+import com.google.firebase.iid.FirebaseInstanceId;
 import com.google.gson.Gson;
 import com.prolificinteractive.materialcalendarview.CalendarDay;
 import com.prolificinteractive.materialcalendarview.MaterialCalendarView;
 import com.prolificinteractive.materialcalendarview.OnDateSelectedListener;
+import com.squareup.picasso.MemoryPolicy;
+import com.squareup.picasso.NetworkPolicy;
+import com.squareup.picasso.Picasso;
+import com.ztp.app.Data.Local.Room.Async.Get.DBGetCalendarData;
+import com.ztp.app.Data.Local.Room.Async.Get.DBGetUpcomingEvent;
+import com.ztp.app.Data.Local.Room.Async.Save.DBSaveCalendarData;
+import com.ztp.app.Data.Local.Room.Async.Save.DBSaveUpcomingEvent;
 import com.ztp.app.Data.Local.SharedPrefrence.SharedPref;
 import com.ztp.app.Data.Remote.Model.Request.CsoDashboardCombinedRequest;
+import com.ztp.app.Data.Remote.Model.Request.InsertFirebaseIdRequest;
 import com.ztp.app.Data.Remote.Model.Response.CsoDashboardCombinedResponse;
 import com.ztp.app.Helper.MyBoldTextView;
 import com.ztp.app.Helper.MyHeadingTextView;
@@ -39,29 +51,30 @@ import com.ztp.app.Utils.EventDecorator;
 import com.ztp.app.Utils.Utility;
 import com.ztp.app.View.Activity.CSO.CsoDashboardActivity;
 import com.ztp.app.Viewmodel.GetCsoDashoardCombinedViewModel;
-import java.text.SimpleDateFormat;
+import com.ztp.app.Viewmodel.InsertFirebaseIdViewModel;
+
 import java.util.ArrayList;
 import java.util.Calendar;
 import java.util.Date;
 import java.util.HashMap;
 import java.util.List;
 import java.util.Locale;
+
 import static android.app.Activity.RESULT_OK;
 
 public class DashboardFragment extends Fragment implements View.OnClickListener {
 
 
     ListView lv_upcoming_event;
-    MyBoldTextView tv_days, tv_hours, tv_minutes, tv_seconds;
+    TextView tv_days, tv_hours, tv_minutes, tv_seconds,vol_txt;
     Context context;
     private Handler handler;
     private Runnable runnable;
-    MyHeadingTextView upcoming_text;
+    TextView upcoming_text;
     LinearLayout bottomLayout;
     boolean theme;
     SharedPref sharedPref;
-    ImageView vol_img, con_img;
-    MyTextView vol_txt, con_txt;
+    ImageView vol_img,con_img;
     MaterialCalendarView mCalendarView;
     private List<EventDayModel> mEventDays = new ArrayList<>();
     private List<CalendarDay> calendarDayList = new ArrayList<>();
@@ -73,11 +86,16 @@ public class DashboardFragment extends Fragment implements View.OnClickListener 
     List<CsoDashboardCombinedResponse.EventData> eventDataList = new ArrayList<>();
     MyProgressDialog myProgressDialog;
     ScrollView scrollView;
-    LinearLayout vol_req,timerLayout;
+    LinearLayout vol_req, timerLayout,con_layout;
     String event_id, event_heading;
     List<HashMap<String, String>> shiftDataList = new ArrayList<>();
     boolean flag = false;
-    int countDown = 0;
+    int countDown;
+    DBGetUpcomingEvent dbGetUpcomingEvent;
+    DBGetCalendarData dbGetCalendarData;
+    InsertFirebaseIdViewModel insertFirebaseIdViewModel;
+    TextView con_txt;
+    SwipeRefreshLayout mSwipeRefreshLayout;
 
     public DashboardFragment() {
 
@@ -87,8 +105,11 @@ public class DashboardFragment extends Fragment implements View.OnClickListener 
     public View onCreateView(LayoutInflater inflater, ViewGroup container,
                              Bundle savedInstanceState) {
 
+        dbGetCalendarData = new DBGetCalendarData(context);
+        dbGetUpcomingEvent = new DBGetUpcomingEvent(context);
         View v = inflater.inflate(R.layout.fragment_dashboard_cso, container, false);
-
+        countDown = 0;
+        handler = new Handler();
         lv_upcoming_event = v.findViewById(R.id.lv_upcoming_event);
         tv_days = v.findViewById(R.id.days);
         tv_hours = v.findViewById(R.id.hours);
@@ -98,6 +119,7 @@ public class DashboardFragment extends Fragment implements View.OnClickListener 
         bottomLayout = v.findViewById(R.id.bottomLayout);
         sharedPref = SharedPref.getInstance(context);
         scrollView = v.findViewById(R.id.scrollView);
+        mSwipeRefreshLayout = (SwipeRefreshLayout) v.findViewById(R.id.swipeToRefresh);
         myToast = new MyToast(context);
         myProgressDialog = new MyProgressDialog(context);
         vol_img = v.findViewById(R.id.vol_img);
@@ -108,7 +130,9 @@ public class DashboardFragment extends Fragment implements View.OnClickListener 
         theme = sharedPref.getTheme();
         vol_req = v.findViewById(R.id.vol_req);
         timerLayout = v.findViewById(R.id.timerLayout);
+        con_layout = v.findViewById(R.id.con_layout);
         vol_req.setOnClickListener(this);
+        insertFirebaseIdViewModel = ViewModelProviders.of((FragmentActivity) context).get(InsertFirebaseIdViewModel.class);
 
         if (theme) {
             bottomLayout.setBackgroundColor(getResources().getColor(R.color.white));
@@ -118,6 +142,8 @@ public class DashboardFragment extends Fragment implements View.OnClickListener 
             con_img.setColorFilter(getResources().getColor(R.color.black));
             vol_txt.setTextColor(getResources().getColor(R.color.black));
             con_txt.setTextColor(getResources().getColor(R.color.black));
+            con_txt.setBackgroundColor(getResources().getColor(R.color.white));
+            //con_layout.setBackgroundColor(getResources().getColor(R.color.black));
 
             childLayout = inflater.inflate(R.layout.calendarview_night,
                     (ViewGroup) v.findViewById(R.id.cal));
@@ -132,6 +158,8 @@ public class DashboardFragment extends Fragment implements View.OnClickListener 
             con_img.setColorFilter(getResources().getColor(R.color.white));
             vol_txt.setTextColor(getResources().getColor(R.color.white));
             con_txt.setTextColor(getResources().getColor(R.color.white));
+            con_txt.setBackgroundColor(getResources().getColor(R.color.black));
+           // con_layout.setBackgroundColor(getResources().getColor(R.color.white));
 
             childLayout = inflater.inflate(R.layout.calendarview_day,
                     (ViewGroup) v.findViewById(R.id.cal));
@@ -141,177 +169,78 @@ public class DashboardFragment extends Fragment implements View.OnClickListener 
 
         Calendar instance = Calendar.getInstance();
         mCalendarView.setSelectedDate(instance.getTime());
-
-
         getCsoDashoardCombinedViewModel = ViewModelProviders.of((FragmentActivity) context).get(GetCsoDashoardCombinedViewModel.class);
 
-        if (Utility.isNetworkAvailable(context)) {
+        mCalendarView.setOnDateChangedListener(new OnDateSelectedListener() {
+            @Override
+            public void onDateSelected(@NonNull MaterialCalendarView widget, @NonNull CalendarDay date, boolean selected) {
 
-            myProgressDialog.show(getString(R.string.please_wait));
-
-            Calendar c = Calendar.getInstance();
-            int year = c.get(Calendar.YEAR);
-            int month = c.get(Calendar.MONTH)+1;
-
-            CsoDashboardCombinedRequest csoDashboardCombinedRequest = new CsoDashboardCombinedRequest();
-            csoDashboardCombinedRequest.setUserId(sharedPref.getUserId());
-            csoDashboardCombinedRequest.setEventMonth(String.valueOf(month));
-            csoDashboardCombinedRequest.setEventYear(String.valueOf(year));
-            csoDashboardCombinedRequest.setCountdownDate(new SimpleDateFormat("MM-dd-yyyy", Locale.ENGLISH).format(new Date()));
-
-            Log.i("REQUEST", "" + new Gson().toJson(csoDashboardCombinedRequest));
-
-            getCsoDashoardCombinedViewModel.getCsoDashboardCombinedResponse(csoDashboardCombinedRequest).observe((LifecycleOwner) context, new Observer<CsoDashboardCombinedResponse>() {
-                @Override
-                public void onChanged(@Nullable CsoDashboardCombinedResponse csoDashboardCombinedResponse) {
-
-                    if (csoDashboardCombinedResponse != null) {
-                        Log.i("RESPONSE", "" + new Gson().toJson(csoDashboardCombinedResponse));
-                        if (csoDashboardCombinedResponse.getResStatus().equalsIgnoreCase("200")) {
-
-                            if(csoDashboardCombinedResponse.getResData()!=null) {
-
-                                upcoming_text.setVisibility(View.VISIBLE);
-                                lv_upcoming_event.setVisibility(View.VISIBLE);
-                                timerLayout.setVisibility(View.VISIBLE);
-                                eventDataList = csoDashboardCombinedResponse.getResData().getEventData();
-                                calendarDataList = csoDashboardCombinedResponse.getResData().getCalendarData();
-                                //countDownDataList = csoDashboardCombinedResponse.getResData().getCountDownData();
-
-                                //startCountDown(eventDataList);
-
-                                if(calendarDataList!=null) {
-                                    mEventDays = new ArrayList<>();
-                                    for (int i = 0; i < calendarDataList.size(); i++) {
-                                        int year = Integer.parseInt(calendarDataList.get(i).getYr());
-                                        int month = Integer.parseInt(calendarDataList.get(i).getMn());
-                                        int date = Integer.parseInt(calendarDataList.get(i).getDt());
-
-                                        EventDayModel eventDayModel = new EventDayModel();
-                                        eventDayModel.setCalendarDay(new CalendarDay(year, month - 1, date));
-                                        eventDayModel.setEventId(calendarDataList.get(i).getEventId());
-                                        eventDayModel.setEventHeading(calendarDataList.get(i).getEventHeading());
-                                        eventDayModel.setShiftDate(calendarDataList.get(i).getShiftDate());
-                                        eventDayModel.setShiftTask(calendarDataList.get(i).getShiftTask());
-                                        eventDayModel.setShiftStartTime(calendarDataList.get(i).getShiftStartTime());
-                                        eventDayModel.setShiftEndTime(calendarDataList.get(i).getShiftEndTime());
-                                        eventDayModel.setShiftId(calendarDataList.get(i).getShiftId());
-
-                                        mEventDays.add(eventDayModel);
-
-                                    }
-
-                                    setEventsOnCalendar(mEventDays);
-                                }
-
-                                if(eventDataList!=null) {
-                                    UpcomingEventAdapter adapter = new UpcomingEventAdapter(context, eventDataList);
-                                    lv_upcoming_event.setAdapter(adapter);
-                                    if (eventDataList.size() > 3) {
-                                        ViewGroup.LayoutParams lp = (ViewGroup.LayoutParams) lv_upcoming_event.getLayoutParams();
-                                        lp.height = 800;
-                                        lv_upcoming_event.setLayoutParams(lp);
-                                    } else {
-                                        Utility.setListViewHeightBasedOnChildren(lv_upcoming_event);
-                                    }
-
-                                    countDownStart(eventDataList.get(countDown).getShiftDate() + " " + eventDataList.get(countDown).getShiftStartTime());
-
-                                }
-                                else
-                                {
-                                    tv_days.setText("00");
-                                    tv_hours.setText("00");
-                                    tv_minutes.setText("00");
-                                    tv_seconds.setText("00");
-                                    upcoming_text.setVisibility(View.GONE);
-                                    lv_upcoming_event.setVisibility(View.GONE);
-                                }
-
-
-
-                                mCalendarView.setOnDateChangedListener(new OnDateSelectedListener() {
-                                    @Override
-                                    public void onDateSelected(@NonNull MaterialCalendarView widget, @NonNull CalendarDay date, boolean selected) {
-
-
-                                        HashMap<String, String> map;
-                                        shiftDataList = new ArrayList<>();
-                                        for (int i = 0; i < mEventDays.size(); i++) {
-                                            if (mEventDays.get(i).getCalendarDay().getDay() == date.getDay() && mEventDays.get(i).getCalendarDay().getMonth() == date.getMonth() && mEventDays.get(i).getCalendarDay().getYear() == date.getYear()) {
-                                                map = new HashMap<>();
-                                                event_id = mEventDays.get(i).getEventId();
-                                                event_heading = mEventDays.get(i).getEventHeading();
-                                                map.put("shift_task", mEventDays.get(i).getShiftTask());
-                                                map.put("shift_date", mEventDays.get(i).getShiftDate());
-                                                map.put("shift_start_time", mEventDays.get(i).getShiftStartTime());
-                                                map.put("shift_end_time", mEventDays.get(i).getShiftEndTime());
-                                                map.put("event_heading", event_heading);
-                                                map.put("event_id", event_id);
-                                                map.put("shift_id", mEventDays.get(i).getShiftId());
-                                                shiftDataList.add(map);
-                                                flag = true;
-                                                //break;
-                                            }
-                                        }
-
-                                        if (flag) {
-                                            flag = false;
-                                            openDateDialog(shiftDataList);
-                                        }
-
-                                    /*if(event_id!=null && event_heading!=null) {
-                                        EventDetailFragment eventDetailFragment = new EventDetailFragment();
-                                        Bundle bundle = new Bundle();
-                                        bundle.putString("event_id", event_id);
-                                        eventDetailFragment.setArguments(bundle);
-                                        Utility.replaceFragment(context, eventDetailFragment, "EventDetailFragment");
-                                    }*/
-
-                                    }
-                                });
-                            }
-                            else
-                            {
-                                myToast.show(getString(R.string.no_events_found), Toast.LENGTH_SHORT, false);
-                                upcoming_text.setVisibility(View.GONE);
-                                lv_upcoming_event.setVisibility(View.GONE);
-                                timerLayout.setVisibility(View.GONE);
-                            }
-
-                        } else if(csoDashboardCombinedResponse.getResStatus().equalsIgnoreCase("401")){
-                            myToast.show(getString(R.string.no_events_found), Toast.LENGTH_SHORT, false);
-                            upcoming_text.setVisibility(View.GONE);
-                            lv_upcoming_event.setVisibility(View.GONE);
-                            timerLayout.setVisibility(View.GONE);
+                try {
+                    HashMap<String, String> map;
+                    shiftDataList = new ArrayList<>();
+                    for (int i = 0; i < mEventDays.size(); i++) {
+                        if (mEventDays.get(i).getCalendarDay().getDay() == date.getDay() && mEventDays.get(i).getCalendarDay().getMonth() == date.getMonth() && mEventDays.get(i).getCalendarDay().getYear() == date.getYear()) {
+                            map = new HashMap<>();
+                            event_id = mEventDays.get(i).getEventId();
+                            event_heading = mEventDays.get(i).getEventHeading();
+                            map.put("shift_task", mEventDays.get(i).getShiftTask());
+                            map.put("shift_date", mEventDays.get(i).getShiftDate());
+                            map.put("shift_start_time", mEventDays.get(i).getShiftStartTime());
+                            map.put("shift_end_time", mEventDays.get(i).getShiftEndTime());
+                            map.put("event_heading", event_heading);
+                            map.put("event_id", event_id);
+                            map.put("shift_id", mEventDays.get(i).getShiftId());
+                            map.put("shift_task_name", mEventDays.get(i).getShiftTaskName());
+                            shiftDataList.add(map);
+                            flag = true;
                         }
-                    } else {
-                        myToast.show(getString(R.string.err_server), Toast.LENGTH_SHORT, false);
-                        upcoming_text.setVisibility(View.GONE);
-                        lv_upcoming_event.setVisibility(View.GONE);
-                        timerLayout.setVisibility(View.GONE);
                     }
-
-                    myProgressDialog.dismiss();
-
+                    if (flag) {
+                        flag = false;
+                        openDateDialog(shiftDataList);
+                    }
+                } catch (Exception e) {
+                    e.printStackTrace();
                 }
-            });
+            }
+        });
 
-        } else {
-            myToast.show(getString(R.string.no_internet_connection), Toast.LENGTH_SHORT, false);
-            upcoming_text.setVisibility(View.GONE);
-            lv_upcoming_event.setVisibility(View.GONE);
-        }
+        mSwipeRefreshLayout.setOnRefreshListener(new SwipeRefreshLayout.OnRefreshListener() {
+            @Override
+            public void onRefresh() {
+                hitDashboardAPI();
+                mSwipeRefreshLayout.setRefreshing(false);
+            }
+        });
 
         return v;
     }
 
-    /*private void startCountDown(List<CsoDashboardCombinedResponse.EventData> eventDataList) {
 
-        countDownStart(countDownDataList.get(0).getShiftDate() + " " + countDownDataList.get(0).getShiftStartTime());
+    public void hitInsertFirebaseId() {
+        if (Utility.isNetworkAvailable(context)) {
+            InsertFirebaseIdRequest insertFirebaseIdRequest = new InsertFirebaseIdRequest();
+            insertFirebaseIdRequest.setUserDevice(FirebaseInstanceId.getInstance().getToken());
+            insertFirebaseIdRequest.setUserEmail(sharedPref.getEmail());
+            insertFirebaseIdRequest.setUserId(sharedPref.getUserId());
+            insertFirebaseIdRequest.setUserType(sharedPref.getUserType());
 
+            insertFirebaseIdViewModel.getInsertFirebaseIdResponse(insertFirebaseIdRequest).observe(this, insertFirebaseIdResponse -> {
+                if (insertFirebaseIdResponse != null) {
+                    if (insertFirebaseIdResponse.getResStatus().equalsIgnoreCase("200")) {
+                        //myToast.show("Firebase registered successfully", Toast.LENGTH_SHORT, true);
+                    } else if (insertFirebaseIdResponse.getResStatus().equalsIgnoreCase("401")) {
+                        myToast.show("Firebase register failed", Toast.LENGTH_SHORT, false);
+                    }
+                } else {
+                    myToast.show(getString(R.string.err_server), Toast.LENGTH_LONG, false);
+                }
+            });
+        } else {
+            myToast.show(getString(R.string.no_internet_connection), Toast.LENGTH_SHORT, false);
+        }
     }
-*/
+
     private void openDateDialog(List<HashMap<String, String>> shiftDataList) {
         Dialog dialog = new Dialog(context);
         View view = LayoutInflater.from(context).inflate(R.layout.shift_list_for_event_dialog, null);
@@ -323,7 +252,7 @@ public class DashboardFragment extends Fragment implements View.OnClickListener 
         // Button close = view.findViewById(R.id.close);
 
 
-        if(shiftDataList!=null) {
+        if (shiftDataList != null) {
             ShiftListForCalendarAdapter shiftListForCalendarAdapter = new ShiftListForCalendarAdapter(context, shiftDataList, "Dashboard", dialog);
             shiftList.setAdapter(shiftListForCalendarAdapter);
         }
@@ -346,54 +275,318 @@ public class DashboardFragment extends Fragment implements View.OnClickListener 
         dialog.show();
     }
 
-   /* private List<HashMap<String, String>> sortAccordingToTime(List<HashMap<String, String>> shiftDataList) {
+    @Override
+    public void onResume() {
+        super.onResume();
 
-        List<HashMap<String, String>> shiftDataListSorted = new ArrayList<>();
+        hitInsertFirebaseId();
+        hitDashboardAPI();
 
-       for(int i=0;i<shiftDataList.size();i++)
-       {
-           for(int j=i+1;j<shiftDataList.size();j++)
-           {
-               Date low = Utility.convertTimeToDate(shiftDataList.get(i).get("shift_start_time"));
-               Date high = Utility.convertTimeToDate(shiftDataList.get(j).get("shift_end_time"));
+       /* if (!sharedPref.getProfileImage().isEmpty()) {
 
-               if(low.before(high))
-               {
-                   shiftDataListSorted.add(shiftDataList.get(i));
-               }
-           }
-       }
+            Picasso.with(context).load(sharedPref.getProfileImage())
+                    .memoryPolicy(MemoryPolicy.NO_CACHE)
+                    .networkPolicy(NetworkPolicy.NO_CACHE)
+                    .placeholder(R.drawable.user_png)
+                    .error(R.drawable.user_png)
+                    .into(CsoDashboardActivity.user);
+
+            Picasso.with(context).load(sharedPref.getProfileImage())
+                    .memoryPolicy(MemoryPolicy.NO_CACHE)
+                    .networkPolicy(NetworkPolicy.NO_CACHE)
+                    .placeholder(R.drawable.user_png)
+                    .error(R.drawable.user_png)
+                    .into(CsoDashboardActivity.userNav);
+        } else {
+            Picasso.with(context).load(R.drawable.user_png).fit().into(CsoDashboardActivity.user);
+            Picasso.with(context).load(R.drawable.user_png).fit().into(CsoDashboardActivity.userNav);
+
+        }
+
+        if (!sharedPref.getCoverImage().isEmpty()) {
+            *//*Picasso.with(context).load(sharedPref.getCoverImage())
+                    .memoryPolicy(MemoryPolicy.NO_CACHE)
+                    .networkPolicy(NetworkPolicy.NO_CACHE)
+                    .placeholder(R.drawable.back)
+                    .error(R.drawable.back)
+                    .into(CsoDashboardActivity.cover);*//*
+
+            Picasso.with(context).load(sharedPref.getCoverImage())
+                    .memoryPolicy(MemoryPolicy.NO_CACHE)
+                    .networkPolicy(NetworkPolicy.NO_CACHE)
+                    .placeholder(R.drawable.back)
+                    .error(R.drawable.back)
+                    .into(CsoDashboardActivity.coverNav);
+
+        } else {
+            //Picasso.with(context).load(R.drawable.back).fit().into(CsoDashboardActivity.cover);
+            Picasso.with(context).load(R.drawable.back).fit().into(CsoDashboardActivity.coverNav);
+
+        }*/
 
 
-       *//* for (int i = 0; i < shiftDataList.size()-1; i++) {
-            for (int j = 0; j < shiftDataList.size() - i - 1; j++) {
-                Date low = Utility.convertTimeToDate(shiftDataList.get(j).get("shift_start_time"));
-                Date high = Utility.convertTimeToDate(shiftDataList.get(j+1).get("shift_end_time"));
+    }
 
-                int hour1 = Integer.parseInt(shiftDataList.get(j).get("shift_start_time").split(":")[0]);
-                int minute1 = Integer.parseInt(shiftDataList.get(j).get("shift_start_time").split(":")[1]);
-                int seconds1 = Integer.parseInt(shiftDataList.get(j).get("shift_start_time").split(":")[2]);
+    private void hitDashboardAPI()
+    {
+        if (Utility.isNetworkAvailable(context)) {
 
-                int tempStart = (60 * minute1) + (3600 * hour1) + seconds1;
+            myProgressDialog.show(getString(R.string.please_wait));
 
-                int hour2 = Integer.parseInt(shiftDataList.get(j+1).get("shift_end_time").split(":")[0]);
-                int minute2 = Integer.parseInt(shiftDataList.get(j+1).get("shift_end_time").split(":")[1]);
-                int seconds2 = Integer.parseInt(shiftDataList.get(j+1).get("shift_end_time").split(":")[2]);
+            Calendar c = Calendar.getInstance();
+            int year = c.get(Calendar.YEAR);
+            int month = c.get(Calendar.MONTH) + 1;
 
-                int tempEnd= (60 * minute2) + (3600 * hour2) + seconds2;
+            CsoDashboardCombinedRequest csoDashboardCombinedRequest = new CsoDashboardCombinedRequest();
+            csoDashboardCombinedRequest.setUserId(sharedPref.getUserId());
+            csoDashboardCombinedRequest.setEventMonth(String.valueOf(month));
+            csoDashboardCombinedRequest.setEventYear(String.valueOf(year));
+            csoDashboardCombinedRequest.setCountdownDate(Utility.getDashboardCurrentDateTime());
 
-                if (tempStart > tempEnd) {
-                    *//**//*HashMap<String, String> map  = shiftDataList.get(j);
-                    shiftDataList.set(j,shiftDataList.get(j+1));
-                    shiftDataList.set(j+1,map);*//**//*
+            Log.i("REQUEST", "" + new Gson().toJson(csoDashboardCombinedRequest));
 
-                    Collections.swap(shiftDataList, j, j+1);
+            getCsoDashoardCombinedViewModel.getCsoDashboardCombinedResponse(csoDashboardCombinedRequest).observe((LifecycleOwner) context, new Observer<CsoDashboardCombinedResponse>() {
+                @Override
+                public void onChanged(@Nullable CsoDashboardCombinedResponse csoDashboardCombinedResponse) {
+
+                    if (csoDashboardCombinedResponse != null) {
+                        Log.i("RESPONSE", "" + new Gson().toJson(csoDashboardCombinedResponse));
+                        if (csoDashboardCombinedResponse.getResStatus().equalsIgnoreCase("200")) {
+
+                            if (csoDashboardCombinedResponse.getResData() != null) {
+
+                                upcoming_text.setVisibility(View.VISIBLE);
+                                lv_upcoming_event.setVisibility(View.VISIBLE);
+                                timerLayout.setVisibility(View.VISIBLE);
+                                //con_txt.setVisibility(View.VISIBLE);
+                                con_layout.setVisibility(View.VISIBLE);
+                                eventDataList = csoDashboardCombinedResponse.getResData().getEventData();
+                                calendarDataList = csoDashboardCombinedResponse.getResData().getCalendarData();
+
+                                if (csoDashboardCombinedResponse.getResData().getUserCoverPic() != null) {
+
+                                    if (!sharedPref.getCoverImage().equalsIgnoreCase(csoDashboardCombinedResponse.getResData().getUserCoverPic())) {
+                                        sharedPref.setCoverImage(csoDashboardCombinedResponse.getResData().getUserCoverPic());
+
+                                        Picasso.with(context).load(sharedPref.getCoverImage())
+                                                .memoryPolicy(MemoryPolicy.NO_CACHE)
+                                                .networkPolicy(NetworkPolicy.NO_CACHE)
+                                                .placeholder(R.drawable.back)
+                                                .error(R.drawable.back)
+                                                .into(CsoDashboardActivity.cover);
+
+                                        Picasso.with(context).load(sharedPref.getCoverImage())
+                                                .memoryPolicy(MemoryPolicy.NO_CACHE)
+                                                .networkPolicy(NetworkPolicy.NO_CACHE)
+                                                .placeholder(R.drawable.back)
+                                                .error(R.drawable.back)
+                                                .into(CsoDashboardActivity.coverNav);
+                                    }
+                                }
+
+                                if (csoDashboardCombinedResponse.getResData().getUserProfilePic() != null) {
+                                    if (!sharedPref.getProfileImage().equalsIgnoreCase(csoDashboardCombinedResponse.getResData().getUserProfilePic())) {
+                                        sharedPref.setProfileImage(csoDashboardCombinedResponse.getResData().getUserProfilePic());
+
+                                        Picasso.with(context).load(sharedPref.getProfileImage())
+                                                .memoryPolicy(MemoryPolicy.NO_CACHE)
+                                                .networkPolicy(NetworkPolicy.NO_CACHE)
+                                                .placeholder(R.drawable.user_png)
+                                                .error(R.drawable.user_png)
+                                                .into(CsoDashboardActivity.user);
+
+                                        Picasso.with(context).load(sharedPref.getProfileImage())
+                                                .memoryPolicy(MemoryPolicy.NO_CACHE)
+                                                .networkPolicy(NetworkPolicy.NO_CACHE)
+                                                .placeholder(R.drawable.user_png)
+                                                .error(R.drawable.user_png)
+                                                .into(CsoDashboardActivity.userNav);
+                                    }
+                                }
+
+
+                                if (calendarDataList != null && calendarDataList.size() > 0) {
+                                    new DBSaveCalendarData(context, calendarDataList).execute();
+                                    mEventDays = new ArrayList<>();
+                                    for (int i = 0; i < calendarDataList.size(); i++) {
+                                        int year = Integer.parseInt(calendarDataList.get(i).getYr());
+                                        int month = Integer.parseInt(calendarDataList.get(i).getMn());
+                                        int date = Integer.parseInt(calendarDataList.get(i).getDt());
+
+                                        EventDayModel eventDayModel = new EventDayModel();
+                                        eventDayModel.setCalendarDay(new CalendarDay(year, month - 1, date));
+                                        eventDayModel.setEventId(calendarDataList.get(i).getEventId());
+                                        eventDayModel.setEventHeading(calendarDataList.get(i).getEventHeading());
+                                        eventDayModel.setShiftDate(calendarDataList.get(i).getShiftDate());
+                                        eventDayModel.setShiftTask(calendarDataList.get(i).getShiftTask());
+                                        eventDayModel.setShiftStartTime(calendarDataList.get(i).getShiftStartTime());
+                                        eventDayModel.setShiftEndTime(calendarDataList.get(i).getShiftEndTime());
+                                        eventDayModel.setShiftId(calendarDataList.get(i).getShiftId());
+                                        eventDayModel.setShiftTaskName(calendarDataList.get(i).getShiftTaskName());
+                                        mEventDays.add(eventDayModel);
+                                    }
+
+                                    setEventsOnCalendar(mEventDays);
+                                }
+                                if (eventDataList != null) {
+                                    new DBSaveUpcomingEvent(context, eventDataList).execute();
+                                    UpcomingEventAdapter adapter = new UpcomingEventAdapter(context, eventDataList);
+                                    lv_upcoming_event.setAdapter(adapter);
+                                    if (eventDataList.size() > 3) {
+                                        ViewGroup.LayoutParams lp = (ViewGroup.LayoutParams) lv_upcoming_event.getLayoutParams();
+                                        lp.height = 800;
+                                        lv_upcoming_event.setLayoutParams(lp);
+                                    } else {
+                                        Utility.setListViewHeightBasedOnChildren(lv_upcoming_event);
+                                    }
+                                    handler.removeCallbacks(runnable);
+                                    if (countDown < eventDataList.size())
+                                        countDownStart(eventDataList.get(countDown).getShiftDate() + " " + eventDataList.get(countDown).getShiftStartTimeTimer());
+
+                                } else {
+                                    timerLayout.setVisibility(View.GONE);
+                                    // con_txt.setVisibility(View.GONE);
+                                    con_layout.setVisibility(View.GONE);
+                                    upcoming_text.setVisibility(View.GONE);
+                                    lv_upcoming_event.setVisibility(View.GONE);
+                                }
+
+                            } else {
+                                myToast.show(getString(R.string.no_events_found), Toast.LENGTH_SHORT, false);
+                                upcoming_text.setVisibility(View.GONE);
+                                lv_upcoming_event.setVisibility(View.GONE);
+                                timerLayout.setVisibility(View.GONE);
+                                //con_txt.setVisibility(View.GONE);
+                                con_layout.setVisibility(View.GONE);
+                            }
+
+                        } else if (csoDashboardCombinedResponse.getResStatus().equalsIgnoreCase("401")) {
+                            myToast.show(getString(R.string.no_events_found), Toast.LENGTH_SHORT, false);
+                            upcoming_text.setVisibility(View.GONE);
+                            lv_upcoming_event.setVisibility(View.GONE);
+                            timerLayout.setVisibility(View.GONE);
+                            //con_txt.setVisibility(View.GONE);
+                            con_layout.setVisibility(View.GONE);
+                        }
+                    } else {
+                        myToast.show(getString(R.string.err_server), Toast.LENGTH_SHORT, false);
+                        upcoming_text.setVisibility(View.GONE);
+                        lv_upcoming_event.setVisibility(View.GONE);
+                        timerLayout.setVisibility(View.GONE);
+                        //con_txt.setVisibility(View.GONE);
+                        con_layout.setVisibility(View.GONE);
+                    }
+                    myProgressDialog.dismiss();
                 }
-            }
-        }*//*
+            });
 
-        return shiftDataListSorted;
-    }*/
+        } else {
+            myToast.show(getString(R.string.no_internet_connection), Toast.LENGTH_SHORT, false);
+
+            if (dbGetUpcomingEvent.getUpcomingEventList() != null) {
+
+                for (int i = 0; i < dbGetUpcomingEvent.getUpcomingEventList().size(); i++) {
+                    Date shiftStartDate = Utility.convertStringToDateTimer(dbGetUpcomingEvent.getUpcomingEventList().get(i).getShiftDate() + " " + dbGetUpcomingEvent.getUpcomingEventList().get(i).getShiftStartTime());
+                    Date currentDate = Utility.convertStringToDateTimer(Utility.getCurrentTime());
+
+                    if (shiftStartDate.before(currentDate)) {
+                        dbGetUpcomingEvent.getUpcomingEventList().remove(i);
+                    }
+                }
+
+                if (dbGetUpcomingEvent.getUpcomingEventList() != null) {
+                    upcoming_text.setVisibility(View.VISIBLE);
+                    timerLayout.setVisibility(View.VISIBLE);
+                    //con_txt.setVisibility(View.VISIBLE);
+                    con_layout.setVisibility(View.VISIBLE);
+                    UpcomingEventAdapter adapter = new UpcomingEventAdapter(context, dbGetUpcomingEvent.getUpcomingEventList());
+                    lv_upcoming_event.setAdapter(adapter);
+                    if (dbGetUpcomingEvent.getUpcomingEventList().size() > 3) {
+                        ViewGroup.LayoutParams lp = (ViewGroup.LayoutParams) lv_upcoming_event.getLayoutParams();
+                        lp.height = 700;
+                        lv_upcoming_event.setLayoutParams(lp);
+                    } else {
+                        Utility.setListViewHeightBasedOnChildren(lv_upcoming_event);
+                    }
+                    handler.removeCallbacks(runnable);
+                    if (dbGetUpcomingEvent.getUpcomingEventList().size() > 0)
+                        countDownStart(dbGetUpcomingEvent.getUpcomingEventList().get(countDown).getShiftDate() + " " + dbGetUpcomingEvent.getUpcomingEventList().get(countDown).getShiftStartTime());
+                } else {
+                    upcoming_text.setVisibility(View.GONE);
+                }
+
+            } else {
+                upcoming_text.setVisibility(View.GONE);
+            }
+
+            if (dbGetCalendarData.getCalendarDataList() != null) {
+
+                mEventDays = new ArrayList<>();
+                for (int i = 0; i < dbGetCalendarData.getCalendarDataList().size(); i++) {
+                    int year = Integer.parseInt(dbGetCalendarData.getCalendarDataList().get(i).getYr());
+                    int month = Integer.parseInt(dbGetCalendarData.getCalendarDataList().get(i).getMn());
+                    int date = Integer.parseInt(dbGetCalendarData.getCalendarDataList().get(i).getDt());
+
+                    EventDayModel eventDayModel = new EventDayModel();
+                    eventDayModel.setCalendarDay(new CalendarDay(year, month - 1, date));
+                    eventDayModel.setEventId(dbGetCalendarData.getCalendarDataList().get(i).getEventId());
+                    eventDayModel.setEventHeading(dbGetCalendarData.getCalendarDataList().get(i).getEventHeading());
+                    eventDayModel.setShiftDate(dbGetCalendarData.getCalendarDataList().get(i).getShiftDate());
+                    eventDayModel.setShiftTask(dbGetCalendarData.getCalendarDataList().get(i).getShiftTask());
+                    eventDayModel.setShiftStartTime(dbGetCalendarData.getCalendarDataList().get(i).getShiftStartTime());
+                    eventDayModel.setShiftEndTime(dbGetCalendarData.getCalendarDataList().get(i).getShiftEndTime());
+                    eventDayModel.setShiftId(dbGetCalendarData.getCalendarDataList().get(i).getShiftId());
+                    mEventDays.add(eventDayModel);
+                }
+                setEventsOnCalendar(mEventDays);
+            } else {
+                lv_upcoming_event.setVisibility(View.GONE);
+                upcoming_text.setVisibility(View.GONE);
+            }
+
+        }
+
+        if (!sharedPref.getProfileImage().isEmpty()) {
+
+            Picasso.with(context).load(sharedPref.getProfileImage())
+                    .memoryPolicy(MemoryPolicy.NO_CACHE)
+                    .networkPolicy(NetworkPolicy.NO_CACHE)
+                    .placeholder(R.drawable.user_png)
+                    .error(R.drawable.user_png)
+                    .into(CsoDashboardActivity.user);
+
+            Picasso.with(context).load(sharedPref.getProfileImage())
+                    .memoryPolicy(MemoryPolicy.NO_CACHE)
+                    .networkPolicy(NetworkPolicy.NO_CACHE)
+                    .placeholder(R.drawable.user_png)
+                    .error(R.drawable.user_png)
+                    .into(CsoDashboardActivity.userNav);
+        } else {
+            Picasso.with(context).load(R.drawable.user_png).fit().into(CsoDashboardActivity.user);
+            Picasso.with(context).load(R.drawable.user_png).fit().into(CsoDashboardActivity.userNav);
+
+        }
+
+        if (!sharedPref.getCoverImage().isEmpty()) {
+           /* Picasso.with(context).load(sharedPref.getCoverImage())
+                    .memoryPolicy(MemoryPolicy.NO_CACHE)
+                    .networkPolicy(NetworkPolicy.NO_CACHE)
+                    .placeholder(R.drawable.back)
+                    .error(R.drawable.back)
+                    .into(CsoDashboardActivity.cover);*/
+
+            Picasso.with(context).load(sharedPref.getCoverImage())
+                    .memoryPolicy(MemoryPolicy.NO_CACHE)
+                    .networkPolicy(NetworkPolicy.NO_CACHE)
+                    .placeholder(R.drawable.back)
+                    .error(R.drawable.back)
+                    .into(CsoDashboardActivity.coverNav);
+
+        } else {
+            //Picasso.with(context).load(R.drawable.back).fit().into(CsoDashboardActivity.cover);
+            Picasso.with(context).load(R.drawable.back).fit().into(CsoDashboardActivity.coverNav);
+        }
+    }
 
     private void setEventsOnCalendar(List<EventDayModel> eventDayModelList) {
 
@@ -426,18 +619,18 @@ public class DashboardFragment extends Fragment implements View.OnClickListener 
         this.context = context;
     }
 
+
     public void countDownStart(String future) {
-        handler = new Handler();
         runnable = new Runnable() {
             @Override
             public void run() {
                 handler.postDelayed(this, 1000);
                 try {
-                    Date futureDate = Utility.convertStringToDateTimer(future);//event date
-                    Date currentDate = Utility.convertStringToDateTimer(Utility.getCurrentTime());
+                    Date futureDate = Utility.convertStringToDateTimerNew(future);//event date
+                    Date currentDate = Utility.convertStringToDateTimerNew(Utility.getCurrentTime());
+
                     if (!currentDate.after(futureDate)) {
-                        long diff = futureDate.getTime()
-                                - currentDate.getTime();
+                        long diff = futureDate.getTime() - currentDate.getTime();
                         long days = diff / (24 * 60 * 60 * 1000);
                         diff -= days * (24 * 60 * 60 * 1000);
                         long hours = diff / (60 * 60 * 1000);
@@ -452,8 +645,8 @@ public class DashboardFragment extends Fragment implements View.OnClickListener 
                     } else {
                         handler.removeCallbacks(runnable);
                         countDown++;
-                        if(eventDataList != null && eventDataList.get(countDown) != null)
-                        countDownStart(eventDataList.get(countDown).getShiftDate() + " " + eventDataList.get(countDown).getShiftStartTime());
+                        if (eventDataList != null && eventDataList.get(countDown) != null)
+                            countDownStart(eventDataList.get(countDown).getShiftDate() + " " + eventDataList.get(countDown).getShiftStartTime());
                     }
                 } catch (Exception e) {
                     e.printStackTrace();
@@ -462,7 +655,6 @@ public class DashboardFragment extends Fragment implements View.OnClickListener 
         };
         handler.postDelayed(runnable, 1000);
     }
-
 
     @Override
     public void onClick(View v) {

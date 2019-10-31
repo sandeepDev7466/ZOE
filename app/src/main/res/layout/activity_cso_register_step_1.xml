@@ -42,7 +42,7 @@
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
             android:text="@string/zoe_thumbprint"
-            android:textSize="@dimen/_15ssp"
+            style="@style/RegularTextView"
             android:layout_marginTop="@dimen/_5sdp"/>
 
         <com.ztp.app.Helper.MyTextView
@@ -51,7 +51,7 @@
             android:text="@string/basic_information"
             android:background="@color/blue_light"
             android:textColor="@color/white"
-            android:textSize="@dimen/_15ssp"
+            style="@style/RegularTextView"
             android:gravity="center"
             android:layout_marginTop="@dimen/_10sdp" />
 
@@ -74,7 +74,7 @@
                     android:gravity="center"
                     android:textColor="@color/white"
                     android:background="@drawable/circle_green"
-                    android:textSize="@dimen/_12ssp"/>
+                    style="@style/SmallTextView"/>
 
             </LinearLayout>
 
@@ -104,7 +104,7 @@
                     android:gravity="center"
                     android:textColor="@color/white"
                     android:background="@drawable/circle"
-                    android:textSize="@dimen/_12ssp"/>
+                    style="@style/SmallTextView"/>
 
             </LinearLayout>
 
@@ -134,7 +134,7 @@
                     android:gravity="center"
                     android:textColor="@color/white"
                     android:background="@drawable/circle"
-                    android:textSize="@dimen/_12ssp"/>
+                    style="@style/SmallTextView"/>
 
             </LinearLayout>
 
@@ -177,10 +177,27 @@
                         android:textColor="@color/white"/>
                 </LinearLayout>
 -->
+                <com.ztp.app.Helper.MyTextInputLayout
+                android:id="@+id/etEmailLayout"
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                >
+
+                <com.ztp.app.Helper.MyTextInputEditText
+                    android:id="@+id/etEmail"
+                    android:layout_width="match_parent"
+                    android:layout_height="wrap_content"
+                    android:hint="@string/email"
+                    android:inputType="textEmailAddress"
+                    style="@style/RegularTextView"
+                    android:singleLine="true"
+                    android:nextFocusDown="@+id/etFirstName"/>
+            </com.ztp.app.Helper.MyTextInputLayout>
                 <LinearLayout
                     android:layout_width="match_parent"
                     android:layout_height="wrap_content"
-                    android:orientation="horizontal">
+                    android:orientation="horizontal"
+                    android:layout_marginTop="@dimen/_10sdp">
 
                     <com.ztp.app.Helper.MyTextInputLayout
                         android:id="@+id/etFirstNameLayout"
@@ -197,7 +214,9 @@
                             android:layout_height="wrap_content"
                             android:hint="@string/first_name"
                             android:inputType="text"
-                            android:textSize="@dimen/_12ssp" />
+                            style="@style/RegularTextView"
+                            android:singleLine="true"
+                            android:nextFocusDown="@+id/etLastName"/>
                     </com.ztp.app.Helper.MyTextInputLayout>
 
                     <com.ztp.app.Helper.MyTextInputLayout
@@ -213,29 +232,21 @@
                             android:layout_height="wrap_content"
                             android:hint="@string/last_name"
                             android:inputType="text"
-                            android:textSize="@dimen/_12ssp" />
+                            style="@style/RegularTextView"
+                            android:singleLine="true"
+                            android:nextFocusDown="@+id/etPhone"/>
                     </com.ztp.app.Helper.MyTextInputLayout>
 
                 </LinearLayout>
-
-                <com.ztp.app.Helper.MyTextInputLayout
-                    android:id="@+id/etEmailLayout"
-                    android:layout_width="match_parent"
-                    android:layout_height="wrap_content"
-                    android:layout_marginTop="@dimen/_10sdp">
-
-                    <com.ztp.app.Helper.MyTextInputEditText
-                        android:id="@+id/etEmail"
-                        android:layout_width="match_parent"
-                        android:layout_height="wrap_content"
-                        android:hint="@string/email"
-                        android:inputType="textEmailAddress"
-                        android:textSize="@dimen/_12ssp" />
-                </com.ztp.app.Helper.MyTextInputLayout>
-
+<LinearLayout
+    android:layout_width="match_parent"
+    android:layout_height="wrap_content"
+    android:orientation="horizontal"
+    android:weightSum="1">
                 <com.ztp.app.Helper.MyTextInputLayout
                     android:id="@+id/etPhoneLayout"
-                    android:layout_width="match_parent"
+                    android:layout_width="0dp"
+                    android:layout_weight="0.5"
                     android:layout_height="wrap_content"
                     android:layout_marginTop="@dimen/_10sdp">
 
@@ -246,62 +257,39 @@
                         android:hint="@string/phone"
                         android:inputType="phone"
                         android:maxLength="14"
-                        android:textSize="@dimen/_12ssp"
-                        android:imeOptions="actionNext"/>
+                        style="@style/RegularTextView"
+                        android:imeOptions="actionNext"
+                        android:singleLine="true"
+                        android:nextFocusDown="@+id/etAddress"/>
                 </com.ztp.app.Helper.MyTextInputLayout>
+    <com.ztp.app.Helper.MyTextInputLayout
+        android:layout_width="0dp"
+        android:layout_height="wrap_content"
+        android:layout_marginTop="@dimen/_10sdp"
+        android:layout_weight="0.5">
 
-                    <LinearLayout
-                        android:layout_width="match_parent"
-                        android:layout_height="match_parent"
-
-                        android:orientation="vertical"
-                        android:background="@drawable/border"
-                        android:layout_marginTop="@dimen/_10sdp"
-                        android:gravity="center"
-                        android:padding="@dimen/_5sdp">
-
-
-                            <Spinner
-                                android:id="@+id/country"
-                                android:layout_width="match_parent"
-                                android:layout_height="wrap_content"
-                              />
-
-                    </LinearLayout>
-
-                    <LinearLayout
-                        android:layout_width="match_parent"
-                        android:layout_height="match_parent"
-
-                        android:orientation="vertical"
-                        android:background="@drawable/border"
-                        android:layout_marginTop="@dimen/_10sdp"
-                        android:gravity="center"
-                        android:padding="@dimen/_5sdp">
-
-
-                            <Spinner
-                                android:id="@+id/state"
-                                android:layout_width="match_parent"
-                                android:layout_height="wrap_content"
-                               />
-
-
-
-
-                </LinearLayout>
-
+        <com.ztp.app.Helper.MyTextInputEditText
+            android:id="@+id/etAddress"
+            style="@style/RegularTextView"
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:hint="@string/address"
+            android:inputType="text"
+            android:nextFocusDown="@+id/etCity"
+            android:singleLine="true" />
+    </com.ztp.app.Helper.MyTextInputLayout>
+</LinearLayout>
 
                 <LinearLayout
                     android:layout_width="match_parent"
                     android:layout_height="wrap_content"
                     android:orientation="horizontal"
-                    android:layout_marginTop="@dimen/_10sdp">
+                   >
 
                     <com.ztp.app.Helper.MyTextInputLayout
-                        android:layout_width="0dp"
+                        android:layout_width="match_parent"
                         android:layout_height="wrap_content"
-                        android:layout_weight=".5">
+                      >
 
                         <com.ztp.app.Helper.MyTextInputEditText
                             android:id="@+id/etCity"
@@ -309,43 +297,87 @@
                             android:layout_height="wrap_content"
                             android:hint="@string/city"
                             android:inputType="text"
-                            android:textSize="@dimen/_12ssp" />
+                            style="@style/RegularTextView"
+                            android:singleLine="true"
+                            android:nextFocusDown="@+id/etPostalCode"/>
                     </com.ztp.app.Helper.MyTextInputLayout>
 
-                    <com.ztp.app.Helper.MyTextInputLayout
-                        android:id="@+id/etPostalCodeLayout"
-                        android:layout_width="0dp"
-                        android:layout_height="wrap_content"
-                        android:layout_weight=".5">
 
-                        <com.ztp.app.Helper.MyTextInputEditText
-                            android:id="@+id/etPostalCode"
-                            android:layout_width="match_parent"
-                            android:layout_height="wrap_content"
-                            android:hint="@string/postal_code"
-                            android:inputType="number"
-                            android:maxLength="5"
-                            android:digits="0123456789"
-                            android:textSize="@dimen/_12ssp"
-                            android:imeOptions="actionNext"/>
-                    </com.ztp.app.Helper.MyTextInputLayout>
+
+                </LinearLayout>
+
+                <com.ztp.app.Helper.MyTextView
+                    android:layout_width="match_parent"
+                    android:layout_height="wrap_content"
+                    android:layout_marginLeft="@dimen/_3sdp"
+                    android:layout_marginTop="@dimen/_10sdp"
+                    android:text="@string/state"
+                    android:visibility="visible"
+                    style="@style/RegularTextView"/>
+
+                <LinearLayout
+                    android:layout_width="match_parent"
+                    android:layout_height="match_parent"
+
+                    android:orientation="vertical"
+                    android:background="@drawable/border"
+                    android:layout_marginTop="@dimen/_10sdp"
+                    android:gravity="center"
+                    android:padding="@dimen/_5sdp"
+                    android:layout_marginLeft="@dimen/_2sdp"
+                    android:layout_marginRight="@dimen/_2sdp">
+
+                    <Spinner
+                        android:id="@+id/state"
+                        android:layout_width="match_parent"
+                        android:layout_height="wrap_content" />
 
                 </LinearLayout>
 
                 <com.ztp.app.Helper.MyTextInputLayout
+                    android:id="@+id/etPostalCodeLayout"
                     android:layout_width="match_parent"
                     android:layout_height="wrap_content"
-                    android:layout_marginTop="@dimen/_10sdp">
+                   android:layout_marginTop="@dimen/_10sdp">
 
                     <com.ztp.app.Helper.MyTextInputEditText
-                        android:id="@+id/etAddress"
+                        android:id="@+id/etPostalCode"
                         android:layout_width="match_parent"
                         android:layout_height="wrap_content"
-                        android:hint="@string/address"
-                        android:inputType="text"
-                        android:textSize="@dimen/_12ssp"
-                        />
+                        android:hint="@string/postal_code"
+                        android:inputType="number"
+                        android:maxLength="5"
+                        android:digits="0123456789"
+                        style="@style/RegularTextView"
+                        android:imeOptions="actionNext"
+                        android:singleLine="true"
+                        android:nextFocusDown="@+id/etPhone"/>
                 </com.ztp.app.Helper.MyTextInputLayout>
+                <com.ztp.app.Helper.MyTextView
+                    android:layout_width="match_parent"
+                    android:layout_height="wrap_content"
+                    android:layout_marginLeft="@dimen/_3sdp"
+                    android:layout_marginTop="@dimen/_10sdp"
+                    android:text="@string/country"
+                    android:visibility="visible"
+                    style="@style/RegularTextView"/>
+                <LinearLayout
+                    android:layout_width="match_parent"
+                    android:layout_height="match_parent"
+                    android:orientation="vertical"
+                    android:background="@drawable/border"
+                    android:layout_marginTop="@dimen/_10sdp"
+                    android:gravity="center"
+                    android:padding="@dimen/_5sdp"
+                    android:layout_marginLeft="@dimen/_2sdp"
+                    android:layout_marginRight="@dimen/_2sdp">
+
+                    <Spinner
+                        android:id="@+id/country"
+                        android:layout_width="match_parent"
+                        android:layout_height="wrap_content" />
+
+                </LinearLayout>
 
                 <com.ztp.app.Helper.MyTextInputLayout
                     android:layout_width="match_parent"
@@ -356,22 +388,31 @@
                         android:id="@+id/etDob"
                         android:layout_width="match_parent"
                         android:layout_height="wrap_content"
-                        android:hint="@string/date_of_birth"
-                        android:textSize="@dimen/_12ssp"
+                        android:hint="@string/date_of_birth_cso"
+                        style="@style/RegularTextView"
                         android:clickable="true"
                         android:editable="false"
                         android:drawableEnd="@drawable/ic_calendar"
                         android:paddingEnd="@dimen/_10sdp"
                         />
                 </com.ztp.app.Helper.MyTextInputLayout>
-
+                <com.ztp.app.Helper.MyTextView
+                    android:layout_width="match_parent"
+                    android:layout_height="wrap_content"
+                    android:layout_marginLeft="@dimen/_3sdp"
+                    android:layout_marginTop="@dimen/_10sdp"
+                    android:text="@string/gender"
+                    android:visibility="visible"
+                    style="@style/RegularTextView"/>
                 <LinearLayout
                     android:layout_width="match_parent"
                     android:layout_height="wrap_content"
                     android:orientation="horizontal"
                     android:background="@drawable/border"
                     android:padding="@dimen/_5sdp"
-                    android:layout_marginTop="@dimen/_10sdp">
+                    android:layout_marginTop="@dimen/_10sdp"
+                    android:layout_marginLeft="@dimen/_2sdp"
+                    android:layout_marginRight="@dimen/_2sdp">
 
                     <Spinner
                         android:id="@+id/gender"
@@ -395,7 +436,9 @@
                         android:layout_height="wrap_content"
                         android:hint="@string/password"
                         android:inputType="textPassword"
-                        android:textSize="@dimen/_12ssp" />
+                        style="@style/RegularTextView"
+                        android:singleLine="true"
+                        android:nextFocusDown="@+id/etConfirmPassword"/>
                 </com.ztp.app.Helper.MyTextInputLayout>
 
                 <com.ztp.app.Helper.MyTextInputLayout
@@ -411,7 +454,7 @@
                         android:layout_height="wrap_content"
                         android:hint="@string/confirm_password"
                         android:inputType="textPassword"
-                        android:textSize="@dimen/_12ssp" />
+                        style="@style/RegularTextView" />
                 </com.ztp.app.Helper.MyTextInputLayout>
 
             </LinearLayout>
@@ -434,7 +477,6 @@
                     android:gravity="center"
                     android:text="@string/clear"
                     android:textAllCaps="false"
-                    android:textSize="@dimen/_10ssp"
                     android:layout_weight=".5"
                     android:layout_margin="@dimen/_5sdp"/>
 
@@ -445,8 +487,7 @@
                     android:layout_height="@dimen/_40sdp"
                     android:textAllCaps="false"
                     android:gravity="center"
-                    android:text="@string/next"
-                    android:textSize="@dimen/_10ssp"
+                    android:text="@string/next_cso"
                     android:layout_weight=".5"
                     android:layout_margin="@dimen/_5sdp"/>
 

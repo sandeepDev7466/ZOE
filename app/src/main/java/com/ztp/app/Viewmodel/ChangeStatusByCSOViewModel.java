@@ -35,9 +35,15 @@ public class ChangeStatusByCSOViewModel extends ViewModel {
         call.enqueue(new Callback<ChangeStatusByCSOResponse>() {
             @Override
             public void onResponse(Call<ChangeStatusByCSOResponse> call, Response<ChangeStatusByCSOResponse> response) {
-                if (response.body() != null) {
-                    changeStatusByCSOResponseMutableLiveData.postValue(response.body());
+                if(response.isSuccessful()) {
+                    if (response.body() != null) {
+                        changeStatusByCSOResponseMutableLiveData.postValue(response.body());
 
+                    }
+                }
+                else
+                {
+                    changeStatusByCSOResponseMutableLiveData.postValue(null);
                 }
             }
             @Override

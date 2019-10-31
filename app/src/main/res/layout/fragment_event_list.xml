@@ -10,10 +10,10 @@
         android:layout_width="match_parent"
         android:layout_height="@dimen/_50sdp"
         app:tabIndicatorHeight="2dp"
+        app:tabIndicatorColor="@color/tabIndicatorColor"
         app:tabMaxWidth="0dp"
         app:tabGravity="fill"
         app:tabMode="fixed"
-        app:tabBackground="@color/blue_light"
         />
 
     <android.support.v4.view.ViewPager

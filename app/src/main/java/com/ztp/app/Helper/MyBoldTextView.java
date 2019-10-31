@@ -12,19 +12,19 @@ public class MyBoldTextView extends TextView {
 
     public MyBoldTextView(Context context) {
         super(context);
-        Typeface face=Typeface.createFromAsset(context.getAssets(), "fonts/Amaranth-Bold.otf");
+        Typeface face=Typeface.createFromAsset(context.getAssets(), "fonts/Roboto_Medium.ttf");
         this.setTypeface(face);
     }
 
     public MyBoldTextView(Context context, AttributeSet attrs) {
         super(context, attrs);
-        Typeface face=Typeface.createFromAsset(context.getAssets(), "fonts/Amaranth-Bold.otf");
+        Typeface face=Typeface.createFromAsset(context.getAssets(), "fonts/Roboto_Medium.ttf");
         this.setTypeface(face);
     }
 
     public MyBoldTextView(Context context, AttributeSet attrs, int defStyle) {
         super(context, attrs, defStyle);
-        Typeface face=Typeface.createFromAsset(context.getAssets(), "fonts/Amaranth-Bold.otf");
+        Typeface face=Typeface.createFromAsset(context.getAssets(), "fonts/Roboto_Medium.ttf");
         this.setTypeface(face);
     }
 

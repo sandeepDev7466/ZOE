@@ -43,7 +43,7 @@
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
             android:text="@string/zoe_thumbprint"
-            android:textSize="@dimen/_15ssp"
+            style="@style/RegularTextView"
             android:layout_marginTop="@dimen/_5sdp"/>
 
         <com.ztp.app.Helper.MyTextView
@@ -52,7 +52,7 @@
             android:text="@string/more_info"
             android:background="@color/blue_light"
             android:textColor="@color/white"
-            android:textSize="@dimen/_15ssp"
+            style="@style/RegularTextView"
             android:gravity="center"
             android:layout_marginTop="@dimen/_10sdp"
             />
@@ -75,7 +75,7 @@
                     android:gravity="center"
                     android:textColor="@color/white"
                     android:background="@drawable/circle"
-                    android:textSize="@dimen/_12ssp"/>
+                    style="@style/SmallTextView"/>
 
             </LinearLayout>
 
@@ -105,7 +105,7 @@
                     android:gravity="center"
                     android:textColor="@color/white"
                     android:background="@drawable/circle"
-                    android:textSize="@dimen/_12ssp"/>
+                    style="@style/SmallTextView"/>
 
             </LinearLayout>
 
@@ -135,7 +135,7 @@
                     android:gravity="center"
                     android:textColor="@color/white"
                     android:background="@drawable/circle_green"
-                    android:textSize="@dimen/_12ssp"/>
+                    style="@style/SmallTextView"/>
 
             </LinearLayout>
 
@@ -169,9 +169,8 @@
                 <com.ztp.app.Helper.MyTextView
                     android:layout_width="match_parent"
                     android:layout_height="wrap_content"
-                    android:textSize="@dimen/_12ssp"
-                    android:text="@string/non_profit"
-                    />
+                    style="@style/RegularTextView"
+                    android:text="@string/non_profit" />
 
                 <LinearLayout
                     android:layout_width="match_parent"
@@ -193,7 +192,8 @@
                         <com.ztp.app.Helper.MyTextView
                             android:layout_width="wrap_content"
                             android:layout_height="wrap_content"
-                            android:text="@string/yes"/>
+                            android:text="@string/yes"
+                            style="@style/RegularTextView"/>
 
                     </LinearLayout>
 
@@ -211,22 +211,38 @@
                         <com.ztp.app.Helper.MyTextView
                             android:layout_width="wrap_content"
                             android:layout_height="wrap_content"
-                            android:text="@string/no"/>
+                            android:text="@string/no"
+                            style="@style/RegularTextView"/>
 
                     </LinearLayout>
 
                 </LinearLayout>
 
-
                 <com.ztp.app.Helper.MyTextView
                     android:layout_width="match_parent"
                     android:layout_height="wrap_content"
                     android:layout_marginTop="@dimen/_15sdp"
-                    android:textSize="@dimen/_12ssp"
-                    android:text="@string/services"
-                    />
+                    style="@style/RegularTextView"
+                    android:text="@string/services" />
 
-                <com.ztp.app.Helper.MyTextInputLayout
+
+                <LinearLayout
+                    android:layout_width="match_parent"
+                    android:layout_height="match_parent"
+                    android:layout_marginTop="@dimen/_10sdp"
+                    android:background="@drawable/border"
+                    android:gravity="center"
+                    android:orientation="vertical"
+                    android:padding="@dimen/_5sdp">
+
+                    <Spinner
+                        android:id="@+id/sp_answer1"
+                        android:layout_width="match_parent"
+                        android:layout_height="wrap_content" />
+
+                </LinearLayout>
+
+               <!-- <com.ztp.app.Helper.MyTextInputLayout
                     android:layout_width="match_parent"
                     android:layout_height="wrap_content"
                     android:focusable="true"
@@ -237,19 +253,38 @@
                         android:layout_width="match_parent"
                         android:layout_height="wrap_content"
                         android:inputType="text"
-                        android:textSize="@dimen/_12ssp" />
-                </com.ztp.app.Helper.MyTextInputLayout>
+                        style="@style/RegularTextView"
+                        android:imeOptions="actionNext"
+                        android:singleLine="true"
+                        android:nextFocusDown="@+id/etTarget"/>
+                </com.ztp.app.Helper.MyTextInputLayout>-->
 
 
                 <com.ztp.app.Helper.MyTextView
                     android:layout_width="match_parent"
                     android:layout_height="wrap_content"
                     android:layout_marginTop="@dimen/_15sdp"
-                    android:textSize="@dimen/_12ssp"
+                    style="@style/RegularTextView"
                     android:text="@string/target_client"
                     />
 
-                <com.ztp.app.Helper.MyTextInputLayout
+                <LinearLayout
+                    android:layout_width="match_parent"
+                    android:layout_height="match_parent"
+                    android:layout_marginTop="@dimen/_10sdp"
+                    android:background="@drawable/border"
+                    android:gravity="center"
+                    android:orientation="vertical"
+                    android:padding="@dimen/_5sdp">
+
+                    <Spinner
+                        android:id="@+id/sp_answer2"
+                        android:layout_width="match_parent"
+                        android:layout_height="wrap_content" />
+
+                </LinearLayout>
+
+               <!-- <com.ztp.app.Helper.MyTextInputLayout
                     android:layout_width="match_parent"
                     android:layout_height="wrap_content">
 
@@ -258,61 +293,73 @@
                         android:layout_width="match_parent"
                         android:layout_height="wrap_content"
                         android:inputType="text"
-                        android:textSize="@dimen/_12ssp" />
-                </com.ztp.app.Helper.MyTextInputLayout>
+                        style="@style/RegularTextView"
+                        android:imeOptions="actionNext"
+                        android:singleLine="true"
+                        android:nextFocusDown="@+id/etPerson"/>
+                </com.ztp.app.Helper.MyTextInputLayout>-->
 
 
-                <com.ztp.app.Helper.MyTextView
+              <!--  <com.ztp.app.Helper.MyTextView
                     android:layout_width="match_parent"
                     android:layout_height="wrap_content"
                     android:layout_marginTop="@dimen/_15sdp"
-                    android:textSize="@dimen/_12ssp"
+                    style="@style/RegularTextView"
                     android:text="@string/person"
-                    />
+                   android:visibility="gone" />
 
                 <com.ztp.app.Helper.MyTextInputLayout
                     android:layout_width="match_parent"
-                    android:layout_height="wrap_content">
+                    android:layout_height="wrap_content"
+                    android:visibility="gone">
 
                     <com.ztp.app.Helper.MyTextInputEditText
                         android:id="@+id/etPerson"
                         android:layout_width="match_parent"
                         android:layout_height="wrap_content"
                         android:inputType="text"
-                        android:textSize="@dimen/_12ssp" />
+                        style="@style/RegularTextView"
+                        android:imeOptions="actionNext"
+                        android:singleLine="true"
+                        android:nextFocusDown="@+id/etTimePeriod"
+                        android:visibility="gone"/>
                 </com.ztp.app.Helper.MyTextInputLayout>
-
 
                 <com.ztp.app.Helper.MyTextView
                     android:layout_width="match_parent"
                     android:layout_height="wrap_content"
                     android:layout_marginTop="@dimen/_15sdp"
-                    android:textSize="@dimen/_12ssp"
+                    style="@style/RegularTextView"
                     android:text="@string/time_period"
-                    />
+                    android:visibility="gone"/>
 
                 <com.ztp.app.Helper.MyTextInputLayout
                     android:layout_width="match_parent"
-                    android:layout_height="wrap_content">
+                    android:layout_height="wrap_content"
+                    android:visibility="gone">
 
                     <com.ztp.app.Helper.MyTextInputEditText
                         android:id="@+id/etTimePeriod"
                         android:layout_width="match_parent"
                         android:layout_height="wrap_content"
                         android:inputType="text"
-                        android:textSize="@dimen/_12ssp" />
-                </com.ztp.app.Helper.MyTextInputLayout>
+                        style="@style/RegularTextView"
+                        android:imeOptions="actionNext"
+                        android:singleLine="true"
+                        android:nextFocusDown="@+id/etVolunteer"
+                        android:visibility="gone"/>
+                </com.ztp.app.Helper.MyTextInputLayout>-->
 
 
                 <com.ztp.app.Helper.MyTextView
                     android:layout_width="match_parent"
                     android:layout_height="wrap_content"
                     android:layout_marginTop="@dimen/_15sdp"
-                    android:textSize="@dimen/_12ssp"
+                    style="@style/RegularTextView"
                     android:text="@string/no_of_volunteer"
                     />
 
-                <com.ztp.app.Helper.MyTextInputLayout
+               <!-- <com.ztp.app.Helper.MyTextInputLayout
                     android:layout_width="match_parent"
                     android:layout_height="wrap_content">
 
@@ -321,15 +368,33 @@
                         android:layout_width="match_parent"
                         android:layout_height="wrap_content"
                         android:inputType="text"
-                        android:textSize="@dimen/_12ssp" />
-                </com.ztp.app.Helper.MyTextInputLayout>
+                        style="@style/RegularTextView"
+                        android:imeOptions="actionNext"
+                        android:singleLine="true" />
+                </com.ztp.app.Helper.MyTextInputLayout>-->
+
+                <LinearLayout
+                    android:layout_width="match_parent"
+                    android:layout_height="match_parent"
+                    android:layout_marginTop="@dimen/_10sdp"
+                    android:background="@drawable/border"
+                    android:gravity="center"
+                    android:orientation="vertical"
+                    android:padding="@dimen/_5sdp">
+
+                    <Spinner
+                        android:id="@+id/sp_answer3"
+                        android:layout_width="match_parent"
+                        android:layout_height="wrap_content" />
+
+                </LinearLayout>
 
 
                 <com.ztp.app.Helper.MyTextView
                     android:layout_width="match_parent"
                     android:layout_height="wrap_content"
                     android:layout_marginTop="@dimen/_15sdp"
-                    android:textSize="@dimen/_12ssp"
+                    style="@style/RegularTextView"
                     android:text="@string/policy_check"
                     />
 
@@ -353,7 +418,8 @@
                         <com.ztp.app.Helper.MyTextView
                             android:layout_width="wrap_content"
                             android:layout_height="wrap_content"
-                            android:text="@string/yes"/>
+                            android:text="@string/yes"
+                            style="@style/RegularTextView"/>
 
                     </LinearLayout>
 
@@ -371,7 +437,8 @@
                         <com.ztp.app.Helper.MyTextView
                             android:layout_width="wrap_content"
                             android:layout_height="wrap_content"
-                            android:text="@string/no"/>
+                            android:text="@string/no"
+                            style="@style/RegularTextView"/>
 
                     </LinearLayout>
 
@@ -381,7 +448,7 @@
                     android:layout_width="match_parent"
                     android:layout_height="wrap_content"
                     android:layout_marginTop="@dimen/_15sdp"
-                    android:textSize="@dimen/_12ssp"
+                    style="@style/RegularTextView"
                     android:text="@string/public_transport"
                     />
 
@@ -405,7 +472,8 @@
                         <com.ztp.app.Helper.MyTextView
                             android:layout_width="wrap_content"
                             android:layout_height="wrap_content"
-                            android:text="@string/yes"/>
+                            android:text="@string/yes"
+                            style="@style/RegularTextView"/>
 
                     </LinearLayout>
 
@@ -423,7 +491,8 @@
                         <com.ztp.app.Helper.MyTextView
                             android:layout_width="wrap_content"
                             android:layout_height="wrap_content"
-                            android:text="@string/no"/>
+                            android:text="@string/no"
+                            style="@style/RegularTextView"/>
 
                     </LinearLayout>
 
@@ -433,7 +502,7 @@
                     android:layout_width="match_parent"
                     android:layout_height="wrap_content"
                     android:layout_marginTop="@dimen/_15sdp"
-                    android:textSize="@dimen/_12ssp"
+                    style="@style/RegularTextView"
                     android:text="@string/are_you_501c3_certified"
                     />
 
@@ -457,7 +526,8 @@
                         <com.ztp.app.Helper.MyTextView
                             android:layout_width="wrap_content"
                             android:layout_height="wrap_content"
-                            android:text="@string/yes"/>
+                            android:text="@string/yes"
+                            style="@style/RegularTextView"/>
 
                     </LinearLayout>
 
@@ -475,7 +545,8 @@
                         <com.ztp.app.Helper.MyTextView
                             android:layout_width="wrap_content"
                             android:layout_height="wrap_content"
-                            android:text="@string/no"/>
+                            android:text="@string/no"
+                            style="@style/RegularTextView"/>
 
                     </LinearLayout>
 
@@ -485,14 +556,13 @@
 
             <Space
                 android:layout_width="match_parent"
-                android:layout_height="@dimen/_30sdp" />
-
+                android:layout_height="@dimen/_10sdp" />
 
             <LinearLayout
                 android:layout_width="match_parent"
                 android:layout_height="wrap_content"
                 android:orientation="horizontal"
-                android:layout_margin="@dimen/_5sdp">
+                android:layout_margin="@dimen/_10sdp">
 
                 <com.ztp.app.Helper.MyButton
                     android:id="@+id/clear"
@@ -502,7 +572,6 @@
                     android:gravity="center"
                     android:textAllCaps="false"
                     android:text="@string/clear"
-                    android:textSize="@dimen/_10ssp"
                     android:layout_weight=".5"
                     android:layout_margin="@dimen/_5sdp"/>
 
@@ -514,17 +583,14 @@
                     android:textAllCaps="false"
                     android:gravity="center"
                     android:text="@string/register"
-                    android:textSize="@dimen/_10ssp"
                     android:layout_weight=".5"
                     android:layout_margin="@dimen/_5sdp"/>
-
 
             </LinearLayout>
 
             <Space
                 android:layout_width="match_parent"
                 android:layout_height="@dimen/_10sdp" />
-
 
         </LinearLayout>
 

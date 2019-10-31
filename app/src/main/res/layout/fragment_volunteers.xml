@@ -22,7 +22,7 @@
         android:layout_height="wrap_content"
         android:layout_gravity="center"
         android:text="@string/err_no_data_found"
-        android:textSize="@dimen/_10ssp"
+        style="@style/RegularTextView"
         android:visibility="invisible"
         />
 

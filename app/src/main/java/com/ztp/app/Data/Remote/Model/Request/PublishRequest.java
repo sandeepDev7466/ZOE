@@ -20,17 +20,21 @@ public class PublishRequest {
     @SerializedName("action_type")
     @Expose
     private String action_type;
+    @SerializedName("current_date")
+    @Expose
+    private String currentDate;
+
 
     public PublishRequest() {
     }
 
-    public PublishRequest(String user_id, String user_type, String user_device, String event_id, String action_type) {
-        super();
+    public PublishRequest(String user_id, String user_type, String user_device, String event_id, String action_type, String currentDate) {
         this.user_id = user_id;
         this.user_type = user_type;
         this.user_device = user_device;
         this.event_id = event_id;
         this.action_type = action_type;
+        this.currentDate = currentDate;
     }
 
     public String getUser_id() {
@@ -71,5 +75,13 @@ public class PublishRequest {
 
     public void setAction_type(String action_type) {
         this.action_type = action_type;
+    }
+
+    public String getCurrentDate() {
+        return currentDate;
+    }
+
+    public void setCurrentDate(String currentDate) {
+        this.currentDate = currentDate;
     }
 }

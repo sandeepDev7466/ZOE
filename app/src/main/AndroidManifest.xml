@@ -3,6 +3,15 @@
     xmlns:tools="http://schemas.android.com/tools"
     package="com.ztp.app">
 
+    <permission
+        android:name="com.example.mapexdemo.permission.MAPS_RECEIVE"
+        android:protectionLevel="signature" />
+
+    <uses-feature android:name="android.hardware.location.gps" />
+    <uses-feature
+        android:name="android.hardware.camera"
+        android:required="true" />
+
     <uses-permission android:name="android.permission.INTERNET" />
     <uses-permission android:name="android.permission.CAMERA" />
     <uses-permission android:name="android.permission.ACCESS_WIFI_STATE" />
@@ -15,65 +24,67 @@
     <uses-permission android:name="android.permission.WRITE_EXTERNAL_STORAGE" />
     <uses-permission android:name="com.google.android.providers.gsf.permission.READ_GSERVICES" />
 
-    <uses-feature
-        android:name="android.hardware.camera"
-        android:required="true" />
-
-    <permission
-        android:name="com.example.mapexdemo.permission.MAPS_RECEIVE"
-        android:protectionLevel="signature" />
-
     <application
-        android:name=".MyZTPApplication"
+        android:name=".MyApp.MyZTPApplication"
         android:allowBackup="false"
         android:appComponentFactory="com.ztp.app"
-        android:hardwareAccelerated="false"
+        android:hardwareAccelerated="true"
         android:icon="@drawable/thumbprints"
         android:label="@string/app_name"
         android:largeHeap="true"
-        android:roundIcon="@drawable/thumbprints"
+        android:roundIcon="@mipmap/ic_launcher"
         android:supportsRtl="true"
         android:theme="@style/MyTheme"
+        android:usesCleartextTraffic="true"
         tools:ignore="GoogleAppIndexingWarning"
         tools:replace="android:appComponentFactory,android:allowBackup">
+        <activity android:name=".View.Activity.Student.StudentDashboardActivity" />
 
+        <activity android:name=".View.Fragment.Student.Hangout.SendReceivedRequestActivity"
+            android:theme="@style/AppTheme.Dialog"></activity>
+        <activity
+            android:name=".View.Activity.Common.StuVolEditProfileActivity"
+            android:theme="@style/MyThemeFullScreen" />
 
-        <activity android:name=".View.Fragment.CSO.Event.UpdateImageActivity"
+        <activity android:name=".View.Activity.Common.VideoPlayerActivity"
+            android:theme="@style/MyThemeFullScreen"></activity>
+        <activity
+            android:name=".View.Activity.Common.PhotoViewerActivity"
+            android:theme="@style/MyThemeFullScreen" />
+        <activity android:name=".View.Activity.Common.WebviewActivity" />
+        <activity
+            android:name=".View.Activity.Common.TimezoneActivity"
+            android:theme="@style/MyThemeFullScreen" />
+        <activity
+            android:name=".View.Activity.Common.NotificationActivity"
+            android:theme="@style/MyThemeFullScreen" />
+        <activity
+            android:name=".View.Fragment.CSO.Event.UpdateImageActivity"
             android:theme="@style/AppTheme.Dialog" />
-
-        <provider
-            android:name="android.support.v4.content.FileProvider"
-            android:authorities="${applicationId}.provider"
-            android:exported="false"
-            android:grantUriPermissions="true">
-            <meta-data
-                android:name="android.support.FILE_PROVIDER_PATHS"
-                android:resource="@xml/file_paths"></meta-data>
-        </provider>
-
-        <activity android:name="com.theartofdev.edmodo.cropper.CropImageActivity"
-            android:theme="@style/Base.Theme.AppCompat"/>
-
+        <activity
+            android:name="com.theartofdev.edmodo.cropper.CropImageActivity"
+            android:theme="@style/Base.Theme.AppCompat" />
         <activity
             android:name=".View.Activity.Common.EditProfileActivity"
             android:theme="@style/MyThemeFullScreen" />
         <activity
+            android:name=".View.Activity.Common.CsoEditProfileActivity"
+            android:theme="@style/MyThemeFullScreen" />
+        <activity
             android:name=".View.Activity.CSO.CsoRegisterStep_3Activity"
+            android:configChanges="keyboardHidden|orientation|screenSize"
             android:exported="true"
             android:theme="@style/MyThemeFullScreen" />
         <activity
             android:name=".View.Activity.CSO.CsoRegisterStep_2Activity"
+            android:configChanges="keyboardHidden|orientation|screenSize"
             android:exported="true"
             android:theme="@style/MyThemeFullScreen" />
         <activity
             android:name=".View.Activity.CSO.CsoRegisterStep_1Activity"
+            android:configChanges="keyboardHidden|orientation|screenSize"
             android:exported="true"
             android:theme="@style/MyThemeFullScreen" />
-
-        <meta-data
-            android:name="com.google.android.geo.API_KEY"
-            android:value="AIzaSyD6Oj7tENqNyFjEE0Zq-XIJepaGIxvFyCM" />
-
         <activity
             android:name=".View.Activity.Common.ValidateOTPActivity"
             android:exported="true"
@@ -87,13 +98,21 @@
             android:exported="true" />
         <activity
             android:name=".View.Activity.CSO.CsoDashboardActivity"
-            android:exported="true"
-            android:theme="@style/MyThemeFullScreen" />
-        <activity
-            android:name=".View.Activity.Student.StudentDashboardActivity"
+            android:configChanges="orientation|keyboardHidden|screenSize"
             android:exported="true" />
         <activity
-            android:name=".View.Activity.Student.StudentRegisterActivity"
+            android:name=".View.Activity.Volunteer.VolunteerDashboardActivity"
+            android:configChanges="orientation|keyboardHidden|screenSize"
+            android:exported="true">
+            <intent-filter>
+                <action android:name="com.ztp.app..View.Activity.Student" />
+
+                <category android:name="android.intent.category.DEFAULT" />
+            </intent-filter>
+        </activity>
+        <activity
+            android:name=".View.Activity.Volunteer.VolunteerRegisterActivity"
+            android:configChanges="keyboardHidden|orientation|screenSize"
             android:exported="true"
             android:theme="@style/MyThemeFullScreen" />
         <activity
@@ -115,6 +134,54 @@
         <activity
             android:name=".View.Activity.Common.SelectionActivity"
             android:theme="@style/MyThemeFullScreen" />
+        <activity
+            android:name="com.yalantis.ucrop.UCropActivity"
+            android:screenOrientation="portrait"
+            android:theme="@style/AppTheme.NoActionBar" />
+        <activity
+            android:name=".View.Fragment.CSO.Event.PickImageActivity"
+            android:theme="@style/AppTheme.Dialog" />
+        <activity
+            android:name=".Helper.ImagePickActivity"
+            android:theme="@style/AppTheme.NoActionBar" />
+        <activity
+            android:name=".View.Activity.CSO.ViewLocationActivity"
+            android:theme="@style/MyThemeFullScreen" />
+        <activity android:name=".View.Activity.Common.ChangePasswordActivity" />
+
+        <meta-data
+            android:name="com.google.android.geo.API_KEY"
+            android:value="AIzaSyD6Oj7tENqNyFjEE0Zq-XIJepaGIxvFyCM" />
+
+        <provider
+            android:name="android.support.v4.content.FileProvider"
+            android:authorities="${applicationId}.provider"
+            android:exported="false"
+            android:grantUriPermissions="true">
+            <meta-data
+                android:name="android.support.FILE_PROVIDER_PATHS"
+                android:resource="@xml/file_paths" />
+        </provider>
+
+        <service
+            android:name=".Attendance.AttendanceService"
+            android:enabled="true" />
+        <service
+            android:name=".Attendance.AttendanceJobService"
+            android:permission="android.permission.BIND_JOB_SERVICE" />
+        <service
+            android:name=".SendBird.fcm.MyFirebaseMessagingService"
+            android:stopWithTask="false">
+            <intent-filter>
+                <action android:name="com.google.firebase.MESSAGING_EVENT" />
+            </intent-filter>
+        </service>
+        <service android:name=".SendBird.fcm.MyFirebaseInstanceIDService">
+            <intent-filter>
+                <action android:name="com.google.firebase.INSTANCE_ID_EVENT" />
+            </intent-filter>
+        </service>
+        <service android:name=".Utils.GPSTracker" />
     </application>
 
 </manifest>

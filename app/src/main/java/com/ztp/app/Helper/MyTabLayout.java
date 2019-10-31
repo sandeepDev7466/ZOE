@@ -35,7 +35,7 @@ public class MyTabLayout extends TabLayout {
 
     private void init() {
 
-        mTypeface = Typeface.createFromAsset(getContext().getAssets(), "fonts/LeagueGothic-Regular.otf");
+        mTypeface = Typeface.createFromAsset(getContext().getAssets(), "fonts/Trade_Gothic_Bold.ttf");
     }
 
     @Override

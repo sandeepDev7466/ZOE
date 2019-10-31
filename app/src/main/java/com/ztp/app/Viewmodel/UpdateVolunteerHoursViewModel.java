@@ -29,9 +29,14 @@ public class UpdateVolunteerHoursViewModel extends ViewModel {
         call.enqueue(new Callback<UpdateVolunteerHoursResponse>() {
             @Override
             public void onResponse(Call<UpdateVolunteerHoursResponse> call, Response<UpdateVolunteerHoursResponse> response) {
-                if (response.body() != null) {
-                    updateVolunteerHoursResponseMutableLiveData.postValue(response.body());
-
+                if(response.isSuccessful()) {
+                    if (response.body() != null) {
+                        updateVolunteerHoursResponseMutableLiveData.postValue(response.body());
+                    }
+                }
+                else
+                {
+                    updateVolunteerHoursResponseMutableLiveData.postValue(null);
                 }
             }
 

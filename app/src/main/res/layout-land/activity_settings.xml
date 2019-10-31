@@ -16,6 +16,7 @@
             android:layout_height="@dimen/_140sdp">
 
             <ImageView
+                android:id="@+id/cover"
                 android:layout_width="match_parent"
                 android:layout_height="match_parent"
                 android:scaleType="fitXY"
@@ -29,7 +30,8 @@
                 android:padding="@dimen/_10sdp"
                 android:text="@string/choose_cover_photo"
                 android:textColor="@color/white"
-                android:textSize="@dimen/_12ssp" />
+                style="@style/RegularTextView"
+                android:id="@+id/choose_cover"/>
 
             <LinearLayout
                 android:layout_width="match_parent"
@@ -41,19 +43,21 @@
                 android:paddingEnd="@dimen/_10sdp">
 
                 <de.hdodenhof.circleimageview.CircleImageView
-                    android:layout_width="@dimen/_45sdp"
-                    android:layout_height="@dimen/_45sdp"
+                    android:id="@+id/user"
+                    android:layout_width="@dimen/_50sdp"
+                    android:layout_height="@dimen/_50sdp"
                     android:src="@drawable/user"
-                    app:civ_border_color="#ffffff"
-                    app:civ_border_width="2dp" />
+                    app:civ_border_color="@color/background_3"
+                    app:civ_border_width="@dimen/_2sdp"  />
 
                 <com.ztp.app.Helper.MyBoldTextView
+                    android:id="@+id/choose_profile"
                     android:layout_width="wrap_content"
                     android:layout_height="wrap_content"
                     android:layout_marginTop="@dimen/_5sdp"
                     android:text="@string/choose_profile_photo"
                     android:textColor="@color/white"
-                    android:textSize="@dimen/_12ssp" />
+                    style="@style/RegularTextView" />
 
 
             </LinearLayout>
@@ -123,7 +127,7 @@
                         android:layout_width="match_parent"
                         android:layout_height="wrap_content"
                         android:text="@string/language"
-                        android:textSize="@dimen/_12ssp" />
+                        style="@style/RegularTextView" />
 
                 </LinearLayout>
 
@@ -187,7 +191,7 @@
                         android:layout_width="match_parent"
                         android:layout_height="wrap_content"
                         android:text="@string/theme"
-                        android:textSize="@dimen/_12ssp" />
+                        style="@style/RegularTextView" />
 
                 </LinearLayout>
 
@@ -251,7 +255,7 @@
                         android:layout_width="match_parent"
                         android:layout_height="wrap_content"
                         android:text="@string/push_notification"
-                        android:textSize="@dimen/_12ssp" />
+                        style="@style/RegularTextView" />
 
                 </LinearLayout>
 
@@ -300,7 +304,7 @@
                     <ImageView
                         android:layout_width="@dimen/_18sdp"
                         android:layout_height="@dimen/_18sdp"
-                        app:srcCompat="@drawable/ic_location_services" />
+                        app:srcCompat="@drawable/ic_mark" />
 
 
                 </LinearLayout>
@@ -315,7 +319,7 @@
                         android:layout_width="match_parent"
                         android:layout_height="wrap_content"
                         android:text="@string/location_services"
-                        android:textSize="@dimen/_12ssp" />
+                        style="@style/RegularTextView"/>
 
                 </LinearLayout>
 

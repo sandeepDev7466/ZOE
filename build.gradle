@@ -21,7 +21,7 @@ allprojects {
         jcenter()
         maven { url 'https://maven.google.com' }
         maven { url "https://www.jitpack.io" }
-        
+//        maven { url "https://raw.githubusercontent.com/smilefam/SendBird-SDK-Android/master/"}
     }
 }
 

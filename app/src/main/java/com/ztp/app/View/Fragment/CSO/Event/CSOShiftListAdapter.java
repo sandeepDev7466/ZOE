@@ -35,26 +35,28 @@ import com.ztp.app.Viewmodel.VolunteerEventRequestViewModel;
 import java.io.Serializable;
 import java.util.Date;
 import java.util.List;
+import java.util.Locale;
 
 public class CSOShiftListAdapter extends BaseAdapter {
 
     private Context context;
-    private List<GetCSOShiftResponse.ResData> shiftDataList;
+    private List<GetCSOShiftResponse.ResDatum> shiftDataList;
     private MyProgressDialog myProgressDialog;
     DeleteShiftViewModel deleteShiftViewModel;
     SharedPref sharedPref;
     String event_id;
     VolunteerEventRequestViewModel volunteerEventRequestViewModel;
     Holder holder;
-    String eventStartDate,eventEndDate;
+    String eventStartDate,eventEndDate,event_status,startTimeAmPm,endTimeAmPm;
 
-    public CSOShiftListAdapter(Context context, List<GetCSOShiftResponse.ResData> shiftDataList, String event_id,String eventStartDate,String eventEndDate) {
+    public CSOShiftListAdapter(Context context, List<GetCSOShiftResponse.ResDatum> shiftDataList, String event_id,String eventStartDate,String eventEndDate, String event_status) {
         this.context = context;
         sharedPref = SharedPref.getInstance(context);
         this.shiftDataList = shiftDataList;
         this.event_id = event_id;
         this.eventStartDate = eventStartDate;
         this.eventEndDate = eventEndDate;
+        this.event_status = event_status;
         myProgressDialog = new MyProgressDialog(context);
         deleteShiftViewModel = ViewModelProviders.of((FragmentActivity) context).get(DeleteShiftViewModel.class);
         volunteerEventRequestViewModel = ViewModelProviders.of((FragmentActivity) context).get(VolunteerEventRequestViewModel.class);
@@ -66,7 +68,7 @@ public class CSOShiftListAdapter extends BaseAdapter {
     }
 
     @Override
-    public GetCSOShiftResponse.ResData getItem(int position) {
+    public GetCSOShiftResponse.ResDatum getItem(int position) {
         return shiftDataList.get(position);
     }
 
@@ -78,7 +80,7 @@ public class CSOShiftListAdapter extends BaseAdapter {
     @Override
     public View getView(int position, View view, ViewGroup parent) {
         holder = new Holder();
-        GetCSOShiftResponse.ResData shiftData = getItem(position);
+        GetCSOShiftResponse.ResDatum shiftData = getItem(position);
         try {
             if (view == null) {
                 view = LayoutInflater.from(context).inflate(R.layout.shift_list_item, null);
@@ -95,7 +97,37 @@ public class CSOShiftListAdapter extends BaseAdapter {
                 holder = (Holder) view.getTag();
             }
 
-            holder.title.setText(shiftData.getShiftTask());
+            holder.title.setText(shiftData.getShiftTaskName());
+
+/*
+            if(Integer.parseInt(shiftData.getShiftStartTime().split(":")[0]) > 12)
+            {
+                int hr = Integer.parseInt(shiftData.getShiftStartTime().split(":")[0]) - 12;
+                int min = Integer.parseInt(shiftData.getShiftStartTime().split(":")[1]);
+                startTimeAmPm = String.format(Locale.ENGLISH, "%02d:%02d", hr, min)+" PM";
+            }
+            else
+            {
+                int hr = Integer.parseInt(shiftData.getShiftStartTime().split(":")[0]);
+                int min = Integer.parseInt(shiftData.getShiftStartTime().split(":")[1]);
+                startTimeAmPm = String.format(Locale.ENGLISH, "%02d:%02d", hr, min)+" AM";
+            }
+            if(Integer.parseInt(shiftData.getShiftEndTime().split(":")[0]) > 12)
+            {
+                int hr = Integer.parseInt(shiftData.getShiftEndTime().split(":")[0]) - 12;
+                int min = Integer.parseInt(shiftData.getShiftEndTime().split(":")[1]);
+                endTimeAmPm = String.format(Locale.ENGLISH, "%02d:%02d", hr, min)+" PM";
+            }
+            else
+            {
+                int hr = Integer.parseInt(shiftData.getShiftEndTime().split(":")[0]);
+                int min = Integer.parseInt(shiftData.getShiftEndTime().split(":")[1]);
+                endTimeAmPm = String.format(Locale.ENGLISH, "%02d:%02d", hr, min)+" AM";
+            }
+
+            holder.description.setText(startTimeAmPm + " - "+ endTimeAmPm);
+*/
+
             holder.description.setText(shiftData.getShiftStartTime() + " - "+shiftData.getShiftEndTime());
 
             Date date = Utility.convertStringToDateWithoutTime(shiftData.getShiftDate());
@@ -123,70 +155,77 @@ public class CSOShiftListAdapter extends BaseAdapter {
                     LinearLayout view = view1.findViewById(R.id.view_event);
 
                     edit.setOnClickListener(vs -> {
-                        dialog.dismiss();
-                        AddNewShiftFragment updateShiftFragment = new AddNewShiftFragment();
-                        Bundle bundle = new Bundle();
-                        bundle.putSerializable("shiftData", shiftData);
-                        bundle.putString("status", "update");
-                        bundle.putString("event_start_date",eventStartDate);
-                        bundle.putString("event_end_date",eventEndDate);
-                        updateShiftFragment.setArguments(bundle);
-                        Utility.replaceFragment(context, updateShiftFragment, "AddNewShiftFragment");
+                        if (event_status.equalsIgnoreCase("10")) {
+                            new MyToast(context).show(context.getString(R.string.toast_unpublish_first), Toast.LENGTH_SHORT, false);
+                        } else {
+                            dialog.dismiss();
+                            AddNewShiftFragment updateShiftFragment = new AddNewShiftFragment();
+                            Bundle bundle = new Bundle();
+                            bundle.putSerializable("shiftData", shiftData);
+                            bundle.putString("status", "update");
+                            bundle.putString("event_start_date", eventStartDate);
+                            bundle.putString("event_end_date", eventEndDate);
+                            updateShiftFragment.setArguments(bundle);
+                            Utility.replaceFragment(context, updateShiftFragment, "AddNewShiftFragment");
+                        }
                     });
 
                     delete.setOnClickListener(vs -> {
-                        dialog.dismiss();
+                        if (event_status.equalsIgnoreCase("10")) {
+                            new MyToast(context).show(context.getString(R.string.toast_unpublish_first), Toast.LENGTH_SHORT, false);
+                        } else {
+                            dialog.dismiss();
 
 
-                        Dialog dialog1 = new Dialog(context);
-                        View vw = LayoutInflater.from(context).inflate(R.layout.delete_dialog, null);
-                        dialog1.setContentView(vw);
-                        dialog1.setCancelable(false);
+                            Dialog dialog1 = new Dialog(context);
+                            View vw = LayoutInflater.from(context).inflate(R.layout.delete_dialog, null);
+                            dialog1.setContentView(vw);
+                            dialog1.setCancelable(false);
 
-                        LinearLayout yes = vw.findViewById(R.id.yes);
-                        LinearLayout no = vw.findViewById(R.id.no);
+                            LinearLayout yes = vw.findViewById(R.id.yes);
+                            LinearLayout no = vw.findViewById(R.id.no);
 
-                        yes.setOnClickListener(v12 -> {
-                            dialog1.dismiss();
+                            yes.setOnClickListener(v12 -> {
+                                dialog1.dismiss();
 
-                            DeleteShiftRequest deleteShiftRequest = new DeleteShiftRequest();
-                            deleteShiftRequest.setShiftId(shiftData.getShiftId());
+                                DeleteShiftRequest deleteShiftRequest = new DeleteShiftRequest();
+                                deleteShiftRequest.setShiftId(shiftData.getShiftId());
 
-                            if (Utility.isNetworkAvailable(context)) {
-                                myProgressDialog.show(context.getString(R.string.deleting_shift));
-                                deleteShiftViewModel.getDeleteShiftResponse(deleteShiftRequest).observe((LifecycleOwner) context, deleteShiftResponse -> {
+                                if (Utility.isNetworkAvailable(context)) {
+                                    myProgressDialog.show(context.getString(R.string.deleting_shift));
+                                    deleteShiftViewModel.getDeleteShiftResponse(deleteShiftRequest).observe((LifecycleOwner) context, deleteShiftResponse -> {
 
-                                    if (deleteShiftResponse != null) {
-                                        if (deleteShiftResponse.getResStatus().equalsIgnoreCase("200")) {
+                                        if (deleteShiftResponse != null) {
+                                            if (deleteShiftResponse.getResStatus().equalsIgnoreCase("200")) {
 
-                                            new MyToast(context).show(context.getString(R.string.shift_deleted_successfully), Toast.LENGTH_SHORT, true);
+                                                new MyToast(context).show(context.getString(R.string.shift_deleted_successfully), Toast.LENGTH_SHORT, true);
 
-                                            shiftDataList.remove(shiftData);
+                                                shiftDataList.remove(shiftData);
 
-                                            notifyDataSetChanged();
+                                                notifyDataSetChanged();
 
-                                        } else if(deleteShiftResponse.getResStatus().equalsIgnoreCase("401")){
+                                            } else if (deleteShiftResponse.getResStatus().equalsIgnoreCase("401")) {
 
-                                            new MyToast(context).show(context.getString(R.string.failed), Toast.LENGTH_SHORT, false);
+                                                new MyToast(context).show(context.getString(R.string.failed), Toast.LENGTH_SHORT, false);
+                                            }
+                                        } else {
+                                            new MyToast(context).show(context.getString(R.string.err_server), Toast.LENGTH_SHORT, false);
                                         }
-                                    } else {
-                                        new MyToast(context).show(context.getString(R.string.err_server), Toast.LENGTH_SHORT, false);
-                                    }
 
-                                    myProgressDialog.dismiss();
-                                });
-                            } else {
-                                new MyToast(context).show(context.getString(R.string.no_internet_connection), Toast.LENGTH_SHORT, false);
-                            }
+                                        myProgressDialog.dismiss();
+                                    });
+                                } else {
+                                    new MyToast(context).show(context.getString(R.string.no_internet_connection), Toast.LENGTH_SHORT, false);
+                                }
 
-                        });
+                            });
 
-                        no.setOnClickListener(v12 -> {
-                            dialog1.dismiss();
-                        });
+                            no.setOnClickListener(v12 -> {
+                                dialog1.dismiss();
+                            });
 
-                        dialog1.show();
-
+                            dialog1.show();
+                        }
                     });
                     view.setOnClickListener(v1 -> {
                         dialog.dismiss();

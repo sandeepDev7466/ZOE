@@ -16,13 +16,12 @@
         <com.ztp.app.Helper.MyBoldTextView
             android:layout_width="match_parent"
             android:layout_height="wrap_content"
-            android:text="@string/manage_schedule"
+            android:text="@string/add_shift_full"
             android:textColor="@color/black"
-            android:textSize="@dimen/_20ssp"
+            style="@style/MediumTextView"
             android:gravity="center"/>
 
         <com.ztp.app.Helper.MyTextInputLayout
-            android:id="@+id/et_date_layout"
             android:layout_width="match_parent"
             android:layout_height="wrap_content"
             android:layout_marginTop="@dimen/_10sdp">
@@ -33,13 +32,12 @@
                 android:layout_height="wrap_content"
                 android:drawableRight="@drawable/ic_calendar"
                 android:hint="@string/date"
-                android:textSize="@dimen/_12ssp"
+                style="@style/RegularTextView"
                 android:editable="false"
                 />
         </com.ztp.app.Helper.MyTextInputLayout>
 
         <com.ztp.app.Helper.MyTextInputLayout
-            android:id="@+id/et_volunteers_layout"
             android:layout_width="match_parent"
             android:layout_height="wrap_content"
             android:layout_marginTop="@dimen/_5sdp">
@@ -49,9 +47,11 @@
                 android:layout_width="match_parent"
                 android:layout_height="wrap_content"
                 android:hint="@string/volunteer_required"
-                android:textSize="@dimen/_12ssp"
-
-                />
+                style="@style/RegularTextView"
+                android:inputType="number"
+                android:digits="0123456789"
+                android:maxLength="5"
+                android:nextFocusDown="@+id/et_task"/>
         </com.ztp.app.Helper.MyTextInputLayout>
 
         <LinearLayout
@@ -61,7 +61,6 @@
             android:weightSum="100">
 
             <com.ztp.app.Helper.MyTextInputLayout
-                android:id="@+id/et_start_time_layout"
                 android:layout_width="0dp"
                 android:layout_height="wrap_content"
                 android:layout_marginTop="@dimen/_5sdp"
@@ -73,11 +72,10 @@
                     android:layout_height="wrap_content"
                     android:drawableRight="@drawable/ic_countdown"
                     android:hint="@string/start_time"
-                    android:textSize="@dimen/_12ssp" />
+                    style="@style/RegularTextView" />
             </com.ztp.app.Helper.MyTextInputLayout>
 
             <com.ztp.app.Helper.MyTextInputLayout
-                android:id="@+id/et_end_time_layout"
                 android:layout_width="0dp"
                 android:layout_height="wrap_content"
                 android:layout_marginTop="@dimen/_5sdp"
@@ -89,7 +87,7 @@
                     android:layout_height="wrap_content"
                     android:drawableRight="@drawable/ic_countdown"
                     android:hint="@string/end_time"
-                    android:textSize="@dimen/_12ssp"
+                    style="@style/RegularTextView"
 
                     />
             </com.ztp.app.Helper.MyTextInputLayout>
@@ -97,8 +95,7 @@
 
         </LinearLayout>
 
-        <com.ztp.app.Helper.MyTextInputLayout
-            android:id="@+id/et_task_layout"
+       <!-- <com.ztp.app.Helper.MyTextInputLayout
             android:layout_width="match_parent"
             android:layout_height="wrap_content"
             android:layout_marginTop="@dimen/_5sdp">
@@ -109,7 +106,30 @@
                 android:layout_height="wrap_content"
                 android:hint="@string/task"
                 android:textSize="@dimen/_12ssp" />
-        </com.ztp.app.Helper.MyTextInputLayout>
+        </com.ztp.app.Helper.MyTextInputLayout>-->
+
+        <com.ztp.app.Helper.MyTextView
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:text="@string/shift_task"
+            style="@style/SmallTextView"
+            android:layout_marginStart="@dimen/_3sdp"
+            android:layout_marginTop="@dimen/_15sdp"/>
+        <LinearLayout
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:layout_marginTop="@dimen/_5sdp"
+            android:background="@drawable/border"
+            android:orientation="horizontal"
+            android:padding="@dimen/_5sdp">
+
+            <Spinner
+                android:id="@+id/sp_task"
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content" />
+
+        </LinearLayout>
+
 
         <LinearLayout
             android:layout_width="match_parent"
@@ -121,7 +141,7 @@
                 android:layout_width="wrap_content"
                 android:layout_height="wrap_content"
                 android:text="@string/rank"
-                android:textSize="@dimen/_12ssp"
+                style="@style/SmallTextView"
                 android:layout_marginStart="@dimen/_5sdp"/>
 
             <com.willy.ratingbar.ScaleRatingBar
@@ -184,7 +204,6 @@
                     android:gravity="center"
                     android:text="@string/clear"
                     android:textAllCaps="false"
-                    android:textSize="@dimen/_10ssp"
                     android:layout_weight=".5"
                     android:layout_margin="@dimen/_5sdp"/>
 
@@ -195,7 +214,6 @@
                     android:layout_height="@dimen/_40sdp"
                     android:textAllCaps="false"
                     android:gravity="center"
-                    android:textSize="@dimen/_10ssp"
                     android:layout_weight=".5"
                     android:layout_margin="@dimen/_5sdp"/>
 

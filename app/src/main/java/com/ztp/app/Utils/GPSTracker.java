@@ -2,6 +2,7 @@ package com.ztp.app.Utils;
 
 import android.annotation.SuppressLint;
 import android.app.AlertDialog;
+import android.app.Dialog;
 import android.app.Service;
 import android.content.Context;
 import android.content.DialogInterface;
@@ -14,27 +15,26 @@ import android.location.LocationManager;
 import android.os.Bundle;
 import android.os.IBinder;
 import android.provider.Settings;
+import android.support.v4.content.LocalBroadcastManager;
 import android.util.Log;
+import android.view.LayoutInflater;
+import android.view.View;
+import android.widget.LinearLayout;
 
+import com.ztp.app.Helper.MyHeadingTextView;
+import com.ztp.app.Helper.MyTextView;
 import com.ztp.app.R;
 
 import java.io.IOException;
 import java.util.List;
 import java.util.Locale;
 
-/**
- * Create this Class from tutorial :
- * http://www.androidhive.info/2012/07/android-gps-location-manager-tutorial
- * <p>
- * For Geocoder read this : http://stackoverflow.com/questions/472313/android-reverse-geocoding-getfromlocation
- */
-
 public class GPSTracker extends Service implements LocationListener {
 
     // Get Class Name
     private static String TAG = GPSTracker.class.getName();
 
-    private final Context mContext;
+    private Context mContext;
 
     // flag for GPS Status
     boolean isGPSEnabled = false;
@@ -53,10 +53,10 @@ public class GPSTracker extends Service implements LocationListener {
     int geocoderMaxResults = 1;
 
     // The minimum distance to change updates in meters
-    private static final long MIN_DISTANCE_CHANGE_FOR_UPDATES = 10; // 10 meters
+    private static final long MIN_DISTANCE_CHANGE_FOR_UPDATES = 1; // 10 meters
 
     // The minimum time between updates in milliseconds
-    private static final long MIN_TIME_BW_UPDATES = 1000 * 60 * 1; // 1 minute
+    private static final long MIN_TIME_BW_UPDATES = 1000 * 60; // 1 minute
 
     // Declaring a Location Manager
     protected LocationManager locationManager;
@@ -67,6 +67,11 @@ public class GPSTracker extends Service implements LocationListener {
     public GPSTracker(Context context) {
         this.mContext = context;
         getLocation();
+    }
+
+    public GPSTracker()
+    {
+
     }
 
     /**
@@ -190,17 +195,42 @@ public class GPSTracker extends Service implements LocationListener {
     /**
      * Function to show settings alert dialog
      */
-    public void showSettingsAlert() {
-        AlertDialog.Builder alertDialog = new AlertDialog.Builder(mContext);
+    public void showSettingsAlert(Context context) {
+
+        Dialog dialog1 = new Dialog(context);
+        View vw = LayoutInflater.from(context).inflate(R.layout.common_dialog, null);
+        dialog1.setContentView(vw);
+        dialog1.setCancelable(false);
+
+        LinearLayout yes = vw.findViewById(R.id.yes);
+        LinearLayout no = vw.findViewById(R.id.no);
+        MyHeadingTextView title = vw.findViewById(R.id.title);
+        MyTextView message = vw.findViewById(R.id.message);
+
+        title.setText(R.string.location);
+        message.setText(R.string.go_to_settings);
+
+        yes.setOnClickListener(v1 -> {
+            dialog1.dismiss();
+            Intent intent = new Intent(Settings.ACTION_LOCATION_SOURCE_SETTINGS);
+            context.startActivity(intent);
+        });
+
+        no.setOnClickListener(v12 -> dialog1.dismiss());
+
+        dialog1.show();
+
+
+       /* AlertDialog.Builder alertDialog = new AlertDialog.Builder(mContext);
 
         //Setting Dialog Title
-        alertDialog.setTitle("Settings");
+        alertDialog.setTitle(R.string.settings);
 
         //Setting Dialog Message
-        alertDialog.setMessage("Go to settings");
+        alertDialog.setMessage(R.string.go_to_settings);
 
         //On Pressing Setting button
-        alertDialog.setPositiveButton("OK", new DialogInterface.OnClickListener() {
+        alertDialog.setPositiveButton(R.string.ok, new DialogInterface.OnClickListener() {
 
             @Override
             public void onClick(DialogInterface dialog, int which) {
@@ -218,7 +248,7 @@ public class GPSTracker extends Service implements LocationListener {
             }
         });
 
-        alertDialog.show();
+        alertDialog.show();*/
     }
 
     /**
@@ -321,6 +351,12 @@ public class GPSTracker extends Service implements LocationListener {
 
     @Override
     public void onLocationChanged(Location location) {
+
+       /* Intent intent = new Intent("location_broadcast");
+        intent.putExtra("latitude", location.getLatitude());
+        intent.putExtra("longitude", location.getLongitude());
+        LocalBroadcastManager.getInstance(this).sendBroadcast(intent);
+*/
     }
 
     @Override

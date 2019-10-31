@@ -33,7 +33,13 @@ public class ValidateOtpViewModel extends ViewModel {
         call.enqueue(new Callback<ValidateOtpResponse>() {
             @Override
             public void onResponse(Call<ValidateOtpResponse> call, Response<ValidateOtpResponse> response) {
-                validateOtpResponseMutableLiveData.postValue(response.body());
+                if(response.isSuccessful()) {
+                    if (response.body() != null)
+                        validateOtpResponseMutableLiveData.postValue(response.body());
+                }
+                else {
+                    validateOtpResponseMutableLiveData.postValue(null);
+                }
             }
 
             @Override

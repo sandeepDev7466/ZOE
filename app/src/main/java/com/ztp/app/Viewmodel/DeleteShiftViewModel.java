@@ -39,8 +39,14 @@ public class DeleteShiftViewModel extends ViewModel {
         call.enqueue(new Callback<DeleteShiftResponse>() {
             @Override
             public void onResponse(Call<DeleteShiftResponse> call, Response<DeleteShiftResponse> response) {
-                if (response.body() != null) {
-                    deleteShiftResponseMutableLiveData.postValue(response.body());
+                if(response.isSuccessful()) {
+                    if (response.body() != null) {
+                        deleteShiftResponseMutableLiveData.postValue(response.body());
+                    }
+                }
+                else
+                {
+                    deleteShiftResponseMutableLiveData.postValue(null);
                 }
             }
 

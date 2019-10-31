@@ -1,0 +1,99 @@
+<?xml version="1.0" encoding="utf-8"?>
+
+<RelativeLayout xmlns:android="http://schemas.android.com/apk/res/android"
+    android:layout_height="wrap_content"
+    android:layout_width="match_parent"
+    xmlns:app="http://schemas.android.com/apk/res-auto"
+    android:paddingLeft="8dp"
+    android:paddingRight="8dp"
+    android:layout_marginBottom="8dp">
+
+    <com.ztp.app.Helper.MyTextView
+        android:id="@+id/text_group_chat_date"
+        android:text="February 22"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:layout_alignParentTop="true"
+        android:layout_centerHorizontal="true"
+        android:textColor="@color/groupChatDateText"
+        android:background="@drawable/group_chat_date_background"
+        android:paddingLeft="8dp"
+        android:paddingRight="8dp"
+        android:paddingTop="4dp"
+        android:paddingBottom="4dp"
+        android:layout_marginTop="24dp"
+        android:layout_marginBottom="12dp"
+        android:gravity="center"
+        style="@style/SmallTextView" />
+
+    <LinearLayout
+        android:id="@+id/layout_group_chat_file_message"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:background="@drawable/group_chat_file_background"
+        android:layout_below="@id/text_group_chat_date"
+        android:gravity="center_vertical"
+        android:orientation="horizontal"
+        android:padding="@dimen/_8sdp"
+        android:layout_alignParentRight="true"
+        android:layout_marginLeft="8dp">
+
+        <ImageView
+            android:layout_width="25dp"
+            android:layout_height="25dp"
+            android:scaleType="fitXY"
+            android:src="@drawable/ic_file_message" />
+
+        <com.ztp.app.Helper.MyTextView
+            android:id="@+id/text_group_chat_file_name"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:layout_marginLeft="@dimen/_10sdp"
+            android:layout_marginStart="@dimen/_10sdp"
+            android:ellipsize="middle"
+            android:singleLine="true"
+            android:text="File Name.xls"
+            style="@style/RegularTextView"/>
+
+        <View
+            android:layout_width="2dp"
+            android:layout_height="match_parent"
+            android:layout_marginLeft="12dp"
+            android:layout_marginStart="12dp"
+            android:background="#d8d8d8" />
+
+        <Button
+            android:layout_width="@dimen/_15sdp"
+            android:layout_height="@dimen/_15sdp"
+            android:layout_marginLeft="7dp"
+            android:layout_marginStart="7dp"
+            android:background="@drawable/ic_file_message_download" />
+
+    </LinearLayout>
+
+    <com.ztp.app.Helper.MyTextView
+        android:id="@+id/text_group_chat_time"
+        style="@style/SmallTextView"
+        android:text="21:27"
+        android:textColor="#8e8e8e"
+        android:layout_toLeftOf="@id/layout_group_chat_file_message"
+        android:layout_alignBottom="@id/layout_group_chat_file_message"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:textStyle="bold"/>
+
+    <com.dinuscxj.progressbar.CircleProgressBar
+        android:id="@+id/circle_progress"
+        android:layout_width="@dimen/_20sdp"
+        android:layout_height="@dimen/_20sdp"
+        android:layout_above="@id/text_group_chat_time"
+        android:layout_alignRight="@id/text_group_chat_time"
+        android:visibility="gone"
+        app:draw_progress_text="false"
+        app:progress_stroke_width="1.5dp"
+        app:progress_start_color="#875eff"
+        app:progress_end_color="#875eff"
+        app:progress_background_color="#c1c1c1"
+        app:progress_stroke_cap="butt"/>
+
+</RelativeLayout>

@@ -1,7 +1,7 @@
 package com.ztp.app.Data.Remote.Service;
 
-import com.google.gson.Gson;
 import com.google.gson.GsonBuilder;
+import com.ztp.app.BuildConfig;
 
 import retrofit2.Retrofit;
 import retrofit2.converter.gson.GsonConverterFactory;
@@ -9,15 +9,14 @@ import retrofit2.converter.gson.GsonConverterFactory;
 public class Api {
 
     public static ApiInterface getClient() {
-        final String BASE_URL = "https://ztp.hashtaglabs.in/api/";//http://hashtaglabs.in/staging/ZTPAPI/
 
-        Gson gson = new GsonBuilder()
-                .setLenient()
-                .create();
+       /* final String BASE_URL = "https://www.zoeblueprint.com/api/";  // production
+        //final String BASE_URL = "https://blueprint.hashtaglabs.in/api/";  // blueprint
+        //final String BASE_URL = "https://ztp.hashtaglabs.in/api/";   // thumbprint*/
 
         Retrofit retrofit = new Retrofit.Builder()
-                .baseUrl(BASE_URL)
-                .addConverterFactory(GsonConverterFactory.create(gson))
+                .baseUrl(BuildConfig.SERVER_URL)
+                .addConverterFactory(GsonConverterFactory.create(new GsonBuilder().setLenient().create()))
                 .build();
 
         return retrofit.create(ApiInterface.class);

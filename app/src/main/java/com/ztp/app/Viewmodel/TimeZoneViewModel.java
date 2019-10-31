@@ -1,19 +1,16 @@
 package com.ztp.app.Viewmodel;
 
+import android.annotation.SuppressLint;
 import android.arch.lifecycle.LiveData;
 import android.arch.lifecycle.MutableLiveData;
 import android.arch.lifecycle.ViewModel;
 import android.content.Context;
-import android.os.AsyncTask;
 
+import com.ztp.app.Data.Local.Room.Async.Save.DBSaveTimeZone;
 import com.ztp.app.Data.Local.Room.Database.RoomDB;
-import com.ztp.app.Data.Remote.Model.Response.CountryResponse;
 import com.ztp.app.Data.Remote.Model.Response.TimeZoneResponse;
 import com.ztp.app.Data.Remote.Service.Api;
 import com.ztp.app.Data.Remote.Service.ApiInterface;
-
-import java.util.List;
-import java.util.TimeZone;
 
 import retrofit2.Call;
 import retrofit2.Callback;
@@ -27,11 +24,13 @@ public class TimeZoneViewModel extends ViewModel {
     private MutableLiveData<TimeZoneResponse> timezoneResponseMutableLiveData;
     private ApiInterface apiInterface = Api.getClient();
     private RoomDB roomDB;
-
+    @SuppressLint("StaticFieldLeak")
+    Context context;
 
     public LiveData<TimeZoneResponse> getTimezoneResponse(Context context) {
 
         timezoneResponseMutableLiveData = new MutableLiveData<>();
+        this.context = context;
         roomDB = RoomDB.getInstance(context);
         timezoneResponse();
         return timezoneResponseMutableLiveData;
@@ -43,9 +42,16 @@ public class TimeZoneViewModel extends ViewModel {
         call.enqueue(new Callback<TimeZoneResponse>() {
             @Override
             public void onResponse(Call<TimeZoneResponse> call, Response<TimeZoneResponse> response) {
-                if (response.body() != null) {
-                    timezoneResponseMutableLiveData.postValue(response.body());
-                 //  new AsyncTimezone(response.body().getResData()).execute();
+                if(response.isSuccessful()) {
+                    if (response.body() != null) {
+                        timezoneResponseMutableLiveData.postValue(response.body());
+                        if (response.body().getResData() != null && response.body().getResData().size() > 0)
+                            new DBSaveTimeZone(context, response.body().getResData()).execute();
+                    }
+                }
+                else
+                {
+                    timezoneResponseMutableLiveData.postValue(null);
                 }
             }
 
@@ -56,32 +62,4 @@ public class TimeZoneViewModel extends ViewModel {
             }
         });
     }
-
-    private class AsyncTimezone extends AsyncTask<Void, Void, Void> {
-        List<TimeZoneResponse.Timezone> timeZoneList;
-
-        public AsyncTimezone(List<TimeZoneResponse.Timezone> timeZoneList) {
-            this.timeZoneList = timeZoneList;
-        }
-
-        @Override
-        protected void onPostExecute(Void aVoid) {
-            super.onPostExecute(aVoid);
-        }
-
-        @Override
-        protected Void doInBackground(Void... voids) {
-            if (roomDB.getTimeZoneDao().getAllTimeZone().size() == 0) {
-                roomDB.getTimeZoneDao().insertAll(timeZoneList);
-            }
-            else
-            {
-                roomDB.getTimeZoneDao().deleteAll();
-                roomDB.getTimeZoneDao().insertAll(timeZoneList);
-            }
-
-            return null;
-        }
-    }
-
 }

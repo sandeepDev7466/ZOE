@@ -1,18 +1,16 @@
 package com.ztp.app.Viewmodel;
 
+import android.annotation.SuppressLint;
 import android.arch.lifecycle.LiveData;
 import android.arch.lifecycle.MutableLiveData;
 import android.arch.lifecycle.ViewModel;
 import android.content.Context;
-import android.os.AsyncTask;
 
-import com.ztp.app.Data.Local.Room.Database.RoomDB;
+import com.ztp.app.Data.Local.Room.Async.Save.DBSaveState;
 import com.ztp.app.Data.Remote.Model.Request.StateRequest;
 import com.ztp.app.Data.Remote.Model.Response.StateResponse;
 import com.ztp.app.Data.Remote.Service.Api;
 import com.ztp.app.Data.Remote.Service.ApiInterface;
-
-import java.util.List;
 
 import retrofit2.Call;
 import retrofit2.Callback;
@@ -22,12 +20,13 @@ public class StateViewModel extends ViewModel {
     private MutableLiveData<StateResponse> stateResponseMutableLiveData;
     private ApiInterface apiInterface = Api.getClient();
     private StateRequest stateRequest;
-    private RoomDB roomDB;
+    @SuppressLint("StaticFieldLeak")
+    private Context context;
 
     public LiveData<StateResponse> getStateResponse(Context context, StateRequest stateRequest) {
 
         stateResponseMutableLiveData = new MutableLiveData<>();
-        roomDB = RoomDB.getInstance(context);
+        this.context = context;
         this.stateRequest = stateRequest;
         stateResponse();
         return stateResponseMutableLiveData;
@@ -39,10 +38,17 @@ public class StateViewModel extends ViewModel {
         call.enqueue(new Callback<StateResponse>() {
             @Override
             public void onResponse(Call<StateResponse> call, Response<StateResponse> response) {
-                if (response.body() != null) {
-                    stateResponseMutableLiveData.postValue(response.body());
-                    new AsyncState(response.body().getStateList()).execute();
+                if(response.isSuccessful()) {
+                    if (response.body() != null) {
+                        stateResponseMutableLiveData.postValue(response.body());
+                        if (response.body().getStateList() != null && response.body().getStateList().size() > 0)
+                            new DBSaveState(context, response.body().getStateList()).execute();
 
+                    }
+                }
+                else
+                {
+                    stateResponseMutableLiveData.postValue(null);
                 }
             }
 
@@ -52,32 +58,5 @@ public class StateViewModel extends ViewModel {
                 stateResponseMutableLiveData.postValue(null);
             }
         });
-    }
-
-    private class AsyncState extends AsyncTask<Void, Void, Void> {
-        List<StateResponse.State> stateList;
-
-        public AsyncState(List<StateResponse.State> stateList) {
-            this.stateList = stateList;
-        }
-
-        @Override
-        protected void onPostExecute(Void aVoid) {
-            super.onPostExecute(aVoid);
-        }
-
-        @Override
-        protected Void doInBackground(Void... voids) {
-
-            if (roomDB.getStateDao().getAllStates().size() == 0) {
-                roomDB.getStateDao().insertAll(stateList);
-            }
-            else
-            {
-                roomDB.getStateDao().deleteAll();
-                roomDB.getStateDao().insertAll(stateList);
-            }
-            return null;
-        }
     }
 }

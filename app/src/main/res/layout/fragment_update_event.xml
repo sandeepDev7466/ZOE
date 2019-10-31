@@ -14,8 +14,7 @@
             android:layout_width="match_parent"
             android:layout_height="wrap_content"
             android:layout_margin="@dimen/_20sdp"
-            android:orientation="vertical"
-            >
+            android:orientation="vertical">
 
             <ImageView
                 android:layout_width="match_parent"
@@ -29,7 +28,7 @@
                 android:layout_marginTop="@dimen/_5sdp"
                 android:text="@string/update_event_detail"
                 android:textColor="@color/black"
-                android:textSize="@dimen/_15ssp" />
+                style="@style/MediumTextView" />
 
 
             <LinearLayout
@@ -60,7 +59,6 @@
 
 
             <com.ztp.app.Helper.MyTextInputLayout
-                android:id="@+id/et_eventname_layout"
                 android:layout_width="match_parent"
                 android:layout_height="wrap_content"
                 android:layout_marginTop="@dimen/_5sdp">
@@ -70,7 +68,7 @@
                     android:layout_width="match_parent"
                     android:layout_height="wrap_content"
                     android:hint="@string/event_name"
-                    android:textSize="@dimen/_12ssp"
+                    style="@style/RegularTextView"
                     android:imeOptions="actionNext"
                     android:inputType="text"
                     />
@@ -87,7 +85,7 @@
                     android:layout_width="match_parent"
                     android:layout_height="wrap_content"
                     android:hint="@string/event_descrip"
-                    android:textSize="@dimen/_12ssp"
+                    style="@style/RegularTextView"
                     android:imeOptions="actionNext"
                     android:inputType="text"
                     />
@@ -195,7 +193,6 @@
             </LinearLayout>
 
             <com.ztp.app.Helper.MyTextInputLayout
-                android:id="@+id/et_city_layout"
                 android:layout_width="match_parent"
                 android:layout_height="wrap_content"
                 android:layout_marginTop="@dimen/_5sdp">
@@ -205,7 +202,7 @@
                     android:layout_width="match_parent"
                     android:layout_height="wrap_content"
                     android:hint="@string/city"
-                    android:textSize="@dimen/_12ssp"
+                    style="@style/RegularTextView"
                     android:imeOptions="actionNext"
                     android:inputType="text"
                     />
@@ -222,7 +219,7 @@
                     android:layout_width="match_parent"
                     android:layout_height="wrap_content"
                     android:hint="@string/zip"
-                    android:textSize="@dimen/_12ssp"
+                    style="@style/RegularTextView"
                     android:inputType="number"
                     android:imeOptions="actionNext"
                     android:maxLength="6"
@@ -270,7 +267,6 @@
             <!--android:background="@color/background_3" />-->
 
             <com.ztp.app.Helper.MyTextInputLayout
-                android:id="@+id/et_address_layout"
                 android:layout_width="match_parent"
                 android:layout_height="wrap_content"
                 android:layout_marginTop="@dimen/_5sdp"
@@ -282,7 +278,7 @@
                     android:layout_width="match_parent"
                     android:layout_height="wrap_content"
                     android:hint="@string/address"
-                    android:textSize="@dimen/_12ssp"
+                    style="@style/RegularTextView"
                     android:imeOptions="actionNext"
                     android:inputType="text"
 
@@ -290,7 +286,6 @@
             </com.ztp.app.Helper.MyTextInputLayout>
 
             <com.ztp.app.Helper.MyTextInputLayout
-                android:id="@+id/et_contact_name_layout"
                 android:layout_width="match_parent"
                 android:layout_height="wrap_content"
                 android:layout_marginTop="@dimen/_5sdp"
@@ -302,7 +297,7 @@
                     android:layout_width="match_parent"
                     android:layout_height="wrap_content"
                     android:hint="@string/contact_name"
-                    android:textSize="@dimen/_12ssp"
+                    style="@style/RegularTextView"
                     android:imeOptions="actionNext"
                     android:inputType="text"
                     />
@@ -319,7 +314,7 @@
                     android:layout_width="match_parent"
                     android:layout_height="wrap_content"
                     android:hint="@string/phone_no"
-                    android:textSize="@dimen/_12ssp"
+                    style="@style/RegularTextView"
                     android:inputType="phone"
                     android:maxLength="13"
                     android:imeOptions="actionNext"
@@ -339,7 +334,7 @@
                     android:layout_width="match_parent"
                     android:layout_height="wrap_content"
                     android:hint="@string/email"
-                    android:textSize="@dimen/_12ssp"
+                    style="@style/RegularTextView"
                     android:imeOptions="actionNext"
                     android:inputType="textEmailAddress"
                     />
@@ -355,7 +350,6 @@
                 >
 
                 <com.ztp.app.Helper.MyTextInputLayout
-                    android:id="@+id/et_start_date_layout"
                     android:layout_width="0dp"
                     android:layout_height="wrap_content"
                     android:layout_marginTop="@dimen/_5sdp"
@@ -368,7 +362,7 @@
                         android:layout_height="wrap_content"
                         android:drawableRight="@drawable/ic_calendar"
                         android:hint="@string/start_date"
-                        android:textSize="@dimen/_12ssp"
+                        style="@style/RegularTextView"
                         android:editable="false"
                         android:imeOptions="actionNext"
                         android:inputType="text"
@@ -376,7 +370,6 @@
                 </com.ztp.app.Helper.MyTextInputLayout>
 
                 <com.ztp.app.Helper.MyTextInputLayout
-                    android:id="@+id/et_end_date_layout"
                     android:layout_width="0dp"
                     android:layout_height="wrap_content"
                     android:layout_marginTop="@dimen/_5sdp"
@@ -388,7 +381,7 @@
                         android:layout_height="wrap_content"
                         android:drawableRight="@drawable/ic_calendar"
                         android:hint="@string/end_date"
-                        android:textSize="@dimen/_12ssp"
+                        style="@style/RegularTextView"
                         android:editable="false"
                         android:imeOptions="actionDone"
                         android:inputType="text"
@@ -405,7 +398,7 @@
                 android:layout_height="wrap_content"
                 android:text="@string/location"
                 android:textColor="@color/black"
-                android:textSize="@dimen/_10ssp" />
+                style="@style/MediumTextView"/>
 
 
             <!--<fragment-->
@@ -418,7 +411,6 @@
 
 
             <RelativeLayout
-                android:id="@+id/relativeLayout1"
                 android:layout_width="match_parent"
                 android:layout_height="300dp"
                 android:background="@color/white"
@@ -472,7 +464,6 @@
                     android:gravity="center"
                     android:text="@string/clear"
                     android:textAllCaps="false"
-                    android:textSize="@dimen/_10ssp"
                     android:layout_weight=".5"
                     android:layout_margin="@dimen/_5sdp"/>
 
@@ -484,7 +475,6 @@
                     android:textAllCaps="false"
                     android:gravity="center"
                     android:text="@string/update"
-                    android:textSize="@dimen/_10ssp"
                     android:layout_weight=".5"
                     android:layout_margin="@dimen/_5sdp"/>
 

@@ -8,26 +8,18 @@ public class EventDayModel {
     private String eventHeading;
     private String shiftDate;
     private String shiftTask;
+    private String shiftTaskName;
     private String shiftStartTime;
     private String shiftEndTime;
     private String shiftId;
     private String mapId;
     private String mapStatus;
+    private String userName;
+    private String userEmail;
+    private String comment;
+    private String rankComment;
 
     public EventDayModel() {
-    }
-
-    public EventDayModel(CalendarDay calendarDay, String eventId, String eventHeading, String shiftDate, String shiftTask, String shiftStartTime, String shiftEndTime, String shiftId, String mapId, String mapStatus) {
-        this.calendarDay = calendarDay;
-        this.eventId = eventId;
-        this.eventHeading = eventHeading;
-        this.shiftDate = shiftDate;
-        this.shiftTask = shiftTask;
-        this.shiftStartTime = shiftStartTime;
-        this.shiftEndTime = shiftEndTime;
-        this.shiftId = shiftId;
-        this.mapId = mapId;
-        this.mapStatus = mapStatus;
     }
 
     public CalendarDay getCalendarDay() {
@@ -108,5 +100,45 @@ public class EventDayModel {
 
     public void setMapStatus(String mapStatus) {
         this.mapStatus = mapStatus;
+    }
+
+    public String getUserName() {
+        return userName;
+    }
+
+    public void setUserName(String userName) {
+        this.userName = userName;
+    }
+
+    public String getUserEmail() {
+        return userEmail;
+    }
+
+    public void setUserEmail(String userEmail) {
+        this.userEmail = userEmail;
+    }
+
+    public String getComment() {
+        return comment;
+    }
+
+    public void setComment(String comment) {
+        this.comment = comment;
+    }
+
+    public String getRankComment() {
+        return rankComment;
+    }
+
+    public void setRankComment(String rankComment) {
+        this.rankComment = rankComment;
+    }
+
+    public String getShiftTaskName() {
+        return shiftTaskName;
+    }
+
+    public void setShiftTaskName(String shiftTaskName) {
+        this.shiftTaskName = shiftTaskName;
     }
 }

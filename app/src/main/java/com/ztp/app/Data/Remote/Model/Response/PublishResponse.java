@@ -3,12 +3,7 @@ package com.ztp.app.Data.Remote.Model.Response;
 import com.google.gson.annotations.Expose;
 import com.google.gson.annotations.SerializedName;
 
-/**
- * Created by htl-dev on 15-04-2019.
- */
-
 public class PublishResponse {
-
 
     @SerializedName("api_res_key")
     @Expose
@@ -16,18 +11,26 @@ public class PublishResponse {
     @SerializedName("res_status")
     @Expose
     private String resStatus;
-    @SerializedName("res_data")
+    @SerializedName("res_message")
     @Expose
-    private ResData resData;
+    private String resMessage;
 
+    /**
+     * No args constructor for use in serialization
+     */
     public PublishResponse() {
     }
 
-    public PublishResponse(String apiResKey, String resStatus, ResData resData) {
+    /**
+     * @param apiResKey
+     * @param resMessage
+     * @param resStatus
+     */
+    public PublishResponse(String apiResKey, String resStatus, String resMessage) {
         super();
         this.apiResKey = apiResKey;
         this.resStatus = resStatus;
-        this.resData = resData;
+        this.resMessage = resMessage;
     }
 
     public String getApiResKey() {
@@ -46,36 +49,12 @@ public class PublishResponse {
         this.resStatus = resStatus;
     }
 
-    public ResData getResData() {
-        return resData;
+    public String getResMessage() {
+        return resMessage;
     }
 
-    public void setResData(ResData resData) {
-        this.resData = resData;
+    public void setResMessage(String resMessage) {
+        this.resMessage = resMessage;
     }
-    public class ResData {
-
-        @SerializedName("user_id")
-        @Expose
-        private String userId;
-
-        public ResData() {
-        }
-
-        public ResData(String userId) {
-            super();
-            this.userId = userId;
-        }
-
-        public String getUserId() {
-            return userId;
-        }
-
-        public void setUserId(String userId) {
-            this.userId = userId;
-        }
-
-    }
-
 
 }

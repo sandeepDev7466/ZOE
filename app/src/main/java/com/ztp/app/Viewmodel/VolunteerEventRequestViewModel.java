@@ -4,9 +4,7 @@ import android.arch.lifecycle.LiveData;
 import android.arch.lifecycle.MutableLiveData;
 import android.arch.lifecycle.ViewModel;
 
-import com.ztp.app.Data.Remote.Model.Request.GetEventDetailRequest;
 import com.ztp.app.Data.Remote.Model.Request.PostVolunteerRequest;
-import com.ztp.app.Data.Remote.Model.Response.GetEventDetailResponse;
 import com.ztp.app.Data.Remote.Model.Response.PostVolunteerRequestResponse;
 import com.ztp.app.Data.Remote.Service.Api;
 import com.ztp.app.Data.Remote.Service.ApiInterface;
@@ -34,9 +32,12 @@ public class VolunteerEventRequestViewModel extends ViewModel {
         call.enqueue(new Callback<PostVolunteerRequestResponse>() {
             @Override
             public void onResponse(Call<PostVolunteerRequestResponse> call, Response<PostVolunteerRequestResponse> response) {
-                if (response.body() != null) {
-                    getPostVolunteerMutableLiveData.postValue(response.body());
-
+                if (response.isSuccessful()) {
+                    if (response.body() != null) {
+                        getPostVolunteerMutableLiveData.postValue(response.body());
+                    }
+                } else {
+                    getPostVolunteerMutableLiveData.postValue(null);
                 }
             }
 
@@ -45,8 +46,6 @@ public class VolunteerEventRequestViewModel extends ViewModel {
                 t.printStackTrace();
                 getPostVolunteerMutableLiveData.postValue(null);
             }
-
-
         });
     }
 }
