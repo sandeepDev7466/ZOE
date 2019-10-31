@@ -124,6 +124,7 @@ public class GroupChatFragment extends Fragment {
     MyHeadingTextView tv_nickname;
     CircleImageView imv_profile, imv_add;
     SharedPref sharedPref;
+    boolean mediaSent = true;
 
     /**
      * To create an instance of this fragment, a Channel URL should be required.
@@ -144,7 +145,7 @@ public class GroupChatFragment extends Fragment {
         //getActivity().getWindow().setSoftInputMode(WindowManager.LayoutParams.SOFT_INPUT_ADJUST_PAN);
         mIMM = (InputMethodManager) getActivity().getSystemService(Context.INPUT_METHOD_SERVICE);
         mFileProgressHandlerMap = new HashMap<>();
-
+        sharedPref = SharedPref.getInstance(context);
         if (savedInstanceState != null) {
             mChannelUrl = savedInstanceState.getString(STATE_CHANNEL_URL);
         } else {
@@ -157,7 +158,6 @@ public class GroupChatFragment extends Fragment {
                     nick_name = b.getString(GroupChannelListFragment.EXTRA_NAME);
 
         }
-        sharedPref = SharedPref.getInstance(context);
         Constants.backFromChat = true;
         mChatAdapter = new GroupChatAdapter(getActivity());
         setUpChatListAdapter();
@@ -318,9 +318,12 @@ public class GroupChatFragment extends Fragment {
                             getActivity().runOnUiThread(new Runnable() {
                                 @Override
                                 public void run() {
-                                    if (mChannel.getMemberCount() > 2)
-                                        if (mChannel.getInviter().getUserId().equalsIgnoreCase(sharedPref.getEmail()))
-                                            imv_add.setVisibility(View.VISIBLE);
+                                    if (mChannel.getMemberCount() > 2) {
+                                        if (mChannel.getInviter() != null) {
+                                            if (mChannel.getInviter().getUserId().equalsIgnoreCase(sharedPref.getEmail()))
+                                                imv_add.setVisibility(View.VISIBLE);
+                                        }
+                                    }
                                     mChatAdapter.setChannel(mChannel);
                                     updateActionBarTitle();
                                 }
@@ -373,10 +376,12 @@ public class GroupChatFragment extends Fragment {
                                     });
                                 }
                             });
-                            if (groupChannel.getMemberCount() > 2)
-                                if (mChannel.getInviter() != null)
+                            if (groupChannel.getMemberCount() > 2) {
+                                if (mChannel.getInviter() != null) {
                                     if (mChannel.getInviter().getUserId().equalsIgnoreCase(sharedPref.getEmail()))
                                         imv_add.setVisibility(View.VISIBLE);
+                                }
+                            }
                         }
                     }
                 }
@@ -479,9 +484,12 @@ public class GroupChatFragment extends Fragment {
             }
         });
         if (mChannel != null)
-            if (mChannel.getMemberCount() > 2)
-                if (mChannel.getInviter().getUserId().equalsIgnoreCase(sharedPref.getEmail()))
-                    imv_add.setVisibility(View.VISIBLE);
+            if (mChannel.getMemberCount() > 2) {
+                if (mChannel.getInviter() != null) {
+                    if (mChannel.getInviter().getUserId().equalsIgnoreCase(sharedPref.getEmail()))
+                        imv_add.setVisibility(View.VISIBLE);
+                }
+            }
     }
 
     @Override
@@ -621,7 +629,6 @@ public class GroupChatFragment extends Fragment {
                     return;
                 }
 
-
                 onFileMessageClicked(message);
             }
         });
@@ -633,20 +640,22 @@ public class GroupChatFragment extends Fragment {
             }
 
             @Override
-            public void onFileMessageItemLongClick(FileMessage message) {
+            public void onFileMessageItemLongClick(FileMessage message, int position) {
 
-                String[] options = new String[]{getString(R.string.delete_media)};
+                if(mediaSent) {
+                    String[] options = new String[]{getString(R.string.delete_media)};
 
-                AlertDialog.Builder builder = new AlertDialog.Builder(getActivity());
-                builder.setItems(options, new DialogInterface.OnClickListener() {
-                    @Override
-                    public void onClick(DialogInterface dialog, int which) {
-                        if (which == 0) {
-                            deleteFileMessage(message);
+                    AlertDialog.Builder builder = new AlertDialog.Builder(getActivity());
+                    builder.setItems(options, new DialogInterface.OnClickListener() {
+                        @Override
+                        public void onClick(DialogInterface dialog, int which) {
+                            if (which == 0) {
+                                deleteFileMessage(message, position);
+                            }
                         }
-                    }
-                });
-                builder.create().show();
+                    });
+                    builder.create().show();
+                }
             }
 
             @Override
@@ -1083,6 +1092,7 @@ public class GroupChatFragment extends Fragment {
                     if (fileMessage != null && totalBytesToSend > 0) {
                         int percent = (totalBytesSent * 100) / totalBytesToSend;
                         mChatAdapter.setFileProgressPercent(fileMessage, percent);
+                        mediaSent = false;
                     }
                 }
 
@@ -1101,7 +1111,7 @@ public class GroupChatFragment extends Fragment {
                         mChatAdapter.markMessageFailed(fileMessage.getRequestId());
                         return;
                     }
-
+                    mediaSent = true;
                     // append sent message.
                     if (mMessageCollection != null) {
                         mMessageCollection.appendMessage(fileMessage);
@@ -1143,8 +1153,7 @@ public class GroupChatFragment extends Fragment {
         });
     }
 
-    private void deleteFileMessage(FileMessage fileMessage)
-    {
+    private void deleteFileMessage(FileMessage fileMessage, int position) {
         if (mChannel == null) {
             return;
         }
@@ -1153,8 +1162,10 @@ public class GroupChatFragment extends Fragment {
             @Override
             public void onResult(SendBirdException e) {
                 if (e != null) {
-                    // Error!
-                    Toast.makeText(getActivity(), "Error " + e.getCode() + ": " + e.getMessage(), Toast.LENGTH_SHORT).show();
+                    if (e.getCode() == 400201)
+                        Toast.makeText(getActivity(), "Media is not uploaded yet", Toast.LENGTH_SHORT).show();
+                    else
+                        Toast.makeText(getActivity(), "Error " + e.getCode() + ": " + e.getMessage(), Toast.LENGTH_SHORT).show();
                     return;
                 }
             }

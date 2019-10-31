@@ -52,6 +52,7 @@ public class VolunteerUpcomingEventAdapter extends BaseAdapter {
             holder.heading = view.findViewById(R.id.heading);
             holder.time = view.findViewById(R.id.time);
             holder.shift = view.findViewById(R.id.shift);
+            holder.day = view.findViewById(R.id.day);
             view.setTag(holder);
         } else {
             holder = (Holder) view.getTag();
@@ -63,6 +64,8 @@ public class VolunteerUpcomingEventAdapter extends BaseAdapter {
         holder.heading.setText(eventData.getEventHeading());
         holder.date.setText((String) DateFormat.format("dd",registeredStartDate));
         holder.month.setText((String) DateFormat.format("MMM",registeredStartDate));
+        holder.day.setText((String) DateFormat.format("EEEE",registeredStartDate));
+
         holder.time.setText(context.getString(R.string.event_date)+" : "+eventData.getEventRegisterStartDate()+" "+context.getString(R.string.to)+" "+eventData.getEventRegisterEndDate());
         if(eventData.getShift_task_name()==null)
             eventData.setShift_task_name("");
@@ -88,6 +91,6 @@ public class VolunteerUpcomingEventAdapter extends BaseAdapter {
     }
 
     private class Holder {
-        TextView date, month, heading,time,shift;
+        TextView date, month, heading,time,shift,day;
     }
 }

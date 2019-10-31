@@ -421,11 +421,10 @@ public class CsoRegisterStep_3Activity extends AppCompatActivity implements View
                                                 if (yes3.isChecked() || no3.isChecked()) {*/
 
 
-                   if(ans1.isEmpty() || ans2.isEmpty()  || ans3.isEmpty())
-                   {
-                       myToast.show("Answer(s) not selected", Toast.LENGTH_SHORT, false);
-                       return;
-                   }
+                    if (ans1.isEmpty() || ans2.isEmpty() || ans3.isEmpty()) {
+                        myToast.show("Answer(s) not selected", Toast.LENGTH_SHORT, false);
+                        return;
+                    }
                     myProgressDialog.show(getString(R.string.please_wait));
                     CsoRegisterRequestStep_3 csoRegisterRequest_3 = new CsoRegisterRequestStep_3();
                     csoRegisterRequest_3.setUserId(sharedPref.getUserId());
@@ -462,36 +461,36 @@ public class CsoRegisterStep_3Activity extends AppCompatActivity implements View
                        csoRegisterRequest_3.setOrgMinTime(etTimePeriod.getText().toString());
                        csoRegisterRequest_3.setOrgVolunteerNum(etVolunteer.getText().toString());*/
 
-                        csoRegisterStep_3ViewModel.getRegisterResponse(csoRegisterRequest_3).observe((LifecycleOwner) context, registerResponse -> {
+                    csoRegisterStep_3ViewModel.getRegisterResponse(csoRegisterRequest_3).observe((LifecycleOwner) context, registerResponse -> {
 
-                            if (registerResponse != null) {
-                                Log.i("", "" + new Gson().toJson(registerResponse));
-                                if (registerResponse.getResStatus().equalsIgnoreCase("200")) {
-                                    sharedPref.setOtp(registerResponse.getResData().getPhoneOtp());
+                        if (registerResponse != null) {
+                            Log.i("", "" + new Gson().toJson(registerResponse));
+                            if (registerResponse.getResStatus().equalsIgnoreCase("200")) {
+                                sharedPref.setOtp(registerResponse.getResData().getPhoneOtp());
 
-                                    if (action != null && action.equalsIgnoreCase("update")) {
-                                        myToast.show(getString(R.string.profile_updated), Toast.LENGTH_SHORT, true);
-                                        Intent intent1 = new Intent(context, CsoDashboardActivity.class);
-                                        intent1.addFlags(Intent.FLAG_ACTIVITY_NEW_TASK | Intent.FLAG_ACTIVITY_CLEAR_TASK);
-                                        startActivity(intent1);
-                                        overridePendingTransition(R.anim.fade_in, R.anim.fade_out);
-                                    } else {
-                                        Intent intent1 = new Intent(context, ValidateOTPActivity.class);
-                                        intent1.addFlags(Intent.FLAG_ACTIVITY_NEW_TASK | Intent.FLAG_ACTIVITY_CLEAR_TASK);
-                                        startActivity(intent1);
-                                        overridePendingTransition(R.anim.fade_in, R.anim.fade_out);
-                                    }
-
-                                } else if (registerResponse.getResStatus().equalsIgnoreCase("401")) {
-                                    myToast.show(getString(R.string.err_org_inf_regisitration_failed), Toast.LENGTH_SHORT, false);
+                                if (action != null && action.equalsIgnoreCase("update")) {
+                                    myToast.show(getString(R.string.profile_updated), Toast.LENGTH_SHORT, true);
+                                    Intent intent1 = new Intent(context, CsoDashboardActivity.class);
+                                    intent1.addFlags(Intent.FLAG_ACTIVITY_NEW_TASK | Intent.FLAG_ACTIVITY_CLEAR_TASK);
+                                    startActivity(intent1);
+                                    overridePendingTransition(R.anim.fade_in, R.anim.fade_out);
+                                } else {
+                                    Intent intent1 = new Intent(context, ValidateOTPActivity.class);
+                                    intent1.addFlags(Intent.FLAG_ACTIVITY_NEW_TASK | Intent.FLAG_ACTIVITY_CLEAR_TASK);
+                                    startActivity(intent1);
+                                    overridePendingTransition(R.anim.fade_in, R.anim.fade_out);
                                 }
-                            } else {
-                                myToast.show(getString(R.string.err_server), Toast.LENGTH_SHORT, false);
+
+                            } else if (registerResponse.getResStatus().equalsIgnoreCase("401")) {
+                                myToast.show(getString(R.string.err_org_inf_regisitration_failed), Toast.LENGTH_SHORT, false);
                             }
+                        } else {
+                            myToast.show(getString(R.string.err_server), Toast.LENGTH_SHORT, false);
+                        }
 
-                            myProgressDialog.dismiss();
+                        myProgressDialog.dismiss();
 
-                        });
+                    });
 
 
                                                /* } else {

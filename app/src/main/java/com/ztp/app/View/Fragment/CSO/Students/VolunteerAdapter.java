@@ -144,24 +144,19 @@ class VolunteerAdapter extends BaseAdapter {
         if (dataModel.getAttendRank().equalsIgnoreCase("1")) {
             Picasso.with(context).load(R.drawable.rank_one_vol).fit().into(holder.rank);
             holder.rankText.setText(context.getString(R.string.RANK_ONE_NAME));
-        }
-        else if (dataModel.getAttendRank().equalsIgnoreCase("2")) {
+        } else if (dataModel.getAttendRank().equalsIgnoreCase("2")) {
             Picasso.with(context).load(R.drawable.rank_two_vol).fit().into(holder.rank);
             holder.rankText.setText(context.getString(R.string.RANK_TWO_NAME));
-        }
-        else if (dataModel.getAttendRank().equalsIgnoreCase("3")) {
+        } else if (dataModel.getAttendRank().equalsIgnoreCase("3")) {
             Picasso.with(context).load(R.drawable.rank_three_vol).fit().into(holder.rank);
             holder.rankText.setText(context.getString(R.string.RANK_THREE_NAME));
-        }
-        else if (dataModel.getAttendRank().equalsIgnoreCase("4")) {
+        } else if (dataModel.getAttendRank().equalsIgnoreCase("4")) {
             Picasso.with(context).load(R.drawable.rank_four_vol).fit().into(holder.rank);
             holder.rankText.setText(context.getString(R.string.RANK_FOUR_NAME));
-        }
-        else if (dataModel.getAttendRank().equalsIgnoreCase("5")) {
+        } else if (dataModel.getAttendRank().equalsIgnoreCase("5")) {
             Picasso.with(context).load(R.drawable.rank_five_vol).fit().into(holder.rank);
             holder.rankText.setText(context.getString(R.string.RANK_FIVE_NAME));
-        }
-        else if (dataModel.getAttendRank().equalsIgnoreCase("") || dataModel.getAttendRank().equalsIgnoreCase("0")) {
+        } else if (dataModel.getAttendRank().equalsIgnoreCase("") || dataModel.getAttendRank().equalsIgnoreCase("0")) {
             Picasso.with(context).load(R.drawable.no_rank).fit().into(holder.rank);
             holder.rankText.setText("No rank");
         }
@@ -273,18 +268,20 @@ class VolunteerAdapter extends BaseAdapter {
     }
 
     private class Holder {
-        MyTextView date, time, name, tv_heading, tv_desc, tv_shift_task, tv_event_name, tv_hrs,rankText,statusText;
+        MyTextView date, time, name, tv_heading, tv_desc, tv_shift_task, tv_event_name, tv_hrs, rankText, statusText;
         ImageView imv_status, rank, imv_chat;
     }
 
-
     private void openHoursChangeDialog(CSOAllResponse.CSOAllRequest dataModel, String map_id, int position) {
 
-        String userHours, reqiredHours;
-        if (!dataModel.getAttendHours().isEmpty())
+        String userHours;
+
+       /* if (!dataModel.getAttendHours().isEmpty())
             userHours = dataModel.getAttendHours();
         else
-            userHours = dataModel.getAttendHoursVol();
+            userHours = dataModel.getAttendHoursVol();*/
+
+        userHours = dataModel.getAttendHours();
 
         Dialog dialog = new Dialog(context);
         View view = LayoutInflater.from(context).inflate(R.layout.change_hours_dialog, null);
@@ -294,7 +291,6 @@ class VolunteerAdapter extends BaseAdapter {
         Button cancel = view.findViewById(R.id.cancel);
         Button done = view.findViewById(R.id.done);
         MyTextView currentHours = view.findViewById(R.id.currentHours);
-        // MyTextView requiredHours = view.findViewById(R.id.requiredHours);
         MyTextInputEditText etHours = view.findViewById(R.id.etHours);
 
         dialog.show();
@@ -303,7 +299,6 @@ class VolunteerAdapter extends BaseAdapter {
             currentHours.setText(userHours + " " + context.getString(R.string.hrs_small));
         else
             currentHours.setText(" 0 " + context.getString(R.string.hrs_small));
-        //requiredHours.setText(reqiredHours);
 
         etHours.addTextChangedListener(new TextWatcher() {
             @Override
@@ -475,7 +470,7 @@ class VolunteerAdapter extends BaseAdapter {
             LinearLayout cancel = vw.findViewById(R.id.cancel);
 
             add.setOnClickListener(v1 -> {
-                if(!comment.getText().toString().trim().isEmpty()) {
+                if (!comment.getText().toString().trim().isEmpty()) {
                     dialog1.dismiss();
                     if (Utility.isNetworkAvailable(context)) {
                         myProgressDialog.show(context.getString(R.string.please_wait));
@@ -510,9 +505,7 @@ class VolunteerAdapter extends BaseAdapter {
                     } else {
                         new MyToast(context).show(context.getString(R.string.no_internet_connection), Toast.LENGTH_SHORT, false);
                     }
-                }
-                else
-                {
+                } else {
                     new MyToast(context).show(context.getString(R.string.err_enter_comment), Toast.LENGTH_SHORT, false);
                 }
             });
@@ -552,7 +545,6 @@ class VolunteerAdapter extends BaseAdapter {
         });
         verify_layout.setOnClickListener(v -> {
             openHoursChangeDialog(dataModel, MapID, position);
-
             dialog.dismiss();
         });
         info_layout.setOnClickListener(v -> {
@@ -567,7 +559,6 @@ class VolunteerAdapter extends BaseAdapter {
             dialog.dismiss();
         });
         dialog.show();
-
     }
 
     public void changeStatus(int map_status, String mapID, int position) {
@@ -650,24 +641,19 @@ class VolunteerAdapter extends BaseAdapter {
         if (current.equalsIgnoreCase("1")) {
             Picasso.with(context).load(R.drawable.rank_one_vol).fit().into(currentRank);
             currentRankText.setText(context.getString(R.string.RANK_ONE_NAME));
-        }
-        else if (current.equalsIgnoreCase("2")) {
+        } else if (current.equalsIgnoreCase("2")) {
             Picasso.with(context).load(R.drawable.rank_two_vol).fit().into(currentRank);
             currentRankText.setText(context.getString(R.string.RANK_TWO_NAME));
-        }
-        else if (current.equalsIgnoreCase("3")) {
+        } else if (current.equalsIgnoreCase("3")) {
             Picasso.with(context).load(R.drawable.rank_three_vol).fit().into(currentRank);
             currentRankText.setText(context.getString(R.string.RANK_THREE_NAME));
-        }
-        else if (current.equalsIgnoreCase("4")) {
+        } else if (current.equalsIgnoreCase("4")) {
             Picasso.with(context).load(R.drawable.rank_four_vol).fit().into(currentRank);
             currentRankText.setText(context.getString(R.string.RANK_FOUR_NAME));
-        }
-        else if (current.equalsIgnoreCase("5")) {
+        } else if (current.equalsIgnoreCase("5")) {
             Picasso.with(context).load(R.drawable.rank_five_vol).fit().into(currentRank);
             currentRankText.setText(context.getString(R.string.RANK_FIVE_NAME));
-        }
-        else if (current.equalsIgnoreCase("") || current.equalsIgnoreCase("0")) {
+        } else if (current.equalsIgnoreCase("") || current.equalsIgnoreCase("0")) {
             Picasso.with(context).load(R.drawable.no_rank).fit().into(currentRank);
             currentRankText.setText("No rank");
         }
@@ -737,18 +723,15 @@ class VolunteerAdapter extends BaseAdapter {
             public void onClick(View v) {
 
                 if (Utility.isNetworkAvailable(context)) {
-                    if(!comment.getText().toString().trim().isEmpty()) {
+                    if (!comment.getText().toString().trim().isEmpty()) {
                         if (setRank != null && !setRank.equalsIgnoreCase(current)) {
                             hitMarkRankApi(setRank, dataModel, comment.getText().toString().trim());
                             dialog.dismiss();
-                        }
-                        else {
+                        } else {
                             hitMarkRankApi(current, dataModel, comment.getText().toString().trim());
                             dialog.dismiss();
                         }
-                    }
-                    else
-                    {
+                    } else {
                         myToast.show(context.getString(R.string.err_enter_comment), Toast.LENGTH_SHORT, false);
                     }
                 } else {
@@ -758,10 +741,10 @@ class VolunteerAdapter extends BaseAdapter {
         });
     }
 
-    private void hitMarkRankApi(String rank, CSOAllResponse.CSOAllRequest dataModel,String comment) {
+    private void hitMarkRankApi(String rank, CSOAllResponse.CSOAllRequest dataModel, String comment) {
         myProgressDialog.show(context.getString(R.string.please_wait));
 
-        MarkRankRequest markRankRequest = new MarkRankRequest(sharedPref.getUserId(), sharedPref.getUserType(), Utility.getDeviceId(context), dataModel.getUserId(), rank, dataModel.getMapId(),comment);
+        MarkRankRequest markRankRequest = new MarkRankRequest(sharedPref.getUserId(), sharedPref.getUserType(), Utility.getDeviceId(context), dataModel.getUserId(), rank, dataModel.getMapId(), comment);
         Log.i("REQUEST", "" + new Gson().toJson(markRankRequest));
 
         markRankViewModel.getMarkRankResponse(markRankRequest).observe((LifecycleOwner) context, markRankResponse -> {

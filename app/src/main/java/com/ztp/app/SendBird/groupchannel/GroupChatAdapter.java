@@ -63,7 +63,7 @@ class GroupChatAdapter extends RecyclerView.Adapter<RecyclerView.ViewHolder> {
     interface OnItemLongClickListener {
         void onUserMessageItemLongClick(UserMessage message, int position);
 
-        void onFileMessageItemLongClick(FileMessage message);
+        void onFileMessageItemLongClick(FileMessage message,int position);
 
         void onAdminMessageItemLongClick(AdminMessage message);
     }
@@ -179,19 +179,19 @@ class GroupChatAdapter extends RecyclerView.Adapter<RecyclerView.ViewHolder> {
                 ((AdminMessageHolder) holder).bind(mContext, (AdminMessage) message, mChannel, isNewDay);
                 break;
             case VIEW_TYPE_FILE_MESSAGE_ME:
-                ((MyFileMessageHolder) holder).bind(mContext, (FileMessage) message, mChannel, isNewDay, isTempMessage, isFailedMessage, tempFileMessageUri, mItemClickListener,mItemLongClickListener);
+                ((MyFileMessageHolder) holder).bind(mContext, (FileMessage) message, mChannel, isNewDay, isTempMessage, isFailedMessage, tempFileMessageUri, mItemClickListener,mItemLongClickListener,position);
                 break;
             case VIEW_TYPE_FILE_MESSAGE_OTHER:
                 ((OtherFileMessageHolder) holder).bind(mContext, (FileMessage) message, mChannel, isNewDay, isContinuous, mItemClickListener);
                 break;
             case VIEW_TYPE_FILE_MESSAGE_IMAGE_ME:
-                ((MyImageFileMessageHolder) holder).bind(mContext, (FileMessage) message, mChannel, isNewDay, isTempMessage, isFailedMessage, tempFileMessageUri, mItemClickListener,mItemLongClickListener);
+                ((MyImageFileMessageHolder) holder).bind(mContext, (FileMessage) message, mChannel, isNewDay, isTempMessage, isFailedMessage, tempFileMessageUri, mItemClickListener,mItemLongClickListener,position);
                 break;
             case VIEW_TYPE_FILE_MESSAGE_IMAGE_OTHER:
                 ((OtherImageFileMessageHolder) holder).bind(mContext, (FileMessage) message, mChannel, isNewDay, isContinuous, mItemClickListener);
                 break;
             case VIEW_TYPE_FILE_MESSAGE_VIDEO_ME:
-                ((MyVideoFileMessageHolder) holder).bind(mContext, (FileMessage) message, mChannel, isNewDay, isTempMessage, isFailedMessage, tempFileMessageUri, mItemClickListener,mItemLongClickListener);
+                ((MyVideoFileMessageHolder) holder).bind(mContext, (FileMessage) message, mChannel, isNewDay, isTempMessage, isFailedMessage, tempFileMessageUri, mItemClickListener,mItemLongClickListener,position);
                 break;
             case VIEW_TYPE_FILE_MESSAGE_VIDEO_OTHER:
                 ((OtherVideoFileMessageHolder) holder).bind(mContext, (FileMessage) message, mChannel, isNewDay, isContinuous, mItemClickListener);
@@ -650,7 +650,7 @@ class GroupChatAdapter extends RecyclerView.Adapter<RecyclerView.ViewHolder> {
             dateText = (MyTextView) itemView.findViewById(R.id.text_group_chat_date);
         }
 
-        void bind(Context context, final FileMessage message, GroupChannel channel, boolean isNewDay, boolean isTempMessage, boolean isFailedMessage, Uri tempFileMessageUri, final OnItemClickListener listener,final OnItemLongClickListener longClickListener) {
+        void bind(Context context, final FileMessage message, GroupChannel channel, boolean isNewDay, boolean isTempMessage, boolean isFailedMessage, Uri tempFileMessageUri, final OnItemClickListener listener,final OnItemLongClickListener longClickListener,final int position) {
             fileNameText.setText(message.getName());
             timeText.setText(DateUtils.formatTime(message.getCreatedAt()));
 
@@ -675,7 +675,7 @@ class GroupChatAdapter extends RecyclerView.Adapter<RecyclerView.ViewHolder> {
                 itemView.setOnLongClickListener(new View.OnLongClickListener() {
                     @Override
                     public boolean onLongClick(View v) {
-                        longClickListener.onFileMessageItemLongClick(message);
+                        longClickListener.onFileMessageItemLongClick(message,position);
                         return true;
                     }
                 });
@@ -753,7 +753,7 @@ class GroupChatAdapter extends RecyclerView.Adapter<RecyclerView.ViewHolder> {
             dateText = (TextView) itemView.findViewById(R.id.text_group_chat_date);
         }
 
-        void bind(Context context, final FileMessage message, GroupChannel channel, boolean isNewDay, boolean isTempMessage, boolean isFailedMessage, Uri tempFileMessageUri, final OnItemClickListener listener, final OnItemLongClickListener longClickListener) {
+        void bind(Context context, final FileMessage message, GroupChannel channel, boolean isNewDay, boolean isTempMessage, boolean isFailedMessage, Uri tempFileMessageUri, final OnItemClickListener listener, final OnItemLongClickListener longClickListener,final int position) {
             timeText.setText(DateUtils.formatTime(message.getCreatedAt()));
             // Show the date if the message was sent on a different date than the previous message.
             if (isNewDay) {
@@ -798,7 +798,7 @@ class GroupChatAdapter extends RecyclerView.Adapter<RecyclerView.ViewHolder> {
                 itemView.setOnLongClickListener(new View.OnLongClickListener() {
                     @Override
                     public boolean onLongClick(View v) {
-                        longClickListener.onFileMessageItemLongClick(message);
+                        longClickListener.onFileMessageItemLongClick(message,position);
                         return true;
                     }
                 });
@@ -891,7 +891,7 @@ class GroupChatAdapter extends RecyclerView.Adapter<RecyclerView.ViewHolder> {
             dateText = (TextView) itemView.findViewById(R.id.text_group_chat_date);
         }
 
-        void bind(Context context, final FileMessage message, GroupChannel channel, boolean isNewDay, boolean isTempMessage, boolean isFailedMessage, Uri tempFileMessageUri, final OnItemClickListener listener, final OnItemLongClickListener longClickListener) {
+        void bind(Context context, final FileMessage message, GroupChannel channel, boolean isNewDay, boolean isTempMessage, boolean isFailedMessage, Uri tempFileMessageUri, final OnItemClickListener listener, final OnItemLongClickListener longClickListener,final int position) {
             timeText.setText(DateUtils.formatTime(message.getCreatedAt()));
 
             // Show the date if the message was sent on a different date than the previous message.
@@ -929,7 +929,7 @@ class GroupChatAdapter extends RecyclerView.Adapter<RecyclerView.ViewHolder> {
                 itemView.setOnLongClickListener(new View.OnLongClickListener() {
                     @Override
                     public boolean onLongClick(View v) {
-                        longClickListener.onFileMessageItemLongClick(message);
+                        longClickListener.onFileMessageItemLongClick(message,position);
                         return true;
                     }
                 });
