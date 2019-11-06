@@ -43,6 +43,8 @@ import com.ztp.app.Data.Remote.Model.Request.MyFriendsRequest;
 import com.ztp.app.Data.Remote.Model.Request.PostVolunteerRequest;
 import com.ztp.app.Data.Remote.Model.Request.PotentialFriendsRequest;
 import com.ztp.app.Data.Remote.Model.Request.PublishRequest;
+import com.ztp.app.Data.Remote.Model.Request.ReadNotificationRequest;
+import com.ztp.app.Data.Remote.Model.Request.SearchCSORequest;
 import com.ztp.app.Data.Remote.Model.Request.SearchEventRequest;
 import com.ztp.app.Data.Remote.Model.Request.SearchEventbyAreaRequest;
 import com.ztp.app.Data.Remote.Model.Request.ShiftTaskRequest;
@@ -52,6 +54,7 @@ import com.ztp.app.Data.Remote.Model.Request.StateRequest;
 import com.ztp.app.Data.Remote.Model.Request.StudentPendingRequest;
 import com.ztp.app.Data.Remote.Model.Request.StudentRegisterRequest;
 import com.ztp.app.Data.Remote.Model.Request.StudentSendRequest;
+import com.ztp.app.Data.Remote.Model.Request.UnlinkUserRequest;
 import com.ztp.app.Data.Remote.Model.Request.UpdateProfileRequest;
 import com.ztp.app.Data.Remote.Model.Request.UpdateUserTimezoneRequest;
 import com.ztp.app.Data.Remote.Model.Request.UpdateVolunteerHoursRequest;
@@ -110,7 +113,9 @@ import com.ztp.app.Data.Remote.Model.Response.MyFriendsResponse;
 import com.ztp.app.Data.Remote.Model.Response.PostVolunteerRequestResponse;
 import com.ztp.app.Data.Remote.Model.Response.PotentialFriendsResponse;
 import com.ztp.app.Data.Remote.Model.Response.PublishResponse;
+import com.ztp.app.Data.Remote.Model.Response.ReadNotificationResponse;
 import com.ztp.app.Data.Remote.Model.Response.SchoolResponse;
+import com.ztp.app.Data.Remote.Model.Response.SearchCSOResponse;
 import com.ztp.app.Data.Remote.Model.Response.SearchEventResponse;
 import com.ztp.app.Data.Remote.Model.Response.SearchEventbyAreaResponse;
 import com.ztp.app.Data.Remote.Model.Response.ShiftAddResponse;
@@ -121,6 +126,7 @@ import com.ztp.app.Data.Remote.Model.Response.StudentPendingResponse;
 import com.ztp.app.Data.Remote.Model.Response.StudentRegisterResponse;
 import com.ztp.app.Data.Remote.Model.Response.StudentSendResponse;
 import com.ztp.app.Data.Remote.Model.Response.TimeZoneResponse;
+import com.ztp.app.Data.Remote.Model.Response.UnlinkUserResponse;
 import com.ztp.app.Data.Remote.Model.Response.UpdateEventResponse;
 import com.ztp.app.Data.Remote.Model.Response.UpdateProfileResponse;
 import com.ztp.app.Data.Remote.Model.Response.UpdateUserTimezoneResponse;
@@ -409,5 +415,14 @@ public interface ApiInterface {
 
     @GET("user-access.php?api_key=1234&action=cso_question_data")
     Call<CSOQuestionResponse> getCSOQuestionResponse();
+
+    @POST("stu-action.php?api_key=1234&action=search_cso")
+    Call<SearchCSOResponse> getSearchCSO(@Body SearchCSORequest searchCSORequest);
+
+    @POST("user-access.php?api_key=1234&action=unlink_user")
+    Call<UnlinkUserResponse> unlinkUser(@Body UnlinkUserRequest unlinkUserRequest);
+
+    @POST("site-data.php?api_key=1234&action=read_notifications")
+    Call<ReadNotificationResponse> readNotification(@Body ReadNotificationRequest readNotificationRequest);
 
 }

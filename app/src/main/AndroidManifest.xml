@@ -38,16 +38,20 @@
         android:usesCleartextTraffic="true"
         tools:ignore="GoogleAppIndexingWarning"
         tools:replace="android:appComponentFactory,android:allowBackup">
+        <activity android:name=".View.Fragment.Volunteer.Event.ShiftListActivity"></activity>
+        <activity
+            android:name=".View.Fragment.CSO.Students.StudentVolunteerActivity"
+            android:theme="@style/MyThemeFullScreen" />
         <activity android:name=".View.Activity.Student.StudentDashboardActivity" />
-
-        <activity android:name=".View.Fragment.Student.Hangout.SendReceivedRequestActivity"
-            android:theme="@style/AppTheme.Dialog"></activity>
+        <activity
+            android:name=".View.Fragment.Student.Hangout.SendReceivedRequestActivity"
+            android:theme="@style/AppTheme.Dialog" />
         <activity
             android:name=".View.Activity.Common.StuVolEditProfileActivity"
             android:theme="@style/MyThemeFullScreen" />
-
-        <activity android:name=".View.Activity.Common.VideoPlayerActivity"
-            android:theme="@style/MyThemeFullScreen"></activity>
+        <activity
+            android:name=".View.Activity.Common.VideoPlayerActivity"
+            android:theme="@style/MyThemeFullScreen" />
         <activity
             android:name=".View.Activity.Common.PhotoViewerActivity"
             android:theme="@style/MyThemeFullScreen" />

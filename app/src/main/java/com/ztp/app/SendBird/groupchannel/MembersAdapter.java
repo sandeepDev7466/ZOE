@@ -62,9 +62,9 @@ public class MembersAdapter extends BaseAdapter {
         holder.email.setText(member.getUserId());
         holder.time.setText(DateUtils.formatDateTime(member.getLastSeenAt()));
         if(!member.getProfileUrl().isEmpty())
-            Picasso.with(context).load(member.getProfileUrl()).into(holder.image);
+            Picasso.with(context).load(member.getProfileUrl()).placeholder(R.drawable.user).into(holder.image);
         else
-            Picasso.with(context).load(R.drawable.ic_user).into(holder.image);
+            Picasso.with(context).load(R.drawable.user).into(holder.image);
         return view;
     }
     class Holder

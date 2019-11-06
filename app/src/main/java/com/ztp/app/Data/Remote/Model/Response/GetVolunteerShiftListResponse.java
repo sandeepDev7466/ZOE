@@ -62,8 +62,7 @@ public class GetVolunteerShiftListResponse {
 
 
     @Entity(tableName = "shift_data")
-    public static class ShiftData implements Serializable
-    {
+    public static class ShiftData implements Serializable {
         @NonNull
         @PrimaryKey
         @SerializedName("shift_id")
@@ -143,6 +142,11 @@ public class GetVolunteerShiftListResponse {
         @Expose
         @ColumnInfo(name = "volunteer_req_accepted")
         private String volunteer_req_accepted;
+
+        @SerializedName("map_id")
+        @Expose
+        @ColumnInfo(name = "map_id")
+        private String mapId;
 
         public String getShift_id() {
             return shift_id;
@@ -233,8 +237,6 @@ public class GetVolunteerShiftListResponse {
         }
 
 
-
-
         public String getVolunteer_apply() {
             return volunteer_apply;
         }
@@ -273,6 +275,14 @@ public class GetVolunteerShiftListResponse {
 
         public void setEvent_id(String event_id) {
             this.event_id = event_id;
+        }
+
+        public String getMapId() {
+            return mapId;
+        }
+
+        public void setMapId(String mapId) {
+            this.mapId = mapId;
         }
     }
 }

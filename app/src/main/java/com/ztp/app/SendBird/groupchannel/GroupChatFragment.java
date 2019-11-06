@@ -19,6 +19,7 @@ import android.support.v4.app.Fragment;
 import android.support.v4.app.FragmentManager;
 import android.support.v4.content.ContextCompat;
 import android.support.v7.app.AlertDialog;
+import android.support.v7.app.AppCompatActivity;
 import android.support.v7.widget.LinearLayoutManager;
 import android.support.v7.widget.RecyclerView;
 import android.text.Editable;
@@ -141,14 +142,12 @@ public class GroupChatFragment extends Fragment {
     @Override
     public void onCreate(@Nullable Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
-        getActivity().getWindow().setSoftInputMode(WindowManager.LayoutParams.SOFT_INPUT_ADJUST_RESIZE);
-        //getActivity().getWindow().setSoftInputMode(WindowManager.LayoutParams.SOFT_INPUT_ADJUST_PAN);
-        mIMM = (InputMethodManager) getActivity().getSystemService(Context.INPUT_METHOD_SERVICE);
         mFileProgressHandlerMap = new HashMap<>();
         sharedPref = SharedPref.getInstance(context);
         if (savedInstanceState != null) {
             mChannelUrl = savedInstanceState.getString(STATE_CHANNEL_URL);
         } else {
+            if(getArguments() != null)
             mChannelUrl = getArguments().getString(GroupChannelListFragment.EXTRA_GROUP_CHANNEL_URL);
         }
         Bundle b = getArguments();
@@ -159,7 +158,7 @@ public class GroupChatFragment extends Fragment {
 
         }
         Constants.backFromChat = true;
-        mChatAdapter = new GroupChatAdapter(getActivity());
+        mChatAdapter = new GroupChatAdapter(context);
         setUpChatListAdapter();
     }
 
@@ -167,9 +166,9 @@ public class GroupChatFragment extends Fragment {
     @Override
     public View onCreateView(LayoutInflater inflater, @Nullable ViewGroup container, @Nullable Bundle savedInstanceState) {
         View rootView = inflater.inflate(R.layout.fragment_group_chat, container, false);
-        getActivity().getWindow().setSoftInputMode(WindowManager.LayoutParams.SOFT_INPUT_ADJUST_PAN);
+        ((AppCompatActivity) context).getWindow().setSoftInputMode(WindowManager.LayoutParams.SOFT_INPUT_ADJUST_PAN);
+        mIMM = (InputMethodManager) context.getSystemService(Context.INPUT_METHOD_SERVICE);
         setRetainInstance(true);
-
         mRootLayout = (RelativeLayout) rootView.findViewById(R.id.layout_group_chat_root);
         mRecyclerView = (RecyclerView) rootView.findViewById(R.id.recycler_group_chat);
 
@@ -201,11 +200,6 @@ public class GroupChatFragment extends Fragment {
                             mMessageEditText.setText("");
                         }
                     }
-
-                   /* // hide virtual keyboard
-                    InputMethodManager imm = (InputMethodManager)context.getSystemService(Context.INPUT_METHOD_SERVICE);
-                    imm.hideSoftInputFromWindow(mMessageEditText.getWindowToken(), InputMethodManager.RESULT_UNCHANGED_SHOWN);
-*/
                     return true;
                 }
                 return false;
@@ -311,14 +305,14 @@ public class GroupChatFragment extends Fragment {
                             mMessageCollection.setCollectionHandler(mMessageCollectionHandler);
                             mChannel = mMessageCollection.getChannel();
 
-                            if (getActivity() == null) {
+                            if (context == null) {
                                 return;
                             }
 
-                            getActivity().runOnUiThread(new Runnable() {
+                            ((AppCompatActivity) context).runOnUiThread(new Runnable() {
                                 @Override
                                 public void run() {
-                                    if (mChannel.getMemberCount() > 2) {
+                                    if (mChannel.getCustomType().equalsIgnoreCase(Constants.SENDBIRD_CHANNEL)) {
                                         if (mChannel.getInviter() != null) {
                                             if (mChannel.getInviter().getUserId().equalsIgnoreCase(sharedPref.getEmail()))
                                                 imv_add.setVisibility(View.VISIBLE);
@@ -332,11 +326,11 @@ public class GroupChatFragment extends Fragment {
                             mMessageCollection.fetch(MessageCollection.Direction.PREVIOUS, new CompletionHandler() {
                                 @Override
                                 public void onCompleted(SendBirdException e) {
-                                    if (getActivity() == null) {
+                                    if (context == null) {
                                         return;
                                     }
 
-                                    getActivity().runOnUiThread(new Runnable() {
+                                    ((AppCompatActivity) context).runOnUiThread(new Runnable() {
                                         @Override
                                         public void run() {
                                             mChatAdapter.markAllMessagesAsRead();
@@ -364,11 +358,11 @@ public class GroupChatFragment extends Fragment {
                             mMessageCollection.fetch(MessageCollection.Direction.PREVIOUS, new CompletionHandler() {
                                 @Override
                                 public void onCompleted(SendBirdException e) {
-                                    if (getActivity() == null) {
+                                    if (context == null) {
                                         return;
                                     }
 
-                                    getActivity().runOnUiThread(new Runnable() {
+                                    ((AppCompatActivity) context).runOnUiThread(new Runnable() {
                                         @Override
                                         public void run() {
                                             mChatAdapter.markAllMessagesAsRead();
@@ -376,12 +370,21 @@ public class GroupChatFragment extends Fragment {
                                     });
                                 }
                             });
-                            if (groupChannel.getMemberCount() > 2) {
+
+                           /* if (groupChannel.getMemberCount() > 2) {
+                                if (mChannel.getInviter() != null) {
+                                    if (mChannel.getInviter().getUserId().equalsIgnoreCase(sharedPref.getEmail()))
+                                        imv_add.setVisibility(View.VISIBLE);
+                                }
+                            }*/
+
+                            if (groupChannel.getCustomType().equalsIgnoreCase(Constants.SENDBIRD_CHANNEL)) {
                                 if (mChannel.getInviter() != null) {
                                     if (mChannel.getInviter().getUserId().equalsIgnoreCase(sharedPref.getEmail()))
                                         imv_add.setVisibility(View.VISIBLE);
                                 }
                             }
+
                         }
                     }
                 }
@@ -418,15 +421,15 @@ public class GroupChatFragment extends Fragment {
         super.onResume();
         PreferenceUtils.init(getContext());
         String userId = PreferenceUtils.getUserId();
-        SendBirdSyncManager.setup(getActivity(), userId, new CompletionHandler() {
+        SendBirdSyncManager.setup(context, userId, new CompletionHandler() {
             @Override
             public void onCompleted(SendBirdException e) {
-                if (getActivity() == null) {
+                if (context == null) {
                     return;
                 }
 
-                ((MyZTPApplication) getActivity().getApplication()).setSyncManagerSetup(true);
-                getActivity().runOnUiThread(new Runnable() {
+                ((MyZTPApplication) ((AppCompatActivity) context).getApplication()).setSyncManagerSetup(true);
+                ((AppCompatActivity) context).runOnUiThread(new Runnable() {
                     @Override
                     public void run() {
                         createMessageCollection(mChannelUrl);
@@ -441,7 +444,7 @@ public class GroupChatFragment extends Fragment {
             }
         });
 
-        mChatAdapter.setContext(getActivity()); // Glide bug fix (java.lang.IllegalArgumentException: You cannot start a load for a destroyed activity)
+        mChatAdapter.setContext(context); // Glide bug fix (java.lang.IllegalArgumentException: You cannot start a load for a destroyed activity)
 
         // Gets channel from URL user requested
 
@@ -474,8 +477,7 @@ public class GroupChatFragment extends Fragment {
             public boolean onKey(View v, int keyCode, KeyEvent event) {
 
                 if (event.getAction() == KeyEvent.ACTION_UP && keyCode == KeyEvent.KEYCODE_BACK) {
-                    FragmentManager fm = getActivity()
-                            .getSupportFragmentManager();
+                    FragmentManager fm = ((AppCompatActivity) context).getSupportFragmentManager();
                     fm.popBackStackImmediate("GroupChatFragment", FragmentManager.POP_BACK_STACK_INCLUSIVE);
 
                     return true;
@@ -484,7 +486,7 @@ public class GroupChatFragment extends Fragment {
             }
         });
         if (mChannel != null)
-            if (mChannel.getMemberCount() > 2) {
+            if (mChannel.getCustomType().equalsIgnoreCase(Constants.SENDBIRD_CHANNEL)) {
                 if (mChannel.getInviter() != null) {
                     if (mChannel.getInviter().getUserId().equalsIgnoreCase(sharedPref.getEmail()))
                         imv_add.setVisibility(View.VISIBLE);
@@ -564,7 +566,7 @@ public class GroupChatFragment extends Fragment {
 
     private void setUpRecyclerView() {
         try {
-            mLayoutManager = new LinearLayoutManager(getActivity());
+            mLayoutManager = new LinearLayoutManager(context);
             mLayoutManager.setReverseLayout(true);
             mRecyclerView.setLayoutManager(mLayoutManager);
             mRecyclerView.setAdapter(mChatAdapter);
@@ -642,10 +644,10 @@ public class GroupChatFragment extends Fragment {
             @Override
             public void onFileMessageItemLongClick(FileMessage message, int position) {
 
-                if(mediaSent) {
-                    String[] options = new String[]{getString(R.string.delete_media)};
+                if (mediaSent) {
+                    String[] options = new String[]{context.getString(R.string.delete_media)};
 
-                    AlertDialog.Builder builder = new AlertDialog.Builder(getActivity());
+                    AlertDialog.Builder builder = new AlertDialog.Builder(context);
                     builder.setItems(options, new DialogInterface.OnClickListener() {
                         @Override
                         public void onClick(DialogInterface dialog, int which) {
@@ -665,9 +667,9 @@ public class GroupChatFragment extends Fragment {
     }
 
     private void showMessageOptionsDialog(final BaseMessage message, final int position) {
-        String[] options = new String[]{getString(R.string.Edit_message), getString(R.string.Delete_message)};
+        String[] options = new String[]{context.getString(R.string.Edit_message), context.getString(R.string.Delete_message)};
 
-        AlertDialog.Builder builder = new AlertDialog.Builder(getActivity());
+        AlertDialog.Builder builder = new AlertDialog.Builder(context);
         builder.setItems(options, new DialogInterface.OnClickListener() {
             @Override
             public void onClick(DialogInterface dialog, int which) {
@@ -728,7 +730,6 @@ public class GroupChatFragment extends Fragment {
                     @Override
                     public void run() {
                         mIMM.showSoftInput(mMessageEditText, 0);
-
                         mRecyclerView.postDelayed(new Runnable() {
                             @Override
                             public void run() {
@@ -744,24 +745,20 @@ public class GroupChatFragment extends Fragment {
     @Override
     public void onAttach(Context context) {
         super.onAttach(context);
-        this.context = context;
-//        ((VolunteerDashboardActivity)context).setOnBackPressedListener(new GroupChannelActivity.onBackPressedListener() {
-//            @Override
-//            public boolean onBack() {
-//                if (mCurrentState == STATE_EDIT) {
-//                    setState(STATE_NORMAL, null, -1);
-//                    return true;
-//                }
-//
-//                mIMM.hideSoftInputFromWindow(mMessageEditText.getWindowToken(), 0);
-//                return false;
-//            }
-//        });
+        if (isAdded())
+            this.context = context;
+        else
+            this.context = getActivity();
     }
 
+    @Override
+    public void onDetach() {
+        super.onDetach();
+        this.context = null;
+    }
 
     private void retryFailedMessage(final BaseMessage message) {
-        new AlertDialog.Builder(getActivity())
+        new AlertDialog.Builder(context)
                 .setMessage("Retry?")
                 .setPositiveButton(R.string.yes, new DialogInterface.OnClickListener() {
                     @Override
@@ -814,7 +811,7 @@ public class GroupChatFragment extends Fragment {
     }
 
     private void requestMedia() {
-        if (ContextCompat.checkSelfPermission(getActivity(), Manifest.permission.WRITE_EXTERNAL_STORAGE)
+        if (ContextCompat.checkSelfPermission(context, Manifest.permission.WRITE_EXTERNAL_STORAGE)
                 != PackageManager.PERMISSION_GRANTED) {
             // If storage permissions are not granted, request permissions at run-time,
             // as per < API 23 guidelines.
@@ -855,7 +852,7 @@ public class GroupChatFragment extends Fragment {
     }
 
     private void requestStoragePermissions() {
-        if (ActivityCompat.shouldShowRequestPermissionRationale(getActivity(),
+        if (ActivityCompat.shouldShowRequestPermissionRationale((Activity) context,
                 Manifest.permission.WRITE_EXTERNAL_STORAGE)) {
             // Provide an additional rationale to the user if the permission was not granted
             // and the user would benefit from additional context for the use of the permission.
@@ -880,12 +877,12 @@ public class GroupChatFragment extends Fragment {
     private void onFileMessageClicked(FileMessage message) {
         String type = message.getType().toLowerCase();
         if (type.startsWith("image")) {
-            Intent i = new Intent(getActivity(), PhotoViewerActivity.class);
+            Intent i = new Intent(context, PhotoViewerActivity.class);
             i.putExtra("url", message.getUrl());
             i.putExtra("type", message.getType());
             startActivity(i);
         } else if (type.startsWith("video")) {
-            Intent intent = new Intent(getActivity(), VideoPlayerActivity.class);
+            Intent intent = new Intent(context, VideoPlayerActivity.class);
             intent.putExtra("url", message.getUrl());
             startActivity(intent);
         } else {
@@ -894,19 +891,19 @@ public class GroupChatFragment extends Fragment {
     }
 
     private void showDownloadConfirmDialog(final FileMessage message) {
-        if (ContextCompat.checkSelfPermission(getActivity(), Manifest.permission.WRITE_EXTERNAL_STORAGE)
+        if (ContextCompat.checkSelfPermission(context, Manifest.permission.WRITE_EXTERNAL_STORAGE)
                 != PackageManager.PERMISSION_GRANTED) {
             // If storage permissions are not granted, request permissions at run-time,
             // as per < API 23 guidelines.
             requestStoragePermissions();
         } else {
-            new AlertDialog.Builder(getActivity())
+            new AlertDialog.Builder(context)
                     .setMessage("Download file?")
                     .setPositiveButton(R.string.download, new DialogInterface.OnClickListener() {
                         @Override
                         public void onClick(DialogInterface dialog, int which) {
                             if (which == DialogInterface.BUTTON_POSITIVE) {
-                                FileUtils.downloadFile(getActivity(), message.getUrl(), message.getName());
+                                FileUtils.downloadFile(context, message.getUrl(), message.getName());
                             }
                         }
                     })
@@ -949,7 +946,7 @@ public class GroupChatFragment extends Fragment {
                             // Error!
                             Log.e(LOG_TAG, e.toString());
                             Toast.makeText(
-                                    getActivity(),
+                                    context,
                                     "Send failed with error " + e.getCode() + ": " + e.getMessage(), Toast.LENGTH_SHORT)
                                     .show();
 
@@ -1005,7 +1002,7 @@ public class GroupChatFragment extends Fragment {
                     // Error!
                     Log.e(LOG_TAG, e.toString());
                     Toast.makeText(
-                            getActivity(),
+                            context,
                             "Send failed with error " + e.getCode() + ": " + e.getMessage(), Toast.LENGTH_SHORT)
                             .show();
 
@@ -1069,10 +1066,10 @@ public class GroupChatFragment extends Fragment {
         thumbnailSizes.add(new FileMessage.ThumbnailSize(240, 240));
         thumbnailSizes.add(new FileMessage.ThumbnailSize(320, 320));
 
-        Hashtable<String, Object> info = FileUtils.getFileInfo(getActivity(), uri);
+        Hashtable<String, Object> info = FileUtils.getFileInfo(context, uri);
 
         if (info == null) {
-            Toast.makeText(getActivity(), "Extracting file information failed.", Toast.LENGTH_LONG).show();
+            Toast.makeText(context, "Extracting file information failed.", Toast.LENGTH_LONG).show();
             return;
         }
 
@@ -1083,7 +1080,7 @@ public class GroupChatFragment extends Fragment {
         final int size = (Integer) info.get("size");
 
         if (path.equals("")) {
-            Toast.makeText(getActivity(), "File must be located in local storage.", Toast.LENGTH_LONG).show();
+            Toast.makeText(context, "File must be located in local storage.", Toast.LENGTH_LONG).show();
         } else {
             BaseChannel.SendFileMessageWithProgressHandler progressHandler = new BaseChannel.SendFileMessageWithProgressHandler() {
                 @Override
@@ -1099,7 +1096,7 @@ public class GroupChatFragment extends Fragment {
                 @Override
                 public void onSent(FileMessage fileMessage, SendBirdException e) {
                     if (e != null) {
-                        Toast.makeText(getActivity(), "" + e.getCode() + ":" + e.getMessage(), Toast.LENGTH_SHORT).show();
+                        Toast.makeText(context, "" + e.getCode() + ":" + e.getMessage(), Toast.LENGTH_SHORT).show();
 
                         // remove preview message from MessageCollection
                         if (mMessageCollection != null) {
@@ -1142,7 +1139,7 @@ public class GroupChatFragment extends Fragment {
             public void onUpdated(UserMessage userMessage, SendBirdException e) {
                 if (e != null) {
                     // Error!
-                    Toast.makeText(getActivity(), "Error " + e.getCode() + ": " + e.getMessage(), Toast.LENGTH_SHORT).show();
+                    Toast.makeText(context, "Error " + e.getCode() + ": " + e.getMessage(), Toast.LENGTH_SHORT).show();
                     return;
                 }
 
@@ -1163,9 +1160,9 @@ public class GroupChatFragment extends Fragment {
             public void onResult(SendBirdException e) {
                 if (e != null) {
                     if (e.getCode() == 400201)
-                        Toast.makeText(getActivity(), "Media is not uploaded yet", Toast.LENGTH_SHORT).show();
+                        Toast.makeText(context, "Media is not uploaded yet", Toast.LENGTH_SHORT).show();
                     else
-                        Toast.makeText(getActivity(), "Error " + e.getCode() + ": " + e.getMessage(), Toast.LENGTH_SHORT).show();
+                        Toast.makeText(context, "Error " + e.getCode() + ": " + e.getMessage(), Toast.LENGTH_SHORT).show();
                     return;
                 }
             }
@@ -1182,7 +1179,7 @@ public class GroupChatFragment extends Fragment {
             public void onResult(SendBirdException e) {
                 if (e != null) {
                     // Error!
-                    Toast.makeText(getActivity(), "Error " + e.getCode() + ": " + e.getMessage(), Toast.LENGTH_SHORT).show();
+                    Toast.makeText(context, "Error " + e.getCode() + ": " + e.getMessage(), Toast.LENGTH_SHORT).show();
                     return;
                 }
             }
@@ -1194,11 +1191,11 @@ public class GroupChatFragment extends Fragment {
         public void onMessageEvent(MessageCollection collection, final List<BaseMessage> messages, final MessageEventAction action) {
             Log.d("SyncManager", "onMessageEvent: size = " + messages.size() + ", action = " + action);
 
-            if (getActivity() == null) {
+            if (context == null) {
                 return;
             }
 
-            getActivity().runOnUiThread(new Runnable() {
+            ((AppCompatActivity) context).runOnUiThread(new Runnable() {
                 @Override
                 public void run() {
                     switch (action) {

@@ -4,6 +4,32 @@
     android:layout_width="match_parent"
     android:layout_height="match_parent">
 
+    <FrameLayout
+        android:layout_width="match_parent"
+        android:layout_height="@dimen/_40sdp"
+        android:layout_margin="@dimen/_15sdp"
+        android:background="@drawable/gray_rectangle">
+
+        <ImageView
+            android:layout_width="@dimen/_20sdp"
+            android:layout_height="@dimen/_20sdp"
+            android:src="@drawable/ic_search"
+            android:layout_gravity="center_vertical"
+            android:tint="#C2C2C2"
+            android:layout_marginStart="@dimen/_5sdp"/>
+
+        <com.ztp.app.Helper.MyEditText
+            android:id="@+id/searchView"
+            android:layout_width="match_parent"
+            android:layout_height="match_parent"
+            android:background="@null"
+            style="@style/RegularTextView"
+            android:layout_marginStart="@dimen/_35sdp"
+            android:hint="@string/find_followers"
+            />
+
+    </FrameLayout>
+
     <ListView
         android:id="@+id/listView"
         android:layout_width="match_parent"
@@ -13,7 +39,10 @@
         android:divider="@color/background_3"
         android:layout_marginStart="@dimen/_20sdp"
         android:layout_marginEnd="@dimen/_20sdp"
-        android:overScrollMode="never"/>
+        android:overScrollMode="never"
+        android:layout_marginTop="@dimen/_60sdp"
+        />
+
     <com.ztp.app.Helper.MyTextView
         android:id="@+id/noData"
         android:layout_width="wrap_content"

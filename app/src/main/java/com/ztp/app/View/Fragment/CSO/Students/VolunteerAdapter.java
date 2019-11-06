@@ -123,8 +123,6 @@ class VolunteerAdapter extends BaseAdapter {
         }
 
         holder.tv_heading.setText(dataModel.getUserFName() + " " + dataModel.getUserLName());
-
-
         holder.date.setText(dataModel.getShiftDate());
         holder.time.setText(dataModel.getShiftStartTime() + " - " + dataModel.getShiftEndTime());
         holder.name.setText(dataModel.getUserEmail());
@@ -595,7 +593,6 @@ class VolunteerAdapter extends BaseAdapter {
                                 break;
                         }
                         refreshVolunteers(position, map_status);
-
                     } else if (changeStatusByCSOResponse.getResStatus().equalsIgnoreCase("401")) {
                         new MyToast(context).show(context.getString(R.string.toast_volunteer_failed), Toast.LENGTH_SHORT, false);
                     }

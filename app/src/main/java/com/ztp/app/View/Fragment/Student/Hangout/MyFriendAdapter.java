@@ -7,6 +7,7 @@ import android.view.ViewGroup;
 import android.widget.BaseAdapter;
 import android.widget.ImageView;
 
+import com.squareup.picasso.Picasso;
 import com.ztp.app.Data.Local.SharedPrefrence.SharedPref;
 import com.ztp.app.Data.Remote.Model.Response.MyFriendsResponse;
 import com.ztp.app.Helper.MyProgressDialog;
@@ -68,7 +69,12 @@ public class MyFriendAdapter extends BaseAdapter {
         holder.tv_name.setText(myData.getUserFName() + " " + myData.getUserLName());
         holder.tv_email.setText(myData.getUserEmail());
         holder.tv_phone.setText(myData.getUserPhone());
-        holder.image.setImageResource(R.drawable.user);
+
+        if (myData.getUserProfilePic().isEmpty()) {
+            holder.image.setImageResource(R.drawable.user);
+        } else{
+            Picasso.with(context).load(myData.getUserProfilePic()).placeholder(R.drawable.user).error(R.drawable.user).into(holder.image);
+        }
         view.setId(position);
         view.setOnClickListener(new View.OnClickListener() {
             @Override

@@ -20,6 +20,7 @@ import com.bumptech.glide.load.engine.DiskCacheStrategy;
 import com.bumptech.glide.request.RequestOptions;
 import com.bumptech.glide.request.target.SimpleTarget;
 import com.bumptech.glide.request.transition.Transition;
+import com.facebook.shimmer.ShimmerFrameLayout;
 import com.sendbird.android.AdminMessage;
 import com.sendbird.android.BaseChannel;
 import com.sendbird.android.BaseMessage;
@@ -43,9 +44,6 @@ import java.util.List;
 import java.util.concurrent.ConcurrentHashMap;
 import de.hdodenhof.circleimageview.CircleImageView;
 
-/**
- * Displays a list of Group Channels within a SendBird application.
- */
 public class GroupChannelListAdapter extends RecyclerView.Adapter<RecyclerView.ViewHolder> {
 
     private List<GroupChannel> mChannelList;
@@ -55,7 +53,6 @@ public class GroupChannelListAdapter extends RecyclerView.Adapter<RecyclerView.V
     private ConcurrentHashMap<String, Integer> mChannelImageNumMap;
     private ConcurrentHashMap<String, ImageView> mChannelImageViewMap;
     private ConcurrentHashMap<String, SparseArray<Bitmap>> mChannelBitmapMap;
-
     private OnItemClickListener mItemClickListener;
     private OnItemLongClickListener mItemLongClickListener;
 
@@ -198,6 +195,7 @@ public class GroupChannelListAdapter extends RecyclerView.Adapter<RecyclerView.V
         TextView topicText, lastMessageText, unreadCountText, dateText, memberCountText;
         CircleImageView coverImage;
         LinearLayout typingIndicatorContainer;
+        ShimmerFrameLayout container;
 
         ChannelHolder(View itemView) {
             super(itemView);
@@ -209,6 +207,8 @@ public class GroupChannelListAdapter extends RecyclerView.Adapter<RecyclerView.V
             memberCountText = itemView.findViewById(R.id.text_group_channel_list_member_count);
             coverImage = itemView.findViewById(R.id.image_group_channel_list_cover);
             typingIndicatorContainer = itemView.findViewById(R.id.container_group_channel_list_typing_indicator);
+            container = (ShimmerFrameLayout) itemView.findViewById(R.id.shimmer_view_container);
+            container.startShimmer();
         }
 
         /**
@@ -408,7 +408,9 @@ public class GroupChannelListAdapter extends RecyclerView.Adapter<RecyclerView.V
 
                         RequestOptions myOptions = new RequestOptions()
                                 .dontAnimate()
-                                .diskCacheStrategy(DiskCacheStrategy.AUTOMATIC);
+                                .diskCacheStrategy(DiskCacheStrategy.AUTOMATIC)
+                                .placeholder(R.drawable.user)
+                                .error(R.drawable.user);;
 
                         Glide.with(context)
                                 .asBitmap()

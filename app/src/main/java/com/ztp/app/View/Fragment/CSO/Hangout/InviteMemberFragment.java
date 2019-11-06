@@ -42,7 +42,6 @@ public class InviteMemberFragment extends Fragment {
     private RecyclerView mRecyclerView;
     private InviteUserListAdapter mListAdapter;
     MyToast myToast;
-
     MyProgressDialog myProgressDialog;
     MyTextView noData;
     SharedPref sharedPref;
@@ -81,37 +80,34 @@ public class InviteMemberFragment extends Fragment {
         noData = view.findViewById(R.id.noData);
         myToast = new MyToast(context);
         mListAdapter = new InviteUserListAdapter(getActivity(), false, true, new ArrayList<>());
-        getVolunteers();
         fab_invite.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {
                 if (InviteUserListAdapter.mSelectedUserIds.size() > 0) {
 
-                        channel.inviteWithUserIds(InviteUserListAdapter.mSelectedUserIds, new GroupChannel.GroupChannelInviteHandler() {
-                            @Override
-                            public void onResult(SendBirdException e) {
-                                if (e != null) {
-                                    e.printStackTrace();
-                                    myToast.show("User not found", Toast.LENGTH_LONG, false);// Error.
-                                }
-                                else
-                                {
-                                    myToast.show(getString(R.string.invitation_sent), Toast.LENGTH_LONG, true);
-                                    Constants.backFromChat=false;
-                                    GroupChannelListFragment fragment = new GroupChannelListFragment();
-                                    Bundle bundle = new Bundle();
-                                    bundle.putString(TabMyBookingFragment.EXTRA_NEW_CHANNEL_URL, channel.getUrl());
-                                    bundle.putString(TabMyBookingFragment.EXTRA_Name, channel.getName());
-                                    fragment.setArguments(bundle);
-                                    FragmentManager fragmentManager = ((AppCompatActivity) context).getSupportFragmentManager();
-                                    FragmentTransaction fragmentTransaction = fragmentManager.beginTransaction();
-                                    fragmentTransaction.replace(R.id.body, fragment, "GroupChannelListFragment");
-                                    fragmentTransaction.addToBackStack(null);
-                                    fragmentTransaction.commit();
+                    channel.inviteWithUserIds(InviteUserListAdapter.mSelectedUserIds, new GroupChannel.GroupChannelInviteHandler() {
+                        @Override
+                        public void onResult(SendBirdException e) {
+                            if (e != null) {
+                                e.printStackTrace();
+                                myToast.show("User not found", Toast.LENGTH_LONG, false);// Error.
+                            } else {
+                                myToast.show(getString(R.string.invitation_sent), Toast.LENGTH_LONG, true);
+                                Constants.backFromChat = false;
+                                GroupChannelListFragment fragment = new GroupChannelListFragment();
+                                Bundle bundle = new Bundle();
+                                bundle.putString(TabMyBookingFragment.EXTRA_NEW_CHANNEL_URL, channel.getUrl());
+                                bundle.putString(TabMyBookingFragment.EXTRA_Name, channel.getName());
+                                fragment.setArguments(bundle);
+                                FragmentManager fragmentManager = ((AppCompatActivity) context).getSupportFragmentManager();
+                                FragmentTransaction fragmentTransaction = fragmentManager.beginTransaction();
+                                fragmentTransaction.replace(R.id.body, fragment, "GroupChannelListFragment");
+                                fragmentTransaction.addToBackStack(null);
+                                fragmentTransaction.commit();
 
-                                }
                             }
-                        });
+                        }
+                    });
 
                 } else {
                     myToast.show(getString(R.string.no_user_selected), Toast.LENGTH_LONG, false);
@@ -130,50 +126,52 @@ public class InviteMemberFragment extends Fragment {
     }
 
     private void filterMembers() {
-        GroupChannel.getChannel(mChannelUrl, new GroupChannel.GroupChannelGetHandler() {
-            @Override
-            public void onResult(GroupChannel groupChannel, SendBirdException e) {
-                channel = groupChannel;
-                List<Member> memberList = groupChannel.getMembers();
-                List<Member> newList = new ArrayList<>(memberList);
-                List<CsoHangoutVolunteerResponse.ResData> newVolList = new ArrayList<>(volunteerList);
-                for (CsoHangoutVolunteerResponse.ResData data : volunteerList) {
-                    for (int i = 0; i < memberList.size(); i++) {
-                        Member member = memberList.get(i);
+        GroupChannel.getChannel(mChannelUrl, (groupChannel, e) -> {
 
-                        if (member.getUserId().equalsIgnoreCase(data.getVol_email())) {
-                            newList.remove(member);
-                            newVolList.remove(data);
-
-                        }
-                    }
-                }
-                if (newVolList.size() == 0) {
-                    noData.setVisibility(View.VISIBLE);
-                    mRecyclerView.setVisibility(View.GONE);
-                } else {
-                    for (CsoHangoutVolunteerResponse.ResData data : newVolList) {
-                            InviteUser user = new InviteUser();
-                            user.setVol_email(data.getVol_email());
-                            user.setVol_f_name(data.getVol_f_name());
-                            user.setVol_l_name(data.getVol_l_name());
-                            membersList.add(user);
-                    }
-
-                    noData.setVisibility(View.INVISIBLE);
-                    mRecyclerView.setVisibility(View.VISIBLE);
-                    mListAdapter = new InviteUserListAdapter(getActivity(), false, true, membersList);
-                    mRecyclerView.setAdapter(mListAdapter);
-                }
-                myProgressDialog.dismiss();
+            if (e != null) {
+                e.printStackTrace();
+                return;
             }
+            channel = groupChannel;
+            List<Member> memberList = groupChannel.getMembers();
+            List<Member> newList = new ArrayList<>(memberList);
+            List<CsoHangoutVolunteerResponse.ResData> newVolList = new ArrayList<>(volunteerList);
+            for (CsoHangoutVolunteerResponse.ResData data : volunteerList) {
+                for (int i = 0; i < memberList.size(); i++) {
+                    Member member = memberList.get(i);
 
+                    if (member.getUserId().equalsIgnoreCase(data.getVol_email())) {
+                        newList.remove(member);
+                        newVolList.remove(data);
+                    }
+                }
+            }
+            if (newVolList.size() == 0) {
+                noData.setVisibility(View.VISIBLE);
+                mRecyclerView.setVisibility(View.GONE);
+            } else {
+                membersList = new ArrayList<>();
+                for (CsoHangoutVolunteerResponse.ResData data : newVolList) {
+                    InviteUser user = new InviteUser();
+                    user.setVol_email(data.getVol_email());
+                    user.setVol_f_name(data.getVol_f_name());
+                    user.setVol_l_name(data.getVol_l_name());
+                    membersList.add(user);
+                }
+
+                noData.setVisibility(View.INVISIBLE);
+                mRecyclerView.setVisibility(View.VISIBLE);
+                mListAdapter = new InviteUserListAdapter(getActivity(), false, true, membersList);
+                mRecyclerView.setAdapter(mListAdapter);
+            }
+            myProgressDialog.dismiss();
         });
     }
 
     private void getVolunteers() {
 
         if (Utility.isNetworkAvailable(context)) {
+            volunteerList = new ArrayList<>();
             myProgressDialog.show(getString(R.string.please_wait));
             csoHangoutVolunteerViewModel.getCsoVolunteers(new CsoHangoutVolunteerRequest(sharedPref.getUserId())).observe(this, csoHangoutVolunteerResponse -> {
                 if (csoHangoutVolunteerResponse != null) {
@@ -199,8 +197,6 @@ public class InviteMemberFragment extends Fragment {
                     myToast.show(getString(R.string.err_server), Toast.LENGTH_SHORT, false);
                     myProgressDialog.dismiss();
                 }
-
-
             });
         } else {
             myToast.show(getString(R.string.no_internet_connection), Toast.LENGTH_SHORT, false);
@@ -228,6 +224,9 @@ public class InviteMemberFragment extends Fragment {
         this.context = context;
     }
 
-
-
+    @Override
+    public void onResume() {
+        super.onResume();
+        getVolunteers();
+    }
 }

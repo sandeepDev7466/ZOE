@@ -1,5 +1,6 @@
 package com.ztp.app.Data.Remote.Model.Response;
 
+import java.io.Serializable;
 import java.util.List;
 import com.google.gson.annotations.Expose;
 import com.google.gson.annotations.SerializedName;
@@ -40,7 +41,7 @@ public class GetAllNotificationResponse {
         this.resStatus = resStatus;
     }
 
-    public class ResData {
+    public class ResData implements Serializable {
 
         @SerializedName("notification_id")
         @Expose
@@ -65,7 +66,17 @@ public class GetAllNotificationResponse {
         private String notifiationAddDate;
         @SerializedName("notification_update_date")
         @Expose
-        private Object notificationUpdateDate;
+        private String notificationUpdateDate;
+
+        @SerializedName("event_id")
+        @Expose
+        private String eventId;
+        @SerializedName("map_id")
+        @Expose
+        private String mapId;
+        @SerializedName("event_name")
+        @Expose
+        private String eventName;
 
         public String getNotificationId() {
             return notificationId;
@@ -123,15 +134,37 @@ public class GetAllNotificationResponse {
             this.notifiationAddDate = notifiationAddDate;
         }
 
-        public Object getNotificationUpdateDate() {
+        public String getNotificationUpdateDate() {
             return notificationUpdateDate;
         }
 
-        public void setNotificationUpdateDate(Object notificationUpdateDate) {
+        public void setNotificationUpdateDate(String notificationUpdateDate) {
             this.notificationUpdateDate = notificationUpdateDate;
         }
 
-    }
+        public String getEventId() {
+            return eventId;
+        }
 
+        public void setEventId(String eventId) {
+            this.eventId = eventId;
+        }
+
+        public String getMapId() {
+            return mapId;
+        }
+
+        public void setMapId(String mapId) {
+            this.mapId = mapId;
+        }
+
+        public String getEventName() {
+            return eventName;
+        }
+
+        public void setEventName(String eventName) {
+            this.eventName = eventName;
+        }
+    }
 }
 

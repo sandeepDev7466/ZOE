@@ -11,8 +11,8 @@
         android:scrollbars="none"
         android:dividerHeight="0.4dp"
         android:divider="@color/background_3"
-        android:layout_marginStart="@dimen/_20sdp"
-        android:layout_marginEnd="@dimen/_20sdp"
+        android:layout_marginStart="@dimen/_10sdp"
+        android:layout_marginEnd="@dimen/_10sdp"
         android:overScrollMode="never"
         />
     <com.ztp.app.Helper.MyTextView

@@ -41,7 +41,7 @@ public class Constants {
 
     public static String WITHDRAWN = "Withdrawn";
     public static String NOT_AVAILABLE = "Not Available";
-    public static String PENDING = "Applied";
+    public static String PENDING = "Waiting";
     public static String ACCEPTED = "Accepted";
     public static String DECLINED = "Declined";
     public static String COMPLETED = "Completed";

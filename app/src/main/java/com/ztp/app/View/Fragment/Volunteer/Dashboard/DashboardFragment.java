@@ -23,6 +23,7 @@ import android.widget.ImageView;
 import android.widget.LinearLayout;
 import android.widget.ListView;
 import android.widget.ProgressBar;
+import android.widget.TextView;
 import android.widget.Toast;
 
 import com.google.firebase.iid.FirebaseInstanceId;
@@ -63,27 +64,21 @@ public class DashboardFragment extends Fragment {
 
     Context context;
     MyToast myToast;
-    GPSTracker gpsTracker;
-    double latitude, longitude;
     VolunteerDashboardCombineViewModel volunteerDashboardCombineViewModel;
     SharedPref sharedPref;
     MyProgressDialog myProgressDialog;
     List<VolunteerDashboardCombineResponse.EventData> eventDataList = new ArrayList<>();
     RoomDB roomDB;
-    MyTextView tv_unread_count;
     ListView listView;
     RecyclerView recyclerView;
     SearchEventByAreaViewModel searchEventViewModel;
     List<SearchEventbyAreaResponse.SearchedEventByArea> eventsByAreaList = new ArrayList<>();
-    MyTextView noEvents, noUpcomingEvents;
-    MyBoldTextView seeAll;
+    TextView noEvents, noUpcomingEvents, seeAll, tv_days, tv_hours, tv_minutes, tv_seconds, con_txt;
     InsertFirebaseIdViewModel insertFirebaseIdViewModel;
     LinearLayout timerLayout, con_layout;
-    MyBoldTextView tv_days, tv_hours, tv_minutes, tv_seconds;
     private Handler handler;
     private Runnable runnable;
     int countDown;
-    MyHeadingTextView con_txt;
     boolean theme;
     ImageView con_img;
     SwipeRefreshLayout mSwipeRefreshLayout;
@@ -98,7 +93,6 @@ public class DashboardFragment extends Fragment {
         //View view = inflater.inflate(R.layout.fragment_dashboard, container, false);
         View view = inflater.inflate(R.layout.fragment_dashboard_new, container, false);
         myToast = new MyToast(context);
-        gpsTracker = new GPSTracker(context);
         sharedPref = SharedPref.getInstance(context);
         theme = sharedPref.getTheme();
         myProgressDialog = new MyProgressDialog(context);
@@ -109,12 +103,6 @@ public class DashboardFragment extends Fragment {
         searchEventViewModel = ViewModelProviders.of((FragmentActivity) context).get(SearchEventByAreaViewModel.class);
         volunteerDashboardCombineViewModel = ViewModelProviders.of((FragmentActivity) context).get(VolunteerDashboardCombineViewModel.class);
         insertFirebaseIdViewModel = ViewModelProviders.of((FragmentActivity) context).get(InsertFirebaseIdViewModel.class);
-        /*if (gpsTracker.getIsGPSTrackingEnabled()) {
-            latitude = gpsTracker.getLatitude();
-            longitude = gpsTracker.getLongitude();
-        } else {
-            gpsTracker.showSettingsAlert(context);
-        }*/
         init(view);
         if (theme) {
             con_txt.setTextColor(getResources().getColor(R.color.black));
@@ -153,15 +141,6 @@ public class DashboardFragment extends Fragment {
         return view;
     }
 
-
-    @Override
-    public void onPause() {
-        super.onPause();
-        gpsTracker.stopUsingGPS();
-        //LocalBroadcastManager.getInstance(context).unregisterReceiver(mLocationReceiver);
-
-    }
-
     public void init(View view) {
         seeAll = view.findViewById(R.id.seeAll);
         listView = view.findViewById(R.id.listView);
@@ -172,7 +151,6 @@ public class DashboardFragment extends Fragment {
         // rankImage = view.findViewById(R.id.rankImage);
         // volHours = view.findViewById(R.id.volHours);
         LinearLayoutManager layoutManager = new LinearLayoutManager(context, LinearLayoutManager.HORIZONTAL, false);
-        //layoutManager.setStackFromEnd(true);
         recyclerView.setLayoutManager(layoutManager);
         timerLayout = view.findViewById(R.id.timerLayout);
         con_layout = view.findViewById(R.id.con_layout);
@@ -221,7 +199,6 @@ public class DashboardFragment extends Fragment {
     }*/
 
     private void hitUpcomingEventsApi() {
-        //getAddress(gpsTracker.getLatitude(), gpsTracker.getLongitude());
 
         progress.setVisibility(View.VISIBLE);
 
@@ -324,50 +301,7 @@ public class DashboardFragment extends Fragment {
                             }
                         }
 
-                       /* if (!sharedPref.getProfileImage().isEmpty()) {
-
-                            Picasso.with(context).load(sharedPref.getProfileImage())
-                                    .memoryPolicy(MemoryPolicy.NO_CACHE )
-                                    .networkPolicy(NetworkPolicy.NO_CACHE)
-                                    .placeholder(R.drawable.user_png)
-                                    .error(R.drawable.user_png)
-                                    .into(VolunteerDashboardActivity.user);
-                            Picasso.with(context).load(sharedPref.getProfileImage())
-                                    .memoryPolicy(MemoryPolicy.NO_CACHE )
-                                    .networkPolicy(NetworkPolicy.NO_CACHE)
-                                    .placeholder(R.drawable.user_png)
-                                    .error(R.drawable.user_png)
-                                    .into(VolunteerDashboardActivity.userNav);
-
-
-                        } else {
-                            Picasso.with(context).load(R.drawable.user).into(VolunteerDashboardActivity.user);
-                            Picasso.with(context).load(R.drawable.user).into(VolunteerDashboardActivity.userNav);
-                        }*/
-
-                        /*if (!sharedPref.getCoverImage().isEmpty()) {
-
-                         *//* Picasso.with(context).load(sharedPref.getCoverImage())
-                                    .memoryPolicy(MemoryPolicy.NO_CACHE )
-                                    .networkPolicy(NetworkPolicy.NO_CACHE)
-                                    .placeholder(R.drawable.scene)
-                                    .error(R.drawable.scene)
-                                    .into(VolunteerDashboardActivity.cover);*//*
-
-                            Picasso.with(context).load(sharedPref.getCoverImage())
-                                    .memoryPolicy(MemoryPolicy.NO_CACHE )
-                                    .networkPolicy(NetworkPolicy.NO_CACHE)
-                                    .placeholder(R.drawable.back)
-                                    .error(R.drawable.back)
-                                    .into(VolunteerDashboardActivity.coverNav);
-
-                        } else {
-                           // Picasso.with(context).load(R.drawable.scene).into(VolunteerDashboardActivity.cover);
-                            Picasso.with(context).load(R.drawable.scene).into(VolunteerDashboardActivity.coverNav);
-                        }*/
-
                     } else if (volunteerDashboardCombineResponse.getResStatus().equalsIgnoreCase("401")) {
-                        // myToast.show(getString(R.string.err_events_not_found), Toast.LENGTH_SHORT, false);
                         eventDataList.clear();
                         listView.setVisibility(View.GONE);
                         noUpcomingEvents.setVisibility(View.VISIBLE);
@@ -385,80 +319,6 @@ public class DashboardFragment extends Fragment {
             myToast.show(getString(R.string.no_internet_connection), Toast.LENGTH_SHORT, false);
         }
     }
-
-    /*private void getAddressFromLocation(double latitude, double longitude) {
-        Geocoder geocoder = new Geocoder(context, Locale.ENGLISH);
-        try {
-            List<Address> addresses = geocoder.getFromLocation(latitude, longitude, 1);
-
-            if (addresses.size() > 0) {
-                fetchedAddress = addresses.get(0);
-                strAddress = new StringBuilder();
-
-                if (fetchedAddress.getMaxAddressLineIndex() > 0) {
-                    for (int i = 0; i < fetchedAddress.getMaxAddressLineIndex(); i++) {
-                        strAddress.append(fetchedAddress.getAddressLine(i));
-                    }
-                } else {
-                    try {
-                        strAddress.append(fetchedAddress.getAddressLine(0));
-                    } catch (Exception ignored) {
-                        ignored.printStackTrace();
-                    }
-                }
-
-                if (fetchedAddress.getPostalCode() != null) {
-                    postalCode = fetchedAddress.getPostalCode();
-                    hitFindCsoByArea(postalCode);
-                    //search(offset, limit, false);
-                }
-
-            } else {
-                postalCode = "";
-                //search(offset, limit, false);
-                hitFindCsoByArea(postalCode);
-                //myToast.show(getString(R.string.err_unable_to_get_address), Toast.LENGTH_SHORT, false);
-
-            }
-
-
-        } catch (IOException e) {
-            e.printStackTrace();
-            // myToast.show(getString(R.string.err_unable_to_get_address), Toast.LENGTH_SHORT, false);
-        }
-    }
-*/
-
-    /*public void getAddress(double LATITUDE, double LONGITUDE) {
-
-        try {
-            Geocoder geocoder = new Geocoder(context, Locale.getDefault());
-            List<Address> addresses = geocoder.getFromLocation(LATITUDE, LONGITUDE, 1);
-            if (addresses != null && addresses.size() > 0) {
-
-                String address = addresses.get(0).getAddressLine(0); // If any additional address line present than only, check with max available address lines by getMaxAddressLineIndex()
-                String city = addresses.get(0).getLocality();
-                String state = addresses.get(0).getAdminArea();
-                String country = addresses.get(0).getCountryName();
-                String postalCode = addresses.get(0).getPostalCode();
-                String knownName = addresses.get(0).getFeatureName(); // Only if available else return NULL
-
-                hitFindCsoByArea(postalCode);
-                myToast.show(LATITUDE + " , " + LONGITUDE + " \n\t\t\t\t " + postalCode, Toast.LENGTH_SHORT, true);
-
-            } else {
-                noEvents.setVisibility(View.VISIBLE);
-                recyclerView.setVisibility(View.GONE);
-                myToast.show(LATITUDE + " , " + LONGITUDE, Toast.LENGTH_SHORT, true);
-            }
-        } catch (IOException e) {
-            e.printStackTrace();
-            noEvents.setVisibility(View.VISIBLE);
-            recyclerView.setVisibility(View.GONE);
-            myToast.show(LATITUDE + " , " + LONGITUDE + " \n\t\t\t\t " + e.getMessage(), Toast.LENGTH_SHORT, true);
-        }
-    }*/
-
 
     public void countDownStart(String future) {
         runnable = new Runnable() {
@@ -547,9 +407,6 @@ public class DashboardFragment extends Fragment {
     @Override
     public void onResume() {
         super.onResume();
-
-        /*eventsByAreaList.clear();
-        eventDataList.clear();*/
 
         if (!sharedPref.getCoverImage().isEmpty()) {
             Picasso.with(context).load(sharedPref.getCoverImage())

@@ -10,7 +10,7 @@ import com.ztp.app.Utils.Utility;
 import org.acra.ACRA;
 import org.acra.annotation.ReportsCrashes;
 
-@ReportsCrashes(mailTo = "praveen.sharma@hensongroup.com",formUri = "")
+@ReportsCrashes(mailTo = "praveen.sharma@hensongroup.com", formUri = "")
 @SuppressLint("StaticFieldLeak")
 public class MyZTPApplication extends Application {
     static {

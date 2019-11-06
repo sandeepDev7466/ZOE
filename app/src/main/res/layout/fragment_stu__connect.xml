@@ -11,7 +11,7 @@ android:orientation="vertical">
         <com.ztp.app.Helper.MyHeadingTextView
             android:id="@+id/heading"
             android:layout_width="match_parent"
-            android:layout_height="@dimen/_50sdp"
+            android:layout_height="@dimen/_45sdp"
             android:background="@color/tab_hangout"
             android:gravity="center"
             android:text="@string/CONNECT"
@@ -29,7 +29,7 @@ android:orientation="vertical">
 
 <LinearLayout
     android:layout_width="match_parent"
-    android:layout_height="@dimen/_40sdp"
+    android:layout_height="@dimen/_30sdp"
     android:gravity="center|bottom"
     android:padding="@dimen/_5sdp">
 
@@ -59,16 +59,15 @@ android:orientation="vertical">
         android:id="@+id/viewPagerFriend"
         android:layout_width="match_parent"
         android:layout_height="match_parent"
-        android:layout_marginTop="@dimen/_20sdp"
+        android:layout_marginTop="@dimen/_5sdp"
         android:visibility="gone"/>
 
     <android.support.v4.view.ViewPager
         android:id="@+id/viewPagerCso"
         android:layout_width="match_parent"
         android:layout_height="match_parent"
-        android:layout_marginTop="@dimen/_20sdp"
+        android:layout_marginTop="@dimen/_5sdp"
         android:visibility="gone"/>
-
 
 </FrameLayout>
 

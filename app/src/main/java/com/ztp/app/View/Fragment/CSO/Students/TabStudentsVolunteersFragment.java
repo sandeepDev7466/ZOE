@@ -20,6 +20,7 @@ import com.ztp.app.Data.Local.Room.Async.Get.DBGetCSOAllRequest;
 import com.ztp.app.Data.Local.SharedPrefrence.SharedPref;
 import com.ztp.app.Data.Remote.Model.Request.CSOAllRequest;
 import com.ztp.app.Data.Remote.Model.Response.CSOAllResponse;
+import com.ztp.app.Data.Remote.Model.Response.GetAllNotificationResponse;
 import com.ztp.app.Helper.MyProgressDialog;
 import com.ztp.app.Helper.MyTextView;
 import com.ztp.app.Helper.MyToast;
@@ -55,7 +56,7 @@ public class TabStudentsVolunteersFragment extends Fragment {
             myProgressDialog.show(getString(R.string.please_wait));
             CSOAllRequest csoAllRequest = new CSOAllRequest(sharedPref.getUserId());
             Log.i("", "" + new Gson().toJson(csoAllRequest));
-            csoAllRequestViewModel.getCsoAllRequetResponse(context,csoAllRequest).observe((LifecycleOwner) context, new Observer<CSOAllResponse>() {
+            csoAllRequestViewModel.getCsoAllRequetResponse(context, csoAllRequest).observe((LifecycleOwner) context, new Observer<CSOAllResponse>() {
                 @Override
                 public void onChanged(@Nullable CSOAllResponse csoAllResponse) {
 
@@ -65,6 +66,7 @@ public class TabStudentsVolunteersFragment extends Fragment {
                                 Log.i("", "" + new Gson().toJson(csoAllResponse.getResData()));
                                 listView.setVisibility(View.VISIBLE);
                                 noData.setVisibility(View.INVISIBLE);
+
                                 VolunteerAdapter adapter = new VolunteerAdapter(context, csoAllResponse.getResData());
                                 listView.setAdapter(adapter);
                             } else {

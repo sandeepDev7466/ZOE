@@ -2,6 +2,7 @@
 <RelativeLayout xmlns:android="http://schemas.android.com/apk/res/android"
     android:layout_width="match_parent"
     android:layout_height="@dimen/_65sdp"
+    xmlns:app="http://schemas.android.com/apk/res-auto"
     android:paddingLeft="@dimen/_14sdp"
     android:paddingRight="@dimen/_14sdp"
     android:background="?attr/selectableItemBackground"
@@ -37,6 +38,12 @@
             android:ellipsize="end"
             android:maxLines="1" />
 
+        <com.facebook.shimmer.ShimmerFrameLayout
+            android:id="@+id/shimmer_view_container"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            app:shimmer_tilt="180">
+
         <com.ztp.app.Helper.MyTextView
             android:id="@+id/text_group_channel_list_member_count"
             android:layout_width="wrap_content"
@@ -51,6 +58,7 @@
             android:gravity="center"
             android:maxLines="1"
             android:textColor="@color/background_3"/>
+        </com.facebook.shimmer.ShimmerFrameLayout>
 
     </LinearLayout>
 

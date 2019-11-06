@@ -59,7 +59,12 @@ public class Stu_MyCsoFragment extends Fragment {
         myToast = new MyToast(context);
         sharedPref = SharedPref.getInstance(context);
         approvedCSOViewModel = ViewModelProviders.of((FragmentActivity) context).get(ApprovedCSOViewModel.class);
-        getRegisteredCSO();
+        try {
+            getRegisteredCSO();
+        }catch (Exception e)
+        {
+            e.printStackTrace();
+        }
     }
 
     @Override
@@ -94,14 +99,8 @@ public class Stu_MyCsoFragment extends Fragment {
                             approvedCSOList = approvedCSOResponse.getResData();
                             noData.setVisibility(View.GONE);
                             listView.setVisibility(View.VISIBLE);
-
-                            StudentMyCSOAdapter studentMyCSOAdapter = new StudentMyCSOAdapter(context,approvedCSOList);
+                            StudentMyCSOAdapter studentMyCSOAdapter = new StudentMyCSOAdapter(context, approvedCSOList);
                             listView.setAdapter(studentMyCSOAdapter);
-
-                            /*LinearSnapHelper snapHelper = new LinearSnapHelper();
-                            ApprovedCSOAdapter approvedCSOAdapter = new ApprovedCSOAdapter(context, approvedCSOList);
-                            recyclerView.setAdapter(approvedCSOAdapter);*/
-
                         }
                     } else if (approvedCSOResponse.getResStatus().equalsIgnoreCase("401")) {
                         noData.setVisibility(View.VISIBLE);
@@ -111,7 +110,6 @@ public class Stu_MyCsoFragment extends Fragment {
                     myToast.show(getString(R.string.err_server), Toast.LENGTH_LONG, false);
                 }
                 myProgressDialog.dismiss();
-
             });
         } else {
             myToast.show(getString(R.string.no_internet_connection), Toast.LENGTH_SHORT, false);

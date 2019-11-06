@@ -1,173 +1,333 @@
 <?xml version="1.0" encoding="utf-8"?>
-<LinearLayout xmlns:android="http://schemas.android.com/apk/res/android"
+<LinearLayout
+    xmlns:android="http://schemas.android.com/apk/res/android"
+    xmlns:app="http://schemas.android.com/apk/res-auto"
     android:layout_width="match_parent"
     android:layout_height="match_parent">
 
-    <ScrollView
+    <android.support.v4.widget.SwipeRefreshLayout
+        android:id="@+id/swipeToRefresh"
         android:layout_width="match_parent"
-        android:layout_height="match_parent"
-        android:fillViewport="true"
-        android:scrollbars="none">
+        android:layout_height="wrap_content">
 
-        <LinearLayout
+        <ScrollView
             android:layout_width="match_parent"
-            android:layout_height="wrap_content"
-            android:orientation="vertical">
+            android:layout_height="match_parent"
+            android:fillViewport="true"
+            android:scrollbars="none">
 
-            <FrameLayout
+            <LinearLayout
                 android:layout_width="match_parent"
-                android:layout_height="@dimen/_150sdp"
-                android:orientation="horizontal"
-                android:gravity="center"
-                android:background="@drawable/back">
+                android:layout_height="wrap_content"
+                android:orientation="vertical">
 
                 <ImageView
-                    android:id="@+id/cover"
                     android:layout_width="match_parent"
-                    android:layout_height="match_parent" />
+                    android:layout_height="@dimen/_150sdp"
+                    android:src="@drawable/back_cover"
+                    android:scaleType="fitXY"/>
 
                 <LinearLayout
                     android:layout_width="match_parent"
                     android:layout_height="match_parent"
-                    android:orientation="horizontal"
-                    android:gravity="center">
+                    android:orientation="vertical">
 
-                    <ImageView
-                        android:id="@+id/rankImage"
-                        android:layout_width="@dimen/_80sdp"
-                        android:layout_height="@dimen/_80sdp"
-                        android:src="@drawable/rank_five_stu"/>
+                    <FrameLayout
+                        android:layout_width="match_parent"
+                        android:layout_height="@dimen/_40sdp"
+                        android:orientation="horizontal">
+
+                        <com.ztp.app.Helper.MyBoldTextView
+                            style="@style/RegularTextView"
+                            android:layout_width="wrap_content"
+                            android:layout_height="wrap_content"
+                            android:layout_gravity="center_vertical"
+                            android:layout_marginStart="@dimen/_20sdp"
+                            android:text="@string/upcoming_events" />
+
+                        <com.ztp.app.Helper.MyBoldTextView
+                            android:id="@+id/seeAll"
+                            style="@style/RegularTextView"
+                            android:layout_width="wrap_content"
+                            android:layout_height="wrap_content"
+                            android:layout_gravity="end|center_vertical"
+                            android:layout_marginEnd="@dimen/_20sdp"
+                            android:text="@string/see_all" />
+
+
+                    </FrameLayout>
+
+
+                    <FrameLayout
+                        android:layout_width="match_parent"
+                        android:layout_height="wrap_content"
+                        android:layout_marginStart="@dimen/_5sdp"
+                        android:layout_marginEnd="@dimen/_5sdp"
+                        android:layout_marginBottom="@dimen/_10sdp">
+
+                        <ListView
+                            android:id="@+id/listView"
+                            android:layout_width="match_parent"
+                            android:layout_height="@dimen/_70sdp"
+                            android:scrollbars="none" />
+
+                        <com.ztp.app.Helper.MyTextView
+                            android:id="@+id/noUpcomingEvents"
+                            style="@style/RegularTextView"
+                            android:layout_width="wrap_content"
+                            android:layout_height="@dimen/_70sdp"
+                            android:layout_gravity="center"
+                            android:text="@string/no_events_found"
+                            android:gravity="center"/>
+
+                    </FrameLayout>
+
+                    <FrameLayout
+                        android:layout_width="match_parent"
+                        android:layout_height="@dimen/_30sdp"
+                        android:orientation="horizontal">
+
+                        <com.ztp.app.Helper.MyBoldTextView
+                            style="@style/RegularTextView"
+                            android:layout_width="wrap_content"
+                            android:layout_height="wrap_content"
+                            android:layout_gravity="center_vertical"
+                            android:layout_marginStart="@dimen/_20sdp"
+                            android:text="@string/approved_cso_s" />
+
+                    </FrameLayout>
+
+                    <FrameLayout
+                        android:layout_width="match_parent"
+                        android:layout_height="wrap_content"
+                        android:layout_marginStart="@dimen/_10sdp"
+                        android:layout_marginEnd="@dimen/_10sdp"
+                        android:layout_marginBottom="@dimen/_10sdp">
+
+                        <ProgressBar
+                            android:id="@+id/progress"
+                            android:layout_width="wrap_content"
+                            android:layout_height="wrap_content"
+                            android:layout_gravity="center"
+                            android:visibility="gone"
+                            android:scaleX="0.5"
+                            android:scaleY="0.5"/>
+
+                        <android.support.v7.widget.RecyclerView
+                            android:id="@+id/recyclerView"
+                            android:layout_width="match_parent"
+                            android:layout_height="wrap_content" />
+
+                        <com.ztp.app.Helper.MyTextView
+                            android:id="@+id/noEvents"
+                            style="@style/RegularTextView"
+                            android:layout_width="wrap_content"
+                            android:layout_height="@dimen/_50sdp"
+                            android:layout_gravity="center"
+                            android:gravity="center"
+                            android:text="@string/no_events_found"
+                            android:visibility="gone"/>
+
+                    </FrameLayout>
 
                     <LinearLayout
-                        android:layout_width="wrap_content"
+                        android:id="@+id/con_layout"
+                        android:layout_width="match_parent"
+                        android:layout_height="@dimen/_50sdp"
+                        android:orientation="horizontal"
+                        android:visibility="gone">
+
+                        <LinearLayout
+                            android:layout_width="0dp"
+                            android:layout_height="match_parent"
+                            android:layout_weight=".2"
+                            android:gravity="center_vertical|end">
+
+                            <ImageView
+                                android:id="@+id/con_img"
+                                android:layout_width="@dimen/_20sdp"
+                                android:layout_height="@dimen/_20sdp"
+                                android:layout_gravity="center"
+                                android:tint="@color/white"
+                                app:srcCompat="@drawable/ic_countdown" />
+
+                        </LinearLayout>
+
+                        <LinearLayout
+                            android:layout_width="0dp"
+                            android:layout_height="match_parent"
+                            android:layout_weight=".8">
+
+                            <com.ztp.app.Helper.MyHeadingTextView
+                                android:id="@+id/con_txt"
+                                style="@style/MediumTextView"
+                                android:layout_width="wrap_content"
+                                android:layout_height="wrap_content"
+                                android:layout_gravity="center_vertical"
+                                android:layout_marginStart="@dimen/_10sdp"
+                                android:gravity="center_vertical"
+                                android:text="@string/next_event_countdown"
+                                android:textColor="@color/white" />
+
+                        </LinearLayout>
+
+                    </LinearLayout>
+
+                    <LinearLayout
+                        android:id="@+id/timerLayout"
+                        android:layout_width="match_parent"
                         android:layout_height="wrap_content"
-                        android:orientation="vertical"
-                        android:layout_marginStart="@dimen/_20sdp">
+                        android:visibility="gone">
 
-                        <com.ztp.app.Helper.MyHeadingTextView
-                            android:id="@+id/name"
-                            android:layout_width="wrap_content"
-                            android:layout_height="wrap_content"
-                            style="@style/RegularTextView" />
+                        <LinearLayout
+                            android:layout_width="match_parent"
+                            android:layout_height="@dimen/_50sdp"
+                            android:background="@drawable/black_rectangle"
+                            android:orientation="horizontal"
+                            android:layout_marginLeft="@dimen/_20sdp"
+                            android:layout_marginRight="@dimen/_20sdp"
+                            android:layout_marginBottom="@dimen/_10sdp">
 
-                        <com.ztp.app.Helper.MyHeadingTextView
-                            android:layout_width="wrap_content"
-                            android:layout_height="wrap_content"
-                            android:text="@string/you_have_completed"
-                            style="@style/RegularTextView" />
+                            <LinearLayout
+                                android:layout_width="0dp"
+                                android:layout_height="match_parent"
+                                android:layout_margin="@dimen/_2sdp"
+                                android:layout_weight=".25"
+                                android:gravity="center"
+                                android:orientation="vertical">
 
-                        <com.ztp.app.Helper.MyHeadingTextView
-                            android:id="@+id/volHours"
-                            android:layout_width="wrap_content"
-                            android:layout_height="wrap_content"
-                            android:text="@string/_0_volunteer_hours"
-                            style="@style/RegularTextView" />
+                                <com.ztp.app.Helper.MyBoldTextView
+                                    android:id="@+id/days"
+                                    style="@style/MediumTextView"
+                                    android:layout_width="wrap_content"
+                                    android:layout_height="wrap_content"
+                                    android:text="00"
+                                    android:textColor="@color/yellow" />
+
+                                <com.ztp.app.Helper.MyTextView
+                                    style="@style/SmallTextView"
+                                    android:layout_width="wrap_content"
+                                    android:layout_height="wrap_content"
+                                    android:layout_marginTop="@dimen/_2sdp"
+                                    android:text="@string/days"
+                                    android:textColor="@color/white" />
+
+
+                            </LinearLayout>
+
+                            <com.ztp.app.Helper.MyBoldTextView
+                                style="@style/MediumTextView"
+                                android:layout_width="wrap_content"
+                                android:layout_height="wrap_content"
+                                android:layout_marginTop="@dimen/_3sdp"
+                                android:text=":"
+                                android:textColor="@color/yellow" />
+
+                            <LinearLayout
+                                android:layout_width="0dp"
+                                android:layout_height="match_parent"
+                                android:layout_margin="@dimen/_2sdp"
+                                android:layout_weight=".25"
+                                android:gravity="center"
+                                android:orientation="vertical">
+
+                                <com.ztp.app.Helper.MyBoldTextView
+                                    android:id="@+id/hours"
+                                    style="@style/MediumTextView"
+                                    android:layout_width="wrap_content"
+                                    android:layout_height="wrap_content"
+                                    android:text="00"
+                                    android:textColor="@color/yellow" />
+
+                                <com.ztp.app.Helper.MyTextView
+                                    style="@style/SmallTextView"
+                                    android:layout_width="wrap_content"
+                                    android:layout_height="wrap_content"
+                                    android:layout_marginTop="@dimen/_2sdp"
+                                    android:text="@string/hours"
+                                    android:textColor="@color/white" />
+
+
+                            </LinearLayout>
+
+                            <com.ztp.app.Helper.MyBoldTextView
+                                style="@style/MediumTextView"
+                                android:layout_width="wrap_content"
+                                android:layout_height="wrap_content"
+                                android:layout_marginTop="@dimen/_3sdp"
+                                android:text=":"
+                                android:textColor="@color/yellow" />
+
+                            <LinearLayout
+                                android:layout_width="0dp"
+                                android:layout_height="match_parent"
+                                android:layout_margin="@dimen/_2sdp"
+                                android:layout_weight=".25"
+                                android:gravity="center"
+                                android:orientation="vertical">
+
+                                <com.ztp.app.Helper.MyBoldTextView
+                                    android:id="@+id/minutes"
+                                    style="@style/MediumTextView"
+                                    android:layout_width="wrap_content"
+                                    android:layout_height="wrap_content"
+                                    android:text="00"
+                                    android:textColor="@color/yellow" />
+
+                                <com.ztp.app.Helper.MyTextView
+                                    style="@style/SmallTextView"
+                                    android:layout_width="wrap_content"
+                                    android:layout_height="wrap_content"
+                                    android:layout_marginTop="@dimen/_2sdp"
+                                    android:text="@string/minutes"
+                                    android:textColor="@color/white" />
+
+
+                            </LinearLayout>
+
+                            <com.ztp.app.Helper.MyBoldTextView
+                                style="@style/MediumTextView"
+                                android:layout_width="wrap_content"
+                                android:layout_height="wrap_content"
+                                android:layout_marginTop="@dimen/_3sdp"
+                                android:text=":"
+                                android:textColor="@color/yellow" />
+
+                            <LinearLayout
+                                android:layout_width="0dp"
+                                android:layout_height="match_parent"
+                                android:layout_margin="@dimen/_2sdp"
+                                android:layout_weight=".25"
+                                android:gravity="center"
+                                android:orientation="vertical">
+
+                                <com.ztp.app.Helper.MyBoldTextView
+                                    android:id="@+id/seconds"
+                                    style="@style/MediumTextView"
+                                    android:layout_width="wrap_content"
+                                    android:layout_height="wrap_content"
+                                    android:text="00"
+                                    android:textColor="@color/yellow" />
+
+                                <com.ztp.app.Helper.MyTextView
+                                    style="@style/SmallTextView"
+                                    android:layout_width="wrap_content"
+                                    android:layout_height="wrap_content"
+                                    android:layout_marginTop="@dimen/_2sdp"
+                                    android:text="@string/seconds"
+                                    android:textColor="@color/white" />
+
+                            </LinearLayout>
+
+                        </LinearLayout>
+
                     </LinearLayout>
 
                 </LinearLayout>
 
-            </FrameLayout>
-
-            <LinearLayout
-                android:layout_width="match_parent"
-                android:layout_height="match_parent"
-                android:orientation="vertical">
-
-                <FrameLayout
-                    android:layout_width="match_parent"
-                    android:layout_height="@dimen/_40sdp"
-                    android:orientation="horizontal">
-
-                    <com.ztp.app.Helper.MyBoldTextView
-                        android:layout_width="wrap_content"
-                        android:layout_height="wrap_content"
-                        android:text="@string/upcoming_events"
-                        style="@style/RegularTextView"
-                        android:layout_marginStart="@dimen/_20sdp"
-                        android:layout_gravity="center_vertical"/>
-
-                    <com.ztp.app.Helper.MyBoldTextView
-                        android:id="@+id/seeAll"
-                        android:layout_width="wrap_content"
-                        android:layout_height="wrap_content"
-                        android:text="@string/see_all"
-                        style="@style/RegularTextView"
-                        android:layout_gravity="end|center_vertical"
-                        android:layout_marginEnd="@dimen/_20sdp"/>
-
-
-                </FrameLayout>
-
-
-                <FrameLayout
-                    android:layout_width="match_parent"
-                    android:layout_height="@dimen/_150sdp"
-                    android:layout_marginStart="@dimen/_5sdp"
-                    android:layout_marginEnd="@dimen/_5sdp"
-                    android:layout_marginBottom="@dimen/_10sdp">
-
-                    <ListView
-                        android:id="@+id/listView"
-                        android:layout_width="match_parent"
-                        android:layout_height="wrap_content"
-                        android:scrollbars="none"/>
-
-                    <com.ztp.app.Helper.MyTextView
-                        android:id="@+id/noUpcomingEvents"
-                        android:layout_width="wrap_content"
-                        android:layout_height="wrap_content"
-                        android:text="@string/no_events_found"
-                        android:layout_gravity="center"
-                        style="@style/RegularTextView"/>
-
-                </FrameLayout>
-
-                <FrameLayout
-                    android:layout_width="match_parent"
-                    android:layout_height="@dimen/_30sdp"
-                    android:orientation="horizontal">
-
-                    <com.ztp.app.Helper.MyBoldTextView
-                        android:layout_width="wrap_content"
-                        android:layout_height="wrap_content"
-                        android:text="@string/approved_cso_s"
-                        style="@style/RegularTextView"
-                        android:layout_marginStart="@dimen/_20sdp"
-                        android:layout_gravity="center_vertical"/>
-
-                </FrameLayout>
-
-                <FrameLayout
-                    android:layout_width="match_parent"
-                    android:layout_height="@dimen/_130sdp"
-                    android:layout_marginStart="@dimen/_10sdp"
-                    android:layout_marginEnd="@dimen/_10sdp"
-                    android:layout_marginBottom="@dimen/_10sdp"
-                    android:layout_marginTop="@dimen/_5sdp">
-
-
-                    <android.support.v7.widget.RecyclerView
-                        android:id="@+id/recyclerView"
-                        android:layout_width="match_parent"
-                        android:layout_height="match_parent" />
-
-                    <com.ztp.app.Helper.MyTextView
-                        android:id="@+id/noEvents"
-                        android:layout_width="wrap_content"
-                        android:layout_height="wrap_content"
-                        android:text="@string/no_events_found"
-                        android:layout_gravity="center"
-                        style="@style/RegularTextView"/>
-
-
-                </FrameLayout>
-
-
-
             </LinearLayout>
 
-        </LinearLayout>
+        </ScrollView>
 
-    </ScrollView>
-
+    </android.support.v4.widget.SwipeRefreshLayout>
 </LinearLayout>

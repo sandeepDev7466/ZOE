@@ -59,6 +59,7 @@ public class TabStudentsFollowersFragment extends Fragment {
         myToast = new MyToast(context);
         sharedPref = SharedPref.getInstance(context);
         searchView = view.findViewById(R.id.searchView);
+        im = (InputMethodManager) context.getSystemService(Context.INPUT_METHOD_SERVICE);
 
 
         if(Utility.isNetworkAvailable(context))
@@ -106,9 +107,6 @@ public class TabStudentsFollowersFragment extends Fragment {
         else
         {
 
-           //myToast.show(getString(R.string.no_internet_connection), Toast.LENGTH_SHORT,false);
-
-
             if(dbGetAllFollower!=null && dbGetAllFollower.getFollowerList().size()>0)
             {
                 listView.setVisibility(View.VISIBLE);
@@ -125,7 +123,6 @@ public class TabStudentsFollowersFragment extends Fragment {
         }
 
 
-        im = (InputMethodManager) context.getSystemService(Context.INPUT_METHOD_SERVICE);
 
 
         searchView.addTextChangedListener(new TextWatcher() {
@@ -178,60 +175,6 @@ public class TabStudentsFollowersFragment extends Fragment {
                 }
             }
         });
-
-
-
-       /* searchView.setOnQueryTextListener(new SearchView.OnQueryTextListener() {
-            @Override
-            public boolean onQueryTextSubmit(String query) {
-                im.hideSoftInputFromWindow(searchView.getWindowToken(), 0);
-                seeFollowerListSeached = new ArrayList<>();
-                if(Utility.isNetworkAvailable(context))
-                {
-                    for(int i=0;i<seeFollowerList.size();i++)
-                    {
-                        if(seeFollowerList.get(i).getUserFName().toLowerCase().startsWith(query.toLowerCase()) || seeFollowerList.get(i).getUserLName().toLowerCase().startsWith(query.toLowerCase()))
-                        {
-                            seeFollowerListSeached.add(seeFollowerList.get(i));
-                        }
-                    }
-
-                    listView.setVisibility(View.VISIBLE);
-                    noData.setVisibility(View.INVISIBLE);
-                    FollowerAdapter adapter = new FollowerAdapter(context, seeFollowerListSeached);
-                    listView.setAdapter(adapter);
-
-                }
-                else
-                {
-                    for(int i=0;i<dbGetAllFollower.getFollowerList().size();i++)
-                    {
-                        if(dbGetAllFollower.getFollowerList().get(i).getUserFName().toLowerCase().startsWith(query.toLowerCase()) || dbGetAllFollower.getFollowerList().get(i).getUserLName().toLowerCase().startsWith(query.toLowerCase()))
-                        {
-                            seeFollowerListSeached.add(dbGetAllFollower.getFollowerList().get(i));
-                        }
-                    }
-                    listView.setVisibility(View.VISIBLE);
-                    noData.setVisibility(View.INVISIBLE);
-
-                    FollowerAdapter adapter = new FollowerAdapter(context, seeFollowerListSeached);
-                    listView.setAdapter(adapter);
-                }
-                return true;
-            }
-
-            @Override
-            public boolean onQueryTextChange(String newText) {
-                if(newText.isEmpty()) {
-                    listView.setVisibility(View.VISIBLE);
-                    noData.setVisibility(View.INVISIBLE);
-
-                    FollowerAdapter adapter = new FollowerAdapter(context, dbGetAllFollower.getFollowerList());
-                    listView.setAdapter(adapter);
-                }
-                return true;
-            }
-        });*/
 
         return view;
     }

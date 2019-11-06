@@ -12,6 +12,7 @@ import android.widget.BaseAdapter;
 import android.widget.ImageView;
 import android.widget.Toast;
 
+import com.squareup.picasso.Picasso;
 import com.ztp.app.Data.Local.SharedPrefrence.SharedPref;
 import com.ztp.app.Data.Remote.Model.Request.VolunteerConnectRequest;
 import com.ztp.app.Data.Remote.Model.Response.PotentialFriendsResponse;
@@ -78,6 +79,12 @@ public class PotentialFriendAdapter extends BaseAdapter {
         holder.tv_name.setText(potentialData.getUserFName() + " " + potentialData.getUserLName());
         holder.tv_email.setText(potentialData.getUserEmail());
         holder.tv_phone.setText(potentialData.getUserPhone());
+
+        if (potentialData.getUserProfilePic().isEmpty()) {
+            holder.image.setImageResource(R.drawable.user);
+        } else{
+            Picasso.with(context).load(potentialData.getUserProfilePic()).placeholder(R.drawable.user).error(R.drawable.user).into(holder.image);
+        }
 
         if(potentialData.getMapStatus() != null && potentialData.getMapStatus().equalsIgnoreCase("20")) {
             holder.connect.setColorFilter(context.getResources().getColor(R.color.dark_green));

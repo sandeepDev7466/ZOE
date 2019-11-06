@@ -60,6 +60,16 @@ public class VideoPlayerActivity extends AppCompatActivity implements Player.Eve
     }
 
     @Override
+    public void onBackPressed() {
+        super.onBackPressed();
+        if (exoPlayer != null) {
+            exoPlayer.setPlayWhenReady(false);
+            exoPlayer.stop();
+            exoPlayer.seekTo(0);
+        }
+    }
+
+    @Override
     public void onTimelineChanged(Timeline timeline, Object manifest, int reason) {
 
     }

@@ -310,7 +310,7 @@ public class AddNewShiftFragment extends Fragment {
         str_end_time = endTime/*et_end_time_volunteers.getText().toString().trim()*/;
         str_vol = et_volunteer.getText().toString().trim();
         str_task = task_list_id;
-        str_rank = String.valueOf(ratingRank);
+        str_rank = String.valueOf((int)ratingRank);
 
         if (str_date != null && !str_date.isEmpty()) {
             if (str_vol != null && !str_vol.isEmpty()) {
@@ -441,7 +441,7 @@ public class AddNewShiftFragment extends Fragment {
         str_end_time = endTime;
         str_vol = et_volunteer.getText().toString().trim();
         str_task = task_list_id;
-        str_rank = String.valueOf(ratingRank);
+        str_rank = String.valueOf((int)ratingRank);
 
         if (str_date != null && !str_date.isEmpty()) {
             if (str_vol != null && !str_vol.isEmpty()) {

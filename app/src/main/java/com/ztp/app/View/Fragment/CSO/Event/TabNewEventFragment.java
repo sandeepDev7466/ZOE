@@ -655,12 +655,12 @@ public class TabNewEventFragment extends Fragment implements View.OnClickListene
                                                                     if (endTime != null && !endTime.isEmpty()) {
 
                                                                         if (!errorPostalCode && !errorPhone && !errorEmail && !errorEventName && !errorEventDescription) {
-                                                                            if (check.isChecked()) {
-                                                                                if (waiverPath != null && waiverPath.isEmpty()) {
+                                                                            /*if (check.isChecked()) {*/
+                                                                                if (waiverPath == null) {
                                                                                     myToast.show(context.getString(R.string.err_enter_waiver_doc), Toast.LENGTH_SHORT, false);
                                                                                     return;
                                                                                 }
-                                                                            }
+                                                                          /*  }*/
                                                                             if (Utility.isNetworkAvailable(context)) {
                                                                                 myProgressDialog.show(context.getString(R.string.please_wait));
                                                                                 submit();

@@ -24,10 +24,6 @@ import com.ztp.app.Viewmodel.GetVolunteerShiftListViewModel;
 
 public class ShiftListFragment extends Fragment {
 
-    public ShiftListFragment() {
-        // Required empty public constructor
-    }
-
     ListView lv_shift_list;
     String event_id = "";
     Context context;
@@ -37,6 +33,10 @@ public class ShiftListFragment extends Fragment {
     MyTextView noData;
     SharedPref sharedPref;
     DBVolunteerGetShiftList dbVolunteerGetShiftList;
+
+    public ShiftListFragment() {
+        // Required empty public constructor
+    }
 
     @Override
     public View onCreateView(LayoutInflater inflater, ViewGroup container,
@@ -52,14 +52,13 @@ public class ShiftListFragment extends Fragment {
         myProgressDialog = new MyProgressDialog(context);
         myToast = new MyToast(context);
         noData = v.findViewById(R.id.noData);
-
-
-        init(v);
+        lv_shift_list = v.findViewById(R.id.lv_shift_list);
+        hitShiftAPI();
         return v;
     }
 
-    public void init(View v) {
-        lv_shift_list = v.findViewById(R.id.lv_shift_list);
+    public void hitShiftAPI() {
+
         if (Utility.isNetworkAvailable(context)) {
             myProgressDialog.show(getString(R.string.please_wait));
             Log.i("REQUEST", "" + new Gson().toJson(new GetSearchShiftListRequest(event_id, sharedPref.getUserId())));
@@ -90,7 +89,6 @@ public class ShiftListFragment extends Fragment {
 
             });
         } else {
-            //myToast.show(getString(R.string.no_internet_connection), Toast.LENGTH_SHORT, false);
 
             if (dbVolunteerGetShiftList.getShiftList() != null && dbVolunteerGetShiftList.getShiftList().size() > 0) {
                 noData.setVisibility(View.INVISIBLE);

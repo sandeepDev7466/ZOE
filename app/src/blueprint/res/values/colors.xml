@@ -56,11 +56,11 @@
     <color name="colorIcon">#1D928B</color>
     <color name="colorGold">#D9923E</color>
     <color name="colorRed">#D02359</color>
-
     <color name="iconOrange">#f78e1e</color>
     <color name="iconGray">#808080</color>
     <color name="iconGreen">#27ae60</color>
     <color name="iconRed">#c0392b</color>
+    <color name="greenTransparent">#e5ffe5</color>
 
 
 </resources>

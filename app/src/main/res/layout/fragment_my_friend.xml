@@ -11,8 +11,8 @@
         android:scrollbars="none"
         android:dividerHeight="0.4dp"
         android:divider="@color/background_3"
-        android:layout_marginStart="@dimen/_20sdp"
-        android:layout_marginEnd="@dimen/_20sdp"
+        android:layout_marginStart="@dimen/_10sdp"
+        android:layout_marginEnd="@dimen/_10sdp"
         android:overScrollMode="never"/>
     <com.ztp.app.Helper.MyTextView
         android:id="@+id/noData"
@@ -21,6 +21,5 @@
         android:text="@string/err_no_data_found"
         style="@style/RegularTextView"
         android:layout_gravity="center"
-        android:layout_centerInParent="true"
         android:visibility="invisible"/>
 </FrameLayout>

@@ -12,14 +12,18 @@ import android.view.View;
 import android.view.ViewGroup;
 import android.widget.BaseAdapter;
 import android.widget.ImageView;
+import android.widget.TextView;
+import android.widget.Toast;
 
 import com.sendbird.android.GroupChannel;
 import com.sendbird.android.SendBirdException;
 import com.squareup.picasso.Picasso;
 import com.ztp.app.Data.Local.SharedPrefrence.SharedPref;
+import com.ztp.app.Data.Remote.Model.Request.UnlinkUserRequest;
 import com.ztp.app.Data.Remote.Model.Response.CsoMyFollowerResponse;
+import com.ztp.app.Data.Remote.Model.Response.UnlinkUserResponse;
+import com.ztp.app.Data.Remote.Service.Api;
 import com.ztp.app.Helper.MyProgressDialog;
-import com.ztp.app.Helper.MyTextView;
 import com.ztp.app.Helper.MyToast;
 import com.ztp.app.R;
 import com.ztp.app.SendBird.groupchannel.GroupChannelListFragment;
@@ -32,6 +36,10 @@ import com.ztp.app.Viewmodel.CsoMarkHoursViewModel;
 import java.util.ArrayList;
 import java.util.Date;
 import java.util.List;
+
+import retrofit2.Call;
+import retrofit2.Callback;
+import retrofit2.Response;
 
 class FollowerAdapter extends BaseAdapter implements View.OnClickListener {
     private Context context;
@@ -70,7 +78,6 @@ class FollowerAdapter extends BaseAdapter implements View.OnClickListener {
     @Override
     public View getView(int position, View view, ViewGroup parent) {
         CsoMyFollowerResponse.SeeFollower dataModel = getItem(position);
-
         Holder holder = new Holder();
         if (view == null) {
             view = LayoutInflater.from(context).inflate(R.layout.fragment_student_row, null);
@@ -79,6 +86,7 @@ class FollowerAdapter extends BaseAdapter implements View.OnClickListener {
             holder.tv_hrs = view.findViewById(R.id.tv_hrs);
             holder.rank = view.findViewById(R.id.rank);
             holder.imv_chat = view.findViewById(R.id.imv_chat);
+            holder.unlink = view.findViewById(R.id.unlink);
             view.setTag(holder);
 
         } else {
@@ -95,7 +103,7 @@ class FollowerAdapter extends BaseAdapter implements View.OnClickListener {
         }
 
 
-        holder.tv_hrs.setText(dataModel.getUserHours()+" "+context.getString(R.string.hrs_small));
+        holder.tv_hrs.setText(dataModel.getUserHours() + " " + context.getString(R.string.hrs_small));
 
         if (dataModel.getUserRank().equalsIgnoreCase("1"))
             Picasso.with(context).load(R.drawable.rank_one_vol).fit().into(holder.rank);
@@ -114,14 +122,40 @@ class FollowerAdapter extends BaseAdapter implements View.OnClickListener {
         holder.imv_chat.setTag(dataModel);
         holder.imv_chat.setOnClickListener(this);
 
-       /* view.setOnClickListener(new View.OnClickListener() {
-            @Override
-            public void onClick(View v) {
+        holder.unlink.setId(position);
+        holder.unlink.setOnClickListener(v -> {
 
-                openHoursChangeDialog(dataModel);
+            if (Utility.isNetworkAvailable(context)) {
+                myProgressDialog.show(context.getString(R.string.please_wait));
+                CsoMyFollowerResponse.SeeFollower data = dataList.get(v.getId());
+                Api.getClient().unlinkUser(new UnlinkUserRequest(sharedPref.getUserId(), data.getUserId(), Utility.getDeviceId(context))).enqueue(new Callback<UnlinkUserResponse>() {
+                    @Override
+                    public void onResponse(Call<UnlinkUserResponse> call, Response<UnlinkUserResponse> response) {
+                        if (response.isSuccessful()) {
+                            if (response.body() != null && response.body().getResStatus().equalsIgnoreCase("200")) {
+                                myToast.show(data.getUserFName() + " " + data.getUserLName() + " unlinked successfully", Toast.LENGTH_SHORT, true);
+                                dataList.remove(data);
+                                notifyDataSetChanged();
+                            } else {
+                                myToast.show(context.getString(R.string.err_server), Toast.LENGTH_SHORT, false);
+                            }
+                        } else {
+                            myToast.show(context.getString(R.string.err_server), Toast.LENGTH_SHORT, false);
+                        }
+                        myProgressDialog.dismiss();
+                    }
 
+                    @Override
+                    public void onFailure(Call<UnlinkUserResponse> call, Throwable t) {
+                        t.printStackTrace();
+                        myProgressDialog.dismiss();
+                    }
+                });
+            } else {
+                myToast.show(context.getString(R.string.no_internet_connection), Toast.LENGTH_SHORT, false);
             }
-        });*/
+
+        });
 
         return view;
     }
@@ -131,10 +165,10 @@ class FollowerAdapter extends BaseAdapter implements View.OnClickListener {
         switch (v.getId()) {
             case R.id.imv_chat:
 
-                CsoMyFollowerResponse.SeeFollower dataModel= (CsoMyFollowerResponse.SeeFollower) v.getTag();
+                CsoMyFollowerResponse.SeeFollower dataModel = (CsoMyFollowerResponse.SeeFollower) v.getTag();
                 mSelectedIds = new ArrayList<>();
                 mSelectedIds.add(dataModel.getUserEmail());
-                createGroupChannel(dataModel.getUserFName()+ " "+dataModel.getUserLName(),mSelectedIds, true);
+                createGroupChannel(dataModel.getUserFName() + " " + dataModel.getUserLName(), mSelectedIds, true);
                 ((CsoDashboardActivity) context).setHangoutProps();
 
                 break;
@@ -143,12 +177,11 @@ class FollowerAdapter extends BaseAdapter implements View.OnClickListener {
     }
 
     private class Holder {
-        MyTextView tv_name, tv_date, tv_hrs;
-        //ScaleRatingBar rb_rank;
+        TextView tv_name, tv_date, tv_hrs, unlink;
         ImageView imv_chat, rank;
     }
 
-    private void createGroupChannel(String nick_name,List<String> userIds, boolean distinct) {
+    private void createGroupChannel(String nick_name, List<String> userIds, boolean distinct) {
         GroupChannel.createChannelWithUserIds(userIds, distinct, new GroupChannel.GroupChannelCreateHandler() {
             @Override
             public void onResult(GroupChannel groupChannel, SendBirdException e) {
@@ -172,73 +205,4 @@ class FollowerAdapter extends BaseAdapter implements View.OnClickListener {
             }
         });
     }
-
-  /*  private void openHoursChangeDialog(CsoMyFollowerResponse.Event dataModel) {
-
-        String userHours, reqiredHours;
-        userHours = dataModel.getUserHours();
-        reqiredHours = dataModel.getUserHoursReq();
-
-        Dialog dialog = new Dialog(context);
-        View view = LayoutInflater.from(context).inflate(R.layout.change_hours_dialog, null);
-        dialog.setContentView(view);
-        dialog.setCancelable(false);
-
-        Button cancel = view.findViewById(R.id.cancel);
-        Button done = view.findViewById(R.id.done);
-        MyTextView currentHours = view.findViewById(R.id.currentHours);
-        MyTextView requiredHours = view.findViewById(R.id.requiredHours);
-        MyTextInputEditText etHours = view.findViewById(R.id.etHours);
-
-        dialog.show();
-
-        currentHours.setText(userHours);
-        requiredHours.setText(reqiredHours);
-
-        cancel.setOnClickListener(new View.OnClickListener() {
-            @Override
-            public void onClick(View v) {
-                dialog.dismiss();
-
-            }
-        });
-
-
-        done.setOnClickListener(new View.OnClickListener() {
-            @Override
-            public void onClick(View v) {
-
-                if (etHours.getText() != null && !etHours.getText().toString().isEmpty()) {
-                    if (!userHours.equalsIgnoreCase(etHours.getText() != null ? etHours.getText().toString().trim() : "0")) {
-                        if (Utility.isNetworkAvailable(context)) {
-                            dialog.dismiss();
-                            hitUpdateHoursApi(etHours.getText().toString().trim(), dataModel);
-                        }
-                        else
-                            myToast.show(context.getString(R.string.no_internet_connection), Toast.LENGTH_SHORT, false);
-                    }
-                } else {
-                    myToast.show(context.getString(R.string.err_enter_hours), Toast.LENGTH_SHORT, false);
-                }
-            }
-        });
-    }
-
-    private void hitUpdateHoursApi(String userHours, CsoMyFollowerResponse.Event dataModel) {
-        myProgressDialog.show(context.getString(R.string.please_wait));
-        csoMarkHoursViewModel.getCsoMarkHoursResponse(new CsoMarkHoursRequest(sharedPref.getUserId(), sharedPref.getUserType(), Utility.getDeviceId(context), "", userHours, dataModel.getUserId())).observe((LifecycleOwner) context, csoMarkHoursResponse -> {
-
-            if (csoMarkHoursResponse != null) {
-                if (csoMarkHoursResponse.getResStatus().equalsIgnoreCase("200")) {
-                    dataModel.setUserHours(userHours);
-                    notifyDataSetChanged();
-                } else {
-                    myToast.show(context.getString(R.string.something_went_wrong), Toast.LENGTH_SHORT, false);
-                }
-            } else {
-                myToast.show(context.getString(R.string.err_server), Toast.LENGTH_SHORT, false);
-            }
-            myProgressDialog.dismiss();
-        });
-    }*/
 }

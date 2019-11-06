@@ -34,7 +34,6 @@ public class MyCSOFragment extends Fragment {
     MyTextView noData;
     SharedPref sharedPref;
     MyCso_VViewModel myCso_vViewModel;
-    List<MyCSOResponse_V.ResData> friendData = new ArrayList<>();
 
     public MyCSOFragment() {
         // Required empty public constructor

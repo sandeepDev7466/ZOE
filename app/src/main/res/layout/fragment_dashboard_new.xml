@@ -21,58 +21,12 @@
             android:layout_height="wrap_content"
             android:orientation="vertical">
 
-            <FrameLayout
-                android:layout_width="match_parent"
-                android:layout_height="@dimen/_150sdp"
-                android:background="@drawable/back_cover"
-                android:gravity="center"
-                android:orientation="horizontal">
-
                 <ImageView
                     android:id="@+id/cover"
                     android:layout_width="match_parent"
-                    android:layout_height="match_parent" />
-
-                <LinearLayout
-                    android:layout_width="match_parent"
-                    android:layout_height="match_parent"
-                    android:gravity="center"
-                    android:orientation="horizontal">
-
-                    <!--  <ImageView
-                          android:id="@+id/rankImage"
-                          android:layout_width="@dimen/_80sdp"
-                          android:layout_height="@dimen/_80sdp" />
-
-                          <LinearLayout
-                              android:layout_width="wrap_content"
-                              android:layout_height="wrap_content"
-                              android:orientation="vertical"
-                              android:layout_marginStart="@dimen/_20sdp">
-
-                              <com.ztp.app.Helper.MyHeadingTextView
-                                  android:id="@+id/name"
-                                  android:layout_width="wrap_content"
-                                  android:layout_height="wrap_content"
-                                  style="@style/RegularTextView" />
-
-                              <com.ztp.app.Helper.MyHeadingTextView
-                                  android:layout_width="wrap_content"
-                                  android:layout_height="wrap_content"
-                                  android:text="@string/you_have_completed"
-                                  style="@style/RegularTextView" />
-
-                              <com.ztp.app.Helper.MyHeadingTextView
-                                  android:id="@+id/volHours"
-                                  android:layout_width="wrap_content"
-                                  android:layout_height="wrap_content"
-                                  android:text="@string/_0_volunteer_hours"
-                                  style="@style/RegularTextView" />
-                          </LinearLayout>-->
-
-                </LinearLayout>
-
-            </FrameLayout>
+                    android:layout_height="@dimen/_150sdp"
+                    android:src="@drawable/back_cover"
+                    android:scaleType="fitXY"/>
 
             <LinearLayout
                 android:layout_width="match_parent"

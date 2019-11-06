@@ -43,6 +43,7 @@ import com.ztp.app.SendBird.utils.TextUtils;
 import com.ztp.app.Utils.Constants;
 import com.ztp.app.Utils.Utility;
 import com.ztp.app.View.Fragment.CSO.Hangout.CreateChannelFragment;
+import com.ztp.app.View.Fragment.Student.Hangout.Stu_ConnectFragment;
 import com.ztp.app.View.Fragment.Volunteer.Event.TabMyBookingFragment;
 import com.ztp.app.View.Fragment.Volunteer.Hangout.ConnectFragment;
 import com.ztp.app.View.Fragment.Volunteer.Hangout.Vol_ConnectFragment;
@@ -61,7 +62,7 @@ public class GroupChannelListFragment extends Fragment {
     public static final String EXTRA_NAME = "GROUP_CHANNEL_NAME";
     private static final int INTENT_REQUEST_NEW_GROUP_CHANNEL = 302;
 
-    private static final int CHANNEL_LIST_LIMIT = 15;
+    private static final int CHANNEL_LIST_LIMIT = 50;
     private static final String CONNECTION_HANDLER_ID = "CONNECTION_HANDLER_GROUP_CHANNEL_LIST";
     private static final String CHANNEL_HANDLER_ID = "CHANNEL_HANDLER_GROUP_CHANNEL_LIST";
 
@@ -91,9 +92,6 @@ public class GroupChannelListFragment extends Fragment {
         setRetainInstance(true);
 
         sharedPref = SharedPref.getInstance(context);
-        // Change action bar title
-//        ((GroupChannelActivity) getActivity()).setActionBarTitle(getResources().getString(R.string.all_group_channels));
-
         mRecyclerView = (RecyclerView) rootView.findViewById(R.id.recycler_group_channel_list);
         fab_connect = (FloatingActionButton) rootView.findViewById(R.id.fab_connect);
         mSwipeRefresh = (SwipeRefreshLayout) rootView.findViewById(R.id.swipe_layout_group_channel_list);
@@ -107,16 +105,15 @@ public class GroupChannelListFragment extends Fragment {
             }
         });
 
-        fab_connect.setOnClickListener(new View.OnClickListener() {
-            @Override
-            public void onClick(View v) {
-                if (sharedPref.getUserType().equalsIgnoreCase(Constants.user_type_cso) || sharedPref.getUserType().equalsIgnoreCase(Constants.user_type_csa))
-                    Utility.replaceFragment(context, new CreateChannelFragment(), "CreateChannelFragment");
-                else if (sharedPref.getUserType().equalsIgnoreCase(Constants.user_type_volunteer))
-                    Utility.replaceFragment(context, new Vol_ConnectFragment(), "Vol_ConnectFragment");
-                else
-                    Utility.replaceFragment(context, new ConnectFragment(), "ConnectFragment");
-            }
+        fab_connect.setOnClickListener(v -> {
+
+            if (sharedPref.getUserType().equalsIgnoreCase(Constants.user_type_cso) || sharedPref.getUserType().equalsIgnoreCase(Constants.user_type_csa))
+                Utility.replaceFragment(context, new CreateChannelFragment(), "CreateChannelFragment");
+            else if (sharedPref.getUserType().equalsIgnoreCase(Constants.user_type_volunteer))
+                Utility.replaceFragment(context, new Vol_ConnectFragment(), "Vol_ConnectFragment");
+            else
+                Utility.replaceFragment(context, new Stu_ConnectFragment(), "Stu_ConnectFragment");
+
         });
 
         mChannelListAdapter = new GroupChannelListAdapter(getActivity());
@@ -318,8 +315,14 @@ public class GroupChannelListFragment extends Fragment {
                         title.setText(TextUtils.getGroupChannelTitle(channel));
                     else
                         title.setText(channel.getName());
+
                     if (sharedPref.getUserType().equalsIgnoreCase(Constants.user_type_volunteer)) {
                         deleteChannel.setVisibility(View.GONE);
+                        view.setVisibility(View.GONE);
+                    }
+                    else if(sharedPref.getUserType().equalsIgnoreCase(Constants.user_type_cso))
+                    {
+                        leaveChannel.setVisibility(View.GONE);
                         view.setVisibility(View.GONE);
                     }
 
@@ -361,7 +364,10 @@ public class GroupChannelListFragment extends Fragment {
 
         if (type.equalsIgnoreCase(Constants.SENDBIRD_CHANNEL)) {
             title.setText(getString(R.string.del_channel));
-            message.setText(getString(R.string.del_channel) + " " + TextUtils.getGroupChannelTitle(channel) + " ?");
+            if(channel.getMemberCount()>2)
+                message.setText(getString(R.string.del_channel) + " " + TextUtils.getGroupChannelTitle(channel) + " ?");
+            else
+                message.setText(getString(R.string.del_channel) + " " + channel.getName() + " ?");
         } else {
             title.setText(getString(R.string.del_conversation));
             message.setText(getString(R.string.del_conversation) + " " + getString(R.string.with) + " " + TextUtils.getGroupChannelTitle(channel) + " ?");
@@ -489,7 +495,7 @@ public class GroupChannelListFragment extends Fragment {
         mChannelListAdapter.clearMap();
         mChannelListAdapter.clearChannelList();
         GroupChannelListQuery query = GroupChannel.createMyGroupChannelListQuery();
-//        query.setIncludeEmpty(true);
+        query.setIncludeEmpty(true);
         query.setLimit(numChannels);
         mChannelCollection = new ChannelCollection(query);
         mChannelCollection.setCollectionHandler(mChannelCollectionHandler);
@@ -497,7 +503,7 @@ public class GroupChannelListFragment extends Fragment {
             @Override
             public void onCompleted(SendBirdException e) {
                 if (mSwipeRefresh.isRefreshing()) {
-//                    mSwipeRefresh.setRefreshing(false);
+                    mSwipeRefresh.setRefreshing(false);
                 }
             }
         });

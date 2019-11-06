@@ -61,7 +61,7 @@
     <string name="otp_validation_failed">OTP validation failed</string>
     <string name="something_went_wrong">No Data Found</string>
     <string name="student_name">Student Name</string>
-    <string name="grad_date">Grad Date</string>
+    <string name="grad_date">Graduation Date</string>
     <string name="rank">Shift Rank</string>
     <string name="date">Shift Date</string>
     <string name="time">Shift Time</string>

@@ -202,6 +202,11 @@ public class CsoEditProfileActivity extends AppCompatActivity implements View.On
                 country_id = countryListData.get(position).getCountryId();
                 if (stateListData.size() == 0)
                     getStateList(country_id);
+                else
+                {
+                    if(myProgressDialog.isShowing())
+                        myProgressDialog.dismiss();
+                }
             }
 
             @Override

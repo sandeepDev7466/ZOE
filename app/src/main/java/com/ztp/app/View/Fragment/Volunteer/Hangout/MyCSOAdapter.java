@@ -5,6 +5,7 @@ import android.os.Bundle;
 import android.support.v4.app.FragmentManager;
 import android.support.v4.app.FragmentTransaction;
 import android.support.v7.app.AppCompatActivity;
+import android.util.Log;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
@@ -12,16 +13,22 @@ import android.widget.BaseAdapter;
 import android.widget.ImageView;
 import android.widget.Toast;
 
+import com.google.gson.Gson;
 import com.sendbird.android.GroupChannel;
 import com.sendbird.android.GroupChannelParams;
 import com.sendbird.android.SendBirdException;
 import com.ztp.app.Data.Local.SharedPrefrence.SharedPref;
+import com.ztp.app.Data.Remote.Model.Request.UnlinkUserRequest;
 import com.ztp.app.Data.Remote.Model.Response.MyCSOResponse_V;
+import com.ztp.app.Data.Remote.Model.Response.UnlinkUserResponse;
+import com.ztp.app.Data.Remote.Service.Api;
+import com.ztp.app.Helper.MyProgressDialog;
 import com.ztp.app.Helper.MyTextView;
 import com.ztp.app.Helper.MyToast;
 import com.ztp.app.R;
 import com.ztp.app.SendBird.groupchannel.GroupChannelListFragment;
 import com.ztp.app.Utils.Constants;
+import com.ztp.app.Utils.Utility;
 import com.ztp.app.View.Activity.Volunteer.VolunteerDashboardActivity;
 import com.ztp.app.View.Fragment.Volunteer.Event.TabMyBookingFragment;
 
@@ -29,6 +36,9 @@ import java.util.ArrayList;
 import java.util.List;
 
 import de.hdodenhof.circleimageview.CircleImageView;
+import retrofit2.Call;
+import retrofit2.Callback;
+import retrofit2.Response;
 
 class MyCSOAdapter extends BaseAdapter {
     Context context;
@@ -37,12 +47,14 @@ class MyCSOAdapter extends BaseAdapter {
     public static final String EXTRA_NEW_CHANNEL_URL = "EXTRA_NEW_CHANNEL_URL";
     private List<String> mSelectedIds;
     SharedPref sharedPref;
+    MyProgressDialog myProgressDialog;
 
     public MyCSOAdapter(Context context, List<MyCSOResponse_V.ResData> dataList) {
         this.context = context;
         this.dataList = dataList;
         myToast = new MyToast(context);
         sharedPref = SharedPref.getInstance(context);
+        myProgressDialog = new MyProgressDialog(context);
     }
 
     @Override
@@ -63,7 +75,6 @@ class MyCSOAdapter extends BaseAdapter {
     @Override
     public View getView(int position, View view, ViewGroup parent) {
         Holder holder = new Holder();
-
         try {
             if (view == null) {
                 view = LayoutInflater.from(context).inflate(R.layout.myfriendmycso_layout, null);
@@ -72,6 +83,7 @@ class MyCSOAdapter extends BaseAdapter {
                 holder.tv_phone = view.findViewById(R.id.tv_phone);
                 holder.image = view.findViewById(R.id.image);
                 holder.reply = view.findViewById(R.id.reply);
+                holder.unlink = view.findViewById(R.id.unlink);
                 view.setTag(holder);
             } else {
                 holder = (Holder) view.getTag();
@@ -81,12 +93,50 @@ class MyCSOAdapter extends BaseAdapter {
             holder.tv_email.setText(dataList.get(position).getUserEmail());
             holder.tv_phone.setText(dataList.get(position).getUserPhone());
             holder.image.setImageResource(R.drawable.user);
-            //view.setTag(dataList.get(position));
+
+            holder.unlink.setId(position);
+            holder.unlink.setOnClickListener(v -> {
+
+                if (Utility.isNetworkAvailable(context)) {
+                    myProgressDialog.show(context.getString(R.string.please_wait));
+                    MyCSOResponse_V.ResData data = dataList.get(v.getId());
+                    UnlinkUserRequest unlinkUserRequest = new UnlinkUserRequest(data.getUserId(),sharedPref.getUserId(),Utility.getDeviceId(context));
+                    Log.i("","" + new Gson().toJson(unlinkUserRequest));
+
+                    Api.getClient().unlinkUser(unlinkUserRequest).enqueue(new Callback<UnlinkUserResponse>() {
+                        @Override
+                        public void onResponse(Call<UnlinkUserResponse> call, Response<UnlinkUserResponse> response) {
+                            if (response.isSuccessful()) {
+                                Log.i("","" + new Gson().toJson(response));
+                                if (response.body() != null && response.body().getResStatus().equalsIgnoreCase("200")) {
+                                    myToast.show(data.getUserFName() + " " + data.getUserLName() + " unlinked successfully", Toast.LENGTH_SHORT, true);
+                                    dataList.remove(data);
+                                    notifyDataSetChanged();
+                                } else {
+                                    myToast.show(context.getString(R.string.err_server), Toast.LENGTH_SHORT, false);
+                                }
+                            } else {
+                                myToast.show(context.getString(R.string.err_server), Toast.LENGTH_SHORT, false);
+                            }
+                            myProgressDialog.dismiss();
+                        }
+
+                        @Override
+                        public void onFailure(Call<UnlinkUserResponse> call, Throwable t) {
+                            t.printStackTrace();
+                            myProgressDialog.dismiss();
+                        }
+                    });
+                } else {
+                    myToast.show(context.getString(R.string.no_internet_connection), Toast.LENGTH_SHORT, false);
+                }
+
+            });
+
             view.setId(position);
             view.setOnClickListener(new View.OnClickListener() {
                 @Override
                 public void onClick(View v) {
-                    //MyCSOResponse_V.TargetData dataModel = (MyCSOResponse_V.TargetData) v.getTag();
 
                     MyCSOResponse_V.ResData dataModel = dataList.get(v.getId());
                     mSelectedIds = new ArrayList<>();
@@ -106,7 +156,7 @@ class MyCSOAdapter extends BaseAdapter {
 
     private class Holder {
         CircleImageView image;
-        MyTextView tv_name, tv_email, tv_phone;
+        MyTextView tv_name, tv_email, tv_phone,unlink;
         ImageView reply;
     }
 

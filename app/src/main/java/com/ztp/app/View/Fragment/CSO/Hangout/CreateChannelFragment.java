@@ -43,7 +43,6 @@ public class CreateChannelFragment extends Fragment {
     private RecyclerView mRecyclerView;
     private SelectableUserListAdapter mListAdapter;
     MyToast myToast;
-
     MyProgressDialog myProgressDialog;
     MyTextView noData;
     SharedPref sharedPref;
@@ -84,10 +83,12 @@ public class CreateChannelFragment extends Fragment {
         fab_create_channel.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {
-                if (SelectableUserListAdapter.mSelectedUserIds.size() == 0) {
+                /*if (SelectableUserListAdapter.mSelectedUserIds.size() == 0) {
                     myToast.show(getString(R.string.no_user_selected), Toast.LENGTH_LONG, false);
-                } else if (SelectableUserListAdapter.mSelectedUserIds.size() == 1) {
-                    createGroupChannel(SelectableUserListAdapter.nameList.get(0), SelectableUserListAdapter.mSelectedUserIds, false);
+                } else*/
+
+                if (SelectableUserListAdapter.mSelectedUserIds.size() == 1) {
+                    createGroupChannel(SelectableUserListAdapter.nameList.get(0), SelectableUserListAdapter.mSelectedUserIds, true);
                 } else {
 
                     Dialog dialog = new Dialog(context);
@@ -108,8 +109,7 @@ public class CreateChannelFragment extends Fragment {
                         @Override
                         public void onClick(View v) {
                             if (!et_channel_name.getText().toString().trim().equalsIgnoreCase("")) {
-
-                                createGroupChannel(et_channel_name.getText().toString().trim(), SelectableUserListAdapter.mSelectedUserIds, false);
+                                createGroupChannel(et_channel_name.getText().toString().trim(), SelectableUserListAdapter.mSelectedUserIds, true);
                                 dialog.dismiss();
                             }
                         }
@@ -192,30 +192,43 @@ public class CreateChannelFragment extends Fragment {
      *                 the existing channel instance will be returned.
      */
     private void createGroupChannel(String nick_name, List<String> userIds, boolean distinct) {
-        GroupChannelParams params;
+        GroupChannelParams params = null;
 
-        if (userIds.size() != 1) {
+        if (userIds != null) {
+            if (userIds.size() != 1) {
+                params = new GroupChannelParams()
+                        .setPublic(false)
+                        .setEphemeral(false)
+                        .setDistinct(distinct)
+                        .addUserIds(userIds)
+                        //  .setOperatorIds(operatorIds)    // or .setOperators(List<User> operators)
+                        .setName(nick_name)
+//                 .setCoverImage(FILE)            // or .setCoverUrl(COVER_URL)
+                        .setData(sharedPref.getUserId())
+                        .setCustomType(Constants.SENDBIRD_CHANNEL);
+            } else {
+                params = new GroupChannelParams()
+                        .setPublic(false)
+                        .setEphemeral(false)
+                        .setDistinct(distinct)
+                        .addUserIds(userIds)
+                        //  .setOperatorIds(operatorIds)    // or .setOperators(List<User> operators)
+                        .setName(nick_name)
+//                 .setCoverImage(FILE)            // or .setCoverUrl(COVER_URL)
+                        .setData(sharedPref.getUserId())
+                        .setCustomType(Constants.SENDBIRD_INDIVIDUAL);
+            }
+        } else {
             params = new GroupChannelParams()
                     .setPublic(false)
                     .setEphemeral(false)
-                    .setDistinct(false)
-                    .addUserIds(userIds)
+                    .setDistinct(distinct)
+                    .addUserIds(null)
                     //  .setOperatorIds(operatorIds)    // or .setOperators(List<User> operators)
                     .setName(nick_name)
 //                 .setCoverImage(FILE)            // or .setCoverUrl(COVER_URL)
                     .setData(sharedPref.getUserId())
                     .setCustomType(Constants.SENDBIRD_CHANNEL);
-        } else {
-            params = new GroupChannelParams()
-                    .setPublic(false)
-                    .setEphemeral(false)
-                    .setDistinct(false)
-                    .addUserIds(userIds)
-                    //  .setOperatorIds(operatorIds)    // or .setOperators(List<User> operators)
-                    .setName(nick_name)
-//                 .setCoverImage(FILE)            // or .setCoverUrl(COVER_URL)
-                    .setData(sharedPref.getUserId())
-                    .setCustomType(Constants.SENDBIRD_INDIVIDUAL);
         }
 
         GroupChannel.createChannel(params, new GroupChannel.GroupChannelCreateHandler() {
@@ -224,21 +237,21 @@ public class CreateChannelFragment extends Fragment {
                 if (e != null) {    // Error.
 
                 } else {
-                    if (groupChannel.getMemberCount() > 1) {
-                        Constants.backFromChat = false;
-                        GroupChannelListFragment fragment = new GroupChannelListFragment();
-                        Bundle bundle = new Bundle();
-                        bundle.putString(TabMyBookingFragment.EXTRA_NEW_CHANNEL_URL, groupChannel.getUrl());
-                        bundle.putString(TabMyBookingFragment.EXTRA_Name, nick_name);
-                        fragment.setArguments(bundle);
-                        FragmentManager fragmentManager = ((AppCompatActivity) context).getSupportFragmentManager();
-                        FragmentTransaction fragmentTransaction = fragmentManager.beginTransaction();
-                        fragmentTransaction.replace(R.id.body, fragment, "GroupChannelListFragment");
-                        fragmentTransaction.addToBackStack(null);
-                        fragmentTransaction.commit();
-                    } else {
+                    /*  if (groupChannel.getMemberCount() > 1) {*/
+                    Constants.backFromChat = false;
+                    GroupChannelListFragment fragment = new GroupChannelListFragment();
+                    Bundle bundle = new Bundle();
+                    bundle.putString(TabMyBookingFragment.EXTRA_NEW_CHANNEL_URL, groupChannel.getUrl());
+                    bundle.putString(TabMyBookingFragment.EXTRA_Name, nick_name);
+                    fragment.setArguments(bundle);
+                    FragmentManager fragmentManager = ((AppCompatActivity) context).getSupportFragmentManager();
+                    FragmentTransaction fragmentTransaction = fragmentManager.beginTransaction();
+                    fragmentTransaction.replace(R.id.body, fragment, "GroupChannelListFragment");
+                    fragmentTransaction.addToBackStack(null);
+                    fragmentTransaction.commitAllowingStateLoss();
+                    /*} else {
                         myToast.show("User not available for chatting", Toast.LENGTH_SHORT, false);
-                    }
+                    }*/
                 }
             }
         });

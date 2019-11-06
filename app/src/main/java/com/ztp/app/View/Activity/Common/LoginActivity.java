@@ -188,7 +188,6 @@ public class LoginActivity extends AppCompatActivity implements View.OnClickList
                                         sharedPref.setUserStatus(loginResponse.getResData().getUserStatus());
                                         sharedPref.setUnreadPushNotif("0");
 
-
                                         PreferenceUtils.init(this);
 //                                      PreferenceUtils.setUserId(sharedPref.getEmail());
                                         PreferenceUtils.setNickname(sharedPref.getFirstName());

@@ -255,7 +255,13 @@ public class StuVolEditProfileActivity extends AppCompatActivity implements View
             @Override
             public void onItemSelected(AdapterView<?> parentView, View selectedItemView, int position, long id) {
                 country_id = countryListData.get(position).getCountryId();
+                if (stateListData.size() == 0)
                 getStateList(country_id);
+                 else
+                {
+                    if(myProgressDialog.isShowing())
+                        myProgressDialog.dismiss();
+                }
             }
 
             @Override

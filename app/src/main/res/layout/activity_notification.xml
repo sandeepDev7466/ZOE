@@ -53,8 +53,7 @@
             android:layout_width="match_parent"
             android:layout_height="match_parent"
             android:scrollbars="none"
-            android:visibility="gone"
-            android:layout_margin="@dimen/_5sdp"/>
+            android:visibility="gone" />
 
         <com.ztp.app.Helper.MyTextView
             android:id="@+id/noData"
@@ -62,6 +61,7 @@
             android:layout_height="wrap_content"
             android:layout_gravity="center"
             android:text="@string/err_no_data_found"
+            style="@style/RegularTextView"
             android:visibility="gone"/>
 
 

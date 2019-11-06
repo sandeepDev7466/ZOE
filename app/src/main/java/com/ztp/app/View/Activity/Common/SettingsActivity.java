@@ -155,23 +155,8 @@ public class SettingsActivity extends AppCompatActivity implements View.OnClickL
         sw_push.setOnToggledListener((toggleableView, isOn) -> {
             if (isOn) {
                 sharedPref.setPushNotification(true);
-                /*FirebaseInstanceId.getInstance().getInstanceId().addOnSuccessListener(SettingsActivity.this, new OnSuccessListener<InstanceIdResult>() {
-                    @Override
-                    public void onSuccess(InstanceIdResult instanceIdResult) {
-                        String newToken = instanceIdResult.getToken();
-                        PushUtils.registerPushTokenForCurrentUser(SettingsActivity.this,null,newToken);
-                    }
-                });*/
-
             } else {
                 sharedPref.setPushNotification(false);
-               /* FirebaseInstanceId.getInstance().getInstanceId().addOnSuccessListener(SettingsActivity.this, new OnSuccessListener<InstanceIdResult>() {
-                    @Override
-                    public void onSuccess(InstanceIdResult instanceIdResult) {
-                        String newToken = instanceIdResult.getToken();
-                        PushUtils.unregisterPushTokenForCurrentUser(SettingsActivity.this,null,newToken);
-                    }
-                });*/
             }
         });
 
