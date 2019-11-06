@@ -1,0 +1,54 @@
+<?xml version="1.0" encoding="utf-8"?>
+<LinearLayout xmlns:android="http://schemas.android.com/apk/res/android"
+    android:layout_width="match_parent"
+    android:layout_height="@dimen/_51sdp"
+    android:orientation="horizontal"
+    android:paddingLeft="@dimen/_22sdp"
+    android:paddingRight="@dimen/_22sdp"
+    android:background="?selectableItemBackground">
+
+    <CheckBox
+        android:id="@+id/checkbox_selectable_user_list"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:layout_marginRight="@dimen/_10sdp"
+        android:layout_gravity="center_vertical"
+        android:layout_alignParentLeft="true"
+        android:layout_centerVertical="true"/>
+
+    <RelativeLayout
+        android:layout_width="@dimen/_38sdp"
+        android:layout_height="@dimen/_38sdp"
+        android:layout_weight="0"
+        android:layout_marginRight="@dimen/_10sdp"
+        android:layout_gravity="center_vertical">
+
+        <de.hdodenhof.circleimageview.CircleImageView
+            xmlns:app="http://schemas.android.com/apk/res-auto"
+            android:id="@+id/image_selectable_user_list_profile"
+            android:layout_width="@dimen/_300sdp"
+            android:layout_height="@dimen/_300sdp"
+            android:layout_gravity="center_vertical"
+            android:src="@drawable/user"
+            android:scaleType="centerCrop"
+            app:civ_border_width="@dimen/_1sdp"
+            app:civ_border_color="@color/chat_border"/>
+
+        <ImageView
+            android:id="@+id/image_user_list_blocked"
+            android:layout_width="@dimen/_38sdp"
+            android:layout_height="@dimen/_38sdp"
+            android:background="@drawable/ic_not_available"
+            android:visibility="gone"/>
+
+    </RelativeLayout>
+
+    <com.ztp.app.Helper.MyTextView
+        android:id="@+id/text_selectable_user_list_nickname"
+        android:layout_width="0dp"
+        android:layout_height="wrap_content"
+        android:layout_weight="1"
+        android:layout_gravity="center_vertical"
+        style="@style/RegularTextView"/>
+
+</LinearLayout>
